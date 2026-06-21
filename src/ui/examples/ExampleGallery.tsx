@@ -14,6 +14,7 @@ export function ExampleGallery({
           <button
             type="button"
             key={example.name}
+            aria-label={`${example.name}: ${example.expression}. ${example.note}`}
             onClick={() => onSelect(example)}
           >
             <strong>{example.name}</strong>

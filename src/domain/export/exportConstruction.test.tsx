@@ -5,6 +5,7 @@ import { SvgConstructionCanvas } from "../../render/svg/SvgConstructionCanvas";
 import {
   constructionExport,
   constructionJson,
+  downloadText,
   serializeSvg,
 } from "./exportConstruction";
 
@@ -43,5 +44,37 @@ describe("construction export", () => {
     expect(clean).toContain('data-export-summary="true"');
     expect(clean).toContain("a * b = 6");
     expect(clean).toContain('display="none"');
+  });
+
+  it("downloads the requested filename, MIME type, and content", () => {
+    const createObjectURL = vi.fn((blob: Blob) => {
+      void blob;
+      return "blob:test";
+    });
+    const revokeObjectURL = vi.fn();
+    Object.defineProperty(URL, "createObjectURL", {
+      configurable: true,
+      value: createObjectURL,
+    });
+    Object.defineProperty(URL, "revokeObjectURL", {
+      configurable: true,
+      value: revokeObjectURL,
+    });
+    let clickedDownload: string | undefined;
+    let clickedHref: string | undefined;
+    const click = vi
+      .spyOn(HTMLAnchorElement.prototype, "click")
+      .mockImplementation(function (this: HTMLAnchorElement) {
+        clickedDownload = this.download;
+        clickedHref = this.href;
+      });
+    downloadText("construction.json", '{"version":1}', "application/json");
+    expect(createObjectURL).toHaveBeenCalledOnce();
+    const blob = createObjectURL.mock.calls[0][0] as Blob;
+    expect(blob.type).toBe("application/json");
+    expect(clickedDownload).toBe("construction.json");
+    expect(clickedHref).toBe("blob:test");
+    expect(revokeObjectURL).toHaveBeenCalledWith("blob:test");
+    click.mockRestore();
   });
 });

@@ -19,4 +19,4 @@ Variables, decimal or integer constants, `+`, `-`, `*`, `/`, `^2`, parentheses, 
 
 The built-in gallery covers addition, directed subtraction, multiplication and division by similar triangles, squaring, square root by geometric mean, and polynomial examples. Numeric values choose a readable drawing scale; symbolic expressions and provenance remain attached to every object.
 
-See [Getting Started](docs/GETTING_STARTED.md), [Mathematical Background](docs/MATH_BACKGROUND.md), [Architecture](docs/ARCHITECTURE.md), and [Export Format](docs/EXPORT_FORMAT.md).
+See [Getting Started](docs/GETTING_STARTED.md), [UI Specification](docs/UI_SPECIFICATION.md), [Mathematical Background](docs/MATH_BACKGROUND.md), [Architecture](docs/ARCHITECTURE.md), and [Export Format](docs/EXPORT_FORMAT.md).
