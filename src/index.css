@@ -12,10 +12,14 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --background: #101418;
+  --foreground: #f5f1e8;
+  --panel: #171d22;
   --muted: #a9b1b6;
   --accent: #e8b65c;
   --line: #303940;
   --line-strong: #788690;
+  --error: #a95c55;
+  --error-text: #efaaa3;
 }
 
 * {
@@ -26,4 +30,9 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+}
+
+button,
+input {
+  font: inherit;
 }

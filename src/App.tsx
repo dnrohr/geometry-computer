@@ -1,26 +1,111 @@
+import { useMemo, useState } from "react";
+import {
+  describeExpression,
+  evaluateExpression,
+  parseExpression,
+} from "./domain/expression";
 import "./App.css";
 
+const examples = ["sqrt(2)", "(1 + sqrt(5)) / 2", "sqrt(3 + sqrt(2))"];
+
 function App() {
+  const [source, setSource] = useState(examples[1]);
+  const result = useMemo(() => {
+    try {
+      const expression = parseExpression(source);
+      return {
+        value: evaluateExpression(expression),
+        steps: describeExpression(expression),
+        error: null,
+      };
+    } catch (error) {
+      return {
+        value: null,
+        steps: [],
+        error: error instanceof Error ? error.message : "Expression is invalid",
+      };
+    }
+  }, [source]);
+
   return (
     <main className="app-shell">
-      <section className="intro" aria-labelledby="page-title">
-        <p className="eyebrow">Compass · Straightedge · Algebra</p>
-        <h1 id="page-title">Geometry Computer</h1>
-        <p className="lede">
-          Construct algebraic lengths as animated, explainable geometric proofs.
-        </p>
-        <div className="construction-preview" aria-hidden="true">
-          <svg viewBox="0 0 640 220" role="img">
-            <line x1="72" y1="164" x2="568" y2="164" />
-            <circle cx="216" cy="164" r="92" />
-            <path d="M216 164 L390 72 L510 164" />
-            <circle className="point" cx="216" cy="164" r="7" />
-            <circle className="point result" cx="510" cy="164" r="7" />
-          </svg>
+      <header className="masthead">
+        <div>
+          <p className="eyebrow">Compass · Straightedge · Algebra</p>
+          <h1>Geometry Computer</h1>
         </div>
-        <p className="status">
-          Project foundation ready. Constructions come next.
+        <p className="lede">
+          Translate constructible arithmetic into a sequence of geometric length
+          operations.
         </p>
+      </header>
+
+      <section className="workbench" aria-labelledby="workbench-title">
+        <div className="expression-panel">
+          <p className="section-label">Expression</p>
+          <h2 id="workbench-title">What length should we construct?</h2>
+          <label htmlFor="expression">
+            Use numbers, arithmetic, and sqrt(…)
+          </label>
+          <input
+            id="expression"
+            value={source}
+            onChange={(event) => setSource(event.target.value)}
+            spellCheck={false}
+            aria-describedby="expression-feedback"
+          />
+
+          <div className="examples" aria-label="Example expressions">
+            {examples.map((example) => (
+              <button
+                key={example}
+                type="button"
+                onClick={() => setSource(example)}
+              >
+                {example}
+              </button>
+            ))}
+          </div>
+
+          <div
+            id="expression-feedback"
+            className={result.error ? "feedback error" : "feedback"}
+            role={result.error ? "alert" : "status"}
+          >
+            {result.error ? (
+              result.error
+            ) : (
+              <>
+                <span>Computed length</span>
+                <strong>{result.value?.toPrecision(10)}</strong>
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="plan-panel">
+          <p className="section-label">Construction plan</p>
+          <h2>Dependency order</h2>
+          {result.steps.length ? (
+            <ol>
+              {result.steps.map((step) => {
+                const [label, description] = step.split(": ");
+                return (
+                  <li key={step}>
+                    <span>{label}</span>
+                    {description}
+                  </li>
+                );
+              })}
+            </ol>
+          ) : (
+            <p className="empty-plan">
+              {result.error
+                ? "Correct the expression to generate a plan."
+                : "A constant length needs no derived operations."}
+            </p>
+          )}
+        </div>
       </section>
     </main>
   );
