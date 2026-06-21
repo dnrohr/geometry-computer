@@ -254,30 +254,65 @@ const operatorLabels = {
   "/": "Divide",
 } as const;
 
-export function describeExpression(expression: Expression): string[] {
-  const steps: string[] = [];
+export type ConstructionStep = {
+  id: string;
+  operation: "add" | "subtract" | "multiply" | "divide" | "sqrt";
+  operands: Array<{ reference: string; value: number }>;
+  value: number;
+  description: string;
+};
 
-  function visit(node: Expression): string {
+const operationNames = {
+  "+": "add",
+  "-": "subtract",
+  "*": "multiply",
+  "/": "divide",
+} as const;
+
+export function buildConstructionPlan(
+  expression: Expression,
+): ConstructionStep[] {
+  const steps: ConstructionStep[] = [];
+
+  function visit(node: Expression): { reference: string; value: number } {
     if (node.type === "constant") {
-      return String(node.value);
+      return { reference: String(node.value), value: node.value };
     }
 
     if (node.type === "sqrt") {
-      const input = visit(node.radicand);
-      const label = `L${steps.length + 1}`;
-      steps.push(`${label}: Take the square root of ${input}`);
-      return label;
+      const operand = visit(node.radicand);
+      const value = evaluateExpression(node);
+      const id = `L${steps.length + 1}`;
+      steps.push({
+        id,
+        operation: "sqrt",
+        operands: [operand],
+        value,
+        description: `Take the square root of ${operand.reference}`,
+      });
+      return { reference: id, value };
     }
 
     const left = visit(node.left);
     const right = visit(node.right);
-    const label = `L${steps.length + 1}`;
-    steps.push(
-      `${label}: ${operatorLabels[node.operator]} ${left} and ${right}`,
-    );
-    return label;
+    const value = evaluateExpression(node);
+    const id = `L${steps.length + 1}`;
+    steps.push({
+      id,
+      operation: operationNames[node.operator],
+      operands: [left, right],
+      value,
+      description: `${operatorLabels[node.operator]} ${left.reference} and ${right.reference}`,
+    });
+    return { reference: id, value };
   }
 
   visit(expression);
   return steps;
+}
+
+export function describeExpression(expression: Expression): string[] {
+  return buildConstructionPlan(expression).map(
+    ({ id, description }) => `${id}: ${description}`,
+  );
 }

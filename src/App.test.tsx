@@ -14,6 +14,14 @@ describe("App", () => {
     expect(screen.getByText("Divide L2 and 2").closest("li")).toHaveTextContent(
       "L3Divide L2 and 2",
     );
+    expect(
+      screen.getByRole("heading", { name: "Geometric mean" }),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /L3.*Divide/ }));
+    expect(
+      screen.getByRole("heading", { name: "Third proportional" }),
+    ).toBeInTheDocument();
   });
 
   it("reports invalid input without generating stale steps", () => {

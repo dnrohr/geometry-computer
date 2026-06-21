@@ -1,21 +1,23 @@
 import { useMemo, useState } from "react";
 import {
-  describeExpression,
+  buildConstructionPlan,
   evaluateExpression,
   parseExpression,
 } from "./domain/expression";
+import { ConstructionDiagram } from "./components/ConstructionDiagram";
 import "./App.css";
 
 const examples = ["sqrt(2)", "(1 + sqrt(5)) / 2", "sqrt(3 + sqrt(2))"];
 
 function App() {
   const [source, setSource] = useState(examples[1]);
+  const [selectedStep, setSelectedStep] = useState(0);
   const result = useMemo(() => {
     try {
       const expression = parseExpression(source);
       return {
         value: evaluateExpression(expression),
-        steps: describeExpression(expression),
+        steps: buildConstructionPlan(expression),
         error: null,
       };
     } catch (error) {
@@ -88,15 +90,21 @@ function App() {
           <h2>Dependency order</h2>
           {result.steps.length ? (
             <ol>
-              {result.steps.map((step) => {
-                const [label, description] = step.split(": ");
-                return (
-                  <li key={step}>
-                    <span>{label}</span>
-                    {description}
-                  </li>
-                );
-              })}
+              {result.steps.map((step, index) => (
+                <li
+                  key={step.id}
+                  className={selectedStep === index ? "active" : ""}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setSelectedStep(index)}
+                    aria-pressed={selectedStep === index}
+                  >
+                    <span>{step.id}</span>
+                    {step.description}
+                  </button>
+                </li>
+              ))}
             </ol>
           ) : (
             <p className="empty-plan">
@@ -107,6 +115,11 @@ function App() {
           )}
         </div>
       </section>
+      {result.steps.length > 0 && (
+        <ConstructionDiagram
+          step={result.steps[Math.min(selectedStep, result.steps.length - 1)]}
+        />
+      )}
     </main>
   );
 }

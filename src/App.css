@@ -146,7 +146,7 @@ button:focus-visible {
   line-height: 1.4;
 }
 
-ol {
+.plan-panel ol {
   display: grid;
   gap: 0;
   margin: 0;
@@ -155,19 +155,108 @@ ol {
   counter-reset: step;
 }
 
-li {
-  display: grid;
-  grid-template-columns: 2.5rem 1fr;
-  gap: 0.75rem;
-  padding: 1rem 0;
+.plan-panel li {
+  padding: 0;
   border-top: 1px solid var(--line);
   color: var(--muted);
   line-height: 1.45;
 }
 
-li span {
+.plan-panel li button {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1rem 0;
+  border: 0;
+  border-radius: 0;
+  color: var(--muted);
+  text-align: left;
+}
+
+.plan-panel li.active button {
+  color: var(--foreground);
+}
+
+.plan-panel li span {
   color: var(--accent);
   font-family: "SFMono-Regular", Consolas, monospace;
+}
+
+.diagram {
+  margin-top: 1.5rem;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  background: var(--panel);
+  box-shadow: 0 2rem 5rem rgb(0 0 0 / 12%);
+}
+
+.diagram-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.diagram-heading h2 {
+  margin-bottom: 1rem;
+}
+
+.diagram-heading output {
+  color: var(--accent);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
+}
+
+.diagram svg {
+  display: block;
+  width: 100%;
+  max-height: 27rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: #11171b;
+}
+
+.diagram svg line,
+.diagram svg path,
+.diagram svg circle:not(.vertex) {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 2;
+}
+
+.diagram svg .guide {
+  stroke-dasharray: 7 6;
+}
+
+.diagram svg .result {
+  stroke: var(--accent);
+  stroke-width: 4;
+}
+
+.diagram svg .vertex {
+  fill: var(--foreground);
+}
+
+.diagram svg text {
+  fill: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 15px;
+  text-anchor: middle;
+}
+
+.diagram svg text.result {
+  fill: var(--accent);
+  stroke: none;
+  stroke-width: 0;
+}
+
+.method {
+  max-width: 58rem;
+  margin: 1.25rem 0 0;
+  color: var(--muted);
+  line-height: 1.6;
 }
 
 .empty-plan {
