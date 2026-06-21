@@ -1,27 +1,15 @@
-# Milestone 2: Constructible expression core
+# Milestone 2: Domain models
 
-Milestone 2 establishes the algebraic domain layer that geometric rendering will consume.
+Milestone 2 establishes rendering-independent symbolic expression, construction trace, and geometry object models.
 
 ## Delivered
 
-- A tokenizer and precedence-aware parser for decimal constants, parentheses, `+`, `-`, `*`, `/`, and `sqrt(...)`.
-- A typed expression tree with pure evaluation and explicit domain errors.
-- Dependency-ordered operation descriptions, labeled `L1`, `L2`, and so on, that can become geometric construction steps in a later milestone.
-- An accessible, responsive React workbench with examples, live results, operation plans, and inline error feedback.
-- Unit and integration coverage for parsing, precedence, nested roots, invalid syntax, invalid real-length operations, plan ordering, and UI state.
+- A symbolic expression AST with helper constructors and stable plain-text and LaTeX formatting.
+- Original and simplified polynomial examples.
+- Construction nodes, macro/primitive steps, proof claims, operation proofs, and reveal actions.
+- A hardcoded macro trace for `(3a + b)(a + b)` with validated references.
+- Geometry objects for points, segments, lines, rays, circles, arcs, labels, and triangles.
+- Required provenance metadata plus deterministic coordinate and tolerance helpers.
+- Unit tests and `docs/DOMAIN_MODEL.md`.
 
-## Boundaries
-
-This milestone does not draw compass-and-straightedge primitives. It defines the input and dependency model those primitives will consume. Named variables, implicit multiplication, powers other than square roots, complex values, and symbolic simplification are also intentionally outside this milestone.
-
-## Acceptance checks
-
-Run the full project verification suite:
-
-```bash
-npm test
-npm run typecheck
-npm run lint
-npm run build
-npm run format:check
-```
+The pre-existing numeric parser is retained as early work for the later parsing milestone and is not the Milestone 2 symbolic model.

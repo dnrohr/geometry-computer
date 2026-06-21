@@ -2,40 +2,36 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import App from "./App";
 
 describe("App", () => {
-  it("turns a constructible expression into a computed plan", () => {
-    render(<App />);
-
+  it("renders the compiled polynomial construction and controls", () => {
+    const { container } = render(<App />);
     expect(
       screen.getByRole("heading", { name: "Geometry Computer" }),
     ).toBeInTheDocument();
+    expect(screen.getByText("3a² + 4ab + b²")).toBeInTheDocument();
+    expect(screen.getByText("(3a + b)(a + b)")).toBeInTheDocument();
     expect(
-      screen.getByText("Take the square root of 5").closest("li"),
-    ).toHaveTextContent("L1Take the square root of 5");
-    expect(screen.getByText("Divide L2 and 2").closest("li")).toHaveTextContent(
-      "L3Divide L2 and 2",
-    );
-    expect(
-      screen.getByRole("heading", { name: "Geometric mean" }),
+      screen.getByRole("img", { name: /compiled geometric construction/i }),
     ).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole("button", { name: /L3.*Divide/ }));
+    expect(container.querySelector(".geometry-result")).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Third proportional" }),
+      screen.getByRole("button", { name: "Export JSON" }),
     ).toBeInTheDocument();
   });
 
-  it("reports invalid input without generating stale steps", () => {
+  it("compiles input and reports invalid constructions without crashing", () => {
     render(<App />);
-
-    fireEvent.change(screen.getByLabelText(/use numbers/i), {
-      target: { value: "sqrt(-1)" },
-    });
-
-    expect(screen.getByRole("alert")).toHaveTextContent(
-      "Expected a number, sqrt, or '('",
+    const input = screen.getByRole("textbox", { name: "Expression" });
+    fireEvent.change(input, { target: { value: "a+b" } });
+    fireEvent.click(
+      screen.getByRole("button", { name: "Compile construction" }),
     );
     expect(
-      screen.getByText("Correct the expression to generate a plan."),
+      screen.getByRole("heading", { name: "Construct a + b" }),
     ).toBeInTheDocument();
+    fireEvent.change(input, { target: { value: "a/0" } });
+    fireEvent.click(
+      screen.getByRole("button", { name: "Compile construction" }),
+    );
+    expect(screen.getByRole("alert")).toHaveTextContent(/division by zero/i);
   });
 });

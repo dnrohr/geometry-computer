@@ -283,7 +283,14 @@ export type RevealAction = {
   objectId: string;
   start: number;
   end: number;
-  animation: "draw" | "fade-in" | "fade-out" | "pulse" | "highlight" | "select" | "dim";
+  animation:
+    | "draw"
+    | "fade-in"
+    | "fade-out"
+    | "pulse"
+    | "highlight"
+    | "select"
+    | "dim";
 };
 ```
 
