@@ -12,10 +12,14 @@ export function ExpressionTree({
   expression,
   activeExpression,
   onSelect,
+  originalExpression,
+  simplifiedExpression,
 }: {
   expression: Expr;
   activeExpression?: string;
   onSelect?: (expression: string) => void;
+  originalExpression?: string;
+  simplifiedExpression?: string;
 }) {
   const render = (expr: Expr): React.ReactNode => {
     const label = formatExpression(expr);
@@ -31,6 +35,15 @@ export function ExpressionTree({
   return (
     <section className="expression-tree">
       <h2>Expression tree</h2>
+      {originalExpression && (
+        <p className="tree-equivalence">
+          <span>{originalExpression}</span>
+          {simplifiedExpression &&
+            simplifiedExpression !== originalExpression && (
+              <strong> → {simplifiedExpression}</strong>
+            )}
+        </p>
+      )}
       <ul>{render(expression)}</ul>
     </section>
   );

@@ -189,7 +189,7 @@ select:focus-visible,
 .construction-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.65fr) minmax(18rem, 0.65fr);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .canvas-panel {
@@ -197,6 +197,9 @@ select:focus-visible,
   place-items: center;
   min-width: 0;
   padding: clamp(1rem, 3vw, 2rem);
+  position: sticky;
+  top: 1rem;
+  align-self: start;
 }
 
 .construction-canvas {
@@ -313,6 +316,7 @@ text.geometry-result,
 
 .steps-panel li {
   padding-top: 1rem;
+  min-height: 12rem;
   border-top: 1px solid var(--line);
 }
 .steps-panel li.active {
@@ -412,6 +416,14 @@ text.geometry-result,
   color: var(--accent);
   background: rgb(232 182 92 / 10%);
 }
+.tree-equivalence {
+  color: var(--muted);
+  font-family: ui-monospace, monospace;
+  font-size: 0.72rem;
+}
+.tree-equivalence strong {
+  color: var(--accent);
+}
 .proof-card {
   grid-column: span 2;
 }
@@ -482,6 +494,7 @@ text.geometry-result,
     top: 0;
     z-index: 2;
     background: var(--panel);
+    align-self: auto;
   }
 }
 

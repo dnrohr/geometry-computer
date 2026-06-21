@@ -2,6 +2,8 @@
 
 Repository: <https://github.com/dnrohr/geometry-computer>
 
+Implementation status: all MVP milestones and acceptance criteria were completed and verified on 2026-06-21. Future ideas in section 14 remain intentionally out of MVP scope.
+
 ## 0. Working Agreement for Agents
 
 This roadmap is written so individual tasks can be handed to a coding agent with minimal extra context. Treat each milestone or task group as an independently verifiable change.

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { OperationProof } from "../../domain/construction/types";
 export function ProofCard({
   proof,
@@ -8,6 +9,7 @@ export function ProofCard({
   onHighlight?: (ids: string[]) => void;
   onClose?: () => void;
 }) {
+  const [selectedClaimId, setSelectedClaimId] = useState<string>();
   return (
     <article className="proof-card" aria-label={`${proof.title} proof`}>
       <header>
@@ -38,7 +40,19 @@ export function ProofCard({
           key={claim.id}
           onMouseEnter={() => onHighlight?.(claim.highlightObjectIds)}
           onFocus={() => onHighlight?.(claim.highlightObjectIds)}
-          onMouseLeave={() => onHighlight?.([])}
+          onMouseLeave={() => {
+            if (selectedClaimId !== claim.id) onHighlight?.([]);
+          }}
+          onBlur={() => {
+            if (selectedClaimId !== claim.id) onHighlight?.([]);
+          }}
+          aria-pressed={selectedClaimId === claim.id}
+          onClick={() => {
+            const selected =
+              selectedClaimId === claim.id ? undefined : claim.id;
+            setSelectedClaimId(selected);
+            onHighlight?.(selected ? claim.highlightObjectIds : []);
+          }}
         >
           {claim.text}
           {claim.mathLatex && <code>{claim.mathLatex}</code>}

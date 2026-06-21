@@ -39,6 +39,15 @@ export class ConstructionContext {
     this.values.set(key, object);
     return object;
   }
+  addObject(object: GeomObject) {
+    if (this.objects.some(({ id }) => id === object.id))
+      throw new ConstructionError(
+        `Duplicate object ${object.id}.`,
+        "DUPLICATE_ID",
+      );
+    this.objects.push(object);
+    return object;
+  }
   requireValue(key: string) {
     const value = this.values.get(key);
     if (!value)
@@ -50,10 +59,31 @@ export class ConstructionContext {
   }
   addStep(step: ConstructionStep) {
     this.steps.push(step);
+    step.inputObjectIds.forEach((id) => {
+      const object = this.objects.find((candidate) => candidate.id === id);
+      if (object && !object.usedByStepIds.includes(step.id))
+        object.usedByStepIds.push(step.id);
+    });
     return step;
   }
   addReveal(action: RevealAction) {
     this.revealActions.push(action);
+  }
+  revealObject(
+    objectId: string,
+    stepId: string,
+    animation: RevealAction["animation"] = "draw",
+  ) {
+    const index = this.revealActions.length;
+    const start = Math.min(0.96, index * 0.025);
+    this.addReveal({
+      id: this.ids.next("reveal"),
+      stepId,
+      objectId,
+      start,
+      end: Math.min(1, start + 0.07),
+      animation,
+    });
   }
   addProof(proof: OperationProof) {
     if (!this.proofs.some(({ id }) => id === proof.id)) this.proofs.push(proof);

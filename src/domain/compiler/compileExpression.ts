@@ -7,12 +7,24 @@ import {
 import type { ConstructionOpKind } from "../construction/types";
 import { arithmeticProofs } from "../proofs/arithmeticProofs";
 import {
-  arcObject,
   labelObject,
   segmentObject,
   type GeomObject,
   type GeomRole,
 } from "../geometry/types";
+import { generateAddition } from "../construction/macros/addition";
+import { generateSubtraction } from "../construction/macros/subtraction";
+import { generateMultiplication } from "../construction/macros/multiplication";
+import { generateDivision } from "../construction/macros/division";
+import { generateSquare } from "../construction/macros/square";
+import { generateSquareRoot } from "../construction/macros/squareRoot";
+import {
+  metadata,
+  point,
+  scaledLength,
+  type ConstructedValue,
+  type MacroRequest,
+} from "../construction/macros/macroTypes";
 
 export type CompiledScene = {
   title: string;
@@ -27,7 +39,8 @@ export type CompiledScene = {
   proofs: ReturnType<ConstructionContext["trace"]>["proofs"];
   ast: Expr;
 };
-const evaluate = (expr: Expr, values: Record<string, number>): number => {
+
+function evaluate(expr: Expr, values: Record<string, number>): number {
   switch (expr.kind) {
     case "const":
       return expr.value;
@@ -56,7 +69,12 @@ const evaluate = (expr: Expr, values: Record<string, number>): number => {
       return evaluate(expr.left, values) / divisor;
     }
     case "pow":
-      return evaluate(expr.base, values) ** expr.exponent;
+      if (expr.exponent !== 2)
+        throw new ConstructionError(
+          "Only squaring is currently constructible through exponent syntax.",
+          "UNSUPPORTED_POWER",
+        );
+      return evaluate(expr.base, values) ** 2;
     case "sqrt": {
       const value = evaluate(expr.value, values);
       if (value < 0)
@@ -67,21 +85,7 @@ const evaluate = (expr: Expr, values: Record<string, number>): number => {
       return Math.sqrt(value);
     }
   }
-};
-const meta = (
-  id: string,
-  role: GeomRole,
-  step: string,
-  represents: string,
-  deps: string[] = [],
-) => ({
-  id,
-  role,
-  createdByStepId: step,
-  usedByStepIds: [],
-  dependsOnObjectIds: deps,
-  represents,
-});
+}
 
 export function compileExpression(
   ast: Expr,
@@ -90,112 +94,96 @@ export function compileExpression(
   simplified = formatExpression(ast),
 ): CompiledScene {
   const context = new ConstructionContext();
-  const cache = new Map<string, { id: string; value: number }>();
+  const cache = new Map<string, ConstructedValue>();
   let row = 0;
-  const compile = (expr: Expr): { id: string; value: number } => {
+
+  const compile = (expr: Expr): ConstructedValue => {
     const key = formatExpression(expr);
     const cached = cache.get(key);
     if (cached) return cached;
     const value = evaluate(expr, values);
-    if (expr.kind === "pow" && expr.exponent !== 2)
-      throw new ConstructionError(
-        "Only squaring is currently constructible through exponent syntax.",
-        "UNSUPPORTED_POWER",
+    const y = 55 + row++ * 145;
+
+    if (expr.kind === "var" || expr.kind === "const") {
+      const operation: ConstructionOpKind =
+        expr.kind === "var" ? "given" : "constant";
+      const stepId = context.ids.next("step");
+      const role: GeomRole =
+        operation === "constant" && value === 1 ? "unit" : "input";
+      const direction = value < 0 ? -1 : 1;
+      const end = 65 + direction * scaledLength(value);
+      const result = segmentObject(
+        point(65, y),
+        point(end, y),
+        metadata(context.ids.next("segment"), role, stepId, key),
       );
-    const operation: ConstructionOpKind =
-      expr.kind === "var"
-        ? "given"
-        : expr.kind === "const"
-          ? "constant"
-          : expr.kind === "pow"
-            ? "square"
-            : expr.kind;
+      context.registerValue(key, result);
+      const label = labelObject(
+        point((65 + end) / 2, y - 13),
+        `${key} = ${Number(value.toFixed(4))}`,
+        metadata(context.ids.next("label"), role, stepId, key, [result.id]),
+      );
+      context.addObject(label);
+      context.addStep({
+        id: stepId,
+        level: "macro",
+        title: `Place ${key}`,
+        summary:
+          operation === "given"
+            ? "Use the supplied directed length."
+            : "Transfer this multiple of the fixed unit segment.",
+        operation,
+        inputObjectIds: [],
+        outputObjectIds: [result.id],
+        createdObjectIds: [result.id, label.id],
+      });
+      context.revealObject(result.id, stepId);
+      context.revealObject(label.id, stepId, "fade-in");
+      const output = { id: result.id, value, object: result };
+      cache.set(key, output);
+      return output;
+    }
+
     const inputs =
       expr.kind === "sqrt"
         ? [compile(expr.value)]
         : expr.kind === "pow"
           ? [compile(expr.base)]
-          : "left" in expr
-            ? [compile(expr.left), compile(expr.right)]
-            : [];
-    const stepId = context.ids.next("step");
-    const id = context.ids.next("segment");
-    const y = 55 + row++ * 62;
-    const length = Math.max(28, Math.min(430, Math.abs(value) * 34));
-    const role: GeomRole = inputs.length
-      ? "intermediate"
-      : operation === "constant" && value === 1
-        ? "unit"
-        : "input";
-    const segment = segmentObject(
-      { x: 65, y },
-      { x: 65 + length, y },
-      meta(
-        id,
-        role,
-        stepId,
-        key,
-        inputs.map((input) => input.id),
-      ),
-    );
-    context.registerValue(key, segment);
-    context.objects.push(
-      labelObject(
-        { x: 75 + length / 2, y: y - 13 },
-        `${key} = ${Number(value.toFixed(4))}`,
-        meta(context.ids.next("label"), role, stepId, key, [id]),
-      ),
-    );
-    const proofId = arithmeticProofs[operation]?.id;
-    context.addStep({
-      id: stepId,
-      level: "macro",
-      title: inputs.length ? `Construct ${key}` : `Place ${key}`,
-      summary: method(operation),
-      operation,
-      inputObjectIds: inputs.map((input) => input.id),
-      outputObjectIds: [id],
-      createdObjectIds: [id],
-      proofId,
-    });
-    if (proofId)
-      context.addProof({
-        ...arithmeticProofs[operation],
-        claims: arithmeticProofs[operation].claims.map((claim) => ({
-          ...claim,
-          highlightObjectIds: [...inputs.map((input) => input.id), id],
-        })),
-      });
-    context.addReveal({
-      id: context.ids.next("reveal"),
-      stepId,
-      objectId: id,
-      start: Math.min(0.92, (context.steps.length - 1) / 10),
-      end: Math.min(1, context.steps.length / 10 + 0.08),
-      animation: "draw",
-    });
-    if (operation === "mul" || operation === "div")
-      addTriangleScaffold(
-        context,
-        stepId,
-        y,
-        inputs.map((item) => item.id),
-        id,
-      );
-    if (operation === "sqrt")
-      addRootScaffold(context, stepId, y, inputs[0].id, id);
-    const output = { id, value };
+          : [compile(expr.left), compile(expr.right)];
+    const operation: ConstructionOpKind =
+      expr.kind === "pow" ? "square" : expr.kind;
+    const request: MacroRequest = {
+      context,
+      key,
+      value,
+      inputs,
+      y,
+      proof: arithmeticProofs[operation],
+    };
+    const output =
+      operation === "add"
+        ? generateAddition(request)
+        : operation === "sub"
+          ? generateSubtraction(request)
+          : operation === "mul"
+            ? generateMultiplication(request)
+            : operation === "div"
+              ? generateDivision(request)
+              : operation === "square"
+                ? generateSquare(request)
+                : generateSquareRoot(request);
     cache.set(key, output);
     return output;
   };
+
   const result = compile(ast);
-  const output = context.requireValue(formatExpression(ast));
-  output.role = "result";
-  const label = context.objects.find(
-    (object) =>
-      object.dependsOnObjectIds.includes(result.id) && object.kind === "label",
-  );
-  if (label) label.role = "result";
+  result.object.role = "result";
+  context.objects
+    .filter(
+      ({ dependsOnObjectIds, kind }) =>
+        kind === "label" && dependsOnObjectIds.includes(result.id),
+    )
+    .forEach((label) => (label.role = "result"));
   const trace = context.trace();
   return {
     title: "Compiled geometric construction",
@@ -203,95 +191,11 @@ export function compileExpression(
     simplifiedExpression: simplified,
     values,
     value: result.value,
-    viewBox: `0 0 760 ${Math.max(480, 120 + row * 62)}`,
+    viewBox: `-220 0 980 ${Math.max(480, 120 + row * 145)}`,
     objects: context.objects,
     steps: trace.steps,
     revealActions: trace.revealActions,
     proofs: trace.proofs,
     ast,
   };
-}
-const method = (operation: ConstructionOpKind) =>
-  ({
-    given: "Use the supplied directed length.",
-    constant: "Transfer a unit multiple.",
-    add: "Transfer the inputs consecutively on a ray.",
-    sub: "Transfer the second input in the opposite direction.",
-    mul: "Scale with a pair of similar triangles.",
-    div: "Reverse a similar-triangle scale.",
-    square: "Multiply the length by itself.",
-    sqrt: "Take the geometric mean in a semicircle.",
-  })[operation];
-function addTriangleScaffold(
-  context: ConstructionContext,
-  step: string,
-  y: number,
-  deps: string[],
-  result: string,
-) {
-  const baseY = y + 34;
-  const a = segmentObject(
-    { x: 500, y: baseY },
-    { x: 650, y: baseY },
-    meta(
-      context.ids.next("scaffold"),
-      "scaffold",
-      step,
-      "similar triangle baseline",
-      deps,
-    ),
-  );
-  const b = segmentObject(
-    { x: 500, y: baseY },
-    { x: 555, y: baseY - 55 },
-    meta(
-      context.ids.next("scaffold"),
-      "scaffold",
-      step,
-      "similar triangle ray",
-      deps,
-    ),
-  );
-  const c = segmentObject(
-    { x: 650, y: baseY },
-    { x: 590, y: baseY - 90 },
-    meta(
-      context.ids.next("scaffold"),
-      "active-construction",
-      step,
-      "parallel scaling line",
-      [...deps, result],
-    ),
-  );
-  context.objects.push(a, b, c);
-}
-function addRootScaffold(
-  context: ConstructionContext,
-  step: string,
-  y: number,
-  input: string,
-  result: string,
-) {
-  context.objects.push(
-    arcObject(
-      { x: 585, y: y + 20 },
-      75,
-      180,
-      360,
-      meta(context.ids.next("semicircle"), "scaffold", step, "diameter 1 + x", [
-        input,
-      ]),
-    ),
-    segmentObject(
-      { x: 585, y: y + 20 },
-      { x: 585, y: y - 55 },
-      meta(
-        context.ids.next("perpendicular"),
-        "active-construction",
-        step,
-        "geometric mean altitude",
-        [input, result],
-      ),
-    ),
-  );
 }

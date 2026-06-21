@@ -14,6 +14,7 @@ type SvgConstructionCanvasProps = {
   onSelectObject?: (id: string) => void;
   onHoverObject?: (id?: string) => void;
   svgRef?: React.Ref<SVGSVGElement>;
+  expressionSummary?: string;
 };
 
 export function SvgConstructionCanvas({
@@ -28,6 +29,7 @@ export function SvgConstructionCanvas({
   onSelectObject,
   onHoverObject,
   svgRef,
+  expressionSummary,
 }: SvgConstructionCanvasProps) {
   const titleId = "construction-canvas-title";
   const descriptionId = "construction-canvas-description";
@@ -38,12 +40,13 @@ export function SvgConstructionCanvas({
       viewBox={viewBox}
       role="img"
       aria-labelledby={`${titleId} ${descriptionId}`}
+      data-expression={expressionSummary}
     >
       <title id={titleId}>{title}</title>
       <desc id={descriptionId}>
         {description ?? "Static compass-and-straightedge construction scene"}
       </desc>
-      <style>{`.geometry-object{vector-effect:non-scaling-stroke}.geometry-result{stroke:#f0b84b;stroke-width:4}.geometry-scaffold{stroke-dasharray:7 6;opacity:.55}`}</style>
+      <style>{`.geometry-object{fill:none;stroke:#91a0aa;stroke-width:2;vector-effect:non-scaling-stroke}.geometry-object text,text.geometry-object{fill:#c7cdd1;stroke:none;font:14px monospace;text-anchor:middle}.geometry-object circle{fill:#eef1f2;stroke:none}.geometry-input{stroke:#8dc5d6}.geometry-unit{stroke:#d8d8d0}.geometry-scaffold{stroke:#91a0aa;stroke-dasharray:7 6;opacity:.55}.geometry-intermediate{stroke:#ad91d3;stroke-width:3}.geometry-active-construction,.geometry-proof-highlight{stroke:#e7d28c;stroke-width:3}.geometry-result{stroke:#f0b84b;stroke-width:4}.geometry-ghost{opacity:.35;stroke-dasharray:3 4}.is-highlighted .geometry-object{opacity:1;stroke:#fff2bb;stroke-width:5}`}</style>
       {objects.map((object) => {
         const state = renderStates[object.id];
         const scaffoldVisible =
@@ -59,6 +62,7 @@ export function SvgConstructionCanvas({
             {renderObject(object, {
               drawProgress: state?.drawProgress ?? 1,
               visible: (state?.visible ?? true) && scaffoldVisible,
+              opacity: state?.opacity,
               dimmed: state?.dimmed,
               highlighted: highlightedIds.has(object.id),
               interactive: Boolean(onSelectObject),

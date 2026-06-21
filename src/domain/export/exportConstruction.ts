@@ -39,5 +39,25 @@ export function serializeSvg(svg: SVGSVGElement, final = false) {
     clone
       .querySelectorAll<SVGElement>(".geometry-scaffold,.geometry-ghost")
       .forEach((item) => item.setAttribute("display", "none"));
+  if (final) {
+    clone
+      .querySelectorAll<SVGElement>("[style*='opacity: 0']")
+      .forEach((item) => item.removeAttribute("style"));
+    const expression = clone.dataset.expression;
+    if (expression) {
+      const text = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "text",
+      );
+      text.setAttribute("x", "20");
+      text.setAttribute("y", "30");
+      text.setAttribute("fill", "#f0b84b");
+      text.setAttribute("font-family", "serif");
+      text.setAttribute("font-size", "18");
+      text.setAttribute("data-export-summary", "true");
+      text.textContent = expression;
+      clone.append(text);
+    }
+  }
   return new XMLSerializer().serializeToString(clone);
 }

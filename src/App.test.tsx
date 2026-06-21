@@ -7,8 +7,8 @@ describe("App", () => {
     expect(
       screen.getByRole("heading", { name: "Geometry Computer" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("3a² + 4ab + b²")).toBeInTheDocument();
-    expect(screen.getByText("(3a + b)(a + b)")).toBeInTheDocument();
+    expect(screen.getAllByText("3a² + 4ab + b²").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("(3a + b)(a + b)").length).toBeGreaterThan(0);
     expect(
       screen.getByRole("img", { name: /compiled geometric construction/i }),
     ).toBeInTheDocument();

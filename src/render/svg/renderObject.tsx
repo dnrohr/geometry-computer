@@ -13,6 +13,7 @@ const polar = (center: Point2, radius: number, angle: number): Point2 => {
 export type RenderOptions = {
   drawProgress?: number;
   visible?: boolean;
+  opacity?: number;
   dimmed?: boolean;
   highlighted?: boolean;
   interactive?: boolean;
@@ -31,7 +32,8 @@ export function renderObject(
     "data-created-by": object.createdByStepId,
     "data-draw-progress": drawProgress,
     style: {
-      opacity: options.visible === false ? 0 : undefined,
+      opacity:
+        options.visible === false ? 0 : options.dimmed ? 0.25 : options.opacity,
       strokeDasharray: drawProgress < 1 ? "100 100" : undefined,
       strokeDashoffset: drawProgress < 1 ? 100 - drawProgress * 100 : undefined,
     },

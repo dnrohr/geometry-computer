@@ -6,6 +6,7 @@ export type InteractionState = {
   selectedObjectId?: string;
   hoveredStepId?: string;
   selectedStepId?: string;
+  expressionObjectIds?: string[];
 };
 export const initialInteractionState: InteractionState = {};
 export function highlightedObjectIds(
@@ -27,6 +28,7 @@ export function highlightedObjectIds(
     ({ id }) => id === (state.hoveredObjectId ?? state.selectedObjectId),
   );
   if (object) ids.add(object.id);
+  state.expressionObjectIds?.forEach((id) => ids.add(id));
   return ids;
 }
 export function highlightedStepIds(
@@ -36,12 +38,19 @@ export function highlightedStepIds(
   const object = objects.find(
     ({ id }) => id === (state.hoveredObjectId ?? state.selectedObjectId),
   );
+  const expressionSteps = objects
+    .filter(({ id }) => state.expressionObjectIds?.includes(id))
+    .flatMap(({ createdByStepId, usedByStepIds }) => [
+      createdByStepId,
+      ...usedByStepIds,
+    ]);
   return new Set(
     [
       state.hoveredStepId,
       state.selectedStepId,
       object?.createdByStepId,
       ...(object?.usedByStepIds ?? []),
+      ...expressionSteps,
     ].filter(Boolean) as string[],
   );
 }

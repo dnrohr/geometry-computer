@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   compileExpression,
   type CompiledScene,
@@ -18,6 +18,7 @@ import { ObjectInspector } from "./ui/inspector/ObjectInspector";
 import { ProofCard } from "./ui/proofs/ProofCard";
 import { ExpressionTree } from "./ui/expression/ExpressionTree";
 import { OperationBadge } from "./ui/steps/OperationBadge";
+import { activeStepAt, useScrollProgress } from "./ui/scroll/useScrollProgress";
 import {
   highlightedObjectIds,
   highlightedStepIds,
@@ -50,6 +51,17 @@ function App() {
     "all" | "current" | "hide-retired"
   >("current");
   const svgRef = useRef<SVGSVGElement>(null);
+  const [scrollElement, setScrollElement] = useState<HTMLElement | null>(null);
+  const handleScrollProgress = useCallback(
+    (next: number) => {
+      setProgress(next);
+      const step = scene.steps[activeStepAt(next, scene.steps.length)];
+      if (step)
+        setInteraction((state) => ({ ...state, activeStepId: step.id }));
+    },
+    [scene.steps],
+  );
+  useScrollProgress(scrollElement, handleScrollProgress);
   const selected = scene.objects.find(
     ({ id }) => id === interaction.selectedObjectId,
   );
@@ -225,6 +237,7 @@ function App() {
         </button>
       </div>
       <section
+        ref={setScrollElement}
         className="construction-layout"
         aria-label="Interactive geometric construction"
       >
@@ -235,6 +248,7 @@ function App() {
             viewBox={scene.viewBox}
             title={scene.title}
             description={`Construct ${scene.simplifiedExpression} from the supplied lengths and a unit.`}
+            expressionSummary={`${scene.expression} = ${scene.simplifiedExpression}`}
             renderStates={renderStates}
             highlightedIds={objectHighlights}
             scaffoldMode={scaffoldMode}
@@ -296,18 +310,22 @@ function App() {
       <section className="details-grid">
         <ExpressionTree
           expression={scene.ast}
-          activeExpression={activeStep?.title.replace(
-            /^Construct |^Place /,
-            "",
-          )}
+          originalExpression={scene.expression}
+          simplifiedExpression={scene.simplifiedExpression}
+          activeExpression={(activeStep?.parentStepId
+            ? scene.steps.find(({ id }) => id === activeStep.parentStepId)
+                ?.title
+            : activeStep?.title
+          )?.replace(/^Construct |^Place /, "")}
           onSelect={(represented) => {
-            const object = scene.objects.find(
-              (item) => item.represents === represented,
-            );
-            if (object)
+            const objectIds = scene.objects
+              .filter((item) => item.represents === represented)
+              .map(({ id }) => id);
+            if (objectIds.length)
               setInteraction((state) => ({
                 ...state,
-                selectedObjectId: object.id,
+                selectedObjectId: objectIds[0],
+                expressionObjectIds: objectIds,
               }));
           }}
         />

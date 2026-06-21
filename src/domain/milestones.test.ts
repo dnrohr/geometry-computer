@@ -30,11 +30,11 @@ describe("milestone domain behavior", () => {
   it("creates proof-linked geometry and stable export", () => {
     const scene = compileExpression(parseExpression("a*b"), { a: 2, b: 4 });
     expect(
-      scene.objects.some(
-        ({ represents }) => represents === "similar triangle baseline",
-      ),
+      scene.objects.some(({ represents }) => represents === "main ray"),
     ).toBe(true);
-    expect(scene.steps.at(-1)?.proofId).toBe("proof-mul");
+    expect(
+      scene.steps.find(({ operation }) => operation === "mul")?.proofId,
+    ).toBe("proof-mul");
     expect(constructionExport(scene)).not.toHaveProperty("selectedObjectId");
   });
   it("evaluates partial reveal and proof assumptions", () => {

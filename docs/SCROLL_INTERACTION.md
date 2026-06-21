@@ -1,5 +1,5 @@
 # Reveal and interaction
 
-Global progress is clamped to `[0,1]`; each reveal action maps its own start/end interval to local progress. Draw actions use SVG dash offset, fades alter opacity, and dim/highlight actions set deterministic render flags. Reduced-motion environments may jump directly to complete state, and the explicit slider always permits instant navigation.
+The construction canvas is sticky while the macro and primitive step column scrolls. Page position is converted to global progress in `[0,1]`, selects the corresponding active step, and drives every object's reveal interval. Draw actions use SVG dash offset, fades alter opacity, and dim/highlight actions set deterministic render flags. Reduced-motion environments jump directly to complete state, and the explicit slider and step buttons provide instant alternatives.
 
-Step hover/selection highlights inputs and outputs. Object hover/selection highlights its creating and consuming steps; selection persists as the inspector target. The expression tree provides a third route into the same provenance graph.
+Step hover/selection highlights inputs and outputs. Object hover/selection highlights its creating and consuming steps; selection persists as the inspector target. Expression-tree selection highlights every matching object and all producing/consuming steps through the same provenance graph.
