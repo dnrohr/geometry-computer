@@ -23,6 +23,15 @@ describe("visual contract UI-012–014, UI-032, UI-065–073, UI-084, UI-121, UI
     expect(appCss).toMatch(/\.steps-panel\s+li\s*{[^}]*min-height:\s*12rem/s);
   });
 
+  it("keeps opened proofs visible and scrollable within the viewport", () => {
+    expect(appCss).toMatch(/\.proof-card\s*{[^}]*position:\s*fixed/s);
+    expect(appCss).toMatch(/\.proof-card\s*{[^}]*z-index:\s*20/s);
+    expect(appCss).toMatch(
+      /\.proof-card\s*{[^}]*max-height:\s*calc\(100vh - 2rem\)/s,
+    );
+    expect(appCss).toMatch(/\.proof-card\s*{[^}]*overflow-y:\s*auto/s);
+  });
+
   it.each([
     ["input", "#8dc5d6"],
     ["unit", "#d8d8d0"],

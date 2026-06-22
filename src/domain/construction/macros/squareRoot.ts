@@ -53,28 +53,31 @@ export function generateSquareRoot(request: MacroRequest) {
   const namedPoint = (name: string, position: typeof A, deps: string[]) =>
     pointObject(position, {
       ...metadata(context.ids.next("point"), "scaffold", macro, name, deps),
-      label: name,
     });
-  const a = namedPoint("A", A, []);
-  const b = namedPoint("B", B, [inputs[0].id]);
-  const c = namedPoint("C", C, [inputs[0].id]);
+  const a = namedPoint("left endpoint", A, []);
+  const b = namedPoint("unit-radicand join", B, [inputs[0].id]);
+  const c = namedPoint("right endpoint", C, [inputs[0].id]);
   const unit = segmentObject(
     A,
     B,
-    metadata(context.ids.next("unit"), "unit", macro, "AB = 1"),
+    metadata(context.ids.next("unit"), "unit", macro, "unit length"),
   );
   const radicand = segmentObject(
     B,
     C,
-    metadata(context.ids.next("radicand"), "scaffold", macro, "BC = x", [
-      inputs[0].id,
-    ]),
+    metadata(
+      context.ids.next("radicand"),
+      "scaffold",
+      macro,
+      "radicand length",
+      [inputs[0].id],
+    ),
   );
   addPrimitive(
     context,
     macro,
-    "Place 1 and x consecutively",
-    "Set AB = 1 and BC = x on one line.",
+    "Place the unit and radicand",
+    "Put a unit segment and the radicand end to end on one line.",
     [inputs[0].id],
     [a, b, c, unit, radicand],
   );
@@ -87,7 +90,7 @@ export function generateSquareRoot(request: MacroRequest) {
       context.ids.next("semicircle"),
       "scaffold",
       macro,
-      "semicircle on AC",
+      "semicircle on the combined diameter",
       [a.id, c.id],
     ),
   );
@@ -95,7 +98,7 @@ export function generateSquareRoot(request: MacroRequest) {
     context,
     macro,
     "Draw the semicircle",
-    "Use AC as the diameter.",
+    "Use the combined unit-and-radicand segment as the diameter.",
     [a.id, c.id],
     [semicircle],
   );
@@ -106,7 +109,7 @@ export function generateSquareRoot(request: MacroRequest) {
       context.ids.next("perpendicular"),
       "active-construction",
       macro,
-      "perpendicular at B",
+      "perpendicular at the segment join",
       [b.id],
     ),
   );
@@ -115,16 +118,15 @@ export function generateSquareRoot(request: MacroRequest) {
       context.ids.next("intersection"),
       "active-construction",
       macro,
-      "selected positive intersection D",
+      "upper semicircle intersection",
       [perpendicular.id, semicircle.id],
     ),
-    label: "D",
   });
   addPrimitive(
     context,
     macro,
-    "Select intersection D",
-    "Erect the perpendicular at B and choose its nonnegative intersection.",
+    "Choose the upper intersection",
+    "Erect a perpendicular at the join and choose its intersection above the line.",
     [b.id, semicircle.id],
     [perpendicular, d],
     "select",
@@ -140,7 +142,7 @@ export function generateSquareRoot(request: MacroRequest) {
   );
   const label = labelObject(
     point((65 + endX) / 2, y - 13),
-    `${key} = ${Number(value.toFixed(4))}`,
+    key,
     metadata(context.ids.next("label"), "intermediate", macro, key, [
       result.id,
     ]),
@@ -148,8 +150,8 @@ export function generateSquareRoot(request: MacroRequest) {
   addPrimitive(
     context,
     macro,
-    "Extract BD",
-    "Transfer the altitude BD to the result line.",
+    "Extract the square root",
+    "Transfer the perpendicular altitude to the result line.",
     [b.id, d.id],
     [result, label],
   );

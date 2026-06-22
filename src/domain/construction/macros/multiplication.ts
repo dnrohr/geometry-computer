@@ -72,12 +72,13 @@ export function generateSimilarTriangles(
   ) =>
     pointObject(position, {
       ...metadata(context.ids.next("point"), role, macro, name, deps),
-      label: name,
     });
-  const o = makePoint("O", O, "scaffold", []);
-  const u = makePoint("U", U, "unit", []);
-  const x = makePoint("X", X, "scaffold", [inputs[0].id]);
-  const yPoint = makePoint("Y", Y, "scaffold", [inputs[1].id]);
+  const o = makePoint("shared origin", O, "scaffold", []);
+  const u = makePoint("unit endpoint", U, "unit", []);
+  const x = makePoint("first input endpoint", X, "scaffold", [inputs[0].id]);
+  const yPoint = makePoint("second input endpoint", Y, "scaffold", [
+    inputs[1].id,
+  ]);
   const baseline = rayObject(
     O,
     point(695, O.y),
@@ -96,8 +97,8 @@ export function generateSimilarTriangles(
   addPrimitive(
     context,
     macro,
-    "Place O, U, X, and Y",
-    "Lay out the origin, unit, and input lengths on two rays.",
+    "Lay out the scale",
+    "Place the unit and input lengths on two rays from a shared origin.",
     inputs.map(({ id }) => id),
     [baseline, auxiliary, o, u, x, yPoint],
     "fade-in",
@@ -109,7 +110,7 @@ export function generateSimilarTriangles(
       context.ids.next("line"),
       "scaffold",
       macro,
-      "comparison line UY",
+      "reference connector",
       [u.id, yPoint.id],
     ),
   );
@@ -120,7 +121,7 @@ export function generateSimilarTriangles(
       context.ids.next("parallel"),
       "active-construction",
       macro,
-      "parallel through X",
+      "parallel through the first input",
       [x.id, comparison.id],
     ),
   );
@@ -128,23 +129,21 @@ export function generateSimilarTriangles(
     context,
     macro,
     "Draw the parallel",
-    "Draw UY, then its parallel through X.",
+    "Connect the reference lengths, then draw a parallel through the other input.",
     [u.id, yPoint.id, x.id],
     [comparison, parallel],
   );
-  const z = makePoint(
-    operation === "div" ? "R" : "Z",
-    Z,
-    "active-construction",
-    [parallel.id, operation === "div" ? baseline.id : auxiliary.id],
-  );
+  const z = makePoint("constructed endpoint", Z, "active-construction", [
+    parallel.id,
+    operation === "div" ? baseline.id : auxiliary.id,
+  ]);
   const referenceTriangle = triangleObject(
     [O, U, Y],
     metadata(
       context.ids.next("triangle"),
       "proof-highlight",
       macro,
-      "reference triangle OUY",
+      "reference triangle",
       [o.id, u.id, yPoint.id],
     ),
   );
@@ -154,15 +153,15 @@ export function generateSimilarTriangles(
       context.ids.next("triangle"),
       "proof-highlight",
       macro,
-      "scaled triangle OXZ",
+      "result triangle",
       [o.id, x.id, z.id],
     ),
   );
   addPrimitive(
     context,
     macro,
-    "Select intersection Z",
-    "Select the intended intersection of the parallel and auxiliary ray.",
+    "Choose the constructed length",
+    "Use the intersection of the parallel and the target ray.",
     [parallel.id, auxiliary.id],
     [z, referenceTriangle, resultTriangle],
     "select",
@@ -179,7 +178,7 @@ export function generateSimilarTriangles(
   );
   const label = labelObject(
     point((65 + endX) / 2, y - 13),
-    `${key} = ${Number(value.toFixed(4))}`,
+    key,
     metadata(context.ids.next("label"), "intermediate", macro, key, [
       result.id,
     ]),
@@ -188,7 +187,7 @@ export function generateSimilarTriangles(
     context,
     macro,
     "Extract the result",
-    "Transfer OZ to the result line.",
+    "Transfer the constructed auxiliary length to the result line.",
     [z.id],
     [result, label],
   );

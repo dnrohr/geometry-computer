@@ -27,7 +27,7 @@ This document is the normative behavior and appearance contract for the Geometry
 ## 4. Example gallery
 
 - **UI-030 — Gallery contents.** The gallery exposes Addition, Subtraction, Multiplication, Division, Square, Square root, Polynomial product, and Expanded polynomial examples. Every button shows a name, source expression, and short method note.
-- **UI-031 — Example selection.** Clicking an example atomically replaces the draft expression, sample values, compiled scene, displayed equality, numeric result, diagram, steps, proofs, and expression tree.
+- **UI-031 — Example selection.** Clicking an example atomically replaces the draft expression, sample values, compiled scene, displayed equality, numeric result, diagram, steps, proofs, and expression tree. The replacement scene opens fully revealed; a scroll callback changing identity must never reset it to a blank canvas.
 - **UI-032 — Gallery overflow.** On narrow widths, examples stay as readable cards in a horizontal scroller rather than being clipped or compressed below their usable width.
 
 ## 5. Current-construction summary
@@ -64,7 +64,8 @@ This document is the normative behavior and appearance contract for the Geometry
 - **UI-069 — Intermediate values.** Intermediate constructed values use violet with a stronger stroke than scaffolding.
 - **UI-070 — Active/proof geometry.** Active construction and proof-highlight objects use warm pale gold.
 - **UI-071 — Result.** Final result geometry is the strongest visual element, using the accent gold and the largest normal stroke width.
-- **UI-072 — Labels.** Labels use a compact monospace face, stay subordinate to geometry, and use the corresponding semantic role color.
+- **UI-072 — Symbolic segment labels.** Diagram labels use a compact monospace face, stay subordinate to geometry, and use the corresponding semantic role color. They show only the symbolic length or expression (`a`, `3 * a`, `sqrt(a)`), never an evaluated dimension such as `a = 3`. Sample values are substituted only in the numeric summary (UI-041).
+- **UI-074 — Construction points.** Points retain stable internal identities for geometry, accessibility, provenance, and proofs, but ordinary construction vertices are not visibly letter-labeled. Step copy explains relationships in plain language without requiring the reader to decode vertex names.
 - **UI-073 — Scale and fit.** The complete viewBox must fit within the SVG viewport without cropping geometry. For long constructions, geometric rows may become visually smaller; the UI must preserve labels and offer simpler gallery examples for focused inspection.
 
 ## 8. Generated trace
@@ -75,7 +76,7 @@ This document is the normative behavior and appearance contract for the Geometry
 - **UI-083 — Keyboard traversal.** `Alt+ArrowDown` moves one step forward and `Alt+ArrowUp` moves one step backward. Traversal clamps at the first and last steps.
 - **UI-084 — Active appearance.** The active/highlighted step uses an accent left border and tinted background without clipping its button, badge, or focus outline.
 - **UI-085 — Operation badge.** A macro badge shows operation kind, input IDs (or “given”), output IDs, and geometric method.
-- **UI-086 — Why button.** A macro with a proof has a “Why?” button. It opens the matching proof card. Primitive steps and operations without proofs do not show it.
+- **UI-086 — Why button.** A macro with a proof has a “Why?” button. It opens the matching proof card as an in-viewport overlay, even when the associated trace step is far from the page's details area. Primitive steps and operations without proofs do not show it.
 
 ## 9. Expression tree
 
@@ -93,7 +94,7 @@ This document is the normative behavior and appearance contract for the Geometry
 
 ## 11. Proof card
 
-- **UI-110 — Proof content.** A proof card shows title, intuition, givens, optional assumptions, claims, optional math, and conclusion.
+- **UI-110 — Proof content.** A proof card shows title, intuition, givens, optional assumptions, claims, optional math, and conclusion. It is fixed near the lower-right viewport edge, constrained to the viewport, independently scrollable when necessary, and rendered above the construction so opening it is always visibly apparent.
 - **UI-111 — Claim hover/focus.** Hovering or focusing a claim highlights all linked diagram objects. Leaving or blurring clears a transient highlight.
 - **UI-112 — Claim selection.** Clicking/tapping a claim toggles a persistent highlight and communicates state through `aria-pressed`.
 - **UI-113 — Close proof button.** The accessible “Close proof” button closes the card and leaves the construction intact.

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const clamp = (value: number) => Math.max(0, Math.min(1, value));
 export const activeStepAt = (progress: number, count: number) =>
@@ -11,10 +11,14 @@ export function useScrollProgress(
   onProgress?: (progress: number) => void,
 ) {
   const [progress, setProgress] = useState(prefersReducedMotion() ? 1 : 0);
+  const onProgressRef = useRef(onProgress);
+  useEffect(() => {
+    onProgressRef.current = onProgress;
+  }, [onProgress]);
   useEffect(() => {
     if (!element) return;
     if (prefersReducedMotion()) {
-      onProgress?.(1);
+      onProgressRef.current?.(1);
       return;
     }
     const update = () => {
@@ -22,7 +26,7 @@ export function useScrollProgress(
       const distance = Math.max(1, rect.height - innerHeight);
       const next = clamp(-rect.top / distance);
       setProgress(next);
-      onProgress?.(next);
+      onProgressRef.current?.(next);
     };
     update();
     addEventListener("scroll", update, { passive: true });
@@ -31,6 +35,6 @@ export function useScrollProgress(
       removeEventListener("scroll", update);
       removeEventListener("resize", update);
     };
-  }, [element, onProgress]);
+  }, [element]);
   return progress;
 }

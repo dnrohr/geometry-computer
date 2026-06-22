@@ -67,4 +67,39 @@ describe("scroll progress utilities", () => {
     expect(onProgress).toHaveBeenCalledWith(1);
     globalThis.matchMedia = previous;
   });
+
+  it("uses the latest callback without resetting progress when it changes", () => {
+    const previous = globalThis.matchMedia;
+    globalThis.matchMedia = (() => ({
+      matches: false,
+    })) as unknown as typeof matchMedia;
+    Object.defineProperty(window, "innerHeight", {
+      configurable: true,
+      value: 500,
+    });
+    const element = document.createElement("section");
+    element.getBoundingClientRect = vi.fn(() => ({
+      bottom: 750,
+      height: 1000,
+      left: 0,
+      right: 100,
+      top: -250,
+      width: 100,
+      x: 0,
+      y: -250,
+      toJSON: () => ({}),
+    }));
+    const first = vi.fn();
+    const latest = vi.fn();
+    const { rerender } = renderHook(
+      ({ callback }) => useScrollProgress(element, callback),
+      { initialProps: { callback: first } },
+    );
+    expect(first).toHaveBeenCalledWith(0.5);
+    rerender({ callback: latest });
+    expect(latest).not.toHaveBeenCalled();
+    act(() => window.dispatchEvent(new Event("scroll")));
+    expect(latest).toHaveBeenCalledWith(0.5);
+    globalThis.matchMedia = previous;
+  });
 });

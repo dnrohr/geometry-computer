@@ -72,7 +72,7 @@ export function generateSubtraction(request: MacroRequest) {
   );
   const label = labelObject(
     point((origin.x + resultEnd.x) / 2, y - 13),
-    `${key} = ${Number(value.toFixed(4))}`,
+    key,
     metadata(context.ids.next("label"), "intermediate", macro, key, [
       result.id,
     ]),

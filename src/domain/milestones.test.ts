@@ -54,6 +54,6 @@ describe("milestone domain behavior", () => {
     expect(state.o.drawProgress).toBeCloseTo(0.5);
     expect(arithmeticProofs.div.assumptions).toContain("y ≠ 0");
     expect(arithmeticProofs.sqrt.assumptions).toContain("x ≥ 0");
-    expect(arithmeticProofs.mul.claims[0].mathLatex).toContain("z/y");
+    expect(arithmeticProofs.mul.claims[0].mathLatex).toContain("r/y");
   });
 });

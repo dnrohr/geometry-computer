@@ -17,7 +17,7 @@ export const addition = (left: number, right: number) => ({
 });
 
 export function generateAddition(request: MacroRequest) {
-  const { context, inputs, key, value, y } = request;
+  const { context, inputs, key, y } = request;
   const macro = addMacroStep(
     request,
     "add",
@@ -71,7 +71,7 @@ export function generateAddition(request: MacroRequest) {
   );
   const label = labelObject(
     point((origin.x + end.x) / 2, y - 13),
-    `${key} = ${Number(value.toFixed(4))}`,
+    key,
     metadata(context.ids.next("label"), "intermediate", macro, key, [
       result.id,
     ]),

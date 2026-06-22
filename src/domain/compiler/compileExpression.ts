@@ -120,7 +120,7 @@ export function compileExpression(
       context.registerValue(key, result);
       const label = labelObject(
         point((65 + end) / 2, y - 13),
-        `${key} = ${Number(value.toFixed(4))}`,
+        key,
         metadata(context.ids.next("label"), role, stepId, key, [result.id]),
       );
       context.addObject(label);

@@ -425,7 +425,15 @@ text.geometry-result,
   color: var(--accent);
 }
 .proof-card {
-  grid-column: span 2;
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 20;
+  width: min(30rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  background: var(--panel);
+  box-shadow: 0 1.25rem 4rem rgb(0 0 0 / 45%);
 }
 .proof-card p,
 .proof-card li {
@@ -487,7 +495,10 @@ text.geometry-result,
     border-left: 0;
   }
   .proof-card {
-    grid-column: auto;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    width: calc(100vw - 1.5rem);
+    max-height: calc(100vh - 1.5rem);
   }
   .canvas-panel {
     position: sticky;

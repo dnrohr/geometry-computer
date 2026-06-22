@@ -39,9 +39,11 @@ describe("canonical arithmetic macro traces", () => {
     expect(
       scene.objects.filter(({ kind }) => kind === "triangle"),
     ).toHaveLength(2);
-    expect(scene.objects.some(({ represents }) => represents === "Z")).toBe(
-      true,
-    );
+    expect(
+      scene.objects.some(
+        ({ represents }) => represents === "constructed endpoint",
+      ),
+    ).toBe(true);
     expect(
       scene.steps.some(({ title }) => /extract the result/i.test(title)),
     ).toBe(true);
@@ -50,15 +52,15 @@ describe("canonical arithmetic macro traces", () => {
   it("creates the geometric-mean semicircle and selected branch", () => {
     const scene = compile("sqrt(a)", { a: 9 });
     expect(
-      scene.objects.some(({ represents }) => represents === "AB = 1"),
+      scene.objects.some(({ represents }) => represents === "unit length"),
     ).toBe(true);
     expect(
-      scene.objects.some(({ represents }) => represents === "BC = x"),
+      scene.objects.some(({ represents }) => represents === "radicand length"),
     ).toBe(true);
     expect(scene.objects.some(({ kind }) => kind === "arc")).toBe(true);
     expect(
       scene.objects.some(({ represents }) =>
-        represents?.includes("positive intersection"),
+        represents?.includes("upper semicircle intersection"),
       ),
     ).toBe(true);
   });
@@ -82,5 +84,38 @@ describe("canonical arithmetic macro traces", () => {
         ),
       ),
     );
+  });
+
+  it("keeps diagram labels symbolic and vertex names invisible", () => {
+    const scenes = [
+      compile("a+b", { a: 3, b: 2 }),
+      compile("a*b", { a: 3, b: 2 }),
+      compile("sqrt(a)", { a: 4 }),
+    ];
+    scenes.forEach((scene) => {
+      const diagramLabels = scene.objects
+        .filter(({ kind }) => kind === "label")
+        .map(({ data }) => (data.kind === "label" ? data.text : ""));
+      expect(diagramLabels.every((text) => !text.includes(" = "))).toBe(true);
+      expect(
+        scene.objects
+          .filter(({ kind }) => kind === "point")
+          .every(({ label }) => label === undefined),
+      ).toBe(true);
+    });
+    expect(
+      scenes[0].objects.some(
+        ({ data }) => data.kind === "label" && data.text === "a + b",
+      ),
+    ).toBe(true);
+  });
+
+  it("explains the geometric mean without relying on vertex names", () => {
+    const proof = compile("sqrt(a)", { a: 4 }).proofs.find(
+      ({ operation }) => operation === "sqrt",
+    );
+    expect(proof?.claims[0].text).toMatch(/altitude theorem/i);
+    expect(proof?.claims[0].mathLatex).toBe("h²=1·x");
+    expect(proof?.conclusion).toContain("h = √x");
   });
 });

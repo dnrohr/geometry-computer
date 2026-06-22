@@ -78,6 +78,9 @@ describe("App", () => {
     expect(
       screen.getByRole("heading", { name: "Construct sqrt(a)" }),
     ).toBeInTheDocument();
+    expect(screen.getByRole("slider", { name: "Reveal progress" })).toHaveValue(
+      "1",
+    );
     expect(screen.getAllByText(/→ 2/).length).toBeGreaterThan(0);
   });
 
