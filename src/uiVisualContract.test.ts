@@ -46,7 +46,7 @@ describe("visual contract UI-012–014, UI-032, UI-065–073, UI-084, UI-121, UI
     expect(appCss).toMatch(/\.geometry-scaffold\s*{[^}]*stroke-dasharray:/s);
     expect(appCss).toMatch(/\.geometry-result\s*{[^}]*stroke-width:\s*4/s);
     expect(appCss).toMatch(
-      /\.is-highlighted\s+\.geometry-object\s*{[^}]*stroke-width:\s*5/s,
+      /\.is-highlighted\s+\.geometry-object:not\(text\)\s*{[^}]*stroke-width:\s*5/s,
     );
     expect(appCss).toMatch(/\.steps-panel\s+li\.active\s*{[^}]*border-left:/s);
   });

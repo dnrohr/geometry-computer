@@ -39,7 +39,7 @@ This document is the normative behavior and appearance contract for the Geometry
 
 - **UI-050 — Reveal slider.** The range input is labeled “Reveal progress,” spans `0` through `1` in increments of `0.01`, and directly updates object visibility and draw progress without recompiling.
 - **UI-051 — Scroll synchronization.** Scrolling through the generated trace updates reveal progress and the active step. The canvas remains sticky while its trace is being traversed.
-- **UI-052 — Scaffolding select.** The select has exactly three modes: “Show all,” “Current step,” and “Hide retired.” The default is “Current step.” Changing mode only changes rendering visibility.
+- **UI-052 — Scaffolding select.** The select has exactly three modes: “Show all,” “Current step,” and “Hide retired.” The default is “Show all,” so the completed reveal is the entire construction. Changing mode only changes rendering visibility.
 - **UI-053 — Show all.** Every scaffold whose reveal state permits visibility is rendered.
 - **UI-054 — Current step.** Only scaffolds created by the active step are rendered; non-scaffold geometry is unaffected.
 - **UI-055 — Hide retired.** All scaffold geometry is hidden; inputs, intermediates, active construction objects, labels, and results remain governed by reveal state.
@@ -66,7 +66,7 @@ This document is the normative behavior and appearance contract for the Geometry
 - **UI-071 — Result.** Final result geometry is the strongest visual element, using the accent gold and the largest normal stroke width.
 - **UI-072 — Symbolic segment labels.** Diagram labels use a compact monospace face, stay subordinate to geometry, and use the corresponding semantic role color. They show only the symbolic length or expression (`a`, `3 * a`, `sqrt(a)`), never an evaluated dimension such as `a = 3`. Sample values are substituted only in the numeric summary (UI-041).
 - **UI-074 — Construction points.** Points retain stable internal identities for geometry, accessibility, provenance, and proofs, but ordinary construction vertices are not visibly letter-labeled. Step copy explains relationships in plain language without requiring the reader to decode vertex names.
-- **UI-073 — Scale and fit.** The complete viewBox must fit within the SVG viewport without cropping geometry. For long constructions, geometric rows may become visually smaller; the UI must preserve labels and offer simpler gallery examples for focused inspection.
+- **UI-073 — Scale and fit.** The complete viewBox must fit within the SVG viewport without cropping geometry. The canvas contains one root construction; recursive arithmetic is represented by labeled subsegments and boundary points on that figure rather than additional construction rows.
 
 ## 8. Generated trace
 

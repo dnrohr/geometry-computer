@@ -63,6 +63,11 @@ describe("canonical arithmetic macro traces", () => {
         represents?.includes("upper semicircle intersection"),
       ),
     ).toBe(true);
+    const semicircle = scene.objects.find(({ kind }) => kind === "arc")!;
+    expect(
+      scene.revealActions.find(({ objectId }) => objectId === semicircle.id)
+        ?.animation,
+    ).toBe("fade-in");
   });
 
   it("links every object to reveal and provenance data", () => {

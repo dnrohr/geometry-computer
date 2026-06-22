@@ -100,9 +100,9 @@ describe("SvgConstructionCanvas", () => {
             dimmed: false,
           },
           circle: {
-            visible: false,
-            drawProgress: 0,
-            opacity: 0,
+            visible: true,
+            drawProgress: 0.5,
+            opacity: 0.5,
             highlighted: false,
             dimmed: false,
           },
@@ -125,7 +125,10 @@ describe("SvgConstructionCanvas", () => {
       opacity: "0.5",
     });
     expect(container.querySelector("#geom-circle")).toHaveStyle({
-      opacity: "0",
+      opacity: "0.5",
+    });
+    expect(container.querySelector("#geom-circle")).not.toHaveStyle({
+      strokeDasharray: "100 100",
     });
     expect(container.querySelector("#geom-label")).toHaveStyle({
       opacity: "0.25",

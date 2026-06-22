@@ -53,7 +53,7 @@ describe("App", () => {
     expect(reveal).toHaveAttribute("max", "1");
     expect(reveal).toHaveAttribute("step", ".01");
     const scaffolding = screen.getByRole("combobox", { name: "Scaffolding" });
-    expect(scaffolding).toHaveValue("current");
+    expect(scaffolding).toHaveValue("all");
     expect(
       within(scaffolding)
         .getAllByRole("option")
@@ -150,17 +150,44 @@ describe("App", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("opens detailed compass-and-straightedge instructions for a step", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Square root: sqrt(a). Geometric mean",
+      }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "How to: Draw the semicircle" }),
+    );
+    const card = screen.getByRole("article", {
+      name: "Draw the semicircle instructions",
+    });
+    expect(card).toHaveTextContent(/midpoint M/i);
+    expect(card).toHaveTextContent(/compass to MA/i);
+    fireEvent.click(screen.getByRole("button", { name: "Close instructions" }));
+    expect(
+      screen.queryByRole("article", {
+        name: "Draw the semicircle instructions",
+      }),
+    ).not.toBeInTheDocument();
+  });
+
   it("opens and closes the inspector from geometry and expression nodes", () => {
     render(<App />);
-    fireEvent.click(screen.getByRole("button", { name: "segment 3" }));
-    expect(screen.getByText("segment · input")).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "segment (3 * a + b) * (a + b)",
+      }),
+    );
+    expect(screen.getByText("segment · result")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Close inspector" }));
     expect(
       screen.getByText(/select an object in the diagram/i),
     ).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "3 * a" }));
-    expect(screen.getAllByText("3 * a").length).toBeGreaterThan(1);
-    expect(screen.getByText("segment · intermediate")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "3 * a + b" }));
+    expect(screen.getAllByText("3 * a + b").length).toBeGreaterThan(1);
+    expect(screen.getByText("label · intermediate")).toBeInTheDocument();
   });
 
   it("routes all three export buttons through downloads", () => {

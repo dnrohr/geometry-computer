@@ -25,6 +25,8 @@ export function renderObject(
   options: RenderOptions = {},
 ): ReactElement | null {
   const drawProgress = options.drawProgress ?? 1;
+  const drawsProgressively =
+    drawProgress < 1 && object.role !== "scaffold" && object.role !== "ghost";
   const common = {
     id: `geom-${object.id}`,
     className: roleClassName(object.role),
@@ -34,8 +36,10 @@ export function renderObject(
     style: {
       opacity:
         options.visible === false ? 0 : options.dimmed ? 0.25 : options.opacity,
-      strokeDasharray: drawProgress < 1 ? "100 100" : undefined,
-      strokeDashoffset: drawProgress < 1 ? 100 - drawProgress * 100 : undefined,
+      strokeDasharray: drawsProgressively ? "100 100" : undefined,
+      strokeDashoffset: drawsProgressively
+        ? 100 - drawProgress * 100
+        : undefined,
     },
     tabIndex: options.interactive ? 0 : undefined,
     role: options.interactive ? "button" : undefined,

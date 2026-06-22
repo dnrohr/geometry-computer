@@ -18,6 +18,7 @@ import { ObjectInspector } from "./ui/inspector/ObjectInspector";
 import { ProofCard } from "./ui/proofs/ProofCard";
 import { ExpressionTree } from "./ui/expression/ExpressionTree";
 import { OperationBadge } from "./ui/steps/OperationBadge";
+import { InstructionsCard } from "./ui/steps/InstructionsCard";
 import { activeStepAt, useScrollProgress } from "./ui/scroll/useScrollProgress";
 import {
   highlightedObjectIds,
@@ -46,10 +47,11 @@ function App() {
   });
   const [progress, setProgress] = useState(1);
   const [proofId, setProofId] = useState<string>();
+  const [instructionStepId, setInstructionStepId] = useState<string>();
   const [proofHighlights, setProofHighlights] = useState<string[]>([]);
   const [scaffoldMode, setScaffoldMode] = useState<
     "all" | "current" | "hide-retired"
-  >("current");
+  >("all");
   const svgRef = useRef<SVGSVGElement>(null);
   const [scrollElement, setScrollElement] = useState<HTMLElement | null>(null);
   const handleScrollProgress = useCallback(
@@ -97,6 +99,7 @@ function App() {
       setValues(nextValues);
       setError(undefined);
       setInteraction({ activeStepId: next.steps[0]?.id });
+      setInstructionStepId(undefined);
       setProgress(1);
     } catch (reason) {
       setError(
@@ -302,6 +305,14 @@ function App() {
                   step={step}
                   onProof={() => setProofId(step.proofId)}
                 />
+                <button
+                  className="how-button"
+                  type="button"
+                  onClick={() => setInstructionStepId(step.id)}
+                  aria-label={`How to: ${step.title}`}
+                >
+                  How?
+                </button>
               </li>
             ))}
           </ol>
@@ -343,6 +354,12 @@ function App() {
             proof={scene.proofs.find(({ id }) => id === proofId)!}
             onHighlight={setProofHighlights}
             onClose={() => setProofId(undefined)}
+          />
+        )}
+        {instructionStepId && (
+          <InstructionsCard
+            step={scene.steps.find(({ id }) => id === instructionStepId)!}
+            onClose={() => setInstructionStepId(undefined)}
           />
         )}
       </section>

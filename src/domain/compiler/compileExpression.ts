@@ -25,6 +25,7 @@ import {
   type ConstructedValue,
   type MacroRequest,
 } from "../construction/macros/macroTypes";
+import { buildFinalFigure } from "../geometry/finalFigure";
 
 export type CompiledScene = {
   title: string;
@@ -185,17 +186,32 @@ export function compileExpression(
     )
     .forEach((label) => (label.role = "result"));
   const trace = context.trace();
+  const figure = buildFinalFigure(
+    ast,
+    values,
+    context.objects,
+    trace.steps,
+    trace.revealActions,
+  );
   return {
     title: "Compiled geometric construction",
     expression: original,
     simplifiedExpression: simplified,
     values,
     value: result.value,
-    viewBox: `-220 0 980 ${Math.max(480, 120 + row * 145)}`,
-    objects: context.objects,
-    steps: trace.steps,
-    revealActions: trace.revealActions,
-    proofs: trace.proofs,
+    viewBox: figure.viewBox,
+    objects: figure.objects,
+    steps: figure.steps,
+    revealActions: figure.revealActions,
+    proofs: trace.proofs.map((proof) => ({
+      ...proof,
+      claims: proof.claims.map((claim) => ({
+        ...claim,
+        highlightObjectIds: claim.highlightObjectIds.filter((id) =>
+          figure.objects.some((object) => object.id === id),
+        ),
+      })),
+    })),
     ast,
   };
 }

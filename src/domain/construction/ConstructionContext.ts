@@ -89,10 +89,31 @@ export class ConstructionContext {
     if (!this.proofs.some(({ id }) => id === proof.id)) this.proofs.push(proof);
   }
   trace(): ConstructionTrace {
+    const stepIndex = new Map(this.steps.map((step, index) => [step.id, index]));
+    const stepCount = Math.max(1, this.steps.length);
+    const actionsByStep = new Map<string, RevealAction[]>();
+    this.revealActions.forEach((action) => {
+      const actions = actionsByStep.get(action.stepId) ?? [];
+      actions.push(action);
+      actionsByStep.set(action.stepId, actions);
+    });
+    const revealActions = this.revealActions.map((action) => {
+      const index = stepIndex.get(action.stepId) ?? 0;
+      const siblings = actionsByStep.get(action.stepId) ?? [action];
+      const siblingIndex = siblings.indexOf(action);
+      const stepStart = index / stepCount;
+      const stepEnd = (index + 1) / stepCount;
+      const slice = (stepEnd - stepStart) / siblings.length;
+      return {
+        ...action,
+        start: stepStart + siblingIndex * slice,
+        end: stepStart + (siblingIndex + 1) * slice,
+      };
+    });
     return {
       nodes: [],
       steps: this.steps,
-      revealActions: this.revealActions,
+      revealActions,
       proofs: this.proofs,
     };
   }

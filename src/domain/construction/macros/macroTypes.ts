@@ -48,15 +48,15 @@ export function addPrimitive(
   created.forEach((object) => {
     object.createdByStepId = id;
     context.addObject(object);
-    context.revealObject(
-      object.id,
-      id,
-      object.kind === "point" || object.kind === "label"
-        ? animation === "draw"
-          ? "fade-in"
-          : animation
-        : animation,
-    );
+    const revealAnimation =
+      object.role === "scaffold" || object.role === "ghost"
+        ? "fade-in"
+        : object.kind === "point" || object.kind === "label"
+          ? animation === "draw"
+            ? "fade-in"
+            : animation
+          : animation;
+    context.revealObject(object.id, id, revealAnimation);
   });
   context.addStep({
     id,

@@ -46,7 +46,7 @@ export function generateSimilarTriangles(
     Math.abs(inputs[1].value),
     Math.abs(value),
   );
-  const unitScale = Math.max(5, Math.min(35, 155 / largest));
+  const unitScale = Math.max(8, Math.min(48, 430 / largest));
   const U = point(O.x + unitScale, O.y);
   const auxiliaryUnit = point(unitScale * 0.55, -unitScale * 0.8);
   const X =
@@ -81,7 +81,7 @@ export function generateSimilarTriangles(
   ]);
   const baseline = rayObject(
     O,
-    point(695, O.y),
+    point(Math.max(695, X.x + 45), O.y),
     metadata(context.ids.next("ray"), "scaffold", macro, "main ray", [o.id]),
   );
   const auxiliary = rayObject(
