@@ -8,7 +8,7 @@ import {
   type GeomObject,
   type Point2,
 } from "./types";
-import { geometryBounds } from "./sceneLayout";
+import { geometryBounds, layoutLabels } from "./sceneLayout";
 
 type Part = { expression: Expr; label: string; value: number };
 type Marker = { after: number; expression: Expr };
@@ -173,17 +173,20 @@ export function buildFinalFigure(
           title === `Place ${formatExpression(expr)}`),
     )?.id ?? rootMacroId;
   const annotations: GeomObject[] = [];
-  const addNestedSquare = (
-    expr: Extract<Expr, { kind: "pow" }>,
+  const addNestedProduct = (
+    expr: Extract<Expr, { kind: "pow" | "mul" }>,
     start: Point2,
     end: Point2,
     side: number,
   ) => {
-    if (expr.exponent !== 2) return;
-    const baseValue = Math.abs(evaluate(expr.base, values));
+    if (expr.kind === "pow" && expr.exponent !== 2) return;
+    const firstFactor = expr.kind === "pow" ? expr.base : expr.left;
+    const secondFactor = expr.kind === "pow" ? expr.base : expr.right;
+    const firstValue = Math.abs(evaluate(firstFactor, values));
+    const secondValue = Math.abs(evaluate(secondFactor, values));
     const resultLength = Math.hypot(end.x - start.x, end.y - start.y);
-    if (baseValue === 0 || resultLength === 0) return;
-    const scale = resultLength / baseValue ** 2;
+    if (firstValue === 0 || secondValue === 0 || resultLength === 0) return;
+    const scale = resultLength / (firstValue * secondValue);
     const direction = {
       x: (end.x - start.x) / resultLength,
       y: (end.y - start.y) / resultLength,
@@ -194,22 +197,24 @@ export function buildFinalFigure(
       y: start.y + outward.y * scale,
     };
     const factorOffAxis = {
-      x: start.x + outward.x * scale * baseValue,
-      y: start.y + outward.y * scale * baseValue,
+      x: start.x + outward.x * scale * secondValue,
+      y: start.y + outward.y * scale * secondValue,
     };
     const factorOnResult = {
-      x: start.x + direction.x * scale * baseValue,
-      y: start.y + direction.y * scale * baseValue,
+      x: start.x + direction.x * scale * firstValue,
+      y: start.y + direction.y * scale * firstValue,
     };
     const stepId = stepFor(expr);
+    const prefix = expr.kind === "pow" ? "square" : "product";
     const metadata = (
       suffix: string,
       role: GeomObject["role"],
       represents: string,
+      createdByStepId = stepId,
     ) => ({
-      id: `figure-square-${suffix}-${annotations.length + 1}`,
+      id: `figure-${prefix}-${suffix}-${annotations.length + 1}`,
       role,
-      createdByStepId: stepId,
+      createdByStepId,
       usedByStepIds: [rootMacroId],
       represents,
       dependsOnObjectIds: [],
@@ -222,12 +227,22 @@ export function buildFinalFigure(
     const offAxisFactor = segmentObject(
       start,
       factorOffAxis,
-      metadata("factor-ray", "scaffold", figureLabel(expr.base)),
+      metadata(
+        "factor-ray",
+        "scaffold",
+        figureLabel(secondFactor),
+        stepFor(secondFactor),
+      ),
     );
     const onResultFactor = segmentObject(
       start,
       factorOnResult,
-      metadata("factor-result", "intermediate", figureLabel(expr.base)),
+      metadata(
+        "factor-result",
+        "intermediate",
+        figureLabel(firstFactor),
+        stepFor(firstFactor),
+      ),
     );
     const comparison = segmentObject(
       unit,
@@ -255,6 +270,7 @@ export function buildFinalFigure(
           "factor-point",
           "active-construction",
           "nested square factor endpoint",
+          stepFor(secondFactor),
         ),
       ),
       pointObject(
@@ -263,6 +279,7 @@ export function buildFinalFigure(
           "result-factor-point",
           "active-construction",
           "nested square factor on result",
+          stepFor(firstFactor),
         ),
       ),
       labelObject(
@@ -275,16 +292,26 @@ export function buildFinalFigure(
           pointAt(start, factorOffAxis, 0.7),
           normal(start, factorOffAxis, 14),
         ),
-        figureLabel(expr.base),
-        metadata("factor-label", "input", formatExpression(expr.base)),
+        figureLabel(secondFactor),
+        metadata(
+          "factor-label",
+          "input",
+          formatExpression(secondFactor),
+          stepFor(secondFactor),
+        ),
       ),
       labelObject(
         offset(
           pointAt(start, factorOnResult, 0.72),
           normal(start, factorOnResult, 16 * side),
         ),
-        figureLabel(expr.base),
-        metadata("result-factor-label", "input", formatExpression(expr.base)),
+        figureLabel(firstFactor),
+        metadata(
+          "result-factor-label",
+          "input",
+          formatExpression(firstFactor),
+          stepFor(firstFactor),
+        ),
       ),
     );
   };
@@ -294,6 +321,47 @@ export function buildFinalFigure(
     end: Point2,
     side: number,
   ) => {
+    if (expr.kind === "sub") {
+      const difference = evaluate(expr, values);
+      const leftValue = Math.abs(evaluate(expr.left, values));
+      const resultLength = Math.hypot(end.x - start.x, end.y - start.y);
+      if (difference > 0 && leftValue > 0 && resultLength > 0) {
+        const direction = {
+          x: (end.x - start.x) / resultLength,
+          y: (end.y - start.y) / resultLength,
+        };
+        const scale = resultLength / difference;
+        const minuendEnd = {
+          x: start.x + direction.x * leftValue * scale,
+          y: start.y + direction.y * leftValue * scale,
+        };
+        addPartition(expr.left, start, minuendEnd, side);
+        addPartition(expr.right, minuendEnd, end, side);
+        annotations.push(
+          pointObject(minuendEnd, {
+            id: `figure-subtraction-node-${annotations.length + 1}`,
+            role: "active-construction",
+            createdByStepId: stepFor(expr),
+            usedByStepIds: [rootMacroId],
+            represents: `backward transfer point in ${formatExpression(expr)}`,
+            dependsOnObjectIds: [],
+          }),
+          labelObject(
+            offset(pointAt(start, end, 0.5), normal(start, end, 43 * side)),
+            figureLabel(expr),
+            {
+              id: `figure-subtraction-label-${annotations.length + 2}`,
+              role: "intermediate",
+              createdByStepId: stepFor(expr),
+              usedByStepIds: [rootMacroId],
+              represents: formatExpression(expr),
+              dependsOnObjectIds: [],
+            },
+          ),
+        );
+        return;
+      }
+    }
     const { parts, markers } = partition(expr, values);
     const total = parts.reduce((sum, part) => sum + part.value, 0) || 1;
     let consumed = 0;
@@ -330,8 +398,13 @@ export function buildFinalFigure(
           },
         ),
       );
-      if (part.expression.kind === "pow")
-        addNestedSquare(part.expression, from, to, side);
+      if (
+        part.expression.kind === "pow" ||
+        (part.expression.kind === "mul" &&
+          part.expression.left.kind !== "const" &&
+          part.expression.right.kind !== "const")
+      )
+        addNestedProduct(part.expression, from, to, side);
       if (index < parts.length - 1) {
         const markerExpr =
           markers.find(({ after }) => after === index + 1)?.expression ?? expr;
@@ -374,6 +447,33 @@ export function buildFinalFigure(
           },
         ),
       );
+    if (expr.kind === "mul") {
+      const coefficient =
+        expr.left.kind === "const"
+          ? expr.left
+          : expr.right.kind === "const"
+            ? expr.right
+            : undefined;
+      if (
+        coefficient &&
+        Number.isInteger(coefficient.value) &&
+        coefficient.value > 1
+      )
+        annotations.push(
+          labelObject(
+            offset(pointAt(start, end, 0.5), normal(start, end, 57 * side)),
+            `${coefficient.value} copies`,
+            {
+              id: `figure-coefficient-label-${annotations.length + 1}`,
+              role: "unit",
+              createdByStepId: stepFor(coefficient),
+              usedByStepIds: [rootMacroId],
+              represents: formatExpression(coefficient),
+              dependsOnObjectIds: [],
+            },
+          ),
+        );
+    }
   };
 
   const byName = (name: string) =>
@@ -493,7 +593,7 @@ export function buildFinalFigure(
     addPartition(ast, result.data.start, result.data.end, -1);
   }
 
-  const figureObjects = [...kept, ...annotations];
+  const figureObjects = layoutLabels([...kept, ...annotations]);
   const figureIds = new Set(figureObjects.map(({ id }) => id));
   const figureSteps = steps
     .filter(

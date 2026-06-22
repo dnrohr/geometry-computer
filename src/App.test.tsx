@@ -2,13 +2,16 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import App from "./App";
 
 describe("App", () => {
-  it("renders the compiled polynomial construction and controls", () => {
+  it("renders the default nested square-root construction and controls", () => {
     const { container } = render(<App />);
     expect(
       screen.getByRole("heading", { name: "Geometry Computer" }),
     ).toBeInTheDocument();
-    expect(screen.getAllByText("3a² + 4ab + b²").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("(3a + b)(a + b)").length).toBeGreaterThan(0);
+    expect(screen.getByRole("textbox", { name: "Expression" })).toHaveValue(
+      "sqrt(3*a - b*b)",
+    );
+    expect(screen.getByRole("spinbutton", { name: "a" })).toHaveValue(3);
+    expect(screen.getByRole("spinbutton", { name: "b" })).toHaveValue(2);
     expect(
       screen.getByRole("img", { name: /compiled geometric construction/i }),
     ).toBeInTheDocument();
@@ -96,7 +99,7 @@ describe("App", () => {
     expect(container.querySelector(".geometry-scaffold")).toHaveStyle({
       opacity: "0",
     });
-    expect(expression).toHaveValue("(3*a + b) * (a + b)");
+    expect(expression).toHaveValue("sqrt(3*a - b*b)");
   });
 
   it("activates steps by click and bounded keyboard traversal", () => {
@@ -177,7 +180,7 @@ describe("App", () => {
     render(<App />);
     fireEvent.click(
       screen.getByRole("button", {
-        name: "segment (3 * a + b) * (a + b)",
+        name: "segment sqrt(3 * a - b * b)",
       }),
     );
     expect(screen.getByText("segment · result")).toBeInTheDocument();
@@ -185,8 +188,8 @@ describe("App", () => {
     expect(
       screen.getByText(/select an object in the diagram/i),
     ).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "3 * a + b" }));
-    expect(screen.getAllByText("3 * a + b").length).toBeGreaterThan(1);
+    fireEvent.click(screen.getByRole("button", { name: "3 * a - b * b" }));
+    expect(screen.getAllByText("3 * a - b * b").length).toBeGreaterThan(1);
     expect(screen.getByText("label · intermediate")).toBeInTheDocument();
   });
 

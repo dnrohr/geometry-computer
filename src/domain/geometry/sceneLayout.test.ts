@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { compileExpression } from "../compiler/compileExpression";
 import { parseExpression } from "../parser/parseExpression";
-import { geometryBounds } from "./sceneLayout";
+import { boundsOverlap, geometryBounds, labelBounds } from "./sceneLayout";
 
 describe("single annotated final figure", () => {
   it("fits every object and embeds the factor arithmetic in the root construction", () => {
@@ -90,5 +90,51 @@ describe("single annotated final figure", () => {
         ({ data }) => data.kind === "label" && data.text === "√(a + b²)",
       ),
     ).toBe(true);
+  });
+
+  it("shows a nested product transferred backward inside a square root", () => {
+    const scene = compileExpression(parseExpression("sqrt(3*a - b*b)"), {
+      a: 3,
+      b: 2,
+    });
+    expect(scene.value).toBeCloseTo(Math.sqrt(5));
+    expect(
+      scene.objects.some(({ id }) => id.startsWith("figure-subtraction-node-")),
+    ).toBe(true);
+    expect(
+      scene.objects.filter(({ id }) => id.startsWith("figure-product-")),
+    ).toHaveLength(11);
+    expect(
+      scene.objects.some(
+        ({ data }) => data.kind === "label" && data.text === "b · b",
+      ),
+    ).toBe(true);
+    expect(
+      scene.objects.some(
+        ({ data }) => data.kind === "label" && data.text === "3 · a − b · b",
+      ),
+    ).toBe(true);
+    ["Place 3", "Place b", "Construct b * b"].forEach((title) => {
+      const step = scene.steps.find((candidate) => candidate.title === title);
+      expect(step).toBeDefined();
+      expect(
+        scene.revealActions.some((action) => action.stepId === step?.id),
+      ).toBe(true);
+    });
+  });
+
+  it("lays out final labels without text-to-text collisions", () => {
+    const scene = compileExpression(parseExpression("sqrt(3*a - b*b)"), {
+      a: 3,
+      b: 2,
+    });
+    const labels = scene.objects.flatMap(({ data }) =>
+      data.kind === "label" ? [labelBounds(data.text, data.position)] : [],
+    );
+    labels.forEach((label, index) =>
+      labels
+        .slice(index + 1)
+        .forEach((other) => expect(boundsOverlap(label, other)).toBe(false)),
+    );
   });
 });

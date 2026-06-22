@@ -27,16 +27,16 @@ import {
 } from "./ui/interaction/interactionState";
 import "./App.css";
 
-const defaultValues = { a: 2, b: 1, x: 3, y: 2 };
+const defaultValues = { a: 3, b: 2, x: 3, y: 2 };
 const build = (
   source: string,
   values: Record<string, number>,
-  original = "3a² + 4ab + b²",
-  simplified = "(3a + b)(a + b)",
+  original = source,
+  simplified = source,
 ) => compileExpression(parseExpression(source), values, original, simplified);
 
 function App() {
-  const [expression, setExpression] = useState("(3*a + b) * (a + b)");
+  const [expression, setExpression] = useState("sqrt(3*a - b*b)");
   const [values, setValues] = useState<Record<string, number>>(defaultValues);
   const [scene, setScene] = useState<CompiledScene>(() =>
     build(expression, values),
