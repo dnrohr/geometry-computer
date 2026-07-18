@@ -44,6 +44,22 @@ The first fold axiom templates are deterministic:
 These branch choices are intentionally simple so early arithmetic examples can
 be tested without a general fold solver.
 
+## First Arithmetic Compiler Slice
+
+`compileOrigamiExpression` is a separate compiler entry point under
+`src/domain/origami/compiler`. It accepts the shared parsed expression AST, then
+emits origami-only scene objects and arithmetic macro steps. It does not import
+the compass-and-straightedge compiler.
+
+The first supported trace slice covers variables, constants, addition, and
+subtraction on a deterministic baseline. Multiplication, division, square, and
+square root are represented in the roadmap but intentionally remain unsupported
+until the corresponding fold macro fixtures are implemented.
+
+Cubic roots and angle trisection are research spikes. They require the more
+advanced tangent/parabola family of folds and should not be treated as acceptance
+criteria for the basic arithmetic compiler.
+
 ## Degeneracy Handling
 
 Degeneracy notes are first-class data rather than comments. Supported categories

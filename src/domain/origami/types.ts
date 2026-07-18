@@ -11,6 +11,17 @@ export type OrigamiAxiomKind =
   | "line-to-line"
   | "tangent-fold";
 
+export type OrigamiArithmeticMacroKind =
+  | "place-input"
+  | "copy-length"
+  | "constant"
+  | "add"
+  | "sub"
+  | "mul"
+  | "div"
+  | "square"
+  | "sqrt";
+
 export type OrigamiFoldAssignment = "mountain" | "valley" | "unassigned";
 
 export type OrigamiObjectKind =
@@ -93,7 +104,8 @@ export type OrigamiFoldStep = {
   id: string;
   title: string;
   summary: string;
-  axiom: OrigamiAxiomKind;
+  axiom?: OrigamiAxiomKind;
+  operation?: OrigamiArithmeticMacroKind;
   inputObjectIds: string[];
   outputObjectIds: string[];
   createdObjectIds: string[];
