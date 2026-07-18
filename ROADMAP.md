@@ -4,6 +4,224 @@ Repository: <https://github.com/dnrohr/geometry-computer>
 
 Implementation status: all MVP milestones and acceptance criteria were completed and verified on 2026-06-21. Future ideas in section 14 remain intentionally out of MVP scope.
 
+## Current Product Direction: Flat Origami Computation Track
+
+The next exploratory track is a flat-origami computation roadmap. The top
+priority is to avoid modifying the existing compass-and-straightedge
+functionality while the origami model is still speculative. New origami work
+should live behind a separate tab, use separate fixtures and tests, and avoid
+sharing mutable UI/compiler state with the current construction workspace.
+
+Keep an eye toward an eventual merger. Where it is cheap, align names and data
+concepts around expression provenance, operation traces, proof references, and
+export metadata. Do not extract a shared abstraction merely in anticipation of a
+merge; wait until both construction systems have enough implemented behavior to
+show the common shape.
+
+### Origami computation roadmap
+
+1. Model folds as first-class operations.
+   Define points, creases, reflected objects, alignment constraints, fold
+   certificates, Huzita-Hatori axiom templates, selected solutions, and
+   degeneracy notes beside the current construction model.
+2. Build an origami-only arithmetic trace.
+   Compile constants, length copying, addition/subtraction,
+   multiplication/division, and square roots into folds without touching the
+   current compass-and-straightedge compiler. Treat cubic roots and angle
+   trisection as later research spikes after the basic trace is stable.
+3. Render crease-pattern explanations.
+   Add an SVG viewer for active creases, mountain/valley candidates, reflected
+   geometry, selected intersections, extracted lengths, fold proofs, and object
+   provenance.
+4. Prepare for a shared computation core.
+   Compare the origami and compass-straightedge operation traces once at least
+   one arithmetic family is implemented and tested in both systems. Merge around
+   a construction-system selector only after feature parity and test coverage
+   make the convergence low risk.
+
+### Detailed origami task backlog
+
+#### O0. Guardrails and workspace separation
+
+Goal: make it easy to add origami work without accidentally changing existing
+compass-and-straightedge behavior.
+
+- O0.1 Keep the compass-and-straightedge workspace mounted under its current tab
+  so active construction state survives navigation.
+- O0.2 Keep origami UI state under the flat-origami tab until a deliberate merge
+  milestone is reached.
+- O0.3 Add regression tests that switch between tabs after compiling a
+  compass-and-straightedge expression and verify the expression, scene title,
+  reveal state, and export controls still behave as before.
+- O0.4 Do not import origami domain types into the current compiler, construction
+  macros, SVG renderer, proof cards, export helpers, or examples.
+- O0.5 Document every intentional shared dependency. The expression parser may
+  be shared early; construction trace, rendering, proof, and export models stay
+  separate until O4.
+
+Acceptance checks:
+
+- `npm test`, `npm run typecheck`, `npm run lint`, and `npm run build` pass.
+- App tests prove tab switching does not reset the current
+  compass-and-straightedge construction.
+- A search for imports from `domain/origami` inside existing
+  compass-and-straightedge modules returns no matches.
+
+#### O1. Origami domain model
+
+Goal: create a deterministic fold scene model that can describe flat-origami
+computation independently from compass-and-straightedge construction scenes.
+
+- O1.1 Create `src/domain/origami/types.ts` with origami-specific identifiers
+  for points, lines, creases, paper boundary objects, reflected objects, fold
+  steps, fold axioms, and fold scenes.
+- O1.2 Define fold provenance fields that can later map to expression nodes,
+  macro steps, proof claims, and exported object IDs.
+- O1.3 Represent mountain/valley assignment as optional metadata, not a solver
+  requirement, so early arithmetic traces can remain flat-geometry focused.
+- O1.4 Add degeneracy metadata for coincident points, parallel alignments,
+  ambiguous folds, no-solution cases, and multiple valid solutions.
+- O1.5 Add fixture builders in `src/domain/origami/examples` for simple points,
+  creases, reflected points, and single-fold scenes.
+- O1.6 Add tests for ID stability, object provenance, scene validation, and
+  JSON-safe serializability.
+
+Acceptance checks:
+
+- Origami scene fixtures are deterministic across repeated test runs.
+- Invalid fold scenes produce readable errors rather than partially valid scenes.
+- No existing construction model type needs to change.
+
+#### O2. Fold axiom templates
+
+Goal: encode Huzita-Hatori folds as deterministic operation templates with clear
+preconditions and selected solutions.
+
+- O2.1 Add `src/domain/origami/axioms` for fold operation functions, starting
+  with the axioms needed by arithmetic examples rather than all axioms at once.
+- O2.2 Implement point-to-point folding: crease is the perpendicular bisector of
+  two points.
+- O2.3 Implement point-to-line folding: crease maps a point onto a target line
+  when solutions exist.
+- O2.4 Implement line-to-line folding: crease aligns one line with another,
+  including angle-bisector solution selection.
+- O2.5 Add the first parabola/tangent style fold only when needed for cubic
+  roots or angle trisection research.
+- O2.6 Standardize solution ordering and expose the selected solution ID in the
+  fold step.
+- O2.7 Add tests for normal cases, no-solution cases, coincident inputs,
+  parallel lines, and ambiguous multi-solution folds.
+
+Acceptance checks:
+
+- Each axiom template returns fold objects, reflected objects where appropriate,
+  and proof metadata.
+- Every branch choice is documented in test names or fixture descriptions.
+- No UI code is required to test fold geometry.
+
+#### O3. Origami arithmetic trace
+
+Goal: compile a small set of arithmetic expressions into origami-only fold
+traces using the existing parser as the input boundary.
+
+- O3.1 Create `src/domain/origami/compiler/compileOrigamiExpression.ts` as a
+  separate entry point from `compileExpression`.
+- O3.2 Add origami macro types for placing inputs, copying lengths, constants,
+  addition, subtraction, multiplication, division, square, and square root.
+- O3.3 Implement constants and length copying first, with sampled numeric values
+  and expression provenance attached to each result segment.
+- O3.4 Implement addition and subtraction using a simple baseline layout that is
+  deterministic and easy to inspect.
+- O3.5 Implement multiplication and division with fold-based similar-triangle or
+  intercept-style constructions.
+- O3.6 Implement square and square root once multiplication/division fixtures are
+  stable.
+- O3.7 Add a separate origami example gallery with one example per supported
+  arithmetic family.
+- O3.8 Add tests comparing expected numeric output, fold step count, provenance,
+  and readable errors for unsupported expressions.
+- O3.9 Document cubic root and angle trisection as research spikes, not basic
+  arithmetic acceptance criteria.
+
+Acceptance checks:
+
+- Origami expression compilation uses `parseExpression` but not
+  `compileExpression`.
+- Existing compass-and-straightedge examples and tests remain unchanged.
+- Unsupported operations fail with origami-specific errors.
+
+#### O4. Crease-pattern renderer and interaction
+
+Goal: provide an inspectable origami visualization that matches the current app's
+interaction quality without sharing mutable state or renderer internals.
+
+- O4.1 Add `src/render/origami/svg/SvgOrigamiCanvas.tsx` for paper boundary,
+  creases, reflected points, fold labels, result segments, and active highlights.
+- O4.2 Add reveal-state evaluation for origami fold steps in
+  `src/domain/origami/reveal`.
+- O4.3 Add an origami object inspector that shows object type, provenance,
+  selected fold, selected axiom, branch choice, and degeneracy notes.
+- O4.4 Add an origami steps panel with active fold selection and keyboard
+  traversal.
+- O4.5 Add proof cards for the implemented fold axioms and arithmetic macros.
+- O4.6 Add export buttons for origami JSON and SVG only after the fold scene
+  format is stable.
+- O4.7 Add responsive layout tests or visual-contract tests for the origami tab.
+
+Acceptance checks:
+
+- The origami tab renders a nonempty SVG for each gallery example.
+- Selecting a fold highlights the crease and related source/result objects.
+- Compass-and-straightedge rendering tests continue to pass unchanged.
+
+#### O5. Documentation and math notes
+
+Goal: make the fold model explainable enough that future implementation work is
+not trapped in hidden assumptions.
+
+- O5.1 Create `docs/ORIGAMI_DOMAIN_MODEL.md` covering scene objects, fold steps,
+  axioms, branch choices, and degeneracy handling.
+- O5.2 Create `docs/ORIGAMI_MATH_BACKGROUND.md` with the fold axioms used by the
+  app and the arithmetic constructions they support.
+- O5.3 Create `docs/ORIGAMI_RENDERING.md` covering crease styles, reflected
+  object styles, labels, reveal states, and export expectations.
+- O5.4 Update `docs/ARCHITECTURE.md` only to name the separate origami track and
+  shared parser boundary.
+- O5.5 Update `README.md` when the origami tab moves from roadmap-only to
+  interactive examples.
+
+Acceptance checks:
+
+- Each implemented axiom or macro has a matching documentation entry.
+- Documentation clearly marks research spikes separately from supported
+  features.
+- Architecture docs still state that compiler, renderer, and export paths are
+  separate until O6.
+
+#### O6. Merger readiness review
+
+Goal: decide whether to keep separate workspaces or introduce shared
+computation-facing abstractions based on implemented evidence.
+
+- O6.1 Compare compass-and-straightedge and origami traces for one completed
+  arithmetic family, such as addition or square root.
+- O6.2 Identify identical concepts, similar concepts with different semantics,
+  and concepts that must remain system-specific.
+- O6.3 Add compatibility tests before extracting shared interfaces.
+- O6.4 Extract shared proof-card or operation-trace interfaces only if both
+  systems already satisfy the same test contract.
+- O6.5 Add a construction-system selector only after both systems can compile,
+  render, inspect, prove, and export at least one common arithmetic family.
+- O6.6 Keep the separate tabs if the shared layer would hide important
+  differences in fold versus compass-straightedge reasoning.
+
+Acceptance checks:
+
+- Merger work has a written comparison document before code is moved.
+- Shared interfaces have tests from both systems.
+- The user can still use the original compass-and-straightedge flow exactly as
+  before.
+
 ## 0. Working Agreement for Agents
 
 This roadmap is written so individual tasks can be handed to a coding agent with minimal extra context. Treat each milestone or task group as an independently verifiable change.

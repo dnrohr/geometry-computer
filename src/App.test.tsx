@@ -5,6 +5,12 @@ describe("App", () => {
   it("renders the default nested square-root construction and controls", () => {
     const { container } = render(<App />);
     expect(
+      screen.getByRole("button", { name: "Compass + straightedge" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    ).toHaveAttribute("aria-pressed", "false");
+    expect(
       screen.getByRole("heading", { name: "Geometry Computer" }),
     ).toBeInTheDocument();
     expect(screen.getByRole("textbox", { name: "Expression" })).toHaveValue(
@@ -211,5 +217,56 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "Export clean SVG" }));
     expect(click).toHaveBeenCalledTimes(3);
     click.mockRestore();
+  });
+
+  it("opens the flat origami roadmap without changing compass constructions", () => {
+    render(<App />);
+    const input = screen.getByRole("textbox", { name: "Expression" });
+    fireEvent.change(input, { target: { value: "a+b" } });
+    fireEvent.click(
+      screen.getByRole("button", { name: "Compile construction" }),
+    );
+    const reveal = screen.getByRole("slider", { name: "Reveal progress" });
+    fireEvent.change(reveal, { target: { value: "0.42" } });
+    expect(
+      screen.getByRole("heading", { name: "Construct a + b" }),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    expect(
+      screen.getByRole("heading", { name: "Origami Computer" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Do not modify the existing construction flow"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Build an origami-only arithmetic trace"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Add isolated origami domain types/i),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Compass + straightedge" }),
+    );
+    expect(screen.getByRole("textbox", { name: "Expression" })).toHaveValue(
+      "a+b",
+    );
+    expect(screen.getByRole("slider", { name: "Reveal progress" })).toHaveValue(
+      "0.42",
+    );
+    expect(
+      screen.getByRole("button", { name: "Export JSON" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Export current SVG" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Export clean SVG" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Construct a + b" }),
+    ).toBeInTheDocument();
   });
 });

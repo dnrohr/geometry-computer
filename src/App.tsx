@@ -28,6 +28,61 @@ import {
 import "./App.css";
 
 const defaultValues = { a: 3, b: 2, x: 3, y: 2 };
+const origamiRoadmap = [
+  {
+    phase: "1",
+    title: "Model folds as first-class operations",
+    priority: "Near term",
+    summary:
+      "Define the flat-origami computation vocabulary beside the current construction model: points, creases, reflected objects, alignment constraints, and fold certificates.",
+    work: [
+      "Add isolated origami domain types for points, lines, creases, reflected objects, fold steps, and fold scenes.",
+      "Implement deterministic Huzita-Hatori axiom templates with preconditions, selected solution IDs, and degeneracy notes.",
+      "Add fixture-level tests for fold validation, solution ordering, and provenance metadata.",
+      "Document the fold data model without importing compass-straightedge construction types.",
+    ],
+  },
+  {
+    phase: "2",
+    title: "Build an origami-only arithmetic trace",
+    priority: "Near term",
+    summary:
+      "Compile a small set of arithmetic examples into folds without touching the existing compass-and-straightedge compiler.",
+    work: [
+      "Create a separate origami example gallery with constants, copying, addition, subtraction, multiplication, division, and square root.",
+      "Build an origami compiler entry point that accepts parsed expressions but emits origami-only fold traces.",
+      "Add arithmetic macro tests that compare symbolic provenance and sampled numeric outputs.",
+      "Keep cubic roots and angle trisection as documented research spikes until the basic arithmetic trace is stable.",
+    ],
+  },
+  {
+    phase: "3",
+    title: "Render crease-pattern explanations",
+    priority: "Mid term",
+    summary:
+      "Create an inspectable SVG crease-pattern viewer that explains each fold, reflected point, and chosen intersection.",
+    work: [
+      "Add an origami SVG renderer for paper boundary, creases, reflected geometry, labels, and extracted result segments.",
+      "Add reveal controls, active-fold highlighting, object selection, and an origami object inspector.",
+      "Add proof cards for each fold axiom and arithmetic macro using origami-specific fixtures.",
+      "Verify desktop and mobile layouts without changing the compass-straightedge workspace contract.",
+    ],
+  },
+  {
+    phase: "4",
+    title: "Prepare for a shared computation core",
+    priority: "Merge path",
+    summary:
+      "Identify the common layer between ruler-compass constructions and folds before merging UI or compiler paths.",
+    work: [
+      "Compare operation traces, proof references, object provenance, and exports after both systems implement one arithmetic family.",
+      "Introduce shared interfaces only where duplicated code has matching behavior and tests on both sides.",
+      "Add compatibility tests before any compiler, renderer, or export merger.",
+      "Merge tabs later around a construction-system selector once feature parity and regression coverage justify it.",
+    ],
+  },
+];
+
 const build = (
   source: string,
   values: Record<string, number>,
@@ -35,7 +90,7 @@ const build = (
   simplified = source,
 ) => compileExpression(parseExpression(source), values, original, simplified);
 
-function App() {
+function CompassStraightedgeWorkspace() {
   const [expression, setExpression] = useState("sqrt(3*a - b*b)");
   const [values, setValues] = useState<Record<string, number>>(defaultValues);
   const [scene, setScene] = useState<CompiledScene>(() =>
@@ -364,6 +419,115 @@ function App() {
         )}
       </section>
     </main>
+  );
+}
+
+function OrigamiRoadmap() {
+  return (
+    <main className="app-shell">
+      <header className="masthead">
+        <div>
+          <p className="eyebrow">Flat Origami · Computation · Roadmap</p>
+          <h1>Origami Computer</h1>
+        </div>
+        <p className="lede">
+          Explore fold-based computation in its own workspace while preserving
+          the current compass-and-straightedge implementation unchanged.
+        </p>
+      </header>
+      <section className="roadmap-priority" aria-labelledby="origami-priority">
+        <p className="section-label">Top priority</p>
+        <h2 id="origami-priority">
+          Do not modify the existing construction flow
+        </h2>
+        <p>
+          Treat flat origami as a parallel research track for now. New models,
+          renderers, proof cards, and examples should live behind this tab until
+          the fold system has enough stability to justify a deliberate merger.
+        </p>
+      </section>
+      <section className="roadmap-layout" aria-labelledby="origami-roadmap">
+        <div>
+          <p className="section-label">Roadmap</p>
+          <h2 id="origami-roadmap">Fold-first computation plan</h2>
+          <div className="roadmap-list">
+            {origamiRoadmap.map((item) => (
+              <article key={item.phase} className="roadmap-card">
+                <div className="roadmap-card-header">
+                  <span aria-label={`Phase ${item.phase}`}>{item.phase}</span>
+                  <small>{item.priority}</small>
+                </div>
+                <h3>{item.title}</h3>
+                <p>{item.summary}</p>
+                <ul>
+                  {item.work.map((task) => (
+                    <li key={task}>{task}</li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </div>
+        <aside className="roadmap-merge-notes" aria-labelledby="merge-notes">
+          <p className="section-label">Merger watchlist</p>
+          <h2 id="merge-notes">Design for eventual convergence</h2>
+          <p>
+            Keep names, operation IDs, provenance, proof references, and export
+            metadata compatible where it is cheap. Avoid shared abstractions
+            until both systems reveal the same pressure points.
+          </p>
+          <dl>
+            <dt>Shared later</dt>
+            <dd>
+              Expression parsing, operation trace shape, proof cards, export
+              metadata.
+            </dd>
+            <dt>Separate now</dt>
+            <dd>
+              Fold solver, crease-pattern rendering, axiom proofs, origami
+              examples.
+            </dd>
+            <dt>Merge trigger</dt>
+            <dd>
+              At least one arithmetic family implemented and tested in both
+              systems.
+            </dd>
+          </dl>
+        </aside>
+      </section>
+    </main>
+  );
+}
+
+function App() {
+  const [activeWorkspace, setActiveWorkspace] = useState<"compass" | "origami">(
+    "compass",
+  );
+  return (
+    <>
+      <nav className="workspace-tabs" aria-label="Computation workspace">
+        <button
+          type="button"
+          aria-pressed={activeWorkspace === "compass"}
+          onClick={() => setActiveWorkspace("compass")}
+        >
+          Compass + straightedge
+        </button>
+        <button
+          type="button"
+          aria-pressed={activeWorkspace === "origami"}
+          onClick={() => setActiveWorkspace("origami")}
+        >
+          Flat origami roadmap
+        </button>
+      </nav>
+      <div hidden={activeWorkspace !== "compass"}>
+        <CompassStraightedgeWorkspace />
+      </div>
+      <div hidden={activeWorkspace !== "origami"}>
+        <OrigamiRoadmap />
+      </div>
+    </>
   );
 }
 export default App;
