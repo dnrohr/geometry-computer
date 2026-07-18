@@ -44,17 +44,23 @@ The first fold axiom templates are deterministic:
 These branch choices are intentionally simple so early arithmetic examples can
 be tested without a general fold solver.
 
-## First Arithmetic Compiler Slice
+## Arithmetic Compiler Trace
 
 `compileOrigamiExpression` is a separate compiler entry point under
 `src/domain/origami/compiler`. It accepts the shared parsed expression AST, then
 emits origami-only scene objects and arithmetic macro steps. It does not import
 the compass-and-straightedge compiler.
 
-The first supported trace slice covers variables, constants, addition, and
-subtraction on a deterministic baseline. Multiplication, division, square, and
-square root are represented in the roadmap but intentionally remain unsupported
-until the corresponding fold macro fixtures are implemented.
+The supported O3 trace covers variables, constants, addition, subtraction,
+multiplication, division, square, and square root on deterministic baselines.
+Each macro records sampled numeric output, expression provenance, input segment
+IDs, an output segment, and a crease marker representing the fold trace used by
+later rendering work.
+
+Multiplication and division are modeled as intercept-style fold traces. Square
+is a named specialization of multiplication, and square root is modeled as a
+geometric-mean fold trace. The O3 compiler establishes deterministic scene data;
+O4 turns that data into an interactive crease-pattern explanation.
 
 Cubic roots and angle trisection are research spikes. They require the more
 advanced tangent/parabola family of folds and should not be treated as acceptance

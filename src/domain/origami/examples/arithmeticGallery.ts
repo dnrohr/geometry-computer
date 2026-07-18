@@ -28,6 +28,26 @@ export const origamiArithmeticExamples: OrigamiArithmeticExample[] = [
     expression: "a-b",
     values: { a: 3, b: 2 },
   },
+  {
+    title: "Multiplication trace",
+    expression: "a*b",
+    values: { a: 3, b: 2 },
+  },
+  {
+    title: "Division trace",
+    expression: "a/b",
+    values: { a: 6, b: 2 },
+  },
+  {
+    title: "Square trace",
+    expression: "a^2",
+    values: { a: 3 },
+  },
+  {
+    title: "Square root trace",
+    expression: "sqrt(a)",
+    values: { a: 4 },
+  },
 ];
 
 export const compiledOrigamiArithmeticExamples = () =>

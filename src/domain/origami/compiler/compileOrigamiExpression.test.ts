@@ -64,6 +64,61 @@ describe("origami expression compiler", () => {
     ]);
   });
 
+  it("compiles multiplication, division, square, and square root traces", () => {
+    const cases: {
+      expression: string;
+      values: Record<string, number>;
+      value: number;
+      operations: string[];
+    }[] = [
+      {
+        expression: "a*b",
+        values: { a: 3, b: 2 },
+        value: 6,
+        operations: ["place-input", "place-input", "mul"],
+      },
+      {
+        expression: "a/b",
+        values: { a: 6, b: 2 },
+        value: 3,
+        operations: ["place-input", "place-input", "div"],
+      },
+      {
+        expression: "a^2",
+        values: { a: 3 },
+        value: 9,
+        operations: ["place-input", "square"],
+      },
+      {
+        expression: "sqrt(a)",
+        values: { a: 4 },
+        value: 2,
+        operations: ["place-input", "sqrt"],
+      },
+    ];
+
+    for (const item of cases) {
+      const scene = compileOrigamiExpression(
+        parseExpression(item.expression),
+        item.values,
+        item.expression,
+      );
+      expect(scene.value).toBe(item.value);
+      expect(scene.steps.map(({ operation }) => operation)).toEqual(
+        item.operations,
+      );
+      expect(scene.objects.filter(({ kind }) => kind === "crease").length).toBe(
+        scene.steps.length,
+      );
+      expect(scene.objects.find(({ role }) => role === "result")).toMatchObject(
+        {
+          kind: "segment",
+          provenance: { expression: expect.any(String) },
+        },
+      );
+    }
+  });
+
   it("ships one example per supported basic arithmetic family", () => {
     const examples = compiledOrigamiArithmeticExamples();
 
@@ -72,17 +127,29 @@ describe("origami expression compiler", () => {
       "Constant length",
       "Addition trace",
       "Subtraction trace",
+      "Multiplication trace",
+      "Division trace",
+      "Square trace",
+      "Square root trace",
     ]);
-    expect(examples.map(({ scene }) => scene.value)).toEqual([3, 2, 5, 1]);
+    expect(examples.map(({ scene }) => scene.value)).toEqual([
+      3, 2, 5, 1, 6, 3, 9, 2,
+    ]);
   });
 
-  it("returns readable origami-specific errors for missing and unsupported inputs", () => {
+  it("returns readable origami-specific errors for invalid inputs", () => {
     expect(() => compileOrigamiExpression(parseExpression("z"), {})).toThrow(
       new OrigamiCompilerError("Supply a value for z.", "MISSING_VARIABLE"),
     );
     expect(() =>
-      compileOrigamiExpression(parseExpression("a*b"), { a: 3, b: 2 }),
-    ).toThrow(/first origami arithmetic trace slice/i);
+      compileOrigamiExpression(parseExpression("a/0"), { a: 3 }),
+    ).toThrow(/Division by zero/i);
+    expect(() =>
+      compileOrigamiExpression(parseExpression("a^3"), { a: 3 }),
+    ).toThrow(/Only squaring/i);
+    expect(() =>
+      compileOrigamiExpression(parseExpression("sqrt(a)"), { a: -1 }),
+    ).toThrow(/negative length/i);
   });
 
   it("does not import the compass-straightedge compiler", () => {

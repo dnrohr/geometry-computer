@@ -1,6 +1,7 @@
 import type { Expr } from "../../expression/types";
 import { formatExpression } from "../../expression/format";
 import {
+  creaseObject,
   labelObject,
   paperBoundaryObject,
   pointObject,
@@ -92,13 +93,35 @@ function evaluateSupported(expr: Expr, values: Record<string, number>): number {
         evaluateSupported(expr.right, values)
       );
     case "mul":
-    case "div":
-    case "pow":
-    case "sqrt":
-      throw new OrigamiCompilerError(
-        `${formatExpression(expr)} is not supported by the first origami arithmetic trace slice.`,
-        "UNSUPPORTED_ORIGAMI_OPERATION",
+      return (
+        evaluateSupported(expr.left, values) *
+        evaluateSupported(expr.right, values)
       );
+    case "div": {
+      const divisor = evaluateSupported(expr.right, values);
+      if (divisor === 0)
+        throw new OrigamiCompilerError(
+          "Division by zero has no flat-origami length trace.",
+          "DIVISION_BY_ZERO",
+        );
+      return evaluateSupported(expr.left, values) / divisor;
+    }
+    case "pow":
+      if (expr.exponent !== 2)
+        throw new OrigamiCompilerError(
+          "Only squaring is currently supported through exponent syntax.",
+          "UNSUPPORTED_ORIGAMI_POWER",
+        );
+      return evaluateSupported(expr.base, values) ** 2;
+    case "sqrt": {
+      const value = evaluateSupported(expr.value, values);
+      if (value < 0)
+        throw new OrigamiCompilerError(
+          "A negative length has no real flat-origami square-root trace.",
+          "NEGATIVE_SQUARE_ROOT",
+        );
+      return Math.sqrt(value);
+    }
   }
 }
 
@@ -123,117 +146,29 @@ export function compileOrigamiExpression(
     return object;
   };
 
-  const compile = (expr: Expr): OrigamiValue => {
-    const key = formatExpression(expr);
-    const cached = cache.get(key);
-    if (cached) return cached;
-    const value = evaluateSupported(expr, values);
+  const createTraceStep = (
+    key: string,
+    value: number,
+    operation: OrigamiArithmeticMacroKind,
+    sourceIds: string[],
+    summary: string,
+    role: OrigamiObjectMetadata["role"] = "intermediate",
+  ) => {
     const y = 1.2 + row++ * 1.35;
     const start = pointAt(1, y);
     const direction = value < 0 ? -1 : 1;
     const end = pointAt(1 + direction * scaledLength(value), y);
     const stepId = ids.next("origami-step");
-
-    if (expr.kind === "const" || expr.kind === "var") {
-      const operation: OrigamiArithmeticMacroKind =
-        expr.kind === "const" ? "constant" : "place-input";
-      const sourcePoint = addObject(
-        pointObject(
-          start,
-          metadata(ids.next("origami-point"), "input", [], stepId, key),
-        ),
-      );
-      const targetPoint = addObject(
-        pointObject(
-          end,
-          metadata(ids.next("origami-point"), "input", [], stepId, key),
-        ),
-      );
-      const segment = addObject(
-        segmentObject(
-          start,
-          end,
-          metadata(
-            ids.next("origami-segment"),
-            "input",
-            [sourcePoint.id, targetPoint.id],
-            stepId,
-            key,
-          ),
-        ),
-      );
-      const label = addObject(
-        labelObject(
-          pointAt((start.x + end.x) / 2, y - 0.28),
-          key,
-          metadata(
-            ids.next("origami-label"),
-            "annotation",
-            [segment.id],
-            stepId,
-            key,
-          ),
-        ),
-      );
-      steps.push({
-        id: stepId,
-        title: `Place ${key}`,
-        summary:
-          operation === "constant"
-            ? "Mark a fixed baseline length for this constant."
-            : "Mark the supplied input length on the origami baseline.",
-        operation,
-        inputObjectIds: [],
-        outputObjectIds: [segment.id],
-        createdObjectIds: [
-          sourcePoint.id,
-          targetPoint.id,
-          segment.id,
-          label.id,
-        ],
-      });
-      const output = {
-        id: stepId,
-        value,
-        expression: key,
-        segmentObjectId: segment.id,
-      };
-      cache.set(key, output);
-      return output;
-    }
-
-    if (expr.kind !== "add" && expr.kind !== "sub")
-      throw new OrigamiCompilerError(
-        `${key} is not supported by the first origami arithmetic trace slice.`,
-        "UNSUPPORTED_ORIGAMI_OPERATION",
-      );
-
-    const left = compile(expr.left);
-    const right = compile(expr.right);
-    const operation = expr.kind;
-    const sourceIds = [left.segmentObjectId, right.segmentObjectId];
     const sourcePoint = addObject(
       pointObject(
         start,
-        metadata(
-          ids.next("origami-point"),
-          "intermediate",
-          sourceIds,
-          stepId,
-          key,
-        ),
+        metadata(ids.next("origami-point"), role, sourceIds, stepId, key),
       ),
     );
     const targetPoint = addObject(
       pointObject(
         end,
-        metadata(
-          ids.next("origami-point"),
-          "intermediate",
-          sourceIds,
-          stepId,
-          key,
-        ),
+        metadata(ids.next("origami-point"), role, sourceIds, stepId, key),
       ),
     );
     const segment = addObject(
@@ -242,11 +177,28 @@ export function compileOrigamiExpression(
         end,
         metadata(
           ids.next("origami-segment"),
-          "intermediate",
+          role,
           [sourcePoint.id, targetPoint.id, ...sourceIds],
           stepId,
           key,
         ),
+      ),
+    );
+    const crease = addObject(
+      creaseObject(
+        {
+          point: pointAt(start.x, y + 0.38),
+          direction: pointAt(1, 0),
+        },
+        "unassigned",
+        metadata(
+          ids.next("origami-crease"),
+          "crease",
+          [segment.id, ...sourceIds],
+          stepId,
+          key,
+        ),
+        `${operation}-baseline-transfer`,
       ),
     );
     const label = addObject(
@@ -265,21 +217,88 @@ export function compileOrigamiExpression(
     steps.push({
       id: stepId,
       title: `Trace ${key}`,
-      summary:
-        operation === "add"
-          ? "Concatenate the two source lengths on a shared origami baseline."
-          : "Place the second source length in the opposite direction on the baseline.",
+      summary,
       operation,
       inputObjectIds: sourceIds,
       outputObjectIds: [segment.id],
-      createdObjectIds: [sourcePoint.id, targetPoint.id, segment.id, label.id],
+      createdObjectIds: [
+        sourcePoint.id,
+        targetPoint.id,
+        segment.id,
+        crease.id,
+        label.id,
+      ],
     });
-    const output = {
+    return {
       id: stepId,
       value,
       expression: key,
       segmentObjectId: segment.id,
     };
+  };
+
+  const compile = (expr: Expr): OrigamiValue => {
+    const key = formatExpression(expr);
+    const cached = cache.get(key);
+    if (cached) return cached;
+    const value = evaluateSupported(expr, values);
+
+    if (expr.kind === "const" || expr.kind === "var") {
+      const operation: OrigamiArithmeticMacroKind =
+        expr.kind === "const" ? "constant" : "place-input";
+      const output = createTraceStep(
+        key,
+        value,
+        operation,
+        [],
+        operation === "constant"
+          ? "Mark a fixed baseline length for this constant."
+          : "Mark the supplied input length on the origami baseline.",
+        "input",
+      );
+      cache.set(key, output);
+      return output;
+    }
+
+    if (expr.kind === "sqrt") {
+      const input = compile(expr.value);
+      const output = createTraceStep(
+        key,
+        value,
+        "sqrt",
+        [input.segmentObjectId],
+        "Use the folded geometric-mean trace to extract the square-root length.",
+      );
+      cache.set(key, output);
+      return output;
+    }
+
+    const inputs =
+      expr.kind === "pow"
+        ? [compile(expr.base)]
+        : [compile(expr.left), compile(expr.right)];
+    const sourceIds = inputs.map(({ segmentObjectId }) => segmentObjectId);
+    const operation: OrigamiArithmeticMacroKind =
+      expr.kind === "pow" ? "square" : expr.kind;
+    const summary: Record<OrigamiArithmeticMacroKind, string> = {
+      "place-input": "Mark the supplied input length on the origami baseline.",
+      "copy-length": "Copy the source length to a new baseline location.",
+      constant: "Mark a fixed baseline length for this constant.",
+      add: "Concatenate the two source lengths on a shared origami baseline.",
+      sub: "Place the second source length in the opposite direction on the baseline.",
+      mul: "Use an intercept-style fold trace to scale one length by the other.",
+      div: "Use an intercept-style fold trace to scale by the reciprocal length.",
+      square:
+        "Reuse the multiplication fold trace with the same source length twice.",
+      sqrt: "Use the folded geometric-mean trace to extract the square-root length.",
+    };
+    const output = createTraceStep(
+      key,
+      value,
+      operation,
+      sourceIds,
+      summary[operation],
+    );
     cache.set(key, output);
     return output;
   };
@@ -291,7 +310,7 @@ export function compileOrigamiExpression(
     id: "origami-compiled-scene",
     title: "Compiled origami trace",
     description:
-      "A separate flat-origami arithmetic trace for supported baseline operations.",
+      "A separate flat-origami arithmetic trace for supported fold operations.",
     objects,
     steps,
     proofs: [],
