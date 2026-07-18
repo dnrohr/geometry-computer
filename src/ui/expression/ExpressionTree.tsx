@@ -21,14 +21,21 @@ export function ExpressionTree({
   originalExpression?: string;
   simplifiedExpression?: string;
 }) {
-  const render = (expr: Expr): React.ReactNode => {
+  const render = (expr: Expr, path = "root"): React.ReactNode => {
     const label = formatExpression(expr);
+    const childExpressions = children(expr);
     return (
-      <li key={label} className={label === activeExpression ? "active" : ""}>
+      <li key={path} className={label === activeExpression ? "active" : ""}>
         <button type="button" onClick={() => onSelect?.(label)}>
           {label}
         </button>
-        {children(expr).length > 0 && <ul>{children(expr).map(render)}</ul>}
+        {childExpressions.length > 0 && (
+          <ul>
+            {childExpressions.map((child, index) =>
+              render(child, `${path}.${index}`),
+            )}
+          </ul>
+        )}
       </li>
     );
   };
