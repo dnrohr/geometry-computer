@@ -114,6 +114,15 @@ export type OrigamiFoldStep = {
   proofId?: string;
 };
 
+export type OrigamiRevealAction = {
+  id: string;
+  stepId: string;
+  objectId: string;
+  start: number;
+  end: number;
+  animation: "draw" | "fade-in" | "fade-out" | "highlight" | "dim";
+};
+
 export type OrigamiProofClaim = {
   id: string;
   text: string;
@@ -124,7 +133,8 @@ export type OrigamiProofClaim = {
 export type OrigamiFoldProof = {
   id: string;
   title: string;
-  axiom: OrigamiAxiomKind;
+  axiom?: OrigamiAxiomKind;
+  operation?: OrigamiArithmeticMacroKind;
   intuition: string;
   givens: string[];
   claims: OrigamiProofClaim[];
@@ -138,6 +148,7 @@ export type OrigamiFoldScene = {
   description?: string;
   objects: OrigamiObject[];
   steps: OrigamiFoldStep[];
+  revealActions: OrigamiRevealAction[];
   proofs: OrigamiFoldProof[];
 };
 

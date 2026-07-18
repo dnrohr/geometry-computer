@@ -50,6 +50,13 @@ describe("origami expression compiler", () => {
       "place-input",
       "add",
     ]);
+    expect(addScene.revealActions.length).toBeGreaterThan(
+      addScene.steps.length,
+    );
+    expect(addScene.revealActions[0]).toMatchObject({
+      stepId: addScene.steps[0].id,
+      animation: "fade-in",
+    });
     expect(
       addScene.objects.find(({ role }) => role === "result"),
     ).toMatchObject({

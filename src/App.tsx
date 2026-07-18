@@ -6,12 +6,15 @@ import {
 import { parseExpression } from "./domain/parser/parseExpression";
 import { gallery, type GalleryExample } from "./domain/examples/gallery";
 import { evaluateReveal } from "./domain/reveal/evaluateReveal";
+import { compiledOrigamiArithmeticExamples } from "./domain/origami/examples";
+import { evaluateOrigamiReveal } from "./domain/origami/reveal/evaluateOrigamiReveal";
 import {
   constructionJson,
   downloadText,
   serializeSvg,
 } from "./domain/export/exportConstruction";
 import { SvgConstructionCanvas } from "./render/svg/SvgConstructionCanvas";
+import { SvgOrigamiCanvas } from "./render/origami/svg/SvgOrigamiCanvas";
 import { ExpressionInput } from "./ui/input/ExpressionInput";
 import { ExampleGallery } from "./ui/examples/ExampleGallery";
 import { ObjectInspector } from "./ui/inspector/ObjectInspector";
@@ -423,8 +426,53 @@ function CompassStraightedgeWorkspace() {
 }
 
 function OrigamiRoadmap() {
+  const examples = useMemo(() => compiledOrigamiArithmeticExamples(), []);
+  const [exampleIndex, setExampleIndex] = useState(0);
+  const [progress, setProgress] = useState(1);
+  const [activeStepId, setActiveStepId] = useState<string>();
+  const [selectedObjectId, setSelectedObjectId] = useState<string>();
+  const [proofId, setProofId] = useState<string>();
+  const origamiSvgRef = useRef<SVGSVGElement>(null);
+  const scene = examples[exampleIndex].scene;
+  const activeStep = scene.steps.find(({ id }) => id === activeStepId);
+  const selectedObject = scene.objects.find(
+    ({ id }) => id === selectedObjectId,
+  );
+  const activeProof = scene.proofs.find(({ id }) => id === proofId);
+  const highlightedIds = new Set<string>([
+    ...(activeStep?.inputObjectIds ?? []),
+    ...(activeStep?.outputObjectIds ?? []),
+    ...(activeStep?.createdObjectIds ?? []),
+  ]);
+  if (selectedObjectId) highlightedIds.add(selectedObjectId);
+  const renderStates = useMemo(
+    () => evaluateOrigamiReveal(scene.revealActions, progress),
+    [scene.revealActions, progress],
+  );
+  const selectOrigamiStep = (id: string) => {
+    setActiveStepId(id);
+    const index = scene.steps.findIndex((step) => step.id === id);
+    setProgress((index + 1) / scene.steps.length);
+  };
+  const moveOrigamiStep = (delta: number) => {
+    const index = Math.max(
+      0,
+      scene.steps.findIndex(({ id }) => id === activeStepId),
+    );
+    selectOrigamiStep(
+      scene.steps[Math.max(0, Math.min(scene.steps.length - 1, index + delta))]
+        .id,
+    );
+  };
+
   return (
-    <main className="app-shell">
+    <main
+      className="app-shell"
+      onKeyDown={(event) => {
+        if (event.altKey && event.key === "ArrowDown") moveOrigamiStep(1);
+        if (event.altKey && event.key === "ArrowUp") moveOrigamiStep(-1);
+      }}
+    >
       <header className="masthead">
         <div>
           <p className="eyebrow">Flat Origami · Computation · Roadmap</p>
@@ -494,6 +542,154 @@ function OrigamiRoadmap() {
             </dd>
           </dl>
         </aside>
+      </section>
+      <section className="origami-workspace" aria-labelledby="origami-trace">
+        <div className="origami-workspace-header">
+          <div>
+            <p className="section-label">Interactive trace</p>
+            <h2 id="origami-trace">{examples[exampleIndex].title}</h2>
+          </div>
+          <label>
+            Reveal{" "}
+            <input
+              aria-label="Origami reveal progress"
+              type="range"
+              min="0"
+              max="1"
+              step=".01"
+              value={progress}
+              onChange={(event) => setProgress(Number(event.target.value))}
+            />
+          </label>
+          <button
+            type="button"
+            onClick={() =>
+              downloadText(
+                "origami-trace.json",
+                JSON.stringify(scene, null, 2),
+                "application/json",
+              )
+            }
+          >
+            Export origami JSON
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              origamiSvgRef.current &&
+              downloadText(
+                "origami-trace.svg",
+                serializeSvg(origamiSvgRef.current),
+                "image/svg+xml",
+              )
+            }
+          >
+            Export origami SVG
+          </button>
+        </div>
+        <div className="origami-example-tabs" aria-label="Origami examples">
+          {examples.map((example, index) => (
+            <button
+              key={example.title}
+              type="button"
+              aria-pressed={index === exampleIndex}
+              onClick={() => {
+                setExampleIndex(index);
+                setProgress(1);
+                setActiveStepId(undefined);
+                setSelectedObjectId(undefined);
+                setProofId(undefined);
+              }}
+            >
+              {example.title}
+            </button>
+          ))}
+        </div>
+        <div className="origami-trace-layout">
+          <div className="origami-canvas-panel">
+            <SvgOrigamiCanvas
+              svgRef={origamiSvgRef}
+              objects={scene.objects}
+              title={`${scene.title}: ${scene.expression}`}
+              description={scene.description}
+              renderStates={renderStates}
+              highlightedIds={highlightedIds}
+              onSelectObject={setSelectedObjectId}
+            />
+          </div>
+          <aside className="origami-steps-panel" aria-labelledby="folds-title">
+            <p className="section-label">Generated folds</p>
+            <h2 id="folds-title">Origami steps</h2>
+            <ol>
+              {scene.steps.map((step) => (
+                <li
+                  key={step.id}
+                  className={step.id === activeStepId ? "active" : ""}
+                >
+                  <button
+                    className="step-button"
+                    type="button"
+                    onClick={() => selectOrigamiStep(step.id)}
+                  >
+                    <h3>{step.title}</h3>
+                    <p>{step.summary}</p>
+                  </button>
+                  <span>{step.operation ?? step.axiom}</span>
+                  {step.proofId && (
+                    <button
+                      className="how-button"
+                      type="button"
+                      onClick={() => setProofId(step.proofId)}
+                    >
+                      Why?
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </aside>
+          <aside className="origami-inspector" aria-labelledby="origami-object">
+            <p className="section-label">Object inspector</p>
+            <h2 id="origami-object">Origami object</h2>
+            {selectedObject ? (
+              <dl>
+                <dt>ID</dt>
+                <dd>{selectedObject.id}</dd>
+                <dt>Kind</dt>
+                <dd>{selectedObject.kind}</dd>
+                <dt>Role</dt>
+                <dd>{selectedObject.role}</dd>
+                <dt>Expression</dt>
+                <dd>{selectedObject.provenance.expression ?? "none"}</dd>
+              </dl>
+            ) : (
+              <p>Select a crease, point, segment, or label in the diagram.</p>
+            )}
+          </aside>
+          {activeProof && (
+            <article
+              className="origami-proof-card"
+              aria-labelledby="origami-proof-title"
+            >
+              <header>
+                <div>
+                  <p className="section-label">Proof</p>
+                  <h2 id="origami-proof-title">{activeProof.title}</h2>
+                </div>
+                <button type="button" onClick={() => setProofId(undefined)}>
+                  Close
+                </button>
+              </header>
+              <p>{activeProof.intuition}</p>
+              <ul>
+                {activeProof.claims.map((claim) => (
+                  <li key={claim.id}>{claim.text}</li>
+                ))}
+              </ul>
+              <p>{activeProof.conclusion}</p>
+            </article>
+          )}
+        </div>
       </section>
     </main>
   );

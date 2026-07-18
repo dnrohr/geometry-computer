@@ -215,7 +215,14 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "Export JSON" }));
     fireEvent.click(screen.getByRole("button", { name: "Export current SVG" }));
     fireEvent.click(screen.getByRole("button", { name: "Export clean SVG" }));
-    expect(click).toHaveBeenCalledTimes(3);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Export origami JSON" }),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Export origami SVG" }));
+    expect(click).toHaveBeenCalledTimes(5);
     click.mockRestore();
   });
 
@@ -245,6 +252,44 @@ describe("App", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(/Add isolated origami domain types/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", {
+        name: /Compiled origami trace: a/i,
+      }),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Multiplication trace" }),
+    );
+    expect(
+      screen.getByRole("img", {
+        name: /Compiled origami trace: a\*b/i,
+      }),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /Trace a \* b Use an intercept-style fold trace/i,
+      }),
+    );
+    expect(screen.getByText("mul")).toBeInTheDocument();
+    fireEvent.keyDown(screen.getByRole("main"), {
+      altKey: true,
+      key: "ArrowUp",
+    });
+    expect(screen.getAllByText("place-input").length).toBeGreaterThan(0);
+    fireEvent.click(screen.getAllByRole("button", { name: "Why?" }).at(-1)!);
+    expect(
+      screen.getByRole("heading", { name: "Origami multiplication trace" }),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      screen.getAllByRole("button", { name: /segment a \* b/i })[0],
+    );
+    expect(screen.getByText("origami-segment-3")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Export origami JSON" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Export origami SVG" }),
     ).toBeInTheDocument();
     expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
     fireEvent.click(

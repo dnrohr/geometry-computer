@@ -239,6 +239,7 @@ select:focus-visible,
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.36fr);
   gap: clamp(1.5rem, 3vw, 2.5rem);
+  margin-bottom: 1rem;
   padding: clamp(1.25rem, 3vw, 2rem);
 }
 
@@ -312,6 +313,218 @@ select:focus-visible,
 
 .roadmap-merge-notes dd {
   margin: 0 0 0.65rem;
+}
+
+.origami-workspace {
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  background: var(--panel);
+  box-shadow: 0 2rem 5rem rgb(0 0 0 / 18%);
+}
+
+.origami-workspace-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.origami-workspace-header h2 {
+  margin-bottom: 0;
+}
+
+.origami-workspace-header label {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.origami-example-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.origami-example-tabs button {
+  color: var(--muted);
+  background: #151b20;
+}
+
+.origami-example-tabs button[aria-pressed="true"] {
+  color: var(--foreground);
+  border-color: var(--accent);
+  background: rgb(232 182 92 / 12%);
+}
+
+.origami-trace-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.36fr);
+  gap: 1rem;
+}
+
+.origami-canvas-panel {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 22rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: #11171b;
+}
+
+.origami-canvas {
+  display: block;
+  width: 100%;
+  max-height: 34rem;
+}
+
+.origami-object {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 0.08;
+  vector-effect: non-scaling-stroke;
+}
+
+.origami-paper {
+  fill: #192027;
+  stroke: #d8d8d0;
+}
+
+.origami-crease {
+  stroke: var(--accent);
+  stroke-dasharray: 0.22 0.14;
+}
+
+.origami-input {
+  stroke: #8dc5d6;
+}
+
+.origami-intermediate {
+  stroke: #ad91d3;
+}
+
+.origami-result {
+  stroke: var(--accent);
+  stroke-width: 0.14;
+}
+
+.origami-reflection {
+  fill: #e7d28c;
+  stroke: none;
+}
+
+text.origami-object,
+.origami-object text {
+  fill: var(--muted);
+  stroke: none;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.32px;
+  text-anchor: middle;
+}
+
+.origami-object[role="button"] {
+  cursor: pointer;
+}
+
+.is-highlighted .origami-object {
+  opacity: 1 !important;
+  stroke: #fff2bb;
+  stroke-width: 0.18;
+}
+
+.origami-steps-panel,
+.origami-inspector {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: #12181d;
+}
+
+.origami-inspector,
+.origami-proof-card {
+  grid-column: 1 / -1;
+}
+
+.origami-steps-panel ol {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.origami-steps-panel li {
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--line);
+}
+
+.origami-steps-panel li.active {
+  margin-inline: -0.5rem;
+  padding-inline: 0.5rem;
+  border-left: 3px solid var(--accent);
+  background: rgb(232 182 92 / 8%);
+}
+
+.origami-steps-panel span {
+  color: var(--accent);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.72rem;
+}
+
+.origami-inspector dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.4rem 0.8rem;
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.origami-inspector dt {
+  color: var(--muted);
+}
+
+.origami-inspector dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.origami-inspector p {
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.origami-proof-card {
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: #12181d;
+}
+
+.origami-proof-card header {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.origami-proof-card h2 {
+  margin-bottom: 0.7rem;
+  font-size: 1rem;
+}
+
+.origami-proof-card p,
+.origami-proof-card li {
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.55;
 }
 
 .construction-layout {
@@ -650,6 +863,7 @@ text.geometry-result,
   .construction-layout,
   .expression-input,
   .roadmap-layout,
+  .origami-trace-layout,
   .details-grid {
     grid-template-columns: 1fr;
   }

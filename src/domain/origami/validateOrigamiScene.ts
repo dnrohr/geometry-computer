@@ -97,6 +97,10 @@ export function validateOrigamiScene(scene: OrigamiFoldScene) {
     "proof",
     scene.proofs.map(({ id }) => id),
   );
+  assertUniqueIds(
+    "reveal",
+    scene.revealActions.map(({ id }) => id),
+  );
 
   const objectIds = new Set(scene.objects.map(({ id }) => id));
   const stepIds = new Set(scene.steps.map(({ id }) => id));
@@ -159,6 +163,16 @@ export function validateOrigamiScene(scene: OrigamiFoldScene) {
         claim.id,
       ),
     );
+  });
+
+  scene.revealActions.forEach((action) => {
+    assertKnownIds("Reveal step", [action.stepId], stepIds, action.id);
+    assertKnownIds("Reveal object", [action.objectId], objectIds, action.id);
+    if (action.end < action.start)
+      throw new OrigamiSceneError(
+        `Reveal action ${action.id} ends before it starts.`,
+        "INVALID_REVEAL_RANGE",
+      );
   });
 
   return scene;

@@ -78,6 +78,24 @@ export const simplePointToPointFoldScene = (): OrigamiFoldScene =>
         proofId: "proof-point-to-point",
       },
     ],
+    revealActions: [
+      {
+        id: "reveal-crease",
+        stepId: "fold-1",
+        objectId: "crease-a-to-b",
+        start: 0,
+        end: 0.5,
+        animation: "draw",
+      },
+      {
+        id: "reveal-reflection",
+        stepId: "fold-1",
+        objectId: "reflected-point-a",
+        start: 0.5,
+        end: 1,
+        animation: "fade-in",
+      },
+    ],
     proofs: [
       {
         id: "proof-point-to-point",

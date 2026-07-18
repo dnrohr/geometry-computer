@@ -7,6 +7,7 @@ import {
   pointObject,
   segmentObject,
   type OrigamiArithmeticMacroKind,
+  type OrigamiFoldProof,
   type OrigamiFoldScene,
   type OrigamiObject,
   type OrigamiObjectMetadata,
@@ -68,6 +69,74 @@ const metadata = (
 });
 
 const pointAt = (x: number, y: number): OrigamiPoint => ({ x, y });
+
+const macroProofText: Record<
+  OrigamiArithmeticMacroKind,
+  Pick<OrigamiFoldProof, "title" | "intuition" | "givens" | "conclusion">
+> = {
+  "place-input": {
+    title: "Input length placement",
+    intuition:
+      "A supplied length can be marked as a baseline segment on the paper.",
+    givens: ["A sampled input length", "An oriented paper baseline"],
+    conclusion: "The marked segment represents the supplied input length.",
+  },
+  "copy-length": {
+    title: "Length copy",
+    intuition:
+      "A fold transfer can carry a known length to a new baseline position.",
+    givens: ["A source segment", "A target baseline"],
+    conclusion: "The copied segment preserves the source length.",
+  },
+  constant: {
+    title: "Constant length placement",
+    intuition:
+      "A fixed scalar multiple of the unit can be marked on the baseline.",
+    givens: ["The unit length", "A numeric scalar"],
+    conclusion: "The marked segment represents the requested constant.",
+  },
+  add: {
+    title: "Origami addition trace",
+    intuition: "Adjacent baseline transfers concatenate lengths.",
+    givens: ["Two source segments", "A shared oriented baseline"],
+    conclusion: "The result segment has length equal to the sum.",
+  },
+  sub: {
+    title: "Origami subtraction trace",
+    intuition:
+      "An opposite-oriented transfer subtracts one directed length from another.",
+    givens: ["Two source segments", "A directed baseline"],
+    conclusion: "The result segment has length equal to the difference.",
+  },
+  mul: {
+    title: "Origami multiplication trace",
+    intuition:
+      "Intercept-style folds preserve a scale ratio between source lengths.",
+    givens: ["Two source segments", "A unit baseline"],
+    conclusion: "The result segment represents the product.",
+  },
+  div: {
+    title: "Origami division trace",
+    intuition:
+      "The same intercept-style trace can scale by a reciprocal length.",
+    givens: ["A numerator segment", "A nonzero denominator segment"],
+    conclusion: "The result segment represents the quotient.",
+  },
+  square: {
+    title: "Origami square trace",
+    intuition:
+      "Squaring is multiplication with the same length in both input roles.",
+    givens: ["A source segment", "A unit baseline"],
+    conclusion: "The result segment represents the squared length.",
+  },
+  sqrt: {
+    title: "Origami square-root trace",
+    intuition:
+      "A geometric-mean fold trace extracts the positive square-root length.",
+    givens: ["A nonnegative source segment", "A unit baseline"],
+    conclusion: "The result segment represents the square root.",
+  },
+};
 
 function evaluateSupported(expr: Expr, values: Record<string, number>): number {
   switch (expr.kind) {
@@ -138,6 +207,8 @@ export function compileOrigamiExpression(
     ),
   ];
   const steps: OrigamiFoldScene["steps"] = [];
+  const revealActions: OrigamiFoldScene["revealActions"] = [];
+  const proofs = new Map<string, OrigamiFoldProof>();
   const cache = new Map<string, OrigamiValue>();
   let row = 0;
 
@@ -214,6 +285,13 @@ export function compileOrigamiExpression(
         ),
       ),
     );
+    const createdObjectIds = [
+      sourcePoint.id,
+      targetPoint.id,
+      segment.id,
+      crease.id,
+      label.id,
+    ];
     steps.push({
       id: stepId,
       title: `Trace ${key}`,
@@ -221,13 +299,44 @@ export function compileOrigamiExpression(
       operation,
       inputObjectIds: sourceIds,
       outputObjectIds: [segment.id],
-      createdObjectIds: [
-        sourcePoint.id,
-        targetPoint.id,
-        segment.id,
-        crease.id,
-        label.id,
+      createdObjectIds,
+      proofId: `origami-proof-${operation}`,
+    });
+    const proofText = macroProofText[operation];
+    proofs.set(`origami-proof-${operation}`, {
+      id: `origami-proof-${operation}`,
+      operation,
+      title: proofText.title,
+      intuition: proofText.intuition,
+      givens: proofText.givens,
+      claims: [
+        {
+          id: `origami-claim-${operation}`,
+          text: summary,
+          highlightObjectIds: [segment.id, ...sourceIds],
+        },
       ],
+      conclusion: proofText.conclusion,
+      assumptions:
+        operation === "mul" || operation === "div"
+          ? [
+              "This trace records the arithmetic dependency; detailed crease geometry is expanded in the rendering milestone.",
+            ]
+          : undefined,
+    });
+    const actionSize = 1 / createdObjectIds.length;
+    createdObjectIds.forEach((objectId, index) => {
+      revealActions.push({
+        id: ids.next("origami-reveal"),
+        stepId,
+        objectId,
+        start: index * actionSize,
+        end: (index + 1) * actionSize,
+        animation:
+          objectId === segment.id || objectId === crease.id
+            ? "draw"
+            : "fade-in",
+      });
     });
     return {
       id: stepId,
@@ -313,7 +422,18 @@ export function compileOrigamiExpression(
       "A separate flat-origami arithmetic trace for supported fold operations.",
     objects,
     steps,
-    proofs: [],
+    revealActions: revealActions.map((action) => {
+      const stepIndex = steps.findIndex(({ id }) => id === action.stepId);
+      const stepCount = Math.max(1, steps.length);
+      const stepStart = Math.max(0, stepIndex) / stepCount;
+      const stepEnd = (Math.max(0, stepIndex) + 1) / stepCount;
+      return {
+        ...action,
+        start: stepStart + action.start * (stepEnd - stepStart),
+        end: stepStart + action.end * (stepEnd - stepStart),
+      };
+    }),
+    proofs: [...proofs.values()],
   });
   return {
     ...scene,
