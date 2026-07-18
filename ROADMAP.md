@@ -222,6 +222,131 @@ Acceptance checks:
 - The user can still use the original compass-and-straightedge flow exactly as
   before.
 
+### Next origami milestones
+
+These follow-on milestones assume O0-O6 are complete. They keep the flat-origami
+track separate from compass-and-straightedge behavior while adding enough
+mathematical and visual evidence to make a future merge decision less
+speculative.
+
+#### N1. Rich fold geometry for arithmetic traces
+
+Goal: replace placeholder-style arithmetic traces with inspectable geometric
+constructions whose intermediate objects explain why the numeric result follows
+from the folds.
+
+- N1.1 Define a macro trace contract for advanced origami arithmetic that records
+  source segments, unit references, guide lines, fold creases, reflected objects,
+  selected intersections, result segments, proof claim IDs, branch selections,
+  and degeneracy notes.
+- N1.2 Expand multiplication into a full similar-triangle or intercept-theorem
+  construction with visible unit axes, copied input lengths, guide creases,
+  projected/scaled points, and a result segment.
+- N1.3 Expand division into a reciprocal or intercept-theorem construction with
+  denominator nonzero validation, visible reciprocal geometry, selected branch
+  metadata, and a result segment.
+- N1.4 Implement square as a multiplication specialization that reuses the
+  multiplication trace contract while preserving expression provenance for the
+  duplicated input.
+- N1.5 Expand square root into a geometric-mean style construction with the
+  unit-plus-input baseline, midpoint, auxiliary circle or fold-equivalent guide,
+  perpendicular extraction step, selected intersection, and nonnegative-input
+  validation.
+- N1.6 Add fixture scenes for multiplication, division, square, and square root
+  that expose every intermediate object needed by the renderer and inspector.
+- N1.7 Add deterministic tests for numeric results, intermediate object counts,
+  provenance chains, branch choices, and readable degeneracy errors for zero,
+  negative, parallel, coincident, and ambiguous cases.
+- N1.8 Update `docs/ORIGAMI_MATH_BACKGROUND.md` and
+  `docs/ORIGAMI_DOMAIN_MODEL.md` with the exact construction contracts and the
+  assumptions each macro depends on.
+
+Acceptance checks:
+
+- `compileOrigamiExpression` still shares only the parser boundary with the
+  compass-and-straightedge compiler.
+- Each advanced arithmetic example has fold steps, source/result objects, proof
+  IDs, branch metadata, and deterministic numeric output.
+- Searches for `domain/origami` imports inside current compass-and-straightedge
+  compiler, renderer, proof, export, and example modules still return no
+  matches.
+- `npm test`, `npm run typecheck`, `npm run lint`, `npm run build`, and
+  `npm run format:check` pass.
+
+#### N2. Origami explanation view
+
+Goal: turn the origami tab from a trace viewer into an explanation surface where
+users can follow the active fold, see the related objects, and understand the
+proof claim attached to each construction step.
+
+- N2.1 Define visual roles for source geometry, guides, active creases,
+  mountain/valley candidates, reflected geometry, selected intersections,
+  extracted result segments, hidden future objects, and degeneracy warnings.
+- N2.2 Add active-fold overlays in `SvgOrigamiCanvas` that highlight the crease,
+  input objects, reflected objects, intersections, and result segment for the
+  selected step.
+- N2.3 Upgrade the origami steps panel so each step shows its macro family,
+  fold axiom, branch choice, proof status, and any degeneracy note without
+  crowding the layout.
+- N2.4 Add proof-card highlighting so selecting or hovering a proof claim
+  highlights the related crease and scene objects, and selecting a scene object
+  reveals the matching proof claim.
+- N2.5 Refine reveal-state behavior so source and guide objects appear before
+  the fold that uses them, while future objects remain visually quiet until their
+  step is reached.
+- N2.6 Add an inspector section for fold assumptions, selected solution, rejected
+  branches, numeric sampled value, expression provenance, and export IDs.
+- N2.7 Add compact desktop and mobile layouts that keep the SVG, step list,
+  inspector, and proof cards readable without overlapping text or controls.
+- N2.8 Update `docs/ORIGAMI_RENDERING.md` with the visual roles, interaction
+  states, and reveal rules used by the implementation.
+
+Acceptance checks:
+
+- Selecting any fold in the origami gallery highlights the crease and every
+  related source/result object.
+- Selecting an object or proof claim moves focus to the matching step without
+  resetting the compass-and-straightedge tab.
+- The origami tab renders a nonempty SVG and readable panels for each gallery
+  example at desktop and mobile widths.
+- Compass-and-straightedge rendering and interaction tests continue to pass
+  unchanged.
+
+#### N3. Browser and visual regression checks
+
+Goal: make browser-level confidence routine, especially for tab separation,
+nonblank rendering, console stability, and responsive explanation layouts.
+
+- N3.1 Add a browser smoke-test command that starts the Vite app, opens the
+  local URL, waits for the app shell, and fails on uncaught errors or unexpected
+  console errors.
+- N3.2 Add smoke coverage for both tabs: compile a compass-and-straightedge
+  expression, switch to the origami tab, switch back, and verify the original
+  construction state is still intact.
+- N3.3 Add origami gallery smoke coverage that opens every origami example and
+  verifies the SVG contains paper geometry, at least one crease, labels, active
+  step metadata, and no empty viewport.
+- N3.4 Add visual-contract checks for desktop and mobile widths that detect
+  overlapping panels, clipped button text, blank SVG output, and missing active
+  highlights.
+- N3.5 Save deterministic screenshots or image snapshots for the origami tab and
+  document where generated artifacts live and which files are ignored by git.
+- N3.6 Add export smoke checks for origami JSON and SVG once export controls are
+  available, verifying the files contain the same scene IDs shown in the UI.
+- N3.7 Document a short manual browser smoke procedure in the roadmap until the
+  automated checks cover every required interaction.
+
+Acceptance checks:
+
+- The browser smoke command can run locally and in CI without relying on a
+  preexisting dev server.
+- Smoke failures report whether the issue came from console errors, tab-state
+  regression, blank rendering, visual contract failure, or export mismatch.
+- The checks cover at least one compass-and-straightedge example and every
+  origami gallery example.
+- The browser checks pass together with `npm test`, `npm run typecheck`,
+  `npm run lint`, `npm run build`, and `npm run format:check`.
+
 ## 0. Working Agreement for Agents
 
 This roadmap is written so individual tasks can be handed to a coding agent with minimal extra context. Treat each milestone or task group as an independently verifiable change.
