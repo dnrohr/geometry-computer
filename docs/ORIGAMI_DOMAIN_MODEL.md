@@ -30,6 +30,20 @@ Mountain/valley assignment is represented on crease objects as optional
 computation metadata. Early arithmetic traces can operate on flat crease
 geometry without committing to a physical folding sequence.
 
+The first fold axiom templates are deterministic:
+
+- `point-to-point` returns the perpendicular-bisector crease and rejects
+  coincident points.
+- `point-to-line` uses the perpendicular projection of the point onto the target
+  line as the selected image point; a point already on the line is treated as an
+  ambiguous family of folds.
+- `line-to-line` returns sorted angle-bisector solutions for intersecting lines,
+  the midline solution for distinct parallel lines, and an ambiguous-fold error
+  for coincident lines.
+
+These branch choices are intentionally simple so early arithmetic examples can
+be tested without a general fold solver.
+
 ## Degeneracy Handling
 
 Degeneracy notes are first-class data rather than comments. Supported categories
