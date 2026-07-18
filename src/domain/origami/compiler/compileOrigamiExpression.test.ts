@@ -71,6 +71,26 @@ describe("origami expression compiler", () => {
     ]);
   });
 
+  it("emits copy-length traces when an expression value is reused", () => {
+    const scene = compileOrigamiExpression(
+      parseExpression("a+a"),
+      { a: 3 },
+      "a+a",
+    );
+
+    expect(scene.value).toBe(6);
+    expect(scene.steps.map(({ operation }) => operation)).toEqual([
+      "place-input",
+      "copy-length",
+      "add",
+    ]);
+    expect(scene.steps[1]).toMatchObject({
+      operation: "copy-length",
+      inputObjectIds: ["origami-segment-1"],
+      outputObjectIds: ["origami-segment-2"],
+    });
+  });
+
   it("compiles multiplication, division, square, and square root traces", () => {
     const cases: {
       expression: string;
@@ -94,7 +114,7 @@ describe("origami expression compiler", () => {
         expression: "a^2",
         values: { a: 3 },
         value: 9,
-        operations: ["place-input", "square"],
+        operations: ["place-input", "copy-length", "square"],
       },
       {
         expression: "sqrt(a)",

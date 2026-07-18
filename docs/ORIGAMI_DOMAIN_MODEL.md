@@ -57,6 +57,10 @@ Each macro records sampled numeric output, expression provenance, input segment
 IDs, an output segment, and a crease marker representing the fold trace used by
 later rendering work.
 
+When a formatted subexpression is reused, the compiler emits a `copy-length`
+trace rather than silently reusing the same rendered segment. This keeps length
+transfer visible in examples such as `a+a` and `a^2`.
+
 Multiplication and division are modeled as intercept-style fold traces. Square
 is a named specialization of multiplication, and square root is modeled as a
 geometric-mean fold trace. The O3 compiler establishes deterministic scene data;

@@ -43,6 +43,8 @@ baseline segment with expression provenance plus a crease marker for the
 corresponding fold trace.
 
 - Variables and constants mark known directed lengths.
+- Copy-length traces make repeated use of a known length visible as a transfer
+  step.
 - Addition concatenates directed lengths on a baseline.
 - Subtraction transfers the second length in the opposite direction.
 - Multiplication records an intercept-style scale trace.

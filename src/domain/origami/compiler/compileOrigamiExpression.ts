@@ -349,7 +349,14 @@ export function compileOrigamiExpression(
   const compile = (expr: Expr): OrigamiValue => {
     const key = formatExpression(expr);
     const cached = cache.get(key);
-    if (cached) return cached;
+    if (cached)
+      return createTraceStep(
+        key,
+        cached.value,
+        "copy-length",
+        [cached.segmentObjectId],
+        "Copy the source length to a new baseline location.",
+      );
     const value = evaluateSupported(expr, values);
 
     if (expr.kind === "const" || expr.kind === "var") {
@@ -384,7 +391,7 @@ export function compileOrigamiExpression(
 
     const inputs =
       expr.kind === "pow"
-        ? [compile(expr.base)]
+        ? [compile(expr.base), compile(expr.base)]
         : [compile(expr.left), compile(expr.right)];
     const sourceIds = inputs.map(({ segmentObjectId }) => segmentObjectId);
     const operation: OrigamiArithmeticMacroKind =
