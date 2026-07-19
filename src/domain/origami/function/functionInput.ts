@@ -20,9 +20,12 @@ export function evaluateOrigamiFunctionInput(
     const report = validateOrigamiAllowableField(ast, values);
     const validation = {
       source: {
-        source: parsed.normalizedSource,
         ast,
-        variables: report.variables,
+        expressionSource: parsed.expressionSource,
+        functionName: parsed.functionName,
+        source: parsed.normalizedSource,
+        signatureVariables: parsed.signatureVariables,
+        variables: parsed.variables,
       },
       values,
       value: report.value,

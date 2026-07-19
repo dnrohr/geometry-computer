@@ -2,8 +2,11 @@ import type { Expr } from "../../expression/types";
 import type { OrigamiAllowableFieldIssue } from "./allowableField";
 
 export type OrigamiFunctionSource = {
-  source: string;
   ast: Expr;
+  expressionSource: string;
+  functionName: string;
+  source: string;
+  signatureVariables?: string[];
   variables: string[];
 };
 

@@ -19,11 +19,33 @@ const relativePath = (path: string) =>
 describe("origami parser boundary", () => {
   it("normalizes parsed expressions through the origami-owned boundary", () => {
     expect(parseOrigamiExpression("sqrt(a+1)")).toMatchObject({
-      normalizedSource: "sqrt(a + 1)",
+      expressionSource: "sqrt(a + 1)",
+      functionName: "f",
+      normalizedSource: "f(a) = sqrt(a + 1)",
+      variables: ["a"],
       ast: {
         kind: "sqrt",
       },
     });
+  });
+
+  it("accepts optional function signatures and normalizes display names", () => {
+    expect(parseOrigamiExpression("g(a,b)=a*b")).toMatchObject({
+      expressionSource: "a * b",
+      functionName: "g",
+      normalizedSource: "g(a, b) = a * b",
+      signatureVariables: ["a", "b"],
+      variables: ["a", "b"],
+    });
+  });
+
+  it("rejects signatures that do not match expression variables", () => {
+    expect(() => parseOrigamiExpression("f(a)=a+b")).toThrow(
+      "Function signature variables must match the expression variables.",
+    );
+    expect(() => parseOrigamiExpression("f(a,a)=a")).toThrow(
+      "Function signature variables must be unique.",
+    );
   });
 
   it("keeps shared parser imports behind the origami function boundary", () => {

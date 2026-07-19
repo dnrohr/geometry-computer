@@ -87,10 +87,11 @@ origami-owned plan, animation, and paper-style contracts so tab-switching tests
 can prove this state stays separate from the compass-and-straightedge workspace.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
-presets. Each preset has a signature-style display source, an expression body
-that the current parser boundary can compile, and sampled values for the
-function lab. Signature parsing remains a later F1.2 concern; F1.1 keeps the
-examples visible and usable without expanding the parser surface yet.
+presets. Each preset has a signature-style display source, an expression body,
+and sampled values for the function lab. The parser boundary accepts either a
+bare expression or a signature such as `f(a,b)=a*b`, verifies that signature
+variables match the expression variables, and normalizes display labels such as
+`f(a, b) = a * b`.
 
 The supported O3 trace covers variables, constants, addition, subtraction,
 multiplication, division, square, and square root on deterministic baselines.

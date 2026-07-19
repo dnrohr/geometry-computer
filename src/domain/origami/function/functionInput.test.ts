@@ -16,7 +16,9 @@ describe("origami function input boundary", () => {
     expect(state.status).toBe("valid");
     if (state.status !== "valid") throw new Error("Expected valid state");
     expect(state.validation.source).toMatchObject({
-      source: "sqrt(a + 1)",
+      expressionSource: "sqrt(a + 1)",
+      functionName: "f",
+      source: "f(a) = sqrt(a + 1)",
       variables: ["a"],
     });
     expect(state.validation.values).toEqual(DEFAULT_ORIGAMI_FUNCTION_VALUES);
@@ -48,16 +50,33 @@ describe("origami function input boundary", () => {
     });
   });
 
+  it("parses optional function signatures and preserves normalized result labels", () => {
+    const state = evaluateOrigamiFunctionInput("g(a,b)=a*b");
+
+    expect(state.status).toBe("valid");
+    if (state.status !== "valid") throw new Error("Expected valid state");
+    expect(state.validation.source).toMatchObject({
+      expressionSource: "a * b",
+      functionName: "g",
+      signatureVariables: ["a", "b"],
+      source: "g(a, b) = a * b",
+      variables: ["a", "b"],
+    });
+    expect(state.validation.value).toBe(6);
+  });
+
   it("defines origami-owned planning, animation, paper style, and export contracts", () => {
     const plan: OrigamiFunctionPlan = {
       id: "origami-function-plan-test",
       source: {
-        source: "a + b",
         ast: {
           kind: "add",
           left: { kind: "var", name: "a" },
           right: { kind: "var", name: "b" },
         },
+        expressionSource: "a + b",
+        functionName: "f",
+        source: "f(a, b) = a + b",
         variables: ["a", "b"],
       },
       values: { a: 3, b: 2 },

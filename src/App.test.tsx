@@ -267,6 +267,9 @@ describe("App", () => {
     expect(within(functionPanel).getByText("allowable")).toBeInTheDocument();
     expect(within(functionPanel).getByText("2.000")).toBeInTheDocument();
     expect(
+      within(functionPanel).getByText("f(a) = sqrt(a + 1)"),
+    ).toBeInTheDocument();
+    expect(
       within(functionPanel).getByRole("button", {
         name: /Product f\(a,b\)=a\*b/i,
       }),
@@ -417,10 +420,10 @@ describe("App", () => {
     );
     expect(
       within(functionPanel).getByRole("textbox", { name: "Origami function" }),
-    ).toHaveValue("a*b");
+    ).toHaveValue("f(a,b)=a*b");
     expect(within(functionPanel).getByText("6.000")).toBeInTheDocument();
     expect(
-      within(functionPanel).getByText("origami-function-plan-a-b"),
+      within(functionPanel).getByText("origami-function-plan-f-a-b-a-b"),
     ).toBeInTheDocument();
 
     fireEvent.click(
@@ -430,10 +433,10 @@ describe("App", () => {
     );
     expect(
       within(functionPanel).getByRole("textbox", { name: "Origami function" }),
-    ).toHaveValue("(a+b)/(c+1)");
+    ).toHaveValue("f(a,b,c)=(a+b)/(c+1)");
     expect(within(functionPanel).getByText("2.500")).toBeInTheDocument();
     expect(
-      within(functionPanel).getByText("origami-function-plan-a-b-c-1"),
+      within(functionPanel).getByText("origami-function-plan-f-a-b-c-a-b-c-1"),
     ).toBeInTheDocument();
     expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
   });
@@ -454,12 +457,14 @@ describe("App", () => {
     );
     fireEvent.change(
       screen.getByRole("textbox", { name: "Origami function" }),
-      { target: { value: "a+b" } },
+      { target: { value: "f(a,b)=a+b" } },
     );
     fireEvent.click(
       screen.getByRole("button", { name: "Compile origami function" }),
     );
-    expect(screen.getByText("origami-function-plan-a-b")).toBeInTheDocument();
+    expect(
+      screen.getByText("origami-function-plan-f-a-b-a-b"),
+    ).toBeInTheDocument();
     fireEvent.click(
       screen.getByRole("button", { name: "Preview fold animation" }),
     );
@@ -488,7 +493,7 @@ describe("App", () => {
     );
     expect(
       screen.getByRole("textbox", { name: "Origami function" }),
-    ).toHaveValue("a+b");
+    ).toHaveValue("f(a,b)=a+b");
     expect(
       screen.getByText("origami-function-phase-3 @ 0.50"),
     ).toBeInTheDocument();

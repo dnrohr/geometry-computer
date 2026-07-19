@@ -550,18 +550,22 @@ function OrigamiRoadmap() {
     functionReport.status === "valid"
       ? functionReport.validation.value?.toFixed(3)
       : functionIssue;
+  const functionDisplayName =
+    functionReport.status === "parse-error"
+      ? "none"
+      : functionReport.validation.source.source;
   const compileOrigamiFunction = () =>
     setFunctionPreview(
       compileOrigamiFunctionPreview(functionSource, functionValues),
     );
   const selectOrigamiFunctionExample = (example: OrigamiFunctionExample) => {
-    setFunctionSource(example.expression);
+    setFunctionSource(example.displaySource);
     setFunctionValues({
       ...DEFAULT_ORIGAMI_FUNCTION_VALUES,
       ...example.values,
     });
     setFunctionPreview(
-      compileOrigamiFunctionPreview(example.expression, {
+      compileOrigamiFunctionPreview(example.displaySource, {
         ...DEFAULT_ORIGAMI_FUNCTION_VALUES,
         ...example.values,
       }),
@@ -691,6 +695,10 @@ function OrigamiRoadmap() {
           <div>
             <dt>Sample result</dt>
             <dd>{functionValue}</dd>
+          </div>
+          <div>
+            <dt>Result label</dt>
+            <dd>{functionDisplayName}</dd>
           </div>
           <div>
             <dt>Plan</dt>

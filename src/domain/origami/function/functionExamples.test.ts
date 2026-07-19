@@ -8,9 +8,9 @@ describe("origami function examples", () => {
     ).toEqual(["f(a,b)=a*b", "f(x)=sqrt(x+1)", "f(a,b,c)=(a+b)/(c+1)"]);
   });
 
-  it("keeps every preset compilable through the current expression-body boundary", () => {
+  it("keeps every preset compilable through the signature-aware boundary", () => {
     const previews = origamiFunctionExamples.map((example) =>
-      compileOrigamiFunctionPreview(example.expression, example.values),
+      compileOrigamiFunctionPreview(example.displaySource, example.values),
     );
 
     expect(previews.every(({ status }) => status === "compiled")).toBe(true);

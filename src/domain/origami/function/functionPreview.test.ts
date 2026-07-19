@@ -10,12 +10,12 @@ describe("origami function preview plan", () => {
     expect(preview.status).toBe("compiled");
     if (preview.status !== "compiled") throw new Error("Expected compiled");
     expect(preview.plan).toMatchObject({
-      id: "origami-function-plan-sqrt-a-1",
+      id: "origami-function-plan-f-a-sqrt-a-1",
       resultObjectId: "origami-function-result",
       phases: [
         { kind: "place-paper" },
         { kind: "mark-input", expression: "a" },
-        { kind: "extract-result", expression: "sqrt(a + 1)" },
+        { kind: "extract-result", expression: "f(a) = sqrt(a + 1)" },
       ],
     });
     expect(preview.animation).toMatchObject({
@@ -45,5 +45,16 @@ describe("origami function preview plan", () => {
     expect(advanced.plan).toBe(preview.plan);
     expect(advanced.animation.progress).toBe(0.5);
     expect(advanced.animation.phaseId).toBe("origami-function-phase-3");
+  });
+
+  it("compiles signature inputs into display-labeled plans", () => {
+    const preview = compileOrigamiFunctionPreview("g(a,b)=a*b");
+
+    expect(preview.status).toBe("compiled");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+    expect(preview.plan).toMatchObject({
+      id: "origami-function-plan-g-a-b-a-b",
+      source: { source: "g(a, b) = a * b", variables: ["a", "b"] },
+    });
   });
 });
