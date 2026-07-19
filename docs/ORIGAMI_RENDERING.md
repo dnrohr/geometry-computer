@@ -17,6 +17,11 @@ The canvas accepts origami reveal states, highlighted object IDs, and selection
 callbacks. It exposes object-level keyboard and pointer activation so the app can
 drive an inspector without sharing construction-workspace state.
 
+`SvgOrigamiCanvas` renders base scene objects first, then renders the active-fold
+overlay layer. The base objects keep stable IDs of the form `origami-{objectId}`;
+overlay objects use `origami-overlay-{objectId}` so export and test code can
+distinguish authored geometry from the explanation highlight pass.
+
 ## Visual Roles
 
 `buildOrigamiVisualRoleMap` assigns explanation-facing visual roles without
@@ -42,6 +47,13 @@ These classes are deliberately layered over semantic object roles such as
 `input`, `intermediate`, `crease`, and `result`. Later overlay work can use the
 same visual-role map to highlight an active fold without changing compiler
 output.
+
+The visual-role map is derived from three inputs:
+
+- the `OrigamiFoldScene`, including `macroTrace` source, guide, crease,
+  intersection, result, branch, and degeneracy references.
+- the active step ID selected from the step list or by keyboard traversal.
+- reveal-state output, especially `future`, which marks quiet preview geometry.
 
 ## Active-Fold Overlays
 
@@ -97,6 +109,17 @@ expression provenance, proof assumptions, selected branch or fold solution,
 rejected branch labels when present, sampled numeric/display value, source
 object provenance, and export IDs for the object and producing step.
 
+The interaction state is intentionally local to the origami tab:
+
+- `activeStepId` drives step list styling, reveal progress, visual roles, and
+  overlay membership.
+- `selectedObjectId` drives the inspector and can open the matching proof claim.
+- `proofId` opens the origami proof card for the selected step or object.
+- `selectedProofClaimId` and `hoveredProofClaimId` add proof-claim object IDs to
+  the canvas highlight set, with hover taking temporary precedence.
+
+These states do not import or mutate compass-and-straightedge interaction state.
+
 ## Responsive Layout
 
 The origami explanation view uses four readable regions: SVG canvas, step list,
@@ -112,7 +135,8 @@ wraps within its panel instead of overflowing.
 
 ## Current Limits
 
-The O4 renderer visualizes deterministic trace geometry. It does not yet render
-full physical folding sequences, mountain/valley solving, or all intermediate
-crease constructions for multiplication, division, and square root. Those details
-belong in later fold-solver and proof-expansion work.
+The N2 renderer visualizes deterministic explanation geometry for the supported
+arithmetic traces. It does not yet solve full physical folding sequences or
+assign final mountain/valley choices. Creases remain candidates until a later
+fold-solver milestone can prove a physical sequence and export those assignments
+as more than display metadata.
