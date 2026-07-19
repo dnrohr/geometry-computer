@@ -112,7 +112,7 @@ export function foldPointToPoint(
   if (nearlyZero(length(delta))) {
     const degeneracy = {
       kind: "coincident-points" as const,
-      message: "A point-to-point fold needs two distinct points.",
+      message: "Coincident points cannot define a unique point-to-point fold.",
       objectIds: [],
     };
     throw new OrigamiAxiomError(degeneracy.message, "COINCIDENT_POINTS", [
