@@ -92,6 +92,11 @@ claim adds its `highlightObjectIds` to the canvas highlight set. Selecting a
 scene object searches proof claims for that object, opens the matching proof,
 selects the claim, and activates the step that owns the proof.
 
+The object inspector shows the selected object's ID, kind, semantic role,
+expression provenance, proof assumptions, selected branch or fold solution,
+rejected branch labels when present, sampled numeric/display value, source
+object provenance, and export IDs for the object and producing step.
+
 ## Current Limits
 
 The O4 renderer visualizes deterministic trace geometry. It does not yet render

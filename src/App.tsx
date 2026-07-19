@@ -441,6 +441,12 @@ function OrigamiRoadmap() {
   const selectedObject = scene.objects.find(
     ({ id }) => id === selectedObjectId,
   );
+  const selectedObjectStep = scene.steps.find(
+    ({ id }) => id === selectedObject?.createdByStepId,
+  );
+  const selectedObjectProof = scene.proofs.find(
+    ({ id }) => id === selectedObjectStep?.proofId,
+  );
   const activeProof = scene.proofs.find(({ id }) => id === proofId);
   const activeClaimId = hoveredProofClaimId ?? selectedProofClaimId;
   const activeProofClaim = scene.proofs
@@ -484,6 +490,22 @@ function OrigamiRoadmap() {
   const origamiStepProofStatus = (proofId?: string) => {
     if (!proofId) return "none";
     return scene.proofs.some(({ id }) => id === proofId) ? "linked" : "missing";
+  };
+  const selectedBranch = selectedObjectStep?.macroTrace?.branchSelections.find(
+    ({ selected }) => selected,
+  );
+  const rejectedBranches =
+    selectedObjectStep?.macroTrace?.branchSelections.filter(
+      ({ selected }) => !selected,
+    ) ?? [];
+  const sampledOrigamiValue = () => {
+    if (!selectedObject) return "none";
+    if (selectedObject.role === "result") return scene.value.toString();
+    if (selectedObject.data.kind === "segment") {
+      const { start, end } = selectedObject.data;
+      return (Math.hypot(end.x - start.x, end.y - start.y) / 1.6).toFixed(3);
+    }
+    return "n/a";
   };
   const moveOrigamiStep = (delta: number) => {
     const index = Math.max(
@@ -730,6 +752,36 @@ function OrigamiRoadmap() {
                 <dd>{selectedObject.role}</dd>
                 <dt>Expression</dt>
                 <dd>{selectedObject.provenance.expression ?? "none"}</dd>
+                <dt>Assumptions</dt>
+                <dd>
+                  {selectedObjectProof?.assumptions?.join("; ") ?? "none"}
+                </dd>
+                <dt>Selected</dt>
+                <dd>
+                  {selectedBranch?.label ??
+                    selectedObjectStep?.selectedSolutionId ??
+                    "deterministic"}
+                </dd>
+                <dt>Rejected</dt>
+                <dd>
+                  {rejectedBranches.length
+                    ? rejectedBranches.map(({ label }) => label).join(", ")
+                    : "none"}
+                </dd>
+                <dt>Sample</dt>
+                <dd>{sampledOrigamiValue()}</dd>
+                <dt>Provenance</dt>
+                <dd>
+                  {selectedObject.provenance.sourceObjectIds.length
+                    ? selectedObject.provenance.sourceObjectIds.join(", ")
+                    : "none"}
+                </dd>
+                <dt>Export IDs</dt>
+                <dd>
+                  {[selectedObject.id, selectedObjectStep?.id]
+                    .filter(Boolean)
+                    .join(", ")}
+                </dd>
               </dl>
             ) : (
               <p>Select a crease, point, segment, or label in the diagram.</p>

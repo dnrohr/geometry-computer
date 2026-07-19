@@ -284,7 +284,34 @@ describe("App", () => {
     fireEvent.click(
       screen.getAllByRole("button", { name: /segment a \* b/i })[0],
     );
-    expect(screen.getByText("origami-segment-3")).toBeInTheDocument();
+    const inspector = screen.getByRole("complementary", {
+      name: "Origami object",
+    });
+    expect(
+      within(inspector).getByText("origami-segment-3"),
+    ).toBeInTheDocument();
+    expect(within(inspector).getByText("Assumptions")).toBeInTheDocument();
+    expect(
+      within(inspector).getByText(
+        "This trace records the arithmetic dependency; detailed crease geometry is expanded in the rendering milestone.",
+      ),
+    ).toBeInTheDocument();
+    expect(within(inspector).getByText("Selected")).toBeInTheDocument();
+    expect(
+      within(inspector).getByText("Intercept similar-triangle branch"),
+    ).toBeInTheDocument();
+    expect(within(inspector).getByText("Rejected")).toBeInTheDocument();
+    expect(within(inspector).getAllByText("none").length).toBeGreaterThan(0);
+    expect(within(inspector).getByText("Sample")).toBeInTheDocument();
+    expect(within(inspector).getByText("6")).toBeInTheDocument();
+    expect(within(inspector).getByText("Provenance")).toBeInTheDocument();
+    expect(
+      within(inspector).getByText(/origami-point-5, origami-point-6/),
+    ).toBeInTheDocument();
+    expect(within(inspector).getByText("Export IDs")).toBeInTheDocument();
+    expect(
+      within(inspector).getByText("origami-segment-3, origami-step-3"),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Export origami JSON" }),
     ).toBeInTheDocument();
