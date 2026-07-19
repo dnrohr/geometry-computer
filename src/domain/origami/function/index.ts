@@ -13,6 +13,7 @@ export {
   origamiFunctionExamples,
   type OrigamiFunctionExample,
 } from "./functionExamples";
+export { createOrigamiFunctionPlan } from "./functionPlan";
 export {
   DEFAULT_ORIGAMI_PAPER_STYLE,
   advanceOrigamiFunctionPreview,
@@ -32,11 +33,17 @@ export {
 export type {
   OrigamiFoldAnimationState,
   OrigamiFunctionAnimationExport,
+  OrigamiFunctionLengthTransfer,
   OrigamiFunctionPanelState,
   OrigamiFunctionParseFailure,
   OrigamiFunctionPlan,
+  OrigamiFunctionPlanNode,
+  OrigamiFunctionPlanNodeKind,
+  OrigamiFunctionPlanOperation,
+  OrigamiFunctionPlanOperationKind,
   OrigamiFunctionPlanPhase,
   OrigamiFunctionPlanPhaseKind,
+  OrigamiFunctionResultExtraction,
   OrigamiFunctionSource,
   OrigamiFunctionValidation,
   OrigamiPaperPattern,

@@ -80,6 +80,34 @@ describe("origami function input boundary", () => {
         variables: ["a", "b"],
       },
       values: { a: 3, b: 2 },
+      nodes: [
+        {
+          id: "origami-function-node-1",
+          kind: "add",
+          expression: "a + b",
+          dependencies: [],
+          value: 5,
+          outputObjectId: "origami-function-node-output-1",
+        },
+      ],
+      operations: [
+        {
+          id: "origami-function-operation-1",
+          kind: "extract-result",
+          nodeId: "origami-function-node-1",
+          dependencyNodeIds: ["origami-function-node-1"],
+          phaseIds: ["origami-phase-1"],
+          sourceObjectIds: ["origami-function-node-output-1"],
+          outputObjectIds: ["origami-segment-3"],
+          proofClaimIds: [],
+        },
+      ],
+      lengthTransfers: [],
+      resultExtraction: {
+        nodeId: "origami-function-node-1",
+        phaseId: "origami-phase-1",
+        outputObjectId: "origami-segment-3",
+      },
       phases: [
         {
           id: "origami-phase-1",

@@ -88,6 +88,12 @@ deliberately simple until F2/F3 add richer fold phases, but it already uses the
 origami-owned plan, animation, and paper-style contracts so tab-switching tests
 can prove this state stays separate from the compass-and-straightedge workspace.
 
+`src/domain/origami/function/functionPlan.ts` is the F2.1 plan builder. It walks
+the parsed expression into stable plan nodes with sampled intermediate values,
+dependency links, operation records, reusable length-transfer diagnostics for
+repeated subexpressions, and result-extraction metadata. The preview compiler now
+uses this model while still rendering the same early deterministic phases.
+
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,
 and sampled values for the function lab. The parser boundary accepts either a

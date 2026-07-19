@@ -18,6 +18,24 @@ describe("origami function preview plan", () => {
         { kind: "extract-result", expression: "f(a) = sqrt(a + 1)" },
       ],
     });
+    expect(preview.plan.nodes.map(({ expression }) => expression)).toEqual([
+      "a",
+      "1",
+      "a + 1",
+      "sqrt(a + 1)",
+    ]);
+    expect(preview.plan.operations.map(({ kind }) => kind)).toEqual([
+      "place-input",
+      "place-constant",
+      "add-lengths",
+      "extract-square-root",
+      "extract-result",
+    ]);
+    expect(preview.plan.resultExtraction).toEqual({
+      nodeId: "origami-function-node-4",
+      phaseId: "origami-function-phase-3",
+      outputObjectId: "origami-function-result",
+    });
     expect(preview.animation).toMatchObject({
       planId: preview.plan.id,
       phaseId: "origami-function-phase-1",

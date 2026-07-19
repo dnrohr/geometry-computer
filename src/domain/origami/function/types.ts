@@ -45,12 +45,73 @@ export type OrigamiFunctionPlanPhase = {
   sourceObjectIds: string[];
   outputObjectIds: string[];
   proofClaimIds: string[];
+  exportId?: string;
+};
+
+export type OrigamiFunctionPlanNodeKind =
+  | "input"
+  | "constant"
+  | "add"
+  | "sub"
+  | "mul"
+  | "div"
+  | "pow"
+  | "sqrt";
+
+export type OrigamiFunctionPlanNode = {
+  id: string;
+  kind: OrigamiFunctionPlanNodeKind;
+  expression: string;
+  dependencies: string[];
+  value: number;
+  outputObjectId: string;
+};
+
+export type OrigamiFunctionPlanOperationKind =
+  | "place-input"
+  | "place-constant"
+  | "add-lengths"
+  | "subtract-lengths"
+  | "multiply-lengths"
+  | "divide-lengths"
+  | "power-length"
+  | "extract-square-root"
+  | "reuse-length"
+  | "extract-result";
+
+export type OrigamiFunctionPlanOperation = {
+  id: string;
+  kind: OrigamiFunctionPlanOperationKind;
+  nodeId: string;
+  dependencyNodeIds: string[];
+  phaseIds: string[];
+  sourceObjectIds: string[];
+  outputObjectIds: string[];
+  proofClaimIds: string[];
+};
+
+export type OrigamiFunctionLengthTransfer = {
+  id: string;
+  fromNodeId: string;
+  expression: string;
+  outputObjectId: string;
+  reason: "reuse-subexpression";
+};
+
+export type OrigamiFunctionResultExtraction = {
+  nodeId: string;
+  phaseId: string;
+  outputObjectId: string;
 };
 
 export type OrigamiFunctionPlan = {
   id: string;
   source: OrigamiFunctionSource;
   values: Record<string, number>;
+  nodes: OrigamiFunctionPlanNode[];
+  operations: OrigamiFunctionPlanOperation[];
+  lengthTransfers: OrigamiFunctionLengthTransfer[];
+  resultExtraction: OrigamiFunctionResultExtraction;
   phases: OrigamiFunctionPlanPhase[];
   diagnostics: OrigamiAllowableFieldIssue[];
   resultObjectId?: string;

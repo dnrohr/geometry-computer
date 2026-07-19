@@ -2,6 +2,7 @@ import {
   DEFAULT_ORIGAMI_FUNCTION_VALUES,
   evaluateOrigamiFunctionInput,
 } from "./functionInput";
+import { createOrigamiFunctionPlan } from "./functionPlan";
 import type {
   OrigamiFoldAnimationState,
   OrigamiFunctionPanelState,
@@ -34,55 +35,6 @@ export const DEFAULT_ORIGAMI_PAPER_STYLE: OrigamiPaperStyle = {
   patternRotation: 0,
 };
 
-const slug = (source: string) =>
-  source
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")
-    .slice(0, 48) || "constant";
-
-const createPlan = (
-  input: Extract<OrigamiFunctionPanelState, { status: "valid" }>,
-): OrigamiFunctionPlan => {
-  const expressionSlug = slug(input.validation.source.source);
-  const variables = input.validation.source.variables;
-  return {
-    id: `origami-function-plan-${expressionSlug}`,
-    source: input.validation.source,
-    values: input.validation.values,
-    phases: [
-      {
-        id: "origami-function-phase-1",
-        kind: "place-paper",
-        expression: input.validation.source.source,
-        sourceObjectIds: [],
-        outputObjectIds: ["origami-function-paper"],
-        proofClaimIds: [],
-      },
-      ...variables.map((variable, index) => ({
-        id: `origami-function-phase-${index + 2}`,
-        kind: "mark-input" as const,
-        expression: variable,
-        sourceObjectIds: [],
-        outputObjectIds: [`origami-function-input-${variable}`],
-        proofClaimIds: [],
-      })),
-      {
-        id: `origami-function-phase-${variables.length + 2}`,
-        kind: "extract-result",
-        expression: input.validation.source.source,
-        sourceObjectIds: variables.map(
-          (variable) => `origami-function-input-${variable}`,
-        ),
-        outputObjectIds: ["origami-function-result"],
-        proofClaimIds: [],
-      },
-    ],
-    diagnostics: [],
-    resultObjectId: "origami-function-result",
-  };
-};
-
 const animationForPlan = (
   plan: OrigamiFunctionPlan,
   progress = 0,
@@ -108,7 +60,7 @@ export function compileOrigamiFunctionPreview(
 ): OrigamiFunctionPreview {
   const input = evaluateOrigamiFunctionInput(source, values);
   if (input.status !== "valid") return { status: "blocked", input };
-  const plan = createPlan(input);
+  const plan = createOrigamiFunctionPlan(input);
   return {
     status: "compiled",
     input,
