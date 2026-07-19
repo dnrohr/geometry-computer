@@ -101,6 +101,11 @@ F2.3 expands each arithmetic node into animation-ready phases for alignment,
 crease preview, folding, transfer/reflection, and intersection marking. Inputs
 and constants still get compact mark phases, and the final node receives a
 separate result-extraction phase.
+F2.4 adds fold-motion metadata to those arithmetic phases: fold direction, a
+stable hinge line, moving and stationary paper regions, front/back side exposure,
+and the selected branch/reason. These records are deterministic animation
+contracts for the separate function tab; they are intentionally simple until a
+later physical fold solver can replace the placeholder geometry.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

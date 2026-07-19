@@ -38,6 +38,39 @@ export type OrigamiFunctionPlanPhaseKind =
   | "extract-result"
   | "diagnostic";
 
+export type OrigamiFunctionFoldDirection = "mountain" | "valley" | "flat";
+
+export type OrigamiFunctionHingeLine = {
+  id: string;
+  point: { x: number; y: number };
+  direction: { x: number; y: number };
+};
+
+export type OrigamiFunctionPaperRegion = {
+  id: string;
+  vertices: Array<{ x: number; y: number }>;
+};
+
+export type OrigamiFunctionSideExposure = {
+  before: "front" | "back" | "both";
+  after: "front" | "back" | "both";
+};
+
+export type OrigamiFunctionSelectedBranch = {
+  id: string;
+  label: string;
+  reason: string;
+};
+
+export type OrigamiFunctionFoldMotion = {
+  direction: OrigamiFunctionFoldDirection;
+  hingeLine: OrigamiFunctionHingeLine;
+  movingPaperRegion: OrigamiFunctionPaperRegion;
+  stationaryPaperRegion: OrigamiFunctionPaperRegion;
+  sideExposure: OrigamiFunctionSideExposure;
+  selectedBranch: OrigamiFunctionSelectedBranch;
+};
+
 export type OrigamiFunctionPlanPhase = {
   id: string;
   kind: OrigamiFunctionPlanPhaseKind;
@@ -46,6 +79,7 @@ export type OrigamiFunctionPlanPhase = {
   outputObjectIds: string[];
   proofClaimIds: string[];
   exportId?: string;
+  foldMotion?: OrigamiFunctionFoldMotion;
 };
 
 export type OrigamiFunctionPlanNodeKind =

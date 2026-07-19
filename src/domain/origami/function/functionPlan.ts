@@ -2,6 +2,7 @@ import { formatExpression } from "../../expression/format";
 import type { Expr } from "../../expression/types";
 import type {
   OrigamiFunctionPanelState,
+  OrigamiFunctionFoldMotion,
   OrigamiFunctionPlan,
   OrigamiFunctionPlanNode,
   OrigamiFunctionPlanNodeKind,
@@ -102,6 +103,105 @@ const arithmeticPhaseKinds: OrigamiFunctionPlanPhaseKind[] = [
   "transfer",
   "mark-intersection",
 ];
+
+const branchForNode = (node: OrigamiFunctionPlanNode) => {
+  switch (node.kind) {
+    case "add":
+      return {
+        id: "baseline-addition-transfer",
+        label: "Baseline addition transfer",
+        reason:
+          "Place the second length after the first along the oriented paper baseline.",
+      };
+    case "sub":
+      return {
+        id: "directed-subtraction-transfer",
+        label: "Directed subtraction transfer",
+        reason:
+          "Fold the subtrahend back along the oriented baseline to preserve signed length.",
+      };
+    case "mul":
+      return {
+        id: "intercept-product-branch",
+        label: "Intercept product branch",
+        reason:
+          "Use the positive similar-triangle branch for sampled multiplication.",
+      };
+    case "div":
+      return {
+        id: "reciprocal-quotient-branch",
+        label: "Reciprocal quotient branch",
+        reason:
+          "Use the nonzero-denominator reciprocal branch selected by sampled validation.",
+      };
+    case "pow":
+      return {
+        id: "repeated-power-transfer",
+        label: "Repeated power transfer",
+        reason:
+          "Treat the supported integer power as repeated length multiplication.",
+      };
+    case "sqrt":
+      return {
+        id: "positive-geometric-mean-branch",
+        label: "Positive geometric-mean branch",
+        reason:
+          "Select the nonnegative square-root intersection guaranteed by sampled validation.",
+      };
+    case "constant":
+    case "input":
+      return {
+        id: "mark-length",
+        label: "Mark sampled length",
+        reason: "Inputs and constants are marked before animated fold phases.",
+      };
+  }
+};
+
+const foldMotionForNode = (
+  node: OrigamiFunctionPlanNode,
+  phaseKind: OrigamiFunctionPlanPhaseKind,
+): OrigamiFunctionFoldMotion => {
+  const x = node.order;
+  const y = node.dependencyDepth;
+  return {
+    direction:
+      phaseKind === "preview-crease"
+        ? "flat"
+        : node.order % 2 === 0
+          ? "valley"
+          : "mountain",
+    hingeLine: {
+      id: `origami-function-hinge-${node.order}`,
+      point: { x, y },
+      direction: { x: 1, y: node.kind === "sqrt" ? 1 : 0 },
+    },
+    movingPaperRegion: {
+      id: `origami-function-moving-region-${node.order}`,
+      vertices: [
+        { x, y },
+        { x: x + 1, y },
+        { x: x + 1, y: y + 1 },
+        { x, y: y + 1 },
+      ],
+    },
+    stationaryPaperRegion: {
+      id: `origami-function-stationary-region-${node.order}`,
+      vertices: [
+        { x: 0, y: 0 },
+        { x, y: 0 },
+        { x, y },
+        { x: 0, y },
+      ],
+    },
+    sideExposure: {
+      before: "front",
+      after:
+        phaseKind === "fold" || phaseKind === "transfer" ? "back" : "front",
+    },
+    selectedBranch: branchForNode(node),
+  };
+};
 
 export function createOrigamiFunctionPlan(
   input: ValidOrigamiFunctionInput,
@@ -232,6 +332,7 @@ export function createOrigamiFunctionPlan(
                   ? [node.outputObjectId]
                   : [`${node.outputObjectId}-${kind}`],
               proofClaimIds: [],
+              foldMotion: foldMotionForNode(node, kind),
             }),
           );
     nodePhaseIds.set(node.id, phaseIds);

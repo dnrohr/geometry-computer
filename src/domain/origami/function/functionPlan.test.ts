@@ -74,6 +74,41 @@ describe("origami function plan", () => {
       "mark-intersection",
       "extract-result",
     ]);
+    expect(plan.phases.slice(3, 8).map(({ foldMotion }) => foldMotion)).toEqual(
+      [
+        expect.objectContaining({
+          direction: "mountain",
+          hingeLine: expect.objectContaining({
+            id: "origami-function-hinge-3",
+          }),
+          movingPaperRegion: expect.objectContaining({
+            id: "origami-function-moving-region-3",
+          }),
+          stationaryPaperRegion: expect.objectContaining({
+            id: "origami-function-stationary-region-3",
+          }),
+          selectedBranch: expect.objectContaining({
+            id: "intercept-product-branch",
+          }),
+        }),
+        expect.objectContaining({
+          direction: "flat",
+          sideExposure: { before: "front", after: "front" },
+        }),
+        expect.objectContaining({
+          direction: "mountain",
+          sideExposure: { before: "front", after: "back" },
+        }),
+        expect.objectContaining({
+          direction: "mountain",
+          sideExposure: { before: "front", after: "back" },
+        }),
+        expect.objectContaining({
+          direction: "mountain",
+          sideExposure: { before: "front", after: "front" },
+        }),
+      ],
+    );
     expect(plan.executionOrder).toEqual([
       "origami-function-node-1",
       "origami-function-node-2",
@@ -117,6 +152,15 @@ describe("origami function plan", () => {
       expression: "sqrt((a + b) * (a + b))",
       dependencyDepth: 3,
     });
+    expect(
+      plan.phases
+        .filter(({ kind }) => kind === "fold")
+        .map(({ foldMotion }) => foldMotion?.selectedBranch.id),
+    ).toEqual([
+      "baseline-addition-transfer",
+      "intercept-product-branch",
+      "positive-geometric-mean-branch",
+    ]);
     expect(plan.lengthTransfers).toEqual([
       expect.objectContaining({
         expression: "a + b",
