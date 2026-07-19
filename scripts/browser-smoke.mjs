@@ -58,6 +58,38 @@ const setRangeValue = async (locator, value) => {
   await locator.fill(value);
 };
 
+const assertOrigamiSceneVisible = async (page, expectedName) => {
+  const svg = page.getByRole("img", { name: expectedName });
+  await svg.waitFor();
+  const scene = await svg.evaluate((element) => {
+    const box = element.getBoundingClientRect();
+    return {
+      width: box.width,
+      height: box.height,
+      paper: element.querySelectorAll(".origami-paper").length,
+      creases: element.querySelectorAll(".origami-crease").length,
+      labels: element.querySelectorAll("text.origami-object").length,
+    };
+  });
+
+  if (
+    scene.width <= 0 ||
+    scene.height <= 0 ||
+    scene.paper < 1 ||
+    scene.creases < 1 ||
+    scene.labels < 1
+  ) {
+    throw new Error(
+      `Origami scene regression for ${expectedName}: ${JSON.stringify(scene)}`,
+    );
+  }
+
+  const stepsPanel = page.locator(".origami-steps-panel");
+  await stepsPanel.getByText("Macro").first().waitFor();
+  await stepsPanel.getByText("Proof").first().waitFor();
+  await stepsPanel.getByText("Degeneracy").first().waitFor();
+};
+
 try {
   await waitForServer();
   const browser = await chromium.launch();
@@ -88,11 +120,25 @@ try {
 
   await page.getByRole("button", { name: "Flat origami roadmap" }).click();
   await page.getByRole("heading", { name: "Origami Computer" }).waitFor();
-  await page.getByRole("img", { name: /Compiled origami trace: a/i }).waitFor();
-  await page.getByRole("button", { name: "Multiplication trace" }).click();
-  await page
-    .getByRole("img", { name: /Compiled origami trace: a\*b/i })
-    .waitFor();
+  const origamiExamples = [
+    { button: "Input length", image: /Compiled origami trace: a/i },
+    { button: "Constant length", image: /Compiled origami trace: 2/i },
+    { button: "Addition trace", image: /Compiled origami trace: a\+b/i },
+    { button: "Subtraction trace", image: /Compiled origami trace: a-b/i },
+    { button: "Multiplication trace", image: /Compiled origami trace: a\*b/i },
+    { button: "Division trace", image: /Compiled origami trace: a\/b/i },
+    { button: "Square trace", image: /Compiled origami trace: a\^2/i },
+    {
+      button: "Square root trace",
+      image: /Compiled origami trace: sqrt\(a\)/i,
+    },
+  ];
+  for (const example of origamiExamples) {
+    await page
+      .getByRole("button", { name: example.button, exact: true })
+      .click();
+    await assertOrigamiSceneVisible(page, example.image);
+  }
 
   await page.getByRole("button", { name: "Compass + straightedge" }).click();
   await page.getByRole("heading", { name: "Construct a + b" }).waitFor();
