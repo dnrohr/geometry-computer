@@ -86,6 +86,12 @@ a selected baseline-transfer branch. Later N1 tasks should populate the empty
 guide, reflection, unit, and intersection slots with real intermediate geometry
 without changing the compass-and-straightedge compiler or renderer.
 
+The square-root macro uses this contract to represent the geometric-mean
+construction without adding circle objects yet. It records the unit-plus-input
+baseline, midpoint, fold-equivalent guide lines, positive selected intersection,
+and extraction creases as typed scene objects. The proof assumptions carry the
+nonnegative-radicand requirement that makes the selected branch real-valued.
+
 Cubic roots and angle trisection are research spikes. They require the more
 advanced tangent/parabola family of folds and should not be treated as acceptance
 criteria for the basic arithmetic compiler.

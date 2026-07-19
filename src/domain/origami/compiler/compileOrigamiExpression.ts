@@ -612,6 +612,150 @@ export function compileOrigamiExpression(
       );
     }
 
+    if (operation === "sqrt") {
+      const inputLength = scaledLength(sourceValues[0] ?? 0);
+      const unitStart = pointAt(1, y + 0.42);
+      const unitEnd = pointAt(2.6, y + 0.42);
+      const inputEnd = pointAt(unitEnd.x + inputLength, y + 0.42);
+      const midpointPosition = pointAt(
+        (unitStart.x + inputEnd.x) / 2,
+        y + 0.42,
+      );
+      const sqrtPointPosition = pointAt(
+        midpointPosition.x,
+        y + 0.42 - Math.min(1.1, scaledLength(value) * 0.35),
+      );
+      const unitSegment = addObject(
+        segmentObject(
+          unitStart,
+          unitEnd,
+          metadata(
+            ids.next("origami-unit-segment"),
+            "intermediate",
+            sourceIds,
+            stepId,
+            "square-root unit reference",
+          ),
+        ),
+      );
+      const inputCopy = addObject(
+        segmentObject(
+          unitEnd,
+          inputEnd,
+          metadata(
+            ids.next("origami-input-copy"),
+            "intermediate",
+            sourceIds,
+            stepId,
+            `${key} radicand copy`,
+          ),
+        ),
+      );
+      const baselineGuide = addObject(
+        lineObject(
+          {
+            point: unitStart,
+            direction: pointAt(1, 0),
+          },
+          metadata(
+            ids.next("origami-guide-line"),
+            "intermediate",
+            [unitSegment.id, inputCopy.id],
+            stepId,
+            `${key} unit-plus-input baseline`,
+          ),
+        ),
+      );
+      const midpoint = addObject(
+        pointObject(
+          midpointPosition,
+          metadata(
+            ids.next("origami-midpoint"),
+            "intermediate",
+            [unitSegment.id, inputCopy.id],
+            stepId,
+            `${key} baseline midpoint`,
+          ),
+        ),
+      );
+      const auxiliaryGuide = addObject(
+        lineObject(
+          {
+            point: midpointPosition,
+            direction: pointAt(1, -0.45),
+          },
+          metadata(
+            ids.next("origami-guide-line"),
+            "intermediate",
+            [midpoint.id, baselineGuide.id],
+            stepId,
+            `${key} geometric-mean guide`,
+          ),
+        ),
+      );
+      const sqrtPoint = addObject(
+        pointObject(
+          sqrtPointPosition,
+          metadata(
+            ids.next("origami-intersection"),
+            "intermediate",
+            [midpoint.id, auxiliaryGuide.id, inputCopy.id],
+            stepId,
+            `${key} square-root point`,
+          ),
+        ),
+      );
+      const midpointCrease = addObject(
+        creaseObject(
+          {
+            point: midpointPosition,
+            direction: pointAt(0, 1),
+          },
+          "unassigned",
+          metadata(
+            ids.next("origami-crease"),
+            "crease",
+            [midpoint.id, baselineGuide.id],
+            stepId,
+            `${key} midpoint crease`,
+          ),
+          "sqrt-midpoint-fold",
+        ),
+      );
+      const extractionCrease = addObject(
+        creaseObject(
+          {
+            point: sqrtPointPosition,
+            direction: pointAt(0, 1),
+          },
+          "unassigned",
+          metadata(
+            ids.next("origami-crease"),
+            "crease",
+            [sqrtPoint.id, segment.id],
+            stepId,
+            `${key} square-root extraction crease`,
+          ),
+          "sqrt-perpendicular-extraction",
+        ),
+      );
+
+      unitReferenceObjectIds.push(unitSegment.id);
+      guideLineObjectIds.push(baselineGuide.id, auxiliaryGuide.id);
+      foldCreaseObjectIds.push(midpointCrease.id, extractionCrease.id);
+      selectedIntersectionObjectIds.push(sqrtPoint.id);
+      extraCreatedObjectIds.push(
+        unitSegment.id,
+        inputCopy.id,
+        baselineGuide.id,
+        midpoint.id,
+        auxiliaryGuide.id,
+        sqrtPoint.id,
+        midpointCrease.id,
+        extractionCrease.id,
+      );
+    }
+
     const createdObjectIds = [
       sourcePoint.id,
       targetPoint.id,
@@ -646,7 +790,9 @@ export function compileOrigamiExpression(
                   ? "square-multiplication-specialization"
                   : operation === "div"
                     ? "div-reciprocal-intercept"
-                    : `${operation}-baseline-transfer`,
+                    : operation === "sqrt"
+                      ? "sqrt-geometric-mean"
+                      : `${operation}-baseline-transfer`,
             label:
               operation === "mul"
                 ? "Intercept similar-triangle branch"
@@ -654,7 +800,9 @@ export function compileOrigamiExpression(
                   ? "Square via multiplication branch"
                   : operation === "div"
                     ? "Reciprocal intercept branch"
-                    : "Deterministic baseline transfer",
+                    : operation === "sqrt"
+                      ? "Geometric-mean square-root branch"
+                      : "Deterministic baseline transfer",
             selected: true,
             reason:
               operation === "mul"
@@ -663,7 +811,9 @@ export function compileOrigamiExpression(
                   ? "The selected branch reuses multiplication geometry with the copied source length as the second factor."
                   : operation === "div"
                     ? "The selected branch constructs the positive reciprocal of the denominator before projecting the quotient."
-                    : "The O3 trace uses one deterministic baseline placement until the richer fold geometry is expanded.",
+                    : operation === "sqrt"
+                      ? "The selected branch uses the positive geometric-mean height over the unit-plus-input baseline."
+                      : "The O3 trace uses one deterministic baseline placement until the richer fold geometry is expanded.",
           },
         ],
         degeneracyObjectIds: [],
@@ -689,9 +839,11 @@ export function compileOrigamiExpression(
       ],
       conclusion: proofText.conclusion,
       assumptions:
-        operation === "mul" || operation === "div"
+        operation === "mul" || operation === "div" || operation === "sqrt"
           ? [
-              "This trace records the arithmetic dependency; detailed crease geometry is expanded in the rendering milestone.",
+              operation === "sqrt"
+                ? "The sampled radicand is nonnegative, so the positive geometric-mean branch is available."
+                : "This trace records the arithmetic dependency; detailed crease geometry is expanded in the rendering milestone.",
             ]
           : undefined,
     });
@@ -755,6 +907,8 @@ export function compileOrigamiExpression(
         "sqrt",
         [input.segmentObjectId],
         "Use the folded geometric-mean trace to extract the square-root length.",
+        "intermediate",
+        [input.value],
       );
       cache.set(key, output);
       return output;

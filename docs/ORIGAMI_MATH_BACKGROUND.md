@@ -57,12 +57,13 @@ corresponding fold trace.
 - Square is multiplication with the same source length in both roles; the
   compiler keeps the copied second factor visible and reuses the multiplication
   guide geometry.
-- Square root records a geometric-mean trace and rejects negative sampled
-  lengths.
+- Square root records a geometric-mean trace with a nonnegative-input check,
+  unit-plus-input baseline, midpoint, fold-equivalent guide, positive selected
+  square-root point, and perpendicular extraction creases.
 
-The current square-root objects are trace-level representations. Later
-fold-solver work should expand them into the full intermediate creases and
-intersections needed for a classroom-ready proof.
+The advanced arithmetic traces now expose intermediate geometry for
+multiplication, division, square, and square root. Later fold-solver work should
+refine these guides into stricter physical fold certificates where needed.
 
 ## N1 Macro Trace Contract
 
@@ -76,9 +77,9 @@ constructions:
   segments.
 - square should reuse the multiplication contract while preserving the duplicated
   input provenance.
-- square root should add the unit-plus-input baseline, midpoint, auxiliary
-  guide, extraction crease, selected intersection, nonnegative-input assumption,
-  and result segment.
+- square root adds the unit-plus-input baseline, midpoint, auxiliary
+  fold-equivalent guide, extraction creases, selected intersection,
+  nonnegative-input assumption, and result segment.
 
 Every populated object-reference slot in the contract is validated against the
 scene. Every proof claim listed by the contract must exist in the scene proofs.

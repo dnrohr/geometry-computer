@@ -312,6 +312,61 @@ describe("origami expression compiler", () => {
     });
   });
 
+  it("expands square root with visible geometric-mean construction geometry", () => {
+    const scene = compileOrigamiExpression(
+      parseExpression("sqrt(a)"),
+      { a: 4 },
+      "sqrt(a)",
+    );
+    const sqrtStep = scene.steps.find(({ operation }) => operation === "sqrt");
+    const createdObjects = new Set(sqrtStep?.createdObjectIds);
+
+    expect(sqrtStep?.macroTrace).toMatchObject({
+      operation: "sqrt",
+      sourceSegmentObjectIds: ["origami-segment-1"],
+      unitReferenceObjectIds: ["origami-unit-segment-1"],
+      guideLineObjectIds: ["origami-guide-line-1", "origami-guide-line-2"],
+      foldCreaseObjectIds: [
+        "origami-crease-2",
+        "origami-crease-3",
+        "origami-crease-4",
+      ],
+      selectedIntersectionObjectIds: ["origami-intersection-1"],
+      resultSegmentObjectIds: ["origami-segment-2"],
+      proofClaimIds: ["origami-claim-sqrt"],
+      branchSelections: [
+        {
+          id: "sqrt-geometric-mean",
+          label: "Geometric-mean square-root branch",
+          selected: true,
+        },
+      ],
+    });
+    expect(
+      scene.objects
+        .filter(({ id }) => createdObjects.has(id))
+        .map(({ id }) => id),
+    ).toEqual(
+      expect.arrayContaining([
+        "origami-unit-segment-1",
+        "origami-input-copy-1",
+        "origami-guide-line-1",
+        "origami-midpoint-1",
+        "origami-guide-line-2",
+        "origami-intersection-1",
+        "origami-crease-3",
+        "origami-crease-4",
+      ]),
+    );
+    expect(
+      scene.proofs.find(({ operation }) => operation === "sqrt"),
+    ).toMatchObject({
+      assumptions: [
+        "The sampled radicand is nonnegative, so the positive geometric-mean branch is available.",
+      ],
+    });
+  });
+
   it("ships one example per supported basic arithmetic family", () => {
     const examples = compiledOrigamiArithmeticExamples();
 
