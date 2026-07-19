@@ -625,6 +625,51 @@ select:focus-visible,
   text-anchor: end;
 }
 
+.origami-function-timeline {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns:
+    repeat(3, auto) minmax(10rem, 1fr) minmax(6rem, auto)
+    auto;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.origami-function-timeline button {
+  padding: 0.45rem 0.65rem;
+}
+
+.origami-function-timeline label {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
+.origami-function-timeline input[type="range"] {
+  width: 100%;
+  min-width: 0;
+}
+
+.origami-function-timeline select {
+  padding: 0.42rem 0.5rem;
+  color: var(--foreground);
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  background: #0f1519;
+  font: inherit;
+}
+
+.origami-function-timeline button:disabled,
+.origami-function-timeline input:disabled,
+.origami-function-timeline select:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 .origami-trace-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.12fr) minmax(17rem, 0.48fr);
@@ -1292,6 +1337,12 @@ text.geometry-result,
   }
   .origami-function-animation-panel {
     grid-template-columns: 1fr;
+  }
+  .origami-function-timeline {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .origami-function-timeline label {
+    grid-column: 1 / -1;
   }
   .origami-function-actions {
     grid-column: auto;

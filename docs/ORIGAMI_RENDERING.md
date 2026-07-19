@@ -103,6 +103,10 @@ The flat-origami tab provides:
   The F3.2 renderer separates stationary paper, moving panel, front fill, back
   fill, hinge shadow, active hinge, and crease-preview layers so two-sided paper
   styling and fold motion can evolve independently.
+- F3.3 timeline controls sit with the function animation and remain origami-local:
+  previous phase, play/pause, next phase, scrubber, speed, and reduced-motion
+  fallback. Reduced motion stops play mode and keeps phase-by-phase scrubbing
+  available.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

@@ -83,3 +83,80 @@ export function advanceOrigamiFunctionPreview(
     ),
   };
 }
+
+export function setOrigamiFunctionPreviewProgress(
+  preview: OrigamiFunctionPreview,
+  progress: number,
+): OrigamiFunctionPreview {
+  if (preview.status !== "compiled") return preview;
+  return {
+    ...preview,
+    animation: animationForPlan(preview.plan, progress),
+  };
+}
+
+export function stepOrigamiFunctionPreviewPhase(
+  preview: OrigamiFunctionPreview,
+  delta: number,
+): OrigamiFunctionPreview {
+  if (preview.status !== "compiled") return preview;
+  const currentIndex = preview.plan.phases.findIndex(
+    ({ id }) => id === preview.animation.phaseId,
+  );
+  const nextIndex = Math.max(
+    0,
+    Math.min(
+      preview.plan.phases.length - 1,
+      (currentIndex < 0 ? 0 : currentIndex) + delta,
+    ),
+  );
+  return {
+    ...preview,
+    animation: animationForPlan(
+      preview.plan,
+      nextIndex === preview.plan.phases.length - 1
+        ? 1
+        : nextIndex / preview.plan.phases.length,
+    ),
+  };
+}
+
+export function setOrigamiFunctionPreviewPlaying(
+  preview: OrigamiFunctionPreview,
+  playing: boolean,
+): OrigamiFunctionPreview {
+  if (preview.status !== "compiled") return preview;
+  return {
+    ...preview,
+    animation: { ...preview.animation, playing },
+  };
+}
+
+export function setOrigamiFunctionPreviewSpeed(
+  preview: OrigamiFunctionPreview,
+  speed: number,
+): OrigamiFunctionPreview {
+  if (preview.status !== "compiled") return preview;
+  return {
+    ...preview,
+    animation: {
+      ...preview.animation,
+      speed: Math.max(0.25, Math.min(4, Number.isFinite(speed) ? speed : 1)),
+    },
+  };
+}
+
+export function setOrigamiFunctionPreviewReducedMotion(
+  preview: OrigamiFunctionPreview,
+  reducedMotion: boolean,
+): OrigamiFunctionPreview {
+  if (preview.status !== "compiled") return preview;
+  return {
+    ...preview,
+    animation: {
+      ...preview.animation,
+      reducedMotion,
+      playing: reducedMotion ? false : preview.animation.playing,
+    },
+  };
+}

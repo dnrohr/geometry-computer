@@ -1,6 +1,11 @@
 import {
   advanceOrigamiFunctionPreview,
   compileOrigamiFunctionPreview,
+  setOrigamiFunctionPreviewPlaying,
+  setOrigamiFunctionPreviewProgress,
+  setOrigamiFunctionPreviewReducedMotion,
+  setOrigamiFunctionPreviewSpeed,
+  stepOrigamiFunctionPreviewPhase,
 } from "./functionPreview";
 
 describe("origami function preview plan", () => {
@@ -74,6 +79,37 @@ describe("origami function preview plan", () => {
     expect(advanced.plan).toBe(preview.plan);
     expect(advanced.animation.progress).toBe(0.5);
     expect(advanced.animation.phaseId).toBe("origami-function-phase-5");
+  });
+
+  it("supports timeline scrubbing, stepping, speed, play state, and reduced motion", () => {
+    const preview = compileOrigamiFunctionPreview("a+b");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+
+    const scrubbed = setOrigamiFunctionPreviewProgress(preview, 0.5);
+    if (scrubbed.status !== "compiled") throw new Error("Expected compiled");
+    expect(scrubbed.animation).toMatchObject({
+      progress: 0.5,
+      phaseId: "origami-function-phase-5",
+    });
+
+    const next = stepOrigamiFunctionPreviewPhase(scrubbed, 1);
+    if (next.status !== "compiled") throw new Error("Expected compiled");
+    expect(next.animation.phaseId).toBe("origami-function-phase-6");
+
+    const playing = setOrigamiFunctionPreviewPlaying(next, true);
+    if (playing.status !== "compiled") throw new Error("Expected compiled");
+    expect(playing.animation.playing).toBe(true);
+
+    const faster = setOrigamiFunctionPreviewSpeed(playing, 8);
+    if (faster.status !== "compiled") throw new Error("Expected compiled");
+    expect(faster.animation.speed).toBe(4);
+
+    const reduced = setOrigamiFunctionPreviewReducedMotion(faster, true);
+    if (reduced.status !== "compiled") throw new Error("Expected compiled");
+    expect(reduced.animation).toMatchObject({
+      playing: false,
+      reducedMotion: true,
+    });
   });
 
   it("compiles signature inputs into display-labeled plans", () => {

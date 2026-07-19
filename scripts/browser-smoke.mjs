@@ -386,6 +386,21 @@ const assertOrigamiFunctionPanel = async (page) => {
     })
     .getByText("origami-function-phase-4 align-fold", { exact: true })
     .waitFor();
+  await page
+    .getByRole("slider", { name: "Function animation progress" })
+    .fill("0.5");
+  await page.getByText("origami-function-phase-8 @ 0.50").waitFor();
+  await page.getByRole("button", { name: "Next function phase" }).click();
+  await page.getByText("origami-function-phase-9 @ 0.57").waitFor();
+  await page
+    .getByRole("combobox", { name: "Function animation speed" })
+    .selectOption("2");
+  await page.getByRole("button", { name: "Play function animation" }).click();
+  await page
+    .getByRole("button", { name: "Pause function animation" })
+    .waitFor();
+  await page.getByRole("checkbox", { name: "Function reduced motion" }).check();
+  await page.getByRole("button", { name: "Play function animation" }).waitFor();
 };
 
 try {

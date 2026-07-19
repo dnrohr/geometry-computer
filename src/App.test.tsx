@@ -290,6 +290,12 @@ describe("App", () => {
       }),
     ).toBeInTheDocument();
     expect(
+      screen.getByRole("slider", { name: "Function animation progress" }),
+    ).toHaveValue("0");
+    expect(
+      screen.getByRole("button", { name: "Play function animation" }),
+    ).toBeInTheDocument();
+    expect(
       within(functionPanel).getByRole("button", {
         name: /Product f\(a,b\)=a\*b/i,
       }),
@@ -478,6 +484,47 @@ describe("App", () => {
     ).toBeInTheDocument();
     expect(
       within(functionPanel).getByText("origami-function-plan-f-a-sqrt-a-1"),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
+  });
+
+  it("controls the origami function animation timeline locally", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+
+    fireEvent.change(
+      screen.getByRole("slider", { name: "Function animation progress" }),
+      { target: { value: "0.5" } },
+    );
+    expect(
+      screen.getByText("origami-function-phase-8 @ 0.50"),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Next function phase" }),
+    );
+    expect(
+      screen.getByText("origami-function-phase-9 @ 0.57"),
+    ).toBeInTheDocument();
+
+    fireEvent.change(
+      screen.getByRole("combobox", { name: "Function animation speed" }),
+      { target: { value: "2" } },
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Play function animation" }),
+    );
+    expect(
+      screen.getByRole("button", { name: "Pause function animation" }),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("checkbox", { name: "Function reduced motion" }),
+    );
+    expect(
+      screen.getByRole("button", { name: "Play function animation" }),
     ).toBeInTheDocument();
     expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
   });

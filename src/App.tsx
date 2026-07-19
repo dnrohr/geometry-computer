@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   compileExpression,
   type CompiledScene,
@@ -14,8 +14,13 @@ import {
   clampOrigamiVariableValue,
   compileOrigamiFunctionPreview,
   evaluateOrigamiFunctionInput,
-  origamiVariableControls,
   origamiFunctionExamples,
+  origamiVariableControls,
+  setOrigamiFunctionPreviewPlaying,
+  setOrigamiFunctionPreviewProgress,
+  setOrigamiFunctionPreviewReducedMotion,
+  setOrigamiFunctionPreviewSpeed,
+  stepOrigamiFunctionPreviewPhase,
   type OrigamiFunctionExample,
 } from "./domain/origami/function";
 import {
@@ -456,6 +461,24 @@ function OrigamiRoadmap() {
   const [hoveredProofClaimId, setHoveredProofClaimId] = useState<string>();
   const origamiSvgRef = useRef<SVGSVGElement>(null);
   const scene = examples[exampleIndex].scene;
+  useEffect(() => {
+    if (
+      functionPreview.status !== "compiled" ||
+      !functionPreview.animation.playing ||
+      functionPreview.animation.reducedMotion
+    ) {
+      return undefined;
+    }
+    const interval = window.setInterval(() => {
+      setFunctionPreview((preview) =>
+        advanceOrigamiFunctionPreview(
+          preview,
+          preview.status === "compiled" ? 0.04 * preview.animation.speed : 0.04,
+        ),
+      );
+    }, 180);
+    return () => window.clearInterval(interval);
+  }, [functionPreview]);
   const activeStep = scene.steps.find(({ id }) => id === activeStepId);
   const selectedObject = scene.objects.find(
     ({ id }) => id === selectedObjectId,
@@ -637,6 +660,7 @@ function OrigamiRoadmap() {
   };
   const previewOrigamiFunctionAnimation = () =>
     setFunctionPreview((preview) => advanceOrigamiFunctionPreview(preview));
+  const timelineDisabled = functionPreview.status !== "compiled";
 
   return (
     <main
@@ -901,6 +925,128 @@ function OrigamiRoadmap() {
           <h2 id="origami-function-animation-title">Function fold preview</h2>
         </div>
         <SvgOrigamiFunctionAnimation preview={functionPreview} />
+        <div
+          className="origami-function-timeline"
+          aria-label="Origami function timeline"
+        >
+          <button
+            type="button"
+            aria-label="Previous function phase"
+            disabled={timelineDisabled}
+            onClick={() =>
+              setFunctionPreview((preview) =>
+                stepOrigamiFunctionPreviewPhase(preview, -1),
+              )
+            }
+          >
+            Prev
+          </button>
+          <button
+            type="button"
+            aria-label={
+              functionPreview.status === "compiled" &&
+              functionPreview.animation.playing
+                ? "Pause function animation"
+                : "Play function animation"
+            }
+            disabled={timelineDisabled}
+            onClick={() =>
+              setFunctionPreview((preview) =>
+                setOrigamiFunctionPreviewPlaying(
+                  preview,
+                  preview.status !== "compiled" || !preview.animation.playing,
+                ),
+              )
+            }
+          >
+            {functionPreview.status === "compiled" &&
+            functionPreview.animation.playing
+              ? "Pause"
+              : "Play"}
+          </button>
+          <button
+            type="button"
+            aria-label="Next function phase"
+            disabled={timelineDisabled}
+            onClick={() =>
+              setFunctionPreview((preview) =>
+                stepOrigamiFunctionPreviewPhase(preview, 1),
+              )
+            }
+          >
+            Next
+          </button>
+          <label>
+            Scrub
+            <input
+              aria-label="Function animation progress"
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              disabled={timelineDisabled}
+              value={
+                functionPreview.status === "compiled"
+                  ? functionPreview.animation.progress
+                  : 0
+              }
+              onChange={(event) =>
+                setFunctionPreview((preview) =>
+                  setOrigamiFunctionPreviewProgress(
+                    preview,
+                    Number(event.target.value),
+                  ),
+                )
+              }
+            />
+          </label>
+          <label>
+            Speed
+            <select
+              aria-label="Function animation speed"
+              disabled={timelineDisabled}
+              value={
+                functionPreview.status === "compiled"
+                  ? functionPreview.animation.speed
+                  : 1
+              }
+              onChange={(event) =>
+                setFunctionPreview((preview) =>
+                  setOrigamiFunctionPreviewSpeed(
+                    preview,
+                    Number(event.target.value),
+                  ),
+                )
+              }
+            >
+              <option value="0.5">0.5x</option>
+              <option value="1">1x</option>
+              <option value="2">2x</option>
+              <option value="4">4x</option>
+            </select>
+          </label>
+          <label>
+            Reduced motion
+            <input
+              aria-label="Function reduced motion"
+              type="checkbox"
+              disabled={timelineDisabled}
+              checked={
+                functionPreview.status === "compiled"
+                  ? functionPreview.animation.reducedMotion
+                  : false
+              }
+              onChange={(event) =>
+                setFunctionPreview((preview) =>
+                  setOrigamiFunctionPreviewReducedMotion(
+                    preview,
+                    event.target.checked,
+                  ),
+                )
+              }
+            />
+          </label>
+        </div>
       </section>
       <section className="origami-workspace" aria-labelledby="origami-trace">
         <div className="origami-workspace-header">

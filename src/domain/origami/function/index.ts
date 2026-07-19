@@ -18,6 +18,11 @@ export {
   DEFAULT_ORIGAMI_PAPER_STYLE,
   advanceOrigamiFunctionPreview,
   compileOrigamiFunctionPreview,
+  setOrigamiFunctionPreviewPlaying,
+  setOrigamiFunctionPreviewProgress,
+  setOrigamiFunctionPreviewReducedMotion,
+  setOrigamiFunctionPreviewSpeed,
+  stepOrigamiFunctionPreviewPhase,
   type OrigamiFunctionPreview,
 } from "./functionPreview";
 export {
