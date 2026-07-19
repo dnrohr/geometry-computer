@@ -13,7 +13,10 @@ npm install
 npm run dev
 ```
 
-Quality gates are `npm test`, `npm run typecheck`, `npm run lint`, `npm run build`, and `npm run format:check`.
+Quality gates are `npm test`, `npm run typecheck`, `npm run lint`,
+`npm run build`, `npm run format:check`, and `npm run smoke:browser`. The
+browser smoke command starts its own Vite server and fails on page errors or
+unexpected console errors.
 
 ## Expression syntax
 

@@ -10,6 +10,7 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
+    "smoke:browser": "node scripts/browser-smoke.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
@@ -30,6 +31,7 @@
     "eslint-plugin-react-refresh": "^0.5.3",
     "globals": "^17.6.0",
     "jsdom": "^29.1.1",
+    "playwright": "^1.61.1",
     "prettier": "^3.8.4",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.1",
