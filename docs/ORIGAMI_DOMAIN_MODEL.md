@@ -86,6 +86,12 @@ deliberately simple until F2/F3 add richer fold phases, but it already uses the
 origami-owned plan, animation, and paper-style contracts so tab-switching tests
 can prove this state stays separate from the compass-and-straightedge workspace.
 
+`src/domain/origami/function/functionExamples.ts` owns the first F1 function
+presets. Each preset has a signature-style display source, an expression body
+that the current parser boundary can compile, and sampled values for the
+function lab. Signature parsing remains a later F1.2 concern; F1.1 keeps the
+examples visible and usable without expanding the parser surface yet.
+
 The supported O3 trace covers variables, constants, addition, subtraction,
 multiplication, division, square, and square root on deterministic baselines.
 Each macro records sampled numeric output, expression provenance, input segment

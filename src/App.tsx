@@ -13,6 +13,8 @@ import {
   advanceOrigamiFunctionPreview,
   compileOrigamiFunctionPreview,
   evaluateOrigamiFunctionInput,
+  origamiFunctionExamples,
+  type OrigamiFunctionExample,
 } from "./domain/origami/function";
 import {
   constructionJson,
@@ -436,8 +438,11 @@ function OrigamiRoadmap() {
   const examples = useMemo(() => compiledOrigamiArithmeticExamples(), []);
   const [exampleIndex, setExampleIndex] = useState(0);
   const [functionSource, setFunctionSource] = useState("sqrt(a+1)");
+  const [functionValues, setFunctionValues] = useState(
+    DEFAULT_ORIGAMI_FUNCTION_VALUES,
+  );
   const [functionPreview, setFunctionPreview] = useState(() =>
-    compileOrigamiFunctionPreview("sqrt(a+1)"),
+    compileOrigamiFunctionPreview("sqrt(a+1)", DEFAULT_ORIGAMI_FUNCTION_VALUES),
   );
   const [progress, setProgress] = useState(1);
   const [activeStepId, setActiveStepId] = useState<string>();
@@ -528,8 +533,8 @@ function OrigamiRoadmap() {
     );
   };
   const functionReport = useMemo(
-    () => evaluateOrigamiFunctionInput(functionSource),
-    [functionSource],
+    () => evaluateOrigamiFunctionInput(functionSource, functionValues),
+    [functionSource, functionValues],
   );
   const functionIssue =
     functionReport.status === "blocked"
@@ -546,7 +551,22 @@ function OrigamiRoadmap() {
       ? functionReport.validation.value?.toFixed(3)
       : functionIssue;
   const compileOrigamiFunction = () =>
-    setFunctionPreview(compileOrigamiFunctionPreview(functionSource));
+    setFunctionPreview(
+      compileOrigamiFunctionPreview(functionSource, functionValues),
+    );
+  const selectOrigamiFunctionExample = (example: OrigamiFunctionExample) => {
+    setFunctionSource(example.expression);
+    setFunctionValues({
+      ...DEFAULT_ORIGAMI_FUNCTION_VALUES,
+      ...example.values,
+    });
+    setFunctionPreview(
+      compileOrigamiFunctionPreview(example.expression, {
+        ...DEFAULT_ORIGAMI_FUNCTION_VALUES,
+        ...example.values,
+      }),
+    );
+  };
   const previewOrigamiFunctionAnimation = () =>
     setFunctionPreview((preview) => advanceOrigamiFunctionPreview(preview));
 
@@ -649,7 +669,7 @@ function OrigamiRoadmap() {
           <div>
             <dt>Sample values</dt>
             <dd>
-              {Object.entries(DEFAULT_ORIGAMI_FUNCTION_VALUES)
+              {Object.entries(functionValues)
                 .map(([name, value]) => `${name}=${value}`)
                 .join(", ")}
             </dd>
@@ -700,6 +720,22 @@ function OrigamiRoadmap() {
           >
             Preview fold animation
           </button>
+        </div>
+        <div
+          className="origami-function-examples"
+          aria-label="Origami function examples"
+        >
+          {origamiFunctionExamples.map((example) => (
+            <button
+              key={example.displaySource}
+              type="button"
+              aria-label={`${example.title} ${example.displaySource}`}
+              onClick={() => selectOrigamiFunctionExample(example)}
+            >
+              <span>{example.title}</span>
+              <code>{example.displaySource}</code>
+            </button>
+          ))}
         </div>
       </section>
       <section className="origami-workspace" aria-labelledby="origami-trace">

@@ -318,6 +318,12 @@ const assertOrigamiFunctionPanel = async (page) => {
 
   await input.fill("sqrt(a+1)");
   await page.getByText("allowable").waitFor();
+  await page
+    .getByRole("button", { name: "Offset quotient f(a,b,c)=(a+b)/(c+1)" })
+    .click();
+  await page.getByText("2.500").waitFor();
+  await page.getByText("origami-function-plan-a-b-c-1").waitFor();
+  await input.fill("sqrt(a+1)");
   await page.getByRole("button", { name: "Compile origami function" }).click();
   await page.getByText("origami-function-plan-sqrt-a-1").waitFor();
   await page.getByRole("button", { name: "Preview fold animation" }).click();

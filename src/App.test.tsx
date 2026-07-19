@@ -266,6 +266,21 @@ describe("App", () => {
     ).toHaveValue("sqrt(a+1)");
     expect(within(functionPanel).getByText("allowable")).toBeInTheDocument();
     expect(within(functionPanel).getByText("2.000")).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByRole("button", {
+        name: /Product f\(a,b\)=a\*b/i,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByRole("button", {
+        name: /Shifted root f\(x\)=sqrt\(x\+1\)/i,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByRole("button", {
+        name: /Offset quotient f\(a,b,c\)=\(a\+b\)\/\(c\+1\)/i,
+      }),
+    ).toBeInTheDocument();
     fireEvent.click(
       screen.getByRole("button", { name: "Multiplication trace" }),
     );
@@ -384,6 +399,43 @@ describe("App", () => {
     expect(screen.getByRole("textbox", { name: "Expression" })).toHaveValue(
       "sqrt(3*a - b*b)",
     );
+  });
+
+  it("loads origami function examples into the function input and preview plan", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    const functionPanel = screen.getByRole("region", {
+      name: "Fold-computed function",
+    });
+
+    fireEvent.click(
+      within(functionPanel).getByRole("button", {
+        name: /Product f\(a,b\)=a\*b/i,
+      }),
+    );
+    expect(
+      within(functionPanel).getByRole("textbox", { name: "Origami function" }),
+    ).toHaveValue("a*b");
+    expect(within(functionPanel).getByText("6.000")).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText("origami-function-plan-a-b"),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      within(functionPanel).getByRole("button", {
+        name: /Offset quotient f\(a,b,c\)=\(a\+b\)\/\(c\+1\)/i,
+      }),
+    );
+    expect(
+      within(functionPanel).getByRole("textbox", { name: "Origami function" }),
+    ).toHaveValue("(a+b)/(c+1)");
+    expect(within(functionPanel).getByText("2.500")).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText("origami-function-plan-a-b-c-1"),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
   });
 
   it("preserves compiled origami function animation state across workspace switches", () => {

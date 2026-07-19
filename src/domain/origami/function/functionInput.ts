@@ -5,6 +5,7 @@ import type { OrigamiFunctionPanelState } from "./types";
 export const DEFAULT_ORIGAMI_FUNCTION_VALUES: Record<string, number> = {
   a: 3,
   b: 2,
+  c: 1,
   x: 3,
   y: 2,
 };

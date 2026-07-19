@@ -86,6 +86,10 @@ The flat-origami tab provides:
 
 - An origami-only function lab panel with an expression input, sampled
   allowable-field validation, variable discovery, and a sampled-result readout.
+- Function example presets for product, shifted square-root, and offset quotient
+  forms. The buttons display signature-style examples such as `f(a,b)=a*b`,
+  while the input still receives the expression body until F1.2 adds signature
+  parsing.
 - Origami-local function compile and fold-animation preview controls that create
   deterministic preview phases before the full fold animation engine exists.
 - An origami example selector with one example for each supported arithmetic

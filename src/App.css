@@ -443,6 +443,34 @@ select:focus-visible,
   opacity: 0.45;
 }
 
+.origami-function-examples {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 1 / -1;
+  gap: 0.5rem;
+}
+
+.origami-function-examples button {
+  display: grid;
+  gap: 0.2rem;
+  min-width: min(100%, 11rem);
+  padding: 0.55rem 0.7rem;
+  text-align: left;
+  background: #151b20;
+}
+
+.origami-function-examples span {
+  color: var(--foreground);
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
+.origami-function-examples code {
+  overflow-wrap: anywhere;
+  color: var(--accent);
+  font-size: 0.7rem;
+}
+
 .origami-trace-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.12fr) minmax(17rem, 0.48fr);
