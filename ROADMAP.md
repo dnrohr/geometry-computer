@@ -373,6 +373,259 @@ Acceptance checks:
 - The browser checks pass together with `npm test`, `npm run typecheck`,
   `npm run lint`, `npm run build`, and `npm run format:check`.
 
+### Fold-animation function roadmap
+
+This track turns the separate flat-origami tab into a function-computation lab:
+enter a function from the currently allowable constructible field, choose input
+values, and watch a colored two-sided paper model fold through the computation.
+Keep every milestone behind the flat-origami tab until a later merger-readiness
+review proves the compass-and-straightedge workspace can share behavior safely.
+
+#### F0. Scope and safety guardrails
+
+Goal: define the supported function language and protect the existing geometry
+computer while animation work is still experimental.
+
+- F0.1 Define "allowable field" for the origami tab as real-valued expressions
+  built from variables, rational constants, `+`, `-`, `*`, `/`, powers already
+  supported by the parser, square roots, and composition, with domain checks for
+  division by zero and negative square-root radicands.
+- F0.2 Add a flat-origami function input panel under the origami tab only. Do
+  not add new controls to the compass-and-straightedge workspace.
+- F0.3 Keep origami function parsing, validation, planning, animation state,
+  paper styling, and export types under origami-specific modules.
+- F0.4 Reuse the shared expression parser only as the syntax boundary; keep
+  compiler, renderer, animation, and proof models separate.
+- F0.5 Add regression tests that compile and animate origami functions, switch
+  back to compass-and-straightedge, and verify the original construction state
+  is unchanged.
+
+Acceptance checks:
+
+- Unsupported syntax and domain failures produce origami-specific messages.
+- Searches for `domain/origami` imports in compass compiler, renderer, proof,
+  export, and example modules still return no matches.
+- Tab switching preserves both origami animation state and compass construction
+  state.
+
+#### F1. Function input and sampled domain controls
+
+Goal: let a user type a constructible function and choose sample values that
+drive a deterministic fold computation.
+
+- F1.1 Add an origami function input field with examples such as `f(a,b)=a*b`,
+  `f(x)=sqrt(x+1)`, and `f(a,b,c)=(a+b)/(c+1)`.
+- F1.2 Parse optional function signatures, infer variables when no signature is
+  supplied, and normalize display names for the result.
+- F1.3 Add variable controls with numeric inputs, steppers, and sliders for
+  sampled values, including per-variable min, max, and default values.
+- F1.4 Validate the sampled domain before compiling, showing denominator and
+  radicand issues inline without crashing the scene.
+- F1.5 Preserve example gallery presets, but let each preset populate the new
+  function input and sample controls.
+- F1.6 Add copyable normalized-expression and sampled-result readouts so users
+  can verify what is being computed.
+
+Acceptance checks:
+
+- Every supported expression family can be entered manually and through a
+  preset.
+- Invalid samples block animation with a readable explanation and leave the last
+  valid fold scene visible.
+- Tests cover variable inference, signature parsing, domain validation, and
+  sampled numeric output.
+
+#### F2. Fold computation plan
+
+Goal: compile a function expression into a stepwise fold plan that can support
+animation rather than only static crease-pattern explanation.
+
+- F2.1 Add an origami function-plan model that records expression nodes,
+  intermediate values, dependencies, fold operations, reusable length transfers,
+  and result extraction.
+- F2.2 Topologically order computation steps so animations can play from inputs
+  to final output and jump to any dependency.
+- F2.3 Split arithmetic macros into animation-ready phases: place paper, mark
+  inputs, align fold, preview candidate crease, fold, transfer/reflection, mark
+  intersection, extract result.
+- F2.4 Record fold direction, hinge line, moving paper region, stationary paper
+  region, side exposure, and selected branch for each animated fold.
+- F2.5 Add deterministic fallback phases for macros that are not yet physically
+  solved, clearly labeling them as explanatory traces rather than proven fold
+  sequences.
+- F2.6 Add plan diagnostics for reused subexpressions, repeated variables,
+  negative directed lengths, branch ambiguity, and accumulated scale.
+
+Acceptance checks:
+
+- Plans are deterministic across repeated runs.
+- Every animation phase has stable IDs, source object IDs, output object IDs,
+  proof references, and export metadata.
+- Tests verify ordering, dependency links, branch metadata, and graceful
+  diagnostics for unsupported or ambiguous cases.
+
+#### F3. Fold animation engine
+
+Goal: animate each computation step as a visible fold motion while preserving
+the existing inspectable SVG trace.
+
+- F3.1 Add a separate animation renderer for the origami tab, using SVG and CSS
+  transforms first; consider HTML canvas or WebGL only if SVG cannot express
+  convincing fold motion.
+- F3.2 Represent paper as layered polygons with front-side and back-side fills,
+  fold hinges, moving panels, shadows, and crease previews.
+- F3.3 Animate phase transitions with a timeline model that supports play,
+  pause, scrub, previous step, next step, speed control, and reduced-motion
+  fallback.
+- F3.4 Show the computation value evolving beside the animation, including
+  current subexpression, sampled numeric value, and final result.
+- F3.5 Keep static crease-pattern inspection available beside or below the
+  animation so users can compare motion with the final trace.
+- F3.6 Add focus and keyboard support for timeline controls, fold steps, and
+  object selection.
+- F3.7 Add browser visual-contract checks that ensure animation frames are
+  nonblank, paper regions stay within the viewport, and controls do not overlap
+  at desktop or mobile widths.
+
+Acceptance checks:
+
+- A supported function can be played from blank paper to final result.
+- Scrubbing to any phase produces the same visible state every time.
+- Reduced-motion mode replaces motion with stepwise state changes while keeping
+  all proof and inspector information accessible.
+
+#### F4. Two-sided paper style system
+
+Goal: make front/back paper sides unmistakable and customizable so fold motion
+is easy to follow.
+
+- F4.1 Add a paper-style panel under the origami tab with front color, back
+  color, front pattern, back pattern, crease color, highlight color, and opacity
+  controls.
+- F4.2 Provide pattern presets such as solid, grid, dots, diagonal stripe,
+  washi wave, coordinate grid, and high-contrast accessibility mode.
+- F4.3 Render front and back sides with distinct fills during animation,
+  including edge outlines and subtle shadows at fold hinges.
+- F4.4 Add pattern scale and rotation controls so users can tune visibility for
+  small or large folds.
+- F4.5 Store paper style in origami-local UI state and include it in origami
+  animation exports without affecting compass SVG export.
+- F4.6 Add contrast checks or visual tests for preset combinations so crease,
+  label, and result highlights remain readable.
+
+Acceptance checks:
+
+- Changing paper style updates the origami animation and static preview without
+  resetting the function plan.
+- Front and back sides remain distinguishable after every fold phase.
+- Exported SVG/animation metadata includes the selected paper style.
+
+#### F5. Interactive explanation and proof overlays
+
+Goal: make the animation teach the computation, not merely decorate it.
+
+- F5.1 Add a fold-step storyboard with one card per animation phase, including
+  the active subexpression, operation, fold axiom or macro, assumptions, and
+  branch choice.
+- F5.2 Highlight dependencies when hovering a subexpression, fold step, crease,
+  paper region, or proof claim.
+- F5.3 Add a "why this fold?" overlay that connects the moving paper motion to
+  the arithmetic invariant it preserves.
+- F5.4 Show rejected branches and degeneracy warnings directly on the animation
+  when the planner records ambiguity.
+- F5.5 Add optional measurement labels for input lengths, unit references,
+  intermediate values, and final output.
+- F5.6 Add a comparison strip that shows expression tree progress alongside the
+  fold timeline.
+
+Acceptance checks:
+
+- Selecting any phase highlights the paper region, crease, source values,
+  output value, and matching proof claim.
+- Users can trace the final result back through all dependencies.
+- Proof overlays never reset compass-and-straightedge UI state.
+
+#### F6. Function animation exports
+
+Goal: let users save the fold computation as artifacts they can inspect,
+replay, or share.
+
+- F6.1 Export the function plan as JSON with expression, sample values,
+  animation phases, paper style, proof links, diagnostics, and result metadata.
+- F6.2 Export static SVG snapshots for current phase, final crease pattern, and
+  final result view.
+- F6.3 Add an animated export path such as WebM, GIF, or SVG animation after the
+  timeline model is stable.
+- F6.4 Add a compact share text block containing the function, sample values,
+  supported-domain assumptions, and result.
+- F6.5 Add import/replay for a saved origami animation JSON file, scoped to the
+  origami tab.
+- F6.6 Extend browser smoke tests to verify function-plan JSON and SVG exports
+  contain the same scene, phase, paper-style, and result IDs shown in the UI.
+
+Acceptance checks:
+
+- Exported artifacts are deterministic for the same function, values, and paper
+  style.
+- Importing a saved origami animation does not touch compass-and-straightedge
+  state.
+- Browser smoke checks report export mismatch separately from animation,
+  rendering, and tab-state failures.
+
+#### F7. Delightful extras after the core path works
+
+Goal: add polish that makes the fold-computation lab feel playful, legible, and
+worth exploring while staying honest about mathematical limits.
+
+- F7.1 Add a "fold camera" mode with zoom-to-active-fold, fit-to-paper,
+  follow-result, and whole-construction views.
+- F7.2 Add onion-skin ghosts for previous and next fold states so motion is
+  easier to understand.
+- F7.3 Add optional soundless haptic-style visual cues: crease snap, branch
+  selected, result extracted, and domain warning.
+- F7.4 Add a step minimap showing where each operation sits in the full
+  computation.
+- F7.5 Add curated function challenges such as "make 2a+b", "compute a scaled
+  reciprocal", and "extract sqrt(a+1)" with expected fold counts.
+- F7.6 Add a presentation mode that hides editing controls and plays the fold
+  proof as a clean teaching sequence.
+- F7.7 Add a paper-style randomizer with named palettes that preserve contrast
+  constraints.
+
+Acceptance checks:
+
+- Extras are optional and do not obscure the core input, play, inspect, and
+  export workflows.
+- Presentation and camera modes are keyboard accessible and reversible.
+- Challenge examples are backed by the same compiler and tests as freeform
+  input.
+
+#### F8. Future merge review
+
+Goal: decide whether the origami function lab should remain a separate tab or
+share selected concepts with the original geometry computer.
+
+- F8.1 Compare function parsing, expression normalization, sampled values,
+  operation traces, proof claims, object provenance, exports, and animation
+  timelines across both systems.
+- F8.2 Identify which concepts are truly shared, which are merely similar, and
+  which must stay system-specific because folds and compass construction explain
+  computation differently.
+- F8.3 Add compatibility tests before extracting any shared function-plan,
+  proof-card, export, or expression-control interfaces.
+- F8.4 Consider a construction-system selector only after both systems can
+  compute, render, inspect, prove, and export the same function family.
+- F8.5 Keep the separate tab if merging would make fold animation or paper-side
+  styling harder to understand.
+
+Acceptance checks:
+
+- A written merge review exists before shared code is extracted.
+- Any shared abstraction has tests from both the compass-and-straightedge and
+  flat-origami paths.
+- Users can still open the original geometry computer and the origami function
+  lab independently.
+
 ## 0. Working Agreement for Agents
 
 This roadmap is written so individual tasks can be handed to a coding agent with minimal extra context. Treat each milestone or task group as an independently verifiable change.
