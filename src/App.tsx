@@ -15,6 +15,7 @@ import {
 } from "./domain/export/exportConstruction";
 import { SvgConstructionCanvas } from "./render/svg/SvgConstructionCanvas";
 import { SvgOrigamiCanvas } from "./render/origami/svg/SvgOrigamiCanvas";
+import { buildOrigamiVisualRoleMap } from "./render/origami/visualRoles";
 import { ExpressionInput } from "./ui/input/ExpressionInput";
 import { ExampleGallery } from "./ui/examples/ExampleGallery";
 import { ObjectInspector } from "./ui/inspector/ObjectInspector";
@@ -449,6 +450,10 @@ function OrigamiRoadmap() {
     () => evaluateOrigamiReveal(scene.revealActions, progress),
     [scene.revealActions, progress],
   );
+  const visualRoles = useMemo(
+    () => buildOrigamiVisualRoleMap(scene, activeStepId, renderStates),
+    [scene, activeStepId, renderStates],
+  );
   const selectOrigamiStep = (id: string) => {
     setActiveStepId(id);
     const index = scene.steps.findIndex((step) => step.id === id);
@@ -613,6 +618,7 @@ function OrigamiRoadmap() {
               title={`${scene.title}: ${scene.expression}`}
               description={scene.description}
               renderStates={renderStates}
+              visualRoles={visualRoles}
               highlightedIds={highlightedIds}
               onSelectObject={setSelectedObjectId}
             />

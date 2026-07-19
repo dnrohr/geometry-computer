@@ -439,6 +439,52 @@ text.origami-object,
   stroke-width: 0.18;
 }
 
+.origami-visual-source-geometry {
+  stroke: #8dc5d6;
+  stroke-width: 0.11;
+}
+
+.origami-visual-guide {
+  opacity: 0.72;
+  stroke: #c6b6ee;
+  stroke-dasharray: 0.08 0.1;
+}
+
+.origami-visual-mountain-valley-candidate {
+  stroke-dasharray: 0.22 0.14;
+}
+
+.origami-visual-active-crease {
+  opacity: 1;
+  stroke: #e8b65c;
+  stroke-width: 0.14;
+}
+
+.origami-visual-reflected-geometry {
+  fill: #e7d28c;
+  stroke: #fff2bb;
+}
+
+.origami-visual-selected-intersection {
+  fill: #fff2bb;
+  stroke: #0e1418;
+  stroke-width: 0.08;
+}
+
+.origami-visual-extracted-result {
+  stroke: var(--accent);
+  stroke-width: 0.16;
+}
+
+.origami-visual-hidden-future {
+  opacity: 0.12 !important;
+}
+
+.origami-visual-degeneracy-warning {
+  stroke: var(--error-text);
+  stroke-width: 0.16;
+}
+
 .origami-steps-panel,
 .origami-inspector {
   min-width: 0;

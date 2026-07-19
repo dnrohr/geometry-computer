@@ -1,9 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import {
+  compiledAdvancedOrigamiArithmeticFixtures,
   compiledOrigamiArithmeticExamples,
   simplePointToPointFoldScene,
 } from "../../../domain/origami/examples";
 import { evaluateOrigamiReveal } from "../../../domain/origami/reveal/evaluateOrigamiReveal";
+import { buildOrigamiVisualRoleMap } from "../visualRoles";
 import { SvgOrigamiCanvas } from "./SvgOrigamiCanvas";
 
 describe("SvgOrigamiCanvas", () => {
@@ -112,5 +114,37 @@ describe("SvgOrigamiCanvas", () => {
       expect(container.querySelector(".origami-crease")).toBeInTheDocument();
       unmount();
     }
+  });
+
+  it("renders explanation visual role classes", () => {
+    const { scene } = compiledAdvancedOrigamiArithmeticFixtures().find(
+      ({ operation }) => operation === "mul",
+    )!;
+    const step = scene.steps.find(({ operation }) => operation === "mul")!;
+    const visualRoles = buildOrigamiVisualRoleMap(scene, step.id);
+    const { container } = render(
+      <SvgOrigamiCanvas
+        objects={scene.objects}
+        title={scene.title}
+        visualRoles={visualRoles}
+      />,
+    );
+
+    expect(container.querySelector("#origami-origami-segment-1")).toHaveClass(
+      "origami-visual-source-geometry",
+    );
+    expect(
+      container.querySelector("#origami-origami-guide-line-1"),
+    ).toHaveClass("origami-visual-guide");
+    expect(container.querySelector("#origami-origami-crease-3")).toHaveClass(
+      "origami-visual-active-crease",
+      "origami-visual-mountain-valley-candidate",
+    );
+    expect(
+      container.querySelector("#origami-origami-intersection-1"),
+    ).toHaveClass("origami-visual-selected-intersection");
+    expect(container.querySelector("#origami-origami-segment-3")).toHaveClass(
+      "origami-visual-extracted-result",
+    );
   });
 });

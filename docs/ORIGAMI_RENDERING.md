@@ -17,6 +17,32 @@ The canvas accepts origami reveal states, highlighted object IDs, and selection
 callbacks. It exposes object-level keyboard and pointer activation so the app can
 drive an inspector without sharing construction-workspace state.
 
+## Visual Roles
+
+`buildOrigamiVisualRoleMap` assigns explanation-facing visual roles without
+changing the origami scene data model. `SvgOrigamiCanvas` renders those roles as
+stable CSS classes prefixed with `origami-visual-`.
+
+The current visual roles are:
+
+- `source-geometry`: input/source objects used by the active fold or macro.
+- `guide`: unit references and guide lines used to set up a construction.
+- `active-crease`: creases belonging to the selected fold step.
+- `mountain-valley-candidate`: unassigned creases that may later receive a
+  mountain or valley assignment.
+- `reflected-geometry`: reflected points or reflected objects produced by a
+  fold.
+- `selected-intersection`: the chosen point or intersection used by the active
+  construction branch.
+- `extracted-result`: result segments produced by a macro or final expression.
+- `hidden-future`: objects hidden by the current reveal state.
+- `degeneracy-warning`: objects attached to a degeneracy or rejected branch.
+
+These classes are deliberately layered over semantic object roles such as
+`input`, `intermediate`, `crease`, and `result`. Later overlay work can use the
+same visual-role map to highlight an active fold without changing compiler
+output.
+
 ## Reveal States
 
 `evaluateOrigamiReveal` maps `OrigamiRevealAction` records into per-object

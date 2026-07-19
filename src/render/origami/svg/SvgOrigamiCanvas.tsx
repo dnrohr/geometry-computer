@@ -1,6 +1,10 @@
 import type { OrigamiObject } from "../../../domain/origami/types";
 import type { OrigamiObjectRevealState } from "../../../domain/origami/reveal/evaluateOrigamiReveal";
 import type { KeyboardEvent, Ref } from "react";
+import {
+  origamiVisualRoleClassName,
+  type OrigamiVisualRoleMap,
+} from "../visualRoles";
 
 type SvgOrigamiCanvasProps = {
   objects: OrigamiObject[];
@@ -8,6 +12,7 @@ type SvgOrigamiCanvasProps = {
   description?: string;
   viewBox?: string;
   renderStates?: Record<string, OrigamiObjectRevealState>;
+  visualRoles?: OrigamiVisualRoleMap;
   highlightedIds?: Set<string>;
   onSelectObject?: (id: string) => void;
   onHoverObject?: (id?: string) => void;
@@ -63,13 +68,17 @@ const interactiveProps = (
 const renderOrigamiObject = (
   object: OrigamiObject,
   state: OrigamiObjectRevealState | undefined,
+  visualRoles: OrigamiVisualRoleMap,
   onSelectObject?: (id: string) => void,
   onHoverObject?: (id?: string) => void,
 ) => {
   const visible = state?.visible ?? true;
+  const visualRoleClassNames =
+    visualRoles[object.id]?.map(origamiVisualRoleClassName).join(" ") ?? "";
   const common = {
     id: `origami-${object.id}`,
-    className: `origami-object origami-${object.role}`,
+    className:
+      `origami-object origami-${object.role} ${visualRoleClassNames}`.trim(),
     style: {
       ...stateStyle(state),
       opacity: visible ? stateStyle(state).opacity : 0,
@@ -136,6 +145,7 @@ export function SvgOrigamiCanvas({
   description,
   viewBox = "0 0 14 10",
   renderStates = {},
+  visualRoles = {},
   highlightedIds = new Set(),
   onSelectObject,
   onHoverObject,
@@ -163,6 +173,7 @@ export function SvgOrigamiCanvas({
           {renderOrigamiObject(
             object,
             renderStates[object.id],
+            visualRoles,
             onSelectObject,
             onHoverObject,
           )}
