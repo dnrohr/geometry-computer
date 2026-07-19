@@ -336,6 +336,32 @@ nonblank rendering, console stability, and responsive explanation layouts.
 - N3.7 Document a short manual browser smoke procedure in the roadmap until the
   automated checks cover every required interaction.
 
+Manual browser smoke procedure:
+
+1. Run `npm run smoke:browser`; it starts Vite, opens Chromium, exercises both
+   tabs, checks every origami gallery example, validates responsive layout
+   contracts, saves ignored screenshots under `.artifacts/browser-smoke/`, and
+   verifies origami JSON/SVG exports.
+2. Start the app with `npm run dev`, open the local URL, and confirm the
+   compass-and-straightedge workspace renders first with the current expression
+   input, compile button, construction diagram, step list, inspector, and export
+   actions.
+3. Compile `a+b`, switch to the flat-origami tab, then switch back and confirm
+   the compass expression and constructed `a+b` heading are still intact.
+4. In the flat-origami tab, open each example from Input length through Square
+   root trace. Confirm the SVG is nonblank, the paper boundary and creases are
+   visible, labels are readable, and the steps panel shows Macro, Proof, Branch,
+   and Degeneracy metadata.
+5. For Multiplication trace, select a fold, open `Why?`, and confirm the active
+   crease, selected intersection, extracted result, and proof claim highlights
+   are visible at both desktop width and a narrow mobile width.
+6. Export origami JSON and SVG from Multiplication trace. Confirm the downloaded
+   files include `origami-compiled-scene`, `origami-step-3`, and
+   `origami-segment-3`, matching the rendered result segment ID.
+7. Keep the browser console open during the pass and treat uncaught errors,
+   unexpected console errors, blank panels, clipped controls, or tab-state loss
+   as smoke failures.
+
 Acceptance checks:
 
 - The browser smoke command can run locally and in CI without relying on a
