@@ -474,20 +474,42 @@ const assertOrigamiFunctionPanel = async (page) => {
     .waitFor();
   await page.getByLabel("Function paper front color").fill("#ffffff");
   await page.getByLabel("Function paper back color").fill("#101820");
+  await page
+    .getByRole("combobox", { name: "Function paper front pattern" })
+    .selectOption("washi-wave");
+  await page
+    .getByRole("combobox", { name: "Function paper back pattern" })
+    .selectOption("high-contrast");
   await page.getByLabel("Function paper opacity").fill("0.65");
   const paperStyle = await page.evaluate(() => {
     const base = document.querySelector(".origami-function-paper-base");
     const back = document.querySelector(".origami-function-paper-back");
+    const frontPattern = document.querySelector(
+      ".origami-function-paper-front-pattern",
+    );
+    const backPattern = document.querySelector(
+      ".origami-function-paper-back-pattern",
+    );
     return {
       baseFill: base instanceof SVGElement ? base.style.fill : undefined,
       baseOpacity: base instanceof SVGElement ? base.style.opacity : undefined,
       backFill: back instanceof SVGElement ? back.style.fill : undefined,
+      frontPattern:
+        frontPattern instanceof SVGElement
+          ? frontPattern.dataset.pattern
+          : undefined,
+      backPattern:
+        backPattern instanceof SVGElement
+          ? backPattern.dataset.pattern
+          : undefined,
     };
   });
   if (
     paperStyle.baseFill !== "rgb(255, 255, 255)" ||
     paperStyle.baseOpacity !== "0.65" ||
-    paperStyle.backFill !== "rgb(16, 24, 32)"
+    paperStyle.backFill !== "rgb(16, 24, 32)" ||
+    paperStyle.frontPattern !== "washi-wave" ||
+    paperStyle.backPattern !== "high-contrast"
   ) {
     throw new Error(
       `Function paper style controls did not apply: ${JSON.stringify(paperStyle)}`,

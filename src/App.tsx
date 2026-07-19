@@ -987,6 +987,9 @@ function OrigamiRoadmap() {
               <option value="grid">Grid</option>
               <option value="dots">Dots</option>
               <option value="diagonal-stripe">Diagonal stripe</option>
+              <option value="washi-wave">Washi wave</option>
+              <option value="coordinate-grid">Coordinate grid</option>
+              <option value="high-contrast">High contrast</option>
             </select>
           </label>
           <label>
@@ -1005,6 +1008,9 @@ function OrigamiRoadmap() {
               <option value="grid">Grid</option>
               <option value="dots">Dots</option>
               <option value="diagonal-stripe">Diagonal stripe</option>
+              <option value="washi-wave">Washi wave</option>
+              <option value="coordinate-grid">Coordinate grid</option>
+              <option value="high-contrast">High contrast</option>
             </select>
           </label>
           <label>

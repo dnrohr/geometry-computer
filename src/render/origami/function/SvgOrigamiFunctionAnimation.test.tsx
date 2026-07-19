@@ -32,6 +32,12 @@ describe("SvgOrigamiFunctionAnimation", () => {
       container.querySelector(".origami-function-paper-back"),
     ).toBeInTheDocument();
     expect(
+      container.querySelector(".origami-function-paper-front-pattern"),
+    ).toHaveAttribute("data-pattern", "grid");
+    expect(
+      container.querySelector(".origami-function-paper-back-pattern"),
+    ).toHaveAttribute("data-pattern", "diagonal-stripe");
+    expect(
       container.querySelector(".origami-function-hinge-shadow"),
     ).toBeInTheDocument();
     expect(screen.getByText("Current f(a, b) = a * b")).toBeInTheDocument();

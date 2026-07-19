@@ -124,6 +124,9 @@ The flat-origami tab provides:
   front/back colors, front/back pattern selectors, crease/highlight colors, and
   opacity. These controls update the origami function animation without touching
   the compass-and-straightedge workspace.
+- F4.2 provides pattern presets for solid, grid, dots, diagonal stripe, washi
+  wave, coordinate grid, and high contrast. The animation renderer applies
+  separate front/back pattern overlays.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

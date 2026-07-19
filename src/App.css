@@ -607,7 +607,8 @@ select:focus-visible,
 }
 
 .origami-function-paper-pattern,
-.origami-function-paper-moving-pattern {
+.origami-function-paper-front-pattern,
+.origami-function-paper-back-pattern {
   opacity: 0.22;
 }
 
@@ -615,6 +616,10 @@ select:focus-visible,
   fill: none;
   stroke: #0e1418;
   stroke-width: 1;
+}
+
+.origami-function-animation pattern circle {
+  fill: #0e1418;
 }
 
 .origami-function-moving-panel {

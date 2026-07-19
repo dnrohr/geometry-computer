@@ -630,7 +630,11 @@ describe("App", () => {
     });
     fireEvent.change(
       screen.getByRole("combobox", { name: "Function paper front pattern" }),
-      { target: { value: "solid" } },
+      { target: { value: "washi-wave" } },
+    );
+    fireEvent.change(
+      screen.getByRole("combobox", { name: "Function paper back pattern" }),
+      { target: { value: "high-contrast" } },
     );
     fireEvent.change(screen.getByLabelText("Function paper opacity"), {
       target: { value: "0.65" },
@@ -644,7 +648,10 @@ describe("App", () => {
     );
     expect(
       screen.getByRole("combobox", { name: "Function paper front pattern" }),
-    ).toHaveValue("solid");
+    ).toHaveValue("washi-wave");
+    expect(
+      screen.getByRole("combobox", { name: "Function paper back pattern" }),
+    ).toHaveValue("high-contrast");
     expect(container.querySelector(".origami-function-paper-base")).toHaveStyle(
       {
         fill: "#ffffff",

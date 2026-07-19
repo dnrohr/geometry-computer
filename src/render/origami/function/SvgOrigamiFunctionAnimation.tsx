@@ -8,6 +8,10 @@ const paperPoints = "18,18 282,18 282,198 18,198";
 const stationaryPoints = "18,18 150,18 150,198 18,198";
 const movingPoints = "150,18 282,18 282,198 150,198";
 
+const patternId = (pattern: string) => `origami-function-pattern-${pattern}`;
+const patternFill = (pattern: string) =>
+  pattern === "solid" ? "none" : `url(#${patternId(pattern)})`;
+
 const phaseLabel = (
   preview: Extract<OrigamiFunctionPreview, { status: "compiled" }>,
 ) => {
@@ -74,12 +78,52 @@ export function SvgOrigamiFunctionAnimation({
       <desc>{`${phase.id} ${phase.kind} ${phase.expression}`}</desc>
       <defs>
         <pattern
-          id="origami-function-animation-grid"
+          id={patternId("grid")}
           width="16"
           height="16"
           patternUnits="userSpaceOnUse"
         >
           <path d="M 16 0 L 0 0 0 16" />
+        </pattern>
+        <pattern
+          id={patternId("dots")}
+          width="14"
+          height="14"
+          patternUnits="userSpaceOnUse"
+        >
+          <circle cx="3" cy="3" r="1.4" />
+        </pattern>
+        <pattern
+          id={patternId("diagonal-stripe")}
+          width="12"
+          height="12"
+          patternUnits="userSpaceOnUse"
+        >
+          <path d="M -3 12 L 12 -3 M 3 15 L 15 3" />
+        </pattern>
+        <pattern
+          id={patternId("washi-wave")}
+          width="28"
+          height="14"
+          patternUnits="userSpaceOnUse"
+        >
+          <path d="M 0 7 C 7 1, 14 13, 21 7 S 35 7, 42 7" />
+        </pattern>
+        <pattern
+          id={patternId("coordinate-grid")}
+          width="20"
+          height="20"
+          patternUnits="userSpaceOnUse"
+        >
+          <path d="M 20 0 L 0 0 0 20 M 10 0 L 10 20 M 0 10 L 20 10" />
+        </pattern>
+        <pattern
+          id={patternId("high-contrast")}
+          width="10"
+          height="10"
+          patternUnits="userSpaceOnUse"
+        >
+          <path d="M 0 0 L 10 10 M 10 0 L 0 10" />
         </pattern>
       </defs>
       <polygon className="origami-function-paper-shadow" points={paperPoints} />
@@ -94,7 +138,7 @@ export function SvgOrigamiFunctionAnimation({
       <polygon
         className="origami-function-paper-pattern"
         points={paperPoints}
-        fill="url(#origami-function-animation-grid)"
+        fill={patternFill(preview.paperStyle.frontPattern)}
       />
       <polygon
         className="origami-function-paper-stationary"
@@ -129,9 +173,16 @@ export function SvgOrigamiFunctionAnimation({
           }}
         />
         <polygon
-          className="origami-function-paper-moving-pattern"
+          className="origami-function-paper-back-pattern"
           points={movingPoints}
-          fill="url(#origami-function-animation-grid)"
+          fill={patternFill(preview.paperStyle.backPattern)}
+          data-pattern={preview.paperStyle.backPattern}
+        />
+        <polygon
+          className="origami-function-paper-front-pattern"
+          points={movingPoints}
+          fill={patternFill(preview.paperStyle.frontPattern)}
+          data-pattern={preview.paperStyle.frontPattern}
         />
       </g>
       <rect
