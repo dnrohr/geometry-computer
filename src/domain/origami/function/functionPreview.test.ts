@@ -2,6 +2,7 @@ import {
   advanceOrigamiFunctionPreview,
   compileOrigamiFunctionPreview,
   setOrigamiFunctionPreviewPlaying,
+  setOrigamiFunctionPreviewPaperStyle,
   setOrigamiFunctionPreviewProgress,
   setOrigamiFunctionPreviewReducedMotion,
   setOrigamiFunctionPreviewSpeed,
@@ -109,6 +110,26 @@ describe("origami function preview plan", () => {
     expect(reduced.animation).toMatchObject({
       playing: false,
       reducedMotion: true,
+    });
+  });
+
+  it("updates paper style without changing the compiled function plan", () => {
+    const preview = compileOrigamiFunctionPreview("a+b");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+
+    const styled = setOrigamiFunctionPreviewPaperStyle(preview, {
+      frontColor: "#ffffff",
+      backColor: "#101820",
+      opacity: 2,
+    });
+
+    expect(styled.status).toBe("compiled");
+    if (styled.status !== "compiled") throw new Error("Expected compiled");
+    expect(styled.plan).toBe(preview.plan);
+    expect(styled.paperStyle).toMatchObject({
+      frontColor: "#ffffff",
+      backColor: "#101820",
+      opacity: 1,
     });
   });
 

@@ -17,11 +17,13 @@ import {
   origamiFunctionExamples,
   origamiVariableControls,
   setOrigamiFunctionPreviewPlaying,
+  setOrigamiFunctionPreviewPaperStyle,
   setOrigamiFunctionPreviewProgress,
   setOrigamiFunctionPreviewReducedMotion,
   setOrigamiFunctionPreviewSpeed,
   stepOrigamiFunctionPreviewPhase,
   type OrigamiFunctionExample,
+  type OrigamiPaperPattern,
 } from "./domain/origami/function";
 import {
   constructionJson,
@@ -661,6 +663,16 @@ function OrigamiRoadmap() {
   const previewOrigamiFunctionAnimation = () =>
     setFunctionPreview((preview) => advanceOrigamiFunctionPreview(preview));
   const timelineDisabled = functionPreview.status !== "compiled";
+  const paperStyle =
+    functionPreview.status === "compiled"
+      ? functionPreview.paperStyle
+      : undefined;
+  const updateOrigamiPaperStyle = (
+    paperStyleUpdate: Parameters<typeof setOrigamiFunctionPreviewPaperStyle>[1],
+  ) =>
+    setFunctionPreview((preview) =>
+      setOrigamiFunctionPreviewPaperStyle(preview, paperStyleUpdate),
+    );
 
   return (
     <main
@@ -933,6 +945,108 @@ function OrigamiRoadmap() {
           <a href="#origami-trace">View trace</a>
         </aside>
         <SvgOrigamiFunctionAnimation preview={functionPreview} />
+        <fieldset className="origami-paper-style-controls">
+          <legend>Paper style</legend>
+          <label>
+            Front
+            <input
+              aria-label="Function paper front color"
+              type="color"
+              disabled={timelineDisabled}
+              value={paperStyle?.frontColor ?? "#f7f0d4"}
+              onChange={(event) =>
+                updateOrigamiPaperStyle({ frontColor: event.target.value })
+              }
+            />
+          </label>
+          <label>
+            Back
+            <input
+              aria-label="Function paper back color"
+              type="color"
+              disabled={timelineDisabled}
+              value={paperStyle?.backColor ?? "#365f91"}
+              onChange={(event) =>
+                updateOrigamiPaperStyle({ backColor: event.target.value })
+              }
+            />
+          </label>
+          <label>
+            Front pattern
+            <select
+              aria-label="Function paper front pattern"
+              disabled={timelineDisabled}
+              value={paperStyle?.frontPattern ?? "grid"}
+              onChange={(event) =>
+                updateOrigamiPaperStyle({
+                  frontPattern: event.target.value as OrigamiPaperPattern,
+                })
+              }
+            >
+              <option value="solid">Solid</option>
+              <option value="grid">Grid</option>
+              <option value="dots">Dots</option>
+              <option value="diagonal-stripe">Diagonal stripe</option>
+            </select>
+          </label>
+          <label>
+            Back pattern
+            <select
+              aria-label="Function paper back pattern"
+              disabled={timelineDisabled}
+              value={paperStyle?.backPattern ?? "diagonal-stripe"}
+              onChange={(event) =>
+                updateOrigamiPaperStyle({
+                  backPattern: event.target.value as OrigamiPaperPattern,
+                })
+              }
+            >
+              <option value="solid">Solid</option>
+              <option value="grid">Grid</option>
+              <option value="dots">Dots</option>
+              <option value="diagonal-stripe">Diagonal stripe</option>
+            </select>
+          </label>
+          <label>
+            Crease
+            <input
+              aria-label="Function crease color"
+              type="color"
+              disabled={timelineDisabled}
+              value={paperStyle?.creaseColor ?? "#e8b65c"}
+              onChange={(event) =>
+                updateOrigamiPaperStyle({ creaseColor: event.target.value })
+              }
+            />
+          </label>
+          <label>
+            Highlight
+            <input
+              aria-label="Function highlight color"
+              type="color"
+              disabled={timelineDisabled}
+              value={paperStyle?.highlightColor ?? "#fff2bb"}
+              onChange={(event) =>
+                updateOrigamiPaperStyle({ highlightColor: event.target.value })
+              }
+            />
+          </label>
+          <label>
+            Opacity
+            <input
+              aria-label="Function paper opacity"
+              type="range"
+              min="0.2"
+              max="1"
+              step="0.05"
+              disabled={timelineDisabled}
+              value={paperStyle?.opacity ?? 1}
+              onChange={(event) =>
+                updateOrigamiPaperStyle({ opacity: Number(event.target.value) })
+              }
+            />
+          </label>
+        </fieldset>
         <div
           className="origami-function-timeline"
           aria-label="Origami function timeline"

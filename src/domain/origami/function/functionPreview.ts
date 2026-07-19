@@ -160,3 +160,26 @@ export function setOrigamiFunctionPreviewReducedMotion(
     },
   };
 }
+
+export function setOrigamiFunctionPreviewPaperStyle(
+  preview: OrigamiFunctionPreview,
+  paperStyle: Partial<OrigamiPaperStyle>,
+): OrigamiFunctionPreview {
+  if (preview.status !== "compiled") return preview;
+  return {
+    ...preview,
+    paperStyle: {
+      ...preview.paperStyle,
+      ...paperStyle,
+      opacity: Math.max(
+        0.2,
+        Math.min(
+          1,
+          Number.isFinite(paperStyle.opacity ?? preview.paperStyle.opacity)
+            ? (paperStyle.opacity ?? preview.paperStyle.opacity)
+            : preview.paperStyle.opacity,
+        ),
+      ),
+    },
+  };
+}

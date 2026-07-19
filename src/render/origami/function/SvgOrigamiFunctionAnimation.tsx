@@ -86,7 +86,10 @@ export function SvgOrigamiFunctionAnimation({
       <polygon
         className="origami-function-paper-base"
         points={paperPoints}
-        style={{ fill: preview.paperStyle.frontColor }}
+        style={{
+          fill: preview.paperStyle.frontColor,
+          opacity: preview.paperStyle.opacity,
+        }}
       />
       <polygon
         className="origami-function-paper-pattern"
@@ -96,7 +99,10 @@ export function SvgOrigamiFunctionAnimation({
       <polygon
         className="origami-function-paper-stationary"
         points={stationaryPoints}
-        style={{ fill: preview.paperStyle.frontColor }}
+        style={{
+          fill: preview.paperStyle.frontColor,
+          opacity: preview.paperStyle.opacity,
+        }}
       />
       <g
         className="origami-function-moving-panel"
@@ -111,7 +117,7 @@ export function SvgOrigamiFunctionAnimation({
           points={movingPoints}
           style={{
             fill: preview.paperStyle.backColor,
-            opacity: showBack ? 1 : 0.18,
+            opacity: (showBack ? 1 : 0.18) * preview.paperStyle.opacity,
           }}
         />
         <polygon
@@ -119,7 +125,7 @@ export function SvgOrigamiFunctionAnimation({
           points={movingPoints}
           style={{
             fill: preview.paperStyle.frontColor,
-            opacity: showBack ? 0.24 : 1,
+            opacity: (showBack ? 0.24 : 1) * preview.paperStyle.opacity,
           }}
         />
         <polygon

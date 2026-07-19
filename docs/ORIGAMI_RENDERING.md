@@ -120,6 +120,10 @@ The flat-origami tab provides:
   the function animation: nonblank SVG, paper regions inside the viewport,
   required front/back/moving/crease layers, unclipped controls, and nonoverlapping
   timeline controls. Screenshots are saved under `.artifacts/browser-smoke/`.
+- F4.1 adds the first paper-style controls beside the function animation:
+  front/back colors, front/back pattern selectors, crease/highlight colors, and
+  opacity. These controls update the origami function animation without touching
+  the compass-and-straightedge workspace.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

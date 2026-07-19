@@ -19,6 +19,7 @@ export {
   advanceOrigamiFunctionPreview,
   compileOrigamiFunctionPreview,
   setOrigamiFunctionPreviewPlaying,
+  setOrigamiFunctionPreviewPaperStyle,
   setOrigamiFunctionPreviewProgress,
   setOrigamiFunctionPreviewReducedMotion,
   setOrigamiFunctionPreviewSpeed,

@@ -717,6 +717,51 @@ select:focus-visible,
   opacity: 0.45;
 }
 
+.origami-paper-style-controls {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.6rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 3%);
+}
+
+.origami-paper-style-controls legend {
+  padding: 0 0.25rem;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.origami-paper-style-controls label {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.origami-paper-style-controls input,
+.origami-paper-style-controls select {
+  width: 100%;
+  min-width: 0;
+}
+
+.origami-paper-style-controls select {
+  padding: 0.42rem 0.5rem;
+  color: var(--foreground);
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  background: #0f1519;
+  font: inherit;
+}
+
 .origami-trace-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.12fr) minmax(17rem, 0.48fr);
@@ -1390,6 +1435,9 @@ text.geometry-result,
   }
   .origami-function-timeline label {
     grid-column: 1 / -1;
+  }
+  .origami-paper-style-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .origami-function-actions {
     grid-column: auto;

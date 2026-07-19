@@ -472,6 +472,27 @@ const assertOrigamiFunctionPanel = async (page) => {
       name: "Origami function animation: f(a) = sqrt(a + 1)",
     })
     .waitFor();
+  await page.getByLabel("Function paper front color").fill("#ffffff");
+  await page.getByLabel("Function paper back color").fill("#101820");
+  await page.getByLabel("Function paper opacity").fill("0.65");
+  const paperStyle = await page.evaluate(() => {
+    const base = document.querySelector(".origami-function-paper-base");
+    const back = document.querySelector(".origami-function-paper-back");
+    return {
+      baseFill: base instanceof SVGElement ? base.style.fill : undefined,
+      baseOpacity: base instanceof SVGElement ? base.style.opacity : undefined,
+      backFill: back instanceof SVGElement ? back.style.fill : undefined,
+    };
+  });
+  if (
+    paperStyle.baseFill !== "rgb(255, 255, 255)" ||
+    paperStyle.baseOpacity !== "0.65" ||
+    paperStyle.backFill !== "rgb(16, 24, 32)"
+  ) {
+    throw new Error(
+      `Function paper style controls did not apply: ${JSON.stringify(paperStyle)}`,
+    );
+  }
   const traceLink = page.getByRole("link", { name: "View trace" });
   await traceLink.waitFor();
   if ((await traceLink.getAttribute("href")) !== "#origami-trace") {

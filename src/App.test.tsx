@@ -296,6 +296,12 @@ describe("App", () => {
       screen.getByRole("button", { name: "Play function animation" }),
     ).toBeInTheDocument();
     expect(
+      screen.getByRole("group", { name: "Paper style" }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Function paper front color")).toHaveValue(
+      "#f7f0d4",
+    );
+    expect(
       screen.getByRole("complementary", {
         name: "Static crease-pattern comparison",
       }),
@@ -607,6 +613,44 @@ describe("App", () => {
     expect(
       within(functionPanel).getByText("origami-function-plan-f-a-b-c-a-b-c-1"),
     ).toBeInTheDocument();
+    expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
+  });
+
+  it("updates origami function paper style controls locally", () => {
+    const { container } = render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+
+    fireEvent.change(screen.getByLabelText("Function paper front color"), {
+      target: { value: "#ffffff" },
+    });
+    fireEvent.change(screen.getByLabelText("Function paper back color"), {
+      target: { value: "#101820" },
+    });
+    fireEvent.change(
+      screen.getByRole("combobox", { name: "Function paper front pattern" }),
+      { target: { value: "solid" } },
+    );
+    fireEvent.change(screen.getByLabelText("Function paper opacity"), {
+      target: { value: "0.65" },
+    });
+
+    expect(screen.getByLabelText("Function paper front color")).toHaveValue(
+      "#ffffff",
+    );
+    expect(screen.getByLabelText("Function paper back color")).toHaveValue(
+      "#101820",
+    );
+    expect(
+      screen.getByRole("combobox", { name: "Function paper front pattern" }),
+    ).toHaveValue("solid");
+    expect(container.querySelector(".origami-function-paper-base")).toHaveStyle(
+      {
+        fill: "#ffffff",
+        opacity: "0.65",
+      },
+    );
     expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
   });
 
