@@ -9,6 +9,10 @@ export {
   DEFAULT_ORIGAMI_FUNCTION_VALUES,
   evaluateOrigamiFunctionInput,
 } from "./functionInput";
+export {
+  parseOrigamiExpression,
+  type OrigamiParsedExpression,
+} from "./parserBoundary";
 export type {
   OrigamiFoldAnimationState,
   OrigamiFunctionAnimationExport,

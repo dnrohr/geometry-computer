@@ -1,6 +1,6 @@
-import { parseExpression } from "../../parser/parseExpression";
 import type { OrigamiArithmeticMacroKind } from "../types";
 import { compileOrigamiExpression } from "../compiler/compileOrigamiExpression";
+import { parseOrigamiExpression } from "../function";
 
 export type OrigamiArithmeticExample = {
   title: string;
@@ -62,7 +62,7 @@ export const compiledOrigamiArithmeticExamples = () =>
   origamiArithmeticExamples.map((example) => ({
     ...example,
     scene: compileOrigamiExpression(
-      parseExpression(example.expression),
+      parseOrigamiExpression(example.expression).ast,
       example.values,
       example.expression,
     ),
@@ -100,7 +100,7 @@ export const compiledAdvancedOrigamiArithmeticFixtures = () =>
   advancedOrigamiArithmeticFixtures.map((fixture) => ({
     ...fixture,
     scene: compileOrigamiExpression(
-      parseExpression(fixture.expression),
+      parseOrigamiExpression(fixture.expression).ast,
       fixture.values,
       fixture.expression,
     ),

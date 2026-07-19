@@ -67,13 +67,16 @@ a nonnegative integer. These failures return origami-specific diagnostics so
 later UI work can block animation without touching the existing
 compass-and-straightedge compiler or error surface.
 
-`src/domain/origami/function/functionInput.ts` owns the origami function input
-boundary used by the tab. It is the only layer in the function lab that calls
-the shared expression parser, then it returns origami-specific panel states for
-valid, blocked, and parse-error inputs. Planning, animation state, paper style,
-and function-animation export contracts live in
-`src/domain/origami/function/types.ts`; they are intentionally separate from the
-current compass-and-straightedge construction, rendering, and export types.
+`src/domain/origami/function/parserBoundary.ts` is the explicit shared-parser
+boundary for the origami function lab. Origami production modules should import
+`parseOrigamiExpression` instead of importing `parseExpression` directly.
+`src/domain/origami/function/functionInput.ts` owns the tab-facing input state
+and returns origami-specific panel states for valid, blocked, and parse-error
+inputs. Planning, animation state, paper style, and function-animation export
+contracts live in `src/domain/origami/function/types.ts`; they are intentionally
+separate from the current compass-and-straightedge construction, rendering,
+proof, and export types. `parserBoundary.test.ts` scans production origami files
+so this separation fails loudly if a later change reaches around the boundary.
 
 The supported O3 trace covers variables, constants, addition, subtraction,
 multiplication, division, square, and square root on deterministic baselines.

@@ -1,6 +1,5 @@
-import { formatExpression } from "../../expression/format";
-import { parseExpression } from "../../parser/parseExpression";
 import { validateOrigamiAllowableField } from "./allowableField";
+import { parseOrigamiExpression } from "./parserBoundary";
 import type { OrigamiFunctionPanelState } from "./types";
 
 export const DEFAULT_ORIGAMI_FUNCTION_VALUES: Record<string, number> = {
@@ -15,11 +14,12 @@ export function evaluateOrigamiFunctionInput(
   values: Record<string, number> = DEFAULT_ORIGAMI_FUNCTION_VALUES,
 ): OrigamiFunctionPanelState {
   try {
-    const ast = parseExpression(source);
+    const parsed = parseOrigamiExpression(source);
+    const ast = parsed.ast;
     const report = validateOrigamiAllowableField(ast, values);
     const validation = {
       source: {
-        source: formatExpression(ast),
+        source: parsed.normalizedSource,
         ast,
         variables: report.variables,
       },
