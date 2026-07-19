@@ -314,4 +314,32 @@ describe("App", () => {
       screen.getByRole("heading", { name: "Construct a + b" }),
     ).toBeInTheDocument();
   });
+
+  it("shows compact origami step metadata for macro, axiom, branch, proof, and degeneracy", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Multiplication trace" }),
+    );
+    const multiplyStep = screen
+      .getByRole("button", {
+        name: /Trace a \* b Use an intercept-style fold trace/i,
+      })
+      .closest("li")!;
+
+    expect(within(multiplyStep).getByText("Macro")).toBeInTheDocument();
+    expect(within(multiplyStep).getByText("mul")).toBeInTheDocument();
+    expect(within(multiplyStep).getByText("Axiom")).toBeInTheDocument();
+    expect(within(multiplyStep).getByText("macro trace")).toBeInTheDocument();
+    expect(within(multiplyStep).getByText("Branch")).toBeInTheDocument();
+    expect(
+      within(multiplyStep).getByText("Intercept similar-triangle branch"),
+    ).toBeInTheDocument();
+    expect(within(multiplyStep).getByText("Proof")).toBeInTheDocument();
+    expect(within(multiplyStep).getByText("linked")).toBeInTheDocument();
+    expect(within(multiplyStep).getByText("Degeneracy")).toBeInTheDocument();
+    expect(within(multiplyStep).getByText("none")).toBeInTheDocument();
+  });
 });

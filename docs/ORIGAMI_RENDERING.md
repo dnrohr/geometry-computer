@@ -76,6 +76,11 @@ The flat-origami tab provides:
 - Origami-specific proof cards for implemented arithmetic macro steps.
 - JSON and SVG export buttons for the current origami trace.
 
+The step list shows compact metadata for each fold: macro family, fold axiom or
+macro-trace fallback, selected branch, proof-link status, and degeneracy count.
+These fields stay outside the step activation button so the button label remains
+focused on the step title and summary.
+
 ## Current Limits
 
 The O4 renderer visualizes deterministic trace geometry. It does not yet render

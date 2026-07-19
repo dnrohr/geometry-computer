@@ -544,6 +544,36 @@ text.origami-object,
   font-size: 0.72rem;
 }
 
+.origami-step-metadata {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(5.8rem, 1fr));
+  gap: 0.35rem;
+  margin: 0.65rem 0 0;
+}
+
+.origami-step-metadata div {
+  min-width: 0;
+  padding: 0.4rem 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  background: rgb(255 255 255 / 3%);
+}
+
+.origami-step-metadata dt {
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.origami-step-metadata dd {
+  margin: 0.15rem 0 0;
+  overflow-wrap: anywhere;
+  color: var(--foreground);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.66rem;
+}
+
 .origami-inspector dl {
   display: grid;
   grid-template-columns: auto 1fr;

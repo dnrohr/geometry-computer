@@ -459,6 +459,10 @@ function OrigamiRoadmap() {
     const index = scene.steps.findIndex((step) => step.id === id);
     setProgress((index + 1) / scene.steps.length);
   };
+  const origamiStepProofStatus = (proofId?: string) => {
+    if (!proofId) return "none";
+    return scene.proofs.some(({ id }) => id === proofId) ? "linked" : "missing";
+  };
   const moveOrigamiStep = (delta: number) => {
     const index = Math.max(
       0,
@@ -640,7 +644,38 @@ function OrigamiRoadmap() {
                     <h3>{step.title}</h3>
                     <p>{step.summary}</p>
                   </button>
-                  <span>{step.operation ?? step.axiom}</span>
+                  <dl className="origami-step-metadata">
+                    <div>
+                      <dt>Macro</dt>
+                      <dd>{step.operation ?? "none"}</dd>
+                    </div>
+                    <div>
+                      <dt>Axiom</dt>
+                      <dd>{step.axiom ?? "macro trace"}</dd>
+                    </div>
+                    <div>
+                      <dt>Branch</dt>
+                      <dd>
+                        {step.macroTrace?.branchSelections.find(
+                          ({ selected }) => selected,
+                        )?.label ??
+                          step.selectedSolutionId ??
+                          "deterministic"}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Proof</dt>
+                      <dd>{origamiStepProofStatus(step.proofId)}</dd>
+                    </div>
+                    <div>
+                      <dt>Degeneracy</dt>
+                      <dd>
+                        {(step.degeneracies?.length ?? 0) +
+                          (step.macroTrace?.degeneracyObjectIds.length ?? 0) ||
+                          "none"}
+                      </dd>
+                    </div>
+                  </dl>
                   {step.proofId && (
                     <button
                       className="how-button"
