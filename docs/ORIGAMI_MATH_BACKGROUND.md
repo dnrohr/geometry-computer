@@ -54,12 +54,14 @@ corresponding fold trace.
   denominator check, unit reference, numerator and denominator copies,
   reciprocal and quotient guide lines, selected reciprocal/quotient points, and
   projection creases.
-- Square is multiplication with the same source length in both roles.
+- Square is multiplication with the same source length in both roles; the
+  compiler keeps the copied second factor visible and reuses the multiplication
+  guide geometry.
 - Square root records a geometric-mean trace and rejects negative sampled
   lengths.
 
-The current square and square-root objects are trace-level representations.
-Later fold-solver work should expand them into the full intermediate creases and
+The current square-root objects are trace-level representations. Later
+fold-solver work should expand them into the full intermediate creases and
 intersections needed for a classroom-ready proof.
 
 ## N1 Macro Trace Contract

@@ -294,7 +294,7 @@ export function compileOrigamiExpression(
     const reflectedObjectIds: string[] = [];
     const extraCreatedObjectIds: string[] = [];
 
-    if (operation === "mul") {
+    if (operation === "mul" || operation === "square") {
       const firstLength = scaledLength(sourceValues[0] ?? 1);
       const secondLength = scaledLength(sourceValues[1] ?? 1);
       const unitStart = pointAt(1, y + 0.42);
@@ -642,22 +642,28 @@ export function compileOrigamiExpression(
             id:
               operation === "mul"
                 ? "mul-intercept-similar-triangle"
-                : operation === "div"
-                  ? "div-reciprocal-intercept"
-                  : `${operation}-baseline-transfer`,
+                : operation === "square"
+                  ? "square-multiplication-specialization"
+                  : operation === "div"
+                    ? "div-reciprocal-intercept"
+                    : `${operation}-baseline-transfer`,
             label:
               operation === "mul"
                 ? "Intercept similar-triangle branch"
-                : operation === "div"
-                  ? "Reciprocal intercept branch"
-                  : "Deterministic baseline transfer",
+                : operation === "square"
+                  ? "Square via multiplication branch"
+                  : operation === "div"
+                    ? "Reciprocal intercept branch"
+                    : "Deterministic baseline transfer",
             selected: true,
             reason:
               operation === "mul"
                 ? "The selected branch keeps the unit reference and copied factors on the positive guide axes."
-                : operation === "div"
-                  ? "The selected branch constructs the positive reciprocal of the denominator before projecting the quotient."
-                  : "The O3 trace uses one deterministic baseline placement until the richer fold geometry is expanded.",
+                : operation === "square"
+                  ? "The selected branch reuses multiplication geometry with the copied source length as the second factor."
+                  : operation === "div"
+                    ? "The selected branch constructs the positive reciprocal of the denominator before projecting the quotient."
+                    : "The O3 trace uses one deterministic baseline placement until the richer fold geometry is expanded.",
           },
         ],
         degeneracyObjectIds: [],

@@ -271,6 +271,47 @@ describe("origami expression compiler", () => {
     );
   });
 
+  it("expands square as a multiplication specialization with copied input provenance", () => {
+    const scene = compileOrigamiExpression(
+      parseExpression("a^2"),
+      { a: 3 },
+      "a^2",
+    );
+    const squareStep = scene.steps.find(
+      ({ operation }) => operation === "square",
+    );
+
+    expect(scene.steps.map(({ operation }) => operation)).toEqual([
+      "place-input",
+      "copy-length",
+      "square",
+    ]);
+    expect(squareStep?.macroTrace).toMatchObject({
+      operation: "square",
+      sourceSegmentObjectIds: ["origami-segment-1", "origami-segment-2"],
+      unitReferenceObjectIds: ["origami-unit-segment-1"],
+      guideLineObjectIds: ["origami-guide-line-1", "origami-guide-line-2"],
+      selectedIntersectionObjectIds: ["origami-intersection-1"],
+      resultSegmentObjectIds: ["origami-segment-3"],
+      proofClaimIds: ["origami-claim-square"],
+      branchSelections: [
+        {
+          id: "square-multiplication-specialization",
+          label: "Square via multiplication branch",
+          selected: true,
+        },
+      ],
+    });
+    expect(
+      scene.objects.find(({ id }) => id === "origami-input-copy-2"),
+    ).toMatchObject({
+      provenance: {
+        expression: "a^2 second factor copy",
+        sourceObjectIds: ["origami-segment-2"],
+      },
+    });
+  });
+
   it("ships one example per supported basic arithmetic family", () => {
     const examples = compiledOrigamiArithmeticExamples();
 
