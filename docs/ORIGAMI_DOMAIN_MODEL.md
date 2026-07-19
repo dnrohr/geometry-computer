@@ -51,6 +51,22 @@ be tested without a general fold solver.
 emits origami-only scene objects and arithmetic macro steps. It does not import
 the compass-and-straightedge compiler.
 
+## Allowable Function Field
+
+The fold-animation function track defines its first validation boundary in
+`src/domain/origami/function/allowableField.ts`. It accepts parsed expression
+ASTs made from variables, finite rational or decimal constants, addition,
+subtraction, multiplication, division, nonnegative integer powers supported by
+the parser, square roots, and composition of those expressions.
+
+Validation is sampled because the early origami tab computes concrete fold
+traces for chosen input lengths. A function is outside the sampled real-valued
+origami domain when a variable value is missing or nonfinite, a denominator
+evaluates to zero, a square-root radicand evaluates negative, or a power is not
+a nonnegative integer. These failures return origami-specific diagnostics so
+later UI work can block animation without touching the existing
+compass-and-straightedge compiler or error surface.
+
 The supported O3 trace covers variables, constants, addition, subtraction,
 multiplication, division, square, and square root on deterministic baselines.
 Each macro records sampled numeric output, expression provenance, input segment
