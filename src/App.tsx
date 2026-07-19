@@ -544,6 +544,22 @@ function OrigamiRoadmap() {
       : functionReport.status === "parse-error"
         ? functionReport.failure.error
         : undefined;
+  const functionIssueDetail =
+    functionReport.status === "blocked"
+      ? functionReport.validation.issues
+          .map((issue) => {
+            const label =
+              issue.code === "DIVISION_BY_ZERO"
+                ? "Denominator"
+                : issue.code === "NEGATIVE_SQUARE_ROOT"
+                  ? "Radicand"
+                  : "Issue";
+            return `${label} ${issue.expression}: ${issue.message}`;
+          })
+          .join(" ")
+      : functionReport.status === "parse-error"
+        ? functionReport.failure.error
+        : "ready";
   const functionVariables = useMemo(
     () =>
       functionReport.status === "parse-error"
@@ -563,10 +579,13 @@ function OrigamiRoadmap() {
     functionReport.status === "parse-error"
       ? "none"
       : functionReport.validation.source.source;
-  const compileOrigamiFunction = () =>
+  const canCompileOrigamiFunction = functionReport.status === "valid";
+  const compileOrigamiFunction = () => {
+    if (!canCompileOrigamiFunction) return;
     setFunctionPreview(
       compileOrigamiFunctionPreview(functionSource, functionValues),
     );
+  };
   const selectOrigamiFunctionExample = (example: OrigamiFunctionExample) => {
     setFunctionSource(example.displaySource);
     setFunctionValues({
@@ -585,10 +604,14 @@ function OrigamiRoadmap() {
       ...functionValues,
       [name]: clampOrigamiVariableValue(value),
     };
-    setFunctionValues(nextValues);
-    setFunctionPreview(
-      compileOrigamiFunctionPreview(functionSource, nextValues),
+    const nextPreview = compileOrigamiFunctionPreview(
+      functionSource,
+      nextValues,
     );
+    setFunctionValues(nextValues);
+    if (nextPreview.status === "compiled") {
+      setFunctionPreview(nextPreview);
+    }
   };
   const previewOrigamiFunctionAnimation = () =>
     setFunctionPreview((preview) => advanceOrigamiFunctionPreview(preview));
@@ -716,6 +739,10 @@ function OrigamiRoadmap() {
             <dd>{functionValue}</dd>
           </div>
           <div>
+            <dt>Domain detail</dt>
+            <dd>{functionIssueDetail}</dd>
+          </div>
+          <div>
             <dt>Result label</dt>
             <dd>{functionDisplayName}</dd>
           </div>
@@ -737,13 +764,20 @@ function OrigamiRoadmap() {
           </div>
         </dl>
         <div className="origami-function-actions">
-          <button type="button" onClick={compileOrigamiFunction}>
+          <button
+            type="button"
+            onClick={compileOrigamiFunction}
+            disabled={!canCompileOrigamiFunction}
+          >
             Compile origami function
           </button>
           <button
             type="button"
             onClick={previewOrigamiFunctionAnimation}
-            disabled={functionPreview.status !== "compiled"}
+            disabled={
+              !canCompileOrigamiFunction ||
+              functionPreview.status !== "compiled"
+            }
           >
             Preview fold animation
           </button>

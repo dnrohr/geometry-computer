@@ -313,8 +313,25 @@ const assertOrigamiFunctionPanel = async (page) => {
   await page
     .getByText(
       "Division by zero is outside the sampled origami function domain.",
+      { exact: true },
     )
     .waitFor();
+  await page
+    .getByText(
+      /Denominator b - b: Division by zero is outside the sampled origami function domain\./,
+    )
+    .waitFor();
+  await page.getByText("origami-function-plan-f-a-sqrt-a-1").waitFor();
+  await page
+    .getByRole("button", { name: "Compile origami function" })
+    .waitFor({ state: "visible" });
+  if (
+    !(await page
+      .getByRole("button", { name: "Compile origami function" })
+      .isDisabled())
+  ) {
+    throw new Error("Invalid sampled function did not disable compilation.");
+  }
 
   await input.fill("sqrt(a+1)");
   await page.getByText("allowable").waitFor();

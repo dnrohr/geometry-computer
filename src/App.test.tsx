@@ -400,6 +400,24 @@ describe("App", () => {
       ),
     ).toBeInTheDocument();
     expect(
+      within(functionPanel).getByText(
+        /Denominator b - b: Division by zero is outside the sampled origami function domain\./,
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByRole("button", {
+        name: "Compile origami function",
+      }),
+    ).toBeDisabled();
+    expect(
+      within(functionPanel).getByRole("button", {
+        name: "Preview fold animation",
+      }),
+    ).toBeDisabled();
+    expect(
+      within(functionPanel).getByText("origami-function-plan-f-a-sqrt-a-1"),
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole("heading", { name: "Origami Computer" }),
     ).toBeInTheDocument();
     expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
@@ -410,6 +428,46 @@ describe("App", () => {
     expect(screen.getByRole("textbox", { name: "Expression" })).toHaveValue(
       "sqrt(3*a - b*b)",
     );
+  });
+
+  it("shows radicand issues inline without replacing the last valid function plan", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+
+    const functionPanel = screen.getByRole("region", {
+      name: "Fold-computed function",
+    });
+    fireEvent.change(
+      within(functionPanel).getByRole("textbox", {
+        name: "Origami function",
+      }),
+      { target: { value: "sqrt(a-b)" } },
+    );
+    fireEvent.change(
+      within(functionPanel).getByRole("spinbutton", {
+        name: "a sample value",
+      }),
+      { target: { value: "1" } },
+    );
+    fireEvent.change(
+      within(functionPanel).getByRole("spinbutton", {
+        name: "b sample value",
+      }),
+      { target: { value: "2" } },
+    );
+
+    expect(within(functionPanel).getByText("blocked")).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText(
+        /Radicand a - b: Square roots need a nonnegative sampled radicand/,
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText("origami-function-plan-f-a-sqrt-a-1"),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
   });
 
   it("loads origami function examples into the function input and preview plan", () => {

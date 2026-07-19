@@ -92,6 +92,8 @@ The flat-origami tab provides:
   and the result label shows normalized names such as `f(a, b) = a * b`.
 - Origami-local function compile and fold-animation preview controls that create
   deterministic preview phases before the full fold animation engine exists.
+  Invalid sampled domains disable new compilation and preview advancement while
+  keeping the last valid plan visible.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.
