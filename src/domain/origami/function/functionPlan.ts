@@ -117,6 +117,7 @@ export function createOrigamiFunctionPlan(
       operations.push({
         id: `origami-function-operation-${operations.length + 1}`,
         kind: "reuse-length",
+        order: operations.length + 1,
         nodeId: existing.id,
         dependencyNodeIds: [existing.id],
         phaseIds: [],
@@ -134,6 +135,13 @@ export function createOrigamiFunctionPlan(
       id: `origami-function-node-${nodeIndex}`,
       kind,
       expression,
+      order: nodeIndex,
+      dependencyDepth:
+        dependencyNodes.length === 0
+          ? 0
+          : Math.max(
+              ...dependencyNodes.map(({ dependencyDepth }) => dependencyDepth),
+            ) + 1,
       dependencies: dependencyNodes.map(({ id }) => id),
       value: evaluateNode(
         expr,
@@ -147,6 +155,7 @@ export function createOrigamiFunctionPlan(
     operations.push({
       id: `origami-function-operation-${operations.length + 1}`,
       kind: operationKindForNode(kind),
+      order: operations.length + 1,
       nodeId: node.id,
       dependencyNodeIds: node.dependencies,
       phaseIds: [],
@@ -196,6 +205,7 @@ export function createOrigamiFunctionPlan(
   operations.push({
     id: `origami-function-operation-${operations.length + 1}`,
     kind: "extract-result",
+    order: operations.length + 1,
     nodeId: resultNode.id,
     dependencyNodeIds: [resultNode.id],
     phaseIds: [resultPhaseId],
@@ -210,6 +220,20 @@ export function createOrigamiFunctionPlan(
     values: input.validation.values,
     nodes,
     operations,
+    executionOrder: nodes.map(({ id }) => id),
+    dependencyJumpTargets: nodes.map((node) => ({
+      nodeId: node.id,
+      expression: node.expression,
+      order: node.order,
+      dependencyNodeIds: node.dependencies,
+      outputObjectId: node.outputObjectId,
+      phaseId:
+        node.kind === "input"
+          ? phases.find(({ expression }) => expression === node.expression)?.id
+          : node.id === resultNode.id
+            ? resultPhaseId
+            : undefined,
+    })),
     lengthTransfers,
     resultExtraction: {
       nodeId: resultNode.id,

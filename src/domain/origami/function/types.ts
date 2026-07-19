@@ -62,6 +62,8 @@ export type OrigamiFunctionPlanNode = {
   id: string;
   kind: OrigamiFunctionPlanNodeKind;
   expression: string;
+  order: number;
+  dependencyDepth: number;
   dependencies: string[];
   value: number;
   outputObjectId: string;
@@ -82,6 +84,7 @@ export type OrigamiFunctionPlanOperationKind =
 export type OrigamiFunctionPlanOperation = {
   id: string;
   kind: OrigamiFunctionPlanOperationKind;
+  order: number;
   nodeId: string;
   dependencyNodeIds: string[];
   phaseIds: string[];
@@ -98,6 +101,15 @@ export type OrigamiFunctionLengthTransfer = {
   reason: "reuse-subexpression";
 };
 
+export type OrigamiFunctionDependencyJumpTarget = {
+  nodeId: string;
+  expression: string;
+  order: number;
+  dependencyNodeIds: string[];
+  outputObjectId: string;
+  phaseId?: string;
+};
+
 export type OrigamiFunctionResultExtraction = {
   nodeId: string;
   phaseId: string;
@@ -110,6 +122,8 @@ export type OrigamiFunctionPlan = {
   values: Record<string, number>;
   nodes: OrigamiFunctionPlanNode[];
   operations: OrigamiFunctionPlanOperation[];
+  executionOrder: string[];
+  dependencyJumpTargets: OrigamiFunctionDependencyJumpTarget[];
   lengthTransfers: OrigamiFunctionLengthTransfer[];
   resultExtraction: OrigamiFunctionResultExtraction;
   phases: OrigamiFunctionPlanPhase[];

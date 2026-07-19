@@ -25,6 +25,8 @@ describe("origami function plan", () => {
         id: "origami-function-node-1",
         kind: "input",
         expression: "a",
+        order: 1,
+        dependencyDepth: 0,
         dependencies: [],
         value: 3,
       }),
@@ -32,6 +34,8 @@ describe("origami function plan", () => {
         id: "origami-function-node-2",
         kind: "input",
         expression: "b",
+        order: 2,
+        dependencyDepth: 0,
         dependencies: [],
         value: 2,
       }),
@@ -39,6 +43,8 @@ describe("origami function plan", () => {
         id: "origami-function-node-3",
         kind: "mul",
         expression: "a * b",
+        order: 3,
+        dependencyDepth: 1,
         dependencies: ["origami-function-node-1", "origami-function-node-2"],
         value: 6,
       }),
@@ -49,7 +55,56 @@ describe("origami function plan", () => {
       "multiply-lengths",
       "extract-result",
     ]);
+    expect(plan.operations.map(({ order }) => order)).toEqual([1, 2, 3, 4]);
+    expect(plan.executionOrder).toEqual([
+      "origami-function-node-1",
+      "origami-function-node-2",
+      "origami-function-node-3",
+    ]);
+    expect(plan.dependencyJumpTargets).toEqual([
+      expect.objectContaining({
+        nodeId: "origami-function-node-1",
+        expression: "a",
+        order: 1,
+        phaseId: "origami-function-phase-2",
+      }),
+      expect.objectContaining({
+        nodeId: "origami-function-node-2",
+        expression: "b",
+        order: 2,
+        phaseId: "origami-function-phase-3",
+      }),
+      expect.objectContaining({
+        nodeId: "origami-function-node-3",
+        expression: "a * b",
+        order: 3,
+        phaseId: "origami-function-phase-4",
+      }),
+    ]);
     expect(plan.phases.every(({ exportId }) => exportId)).toBe(true);
+  });
+
+  it("keeps dependencies before dependents in execution order", () => {
+    const plan = createOrigamiFunctionPlan(validInput("sqrt((a+b)*(a+b))"));
+    const orderByNode = new Map(
+      plan.nodes.map(({ id, order }) => [id, order] as const),
+    );
+
+    for (const node of plan.nodes) {
+      for (const dependency of node.dependencies) {
+        expect(orderByNode.get(dependency)).toBeLessThan(node.order);
+      }
+    }
+    expect(plan.nodes.at(-1)).toMatchObject({
+      expression: "sqrt((a + b) * (a + b))",
+      dependencyDepth: 3,
+    });
+    expect(plan.lengthTransfers).toEqual([
+      expect.objectContaining({
+        expression: "a + b",
+        fromNodeId: "origami-function-node-3",
+      }),
+    ]);
   });
 
   it("records reusable length transfers for repeated subexpressions", () => {

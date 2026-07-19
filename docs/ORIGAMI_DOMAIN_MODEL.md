@@ -93,6 +93,10 @@ the parsed expression into stable plan nodes with sampled intermediate values,
 dependency links, operation records, reusable length-transfer diagnostics for
 repeated subexpressions, and result-extraction metadata. The preview compiler now
 uses this model while still rendering the same early deterministic phases.
+Plan nodes also carry an explicit topological `order` and dependency depth.
+`executionOrder` and `dependencyJumpTargets` make F2.2 animation navigation
+deterministic: later timeline work can play from inputs to result or jump to the
+node that produced any dependency without re-walking the expression tree.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

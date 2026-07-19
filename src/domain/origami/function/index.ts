@@ -33,6 +33,7 @@ export {
 export type {
   OrigamiFoldAnimationState,
   OrigamiFunctionAnimationExport,
+  OrigamiFunctionDependencyJumpTarget,
   OrigamiFunctionLengthTransfer,
   OrigamiFunctionPanelState,
   OrigamiFunctionParseFailure,
