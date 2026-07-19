@@ -219,6 +219,165 @@ const assertOrigamiVisualContract = async (page, viewport) => {
   });
 };
 
+const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
+  await page.setViewportSize(viewport);
+  await page
+    .getByRole("button", { name: "Shifted root f(x)=sqrt(x+1)" })
+    .click();
+  await page.getByRole("button", { name: "Preview fold animation" }).click();
+  await page
+    .getByRole("slider", { name: "Function animation progress" })
+    .fill("0.3");
+  await page
+    .getByRole("img", {
+      name: "Origami function animation: f(x) = sqrt(x + 1)",
+    })
+    .waitFor();
+
+  const contract = await page.evaluate(() => {
+    const rectFor = (selector) => {
+      const element = document.querySelector(selector);
+      if (!element) return undefined;
+      const rect = element.getBoundingClientRect();
+      return {
+        selector,
+        left: rect.left,
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        width: rect.width,
+        height: rect.height,
+      };
+    };
+    const svg = rectFor(".origami-function-animation");
+    const paperRegions = [
+      rectFor(".origami-function-paper-base"),
+      rectFor(".origami-function-paper-stationary"),
+      rectFor(".origami-function-moving-panel"),
+      rectFor(".origami-function-hinge"),
+      rectFor(".origami-function-crease-preview"),
+    ].filter(Boolean);
+    const timelineChildren = [
+      ...document.querySelectorAll(".origami-function-timeline > *"),
+    ]
+      .filter((element) => element instanceof HTMLElement)
+      .filter((element) => element.offsetParent !== null)
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        return {
+          text:
+            element.textContent?.trim() ?? element.getAttribute("aria-label"),
+          left: rect.left,
+          top: rect.top,
+          right: rect.right,
+          bottom: rect.bottom,
+          width: rect.width,
+          height: rect.height,
+        };
+      });
+    const clippedControls = [
+      ...document.querySelectorAll(
+        ".origami-function-animation-panel button, .origami-function-animation-panel select, .origami-function-animation-panel input",
+      ),
+    ]
+      .filter((element) => element instanceof HTMLElement)
+      .filter((element) => element.offsetParent !== null)
+      .filter(
+        (element) =>
+          element.scrollWidth > element.clientWidth + 1 ||
+          element.scrollHeight > element.clientHeight + 1,
+      )
+      .map(
+        (element) =>
+          element.textContent?.trim() || element.getAttribute("aria-label"),
+      );
+    return {
+      svg,
+      paperRegions,
+      timelineChildren,
+      clippedControls,
+      movingPanels: document.querySelectorAll(".origami-function-moving-panel")
+        .length,
+      frontLayers: document.querySelectorAll(".origami-function-paper-front")
+        .length,
+      backLayers: document.querySelectorAll(".origami-function-paper-back")
+        .length,
+      creasePreviews: document.querySelectorAll(
+        ".origami-function-crease-preview",
+      ).length,
+    };
+  });
+
+  if (!contract.svg || contract.svg.width <= 0 || contract.svg.height <= 0) {
+    throw new Error(
+      `Function animation blank SVG at ${viewport.width}x${viewport.height}: ${JSON.stringify(
+        contract.svg,
+      )}`,
+    );
+  }
+  if (
+    contract.movingPanels < 1 ||
+    contract.frontLayers < 1 ||
+    contract.backLayers < 1 ||
+    contract.creasePreviews < 1
+  ) {
+    throw new Error(
+      `Function animation missing layers at ${viewport.width}x${viewport.height}: ${JSON.stringify(
+        {
+          movingPanels: contract.movingPanels,
+          frontLayers: contract.frontLayers,
+          backLayers: contract.backLayers,
+          creasePreviews: contract.creasePreviews,
+        },
+      )}`,
+    );
+  }
+  for (const region of contract.paperRegions) {
+    if (region.width <= 0 && region.height <= 0) {
+      throw new Error(
+        `Function animation blank paper region: ${JSON.stringify(region)}`,
+      );
+    }
+    if (
+      region.left < contract.svg.left - 2 ||
+      region.right > contract.svg.right + 2 ||
+      region.top < contract.svg.top - 2 ||
+      region.bottom > contract.svg.bottom + 2
+    ) {
+      throw new Error(
+        `Function animation paper escaped viewport at ${viewport.width}x${viewport.height}: ${JSON.stringify(
+          { svg: contract.svg, region },
+        )}`,
+      );
+    }
+  }
+  for (let i = 0; i < contract.timelineChildren.length; i += 1) {
+    for (let j = i + 1; j < contract.timelineChildren.length; j += 1) {
+      if (
+        overlaps(contract.timelineChildren[i], contract.timelineChildren[j])
+      ) {
+        throw new Error(
+          `Function timeline overlapping controls at ${viewport.width}x${viewport.height}: ${JSON.stringify(
+            [contract.timelineChildren[i], contract.timelineChildren[j]],
+          )}`,
+        );
+      }
+    }
+  }
+  if (contract.clippedControls.length > 0) {
+    throw new Error(
+      `Function animation clipped controls at ${viewport.width}x${viewport.height}: ${contract.clippedControls.join(
+        " | ",
+      )}`,
+    );
+  }
+  await mkdir(artifactDir, { recursive: true });
+  await page.locator(".origami-function-animation-panel").screenshot({
+    path: `${artifactDir}/origami-function-animation-${viewport.width}x${viewport.height}.png`,
+    animations: "disabled",
+  });
+};
+
 const downloadText = async (page, buttonName) => {
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: buttonName }).click();
@@ -492,6 +651,14 @@ try {
   }
   await assertOrigamiVisualContract(page, { width: 1280, height: 900 });
   await assertOrigamiVisualContract(page, { width: 390, height: 844 });
+  await assertOrigamiFunctionAnimationVisualContract(page, {
+    width: 1280,
+    height: 900,
+  });
+  await assertOrigamiFunctionAnimationVisualContract(page, {
+    width: 390,
+    height: 844,
+  });
   await assertOrigamiExports(page);
 
   await page.getByRole("button", { name: "Compass + straightedge" }).click();

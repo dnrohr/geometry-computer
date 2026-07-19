@@ -116,6 +116,10 @@ The flat-origami tab provides:
   `ArrowLeft` and `ArrowRight` step phases and Space toggles play/pause; the
   existing static step buttons and SVG object selections remain independently
   keyboard reachable below the animation.
+- F3.7 extends browser smoke with desktop and mobile visual-contract checks for
+  the function animation: nonblank SVG, paper regions inside the viewport,
+  required front/back/moving/crease layers, unclipped controls, and nonoverlapping
+  timeline controls. Screenshots are saved under `.artifacts/browser-smoke/`.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.
