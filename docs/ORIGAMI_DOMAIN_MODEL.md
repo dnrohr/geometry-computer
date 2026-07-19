@@ -75,8 +75,10 @@ and returns origami-specific panel states for valid, blocked, and parse-error
 inputs. Planning, animation state, paper style, and function-animation export
 contracts live in `src/domain/origami/function/types.ts`; they are intentionally
 separate from the current compass-and-straightedge construction, rendering,
-proof, and export types. `parserBoundary.test.ts` scans production origami files
-so this separation fails loudly if a later change reaches around the boundary.
+proof, and export types. `src/domain/origami/function/variableControls.ts` owns
+the sampled variable-control range, step, default, and clamp metadata used by the
+tab UI. `parserBoundary.test.ts` scans production origami files so this
+separation fails loudly if a later change reaches around the boundary.
 
 `src/domain/origami/function/functionPreview.ts` provides the first F0 regression
 target for function compilation and animation state. It compiles a valid

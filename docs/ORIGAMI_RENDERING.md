@@ -85,7 +85,8 @@ geometry with the `hidden-future` visual role rather than disappearing entirely.
 The flat-origami tab provides:
 
 - An origami-only function lab panel with an expression input, sampled
-  allowable-field validation, variable discovery, and a sampled-result readout.
+  allowable-field validation, variable discovery, per-variable slider/number
+  controls for sampled values, and a sampled-result readout.
 - Function example presets for product, shifted square-root, and offset quotient
   forms. The buttons populate signature-style examples such as `f(a,b)=a*b`,
   and the result label shows normalized names such as `f(a, b) = a * b`.

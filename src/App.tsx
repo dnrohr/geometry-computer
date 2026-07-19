@@ -11,8 +11,10 @@ import { evaluateOrigamiReveal } from "./domain/origami/reveal/evaluateOrigamiRe
 import {
   DEFAULT_ORIGAMI_FUNCTION_VALUES,
   advanceOrigamiFunctionPreview,
+  clampOrigamiVariableValue,
   compileOrigamiFunctionPreview,
   evaluateOrigamiFunctionInput,
+  origamiVariableControls,
   origamiFunctionExamples,
   type OrigamiFunctionExample,
 } from "./domain/origami/function";
@@ -542,10 +544,17 @@ function OrigamiRoadmap() {
       : functionReport.status === "parse-error"
         ? functionReport.failure.error
         : undefined;
-  const functionVariables =
-    functionReport.status === "parse-error"
-      ? []
-      : functionReport.validation.source.variables;
+  const functionVariables = useMemo(
+    () =>
+      functionReport.status === "parse-error"
+        ? []
+        : functionReport.validation.source.variables,
+    [functionReport],
+  );
+  const variableControls = useMemo(
+    () => origamiVariableControls(functionVariables, functionValues),
+    [functionVariables, functionValues],
+  );
   const functionValue =
     functionReport.status === "valid"
       ? functionReport.validation.value?.toFixed(3)
@@ -569,6 +578,16 @@ function OrigamiRoadmap() {
         ...DEFAULT_ORIGAMI_FUNCTION_VALUES,
         ...example.values,
       }),
+    );
+  };
+  const updateOrigamiVariable = (name: string, value: number) => {
+    const nextValues = {
+      ...functionValues,
+      [name]: clampOrigamiVariableValue(value),
+    };
+    setFunctionValues(nextValues);
+    setFunctionPreview(
+      compileOrigamiFunctionPreview(functionSource, nextValues),
     );
   };
   const previewOrigamiFunctionAnimation = () =>
@@ -745,6 +764,44 @@ function OrigamiRoadmap() {
             </button>
           ))}
         </div>
+        {variableControls.length > 0 && (
+          <fieldset className="origami-variable-controls">
+            <legend>Sample variables</legend>
+            {variableControls.map((control) => (
+              <label key={control.name}>
+                <span>{control.name}</span>
+                <input
+                  aria-label={`${control.name} sample slider`}
+                  type="range"
+                  min={control.min}
+                  max={control.max}
+                  step={control.step}
+                  value={control.value}
+                  onChange={(event) =>
+                    updateOrigamiVariable(
+                      control.name,
+                      Number(event.target.value),
+                    )
+                  }
+                />
+                <input
+                  aria-label={`${control.name} sample value`}
+                  type="number"
+                  min={control.min}
+                  max={control.max}
+                  step={control.step}
+                  value={control.value}
+                  onChange={(event) =>
+                    updateOrigamiVariable(
+                      control.name,
+                      Number(event.target.value),
+                    )
+                  }
+                />
+              </label>
+            ))}
+          </fieldset>
+        )}
       </section>
       <section className="origami-workspace" aria-labelledby="origami-trace">
         <div className="origami-workspace-header">

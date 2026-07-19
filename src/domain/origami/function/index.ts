@@ -23,6 +23,12 @@ export {
   parseOrigamiExpression,
   type OrigamiParsedExpression,
 } from "./parserBoundary";
+export {
+  DEFAULT_ORIGAMI_VARIABLE_RANGE,
+  clampOrigamiVariableValue,
+  origamiVariableControls,
+  type OrigamiVariableControl,
+} from "./variableControls";
 export type {
   OrigamiFoldAnimationState,
   OrigamiFunctionAnimationExport,

@@ -270,6 +270,14 @@ describe("App", () => {
       within(functionPanel).getByText("f(a) = sqrt(a + 1)"),
     ).toBeInTheDocument();
     expect(
+      within(functionPanel).getByRole("slider", { name: "a sample slider" }),
+    ).toHaveValue("3");
+    expect(
+      within(functionPanel).getByRole("spinbutton", {
+        name: "a sample value",
+      }),
+    ).toHaveValue(3);
+    expect(
       within(functionPanel).getByRole("button", {
         name: /Product f\(a,b\)=a\*b/i,
       }),
@@ -438,6 +446,47 @@ describe("App", () => {
     expect(
       within(functionPanel).getByText("origami-function-plan-f-a-b-c-a-b-c-1"),
     ).toBeInTheDocument();
+    expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
+  });
+
+  it("updates origami sampled values through variable controls", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    const functionPanel = screen.getByRole("region", {
+      name: "Fold-computed function",
+    });
+
+    fireEvent.click(
+      within(functionPanel).getByRole("button", {
+        name: /Product f\(a,b\)=a\*b/i,
+      }),
+    );
+    fireEvent.change(
+      within(functionPanel).getByRole("slider", {
+        name: "a sample slider",
+      }),
+      { target: { value: "4" } },
+    );
+    expect(within(functionPanel).getByText("8.000")).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByRole("spinbutton", {
+        name: "a sample value",
+      }),
+    ).toHaveValue(4);
+
+    fireEvent.change(
+      within(functionPanel).getByRole("spinbutton", {
+        name: "b sample value",
+      }),
+      { target: { value: "1.5" } },
+    );
+    expect(within(functionPanel).getByText("6.000")).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByRole("slider", { name: "b sample slider" }),
+    ).toHaveValue("1.5");
+    expect(within(functionPanel).getByText(/a=4, b=1.5/)).toBeInTheDocument();
     expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
   });
 

@@ -471,6 +471,52 @@ select:focus-visible,
   font-size: 0.7rem;
 }
 
+.origami-variable-controls {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 0.55rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 3%);
+}
+
+.origami-variable-controls legend {
+  padding: 0 0.25rem;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.origami-variable-controls label {
+  display: grid;
+  grid-template-columns: minmax(2rem, 0.2fr) minmax(9rem, 1fr) minmax(
+      5rem,
+      0.35fr
+    );
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.origami-variable-controls span {
+  color: var(--accent);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.78rem;
+}
+
+.origami-variable-controls input[type="range"] {
+  padding: 0;
+}
+
+.origami-variable-controls input[type="range"],
+.origami-variable-controls input[type="number"] {
+  width: 100%;
+  min-width: 0;
+}
+
 .origami-trace-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.12fr) minmax(17rem, 0.48fr);
@@ -1142,6 +1188,12 @@ text.geometry-result,
   }
   .origami-function-actions button {
     flex: 1 1 12rem;
+  }
+  .origami-variable-controls label {
+    grid-template-columns: minmax(1.5rem, auto) minmax(8rem, 1fr);
+  }
+  .origami-variable-controls input[type="number"] {
+    grid-column: 2;
   }
   .origami-example-tabs {
     flex-wrap: nowrap;
