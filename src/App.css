@@ -573,7 +573,8 @@ select:focus-visible,
 
 .origami-function-paper-base,
 .origami-function-paper-stationary,
-.origami-function-paper-moving polygon:first-child {
+.origami-function-paper-front,
+.origami-function-paper-back {
   stroke: #f5f1e8;
   stroke-width: 1;
 }
@@ -589,13 +590,24 @@ select:focus-visible,
   stroke-width: 1;
 }
 
-.origami-function-paper-moving {
+.origami-function-moving-panel {
   transition: transform 240ms ease;
+}
+
+.origami-function-hinge-shadow {
+  fill: rgb(0 0 0 / 18%);
+  filter: blur(1px);
 }
 
 .origami-function-hinge {
   stroke-width: 2;
   stroke-dasharray: 6 4;
+}
+
+.origami-function-crease-preview {
+  opacity: 0.62;
+  stroke-width: 2;
+  stroke-dasharray: 3 5;
 }
 
 .origami-function-active-crease {

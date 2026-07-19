@@ -49,10 +49,13 @@ export function SvgOrigamiFunctionAnimation({
   const movingTransform = motion
     ? `rotate(${directionSign * foldProgress * 18}deg) skewY(${directionSign * foldProgress * 5}deg)`
     : "none";
-  const movingFill =
-    motion?.sideExposure.after === "back"
-      ? preview.paperStyle.backColor
-      : preview.paperStyle.frontColor;
+  const showBack = motion?.sideExposure.after === "back";
+  const showCreasePreview = Boolean(
+    motion &&
+    (phase.kind === "align-fold" ||
+      phase.kind === "preview-crease" ||
+      phase.kind === "fold"),
+  );
 
   return (
     <svg
@@ -90,20 +93,42 @@ export function SvgOrigamiFunctionAnimation({
         style={{ fill: preview.paperStyle.frontColor }}
       />
       <g
-        className="origami-function-paper-moving"
+        className="origami-function-moving-panel"
         style={{
           transform: movingTransform,
           transformBox: "fill-box",
           transformOrigin: "left center",
         }}
       >
-        <polygon points={movingPoints} style={{ fill: movingFill }} />
+        <polygon
+          className="origami-function-paper-back"
+          points={movingPoints}
+          style={{
+            fill: preview.paperStyle.backColor,
+            opacity: showBack ? 1 : 0.18,
+          }}
+        />
+        <polygon
+          className="origami-function-paper-front"
+          points={movingPoints}
+          style={{
+            fill: preview.paperStyle.frontColor,
+            opacity: showBack ? 0.24 : 1,
+          }}
+        />
         <polygon
           className="origami-function-paper-moving-pattern"
           points={movingPoints}
           fill="url(#origami-function-animation-grid)"
         />
       </g>
+      <rect
+        className="origami-function-hinge-shadow"
+        x="146"
+        y="18"
+        width="8"
+        height="180"
+      />
       <line
         className="origami-function-hinge"
         x1="150"
@@ -112,6 +137,16 @@ export function SvgOrigamiFunctionAnimation({
         y2="198"
         style={{ stroke: preview.paperStyle.creaseColor }}
       />
+      {showCreasePreview && (
+        <line
+          className="origami-function-crease-preview"
+          x1="58"
+          y1={72 + (motion?.hingeLine.point.y ?? 0) * 10}
+          x2="242"
+          y2={72 + (motion?.hingeLine.point.y ?? 0) * 10}
+          style={{ stroke: preview.paperStyle.creaseColor }}
+        />
+      )}
       {motion && (
         <line
           className="origami-function-active-crease"

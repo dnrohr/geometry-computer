@@ -100,6 +100,9 @@ The flat-origami tab provides:
 - A separate `SvgOrigamiFunctionAnimation` renderer for function plans. It uses
   SVG paper regions and CSS transforms for the early F3.1 fold preview while the
   existing crease-pattern trace remains available below it.
+  The F3.2 renderer separates stationary paper, moving panel, front fill, back
+  fill, hinge shadow, active hinge, and crease-preview layers so two-sided paper
+  styling and fold motion can evolve independently.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

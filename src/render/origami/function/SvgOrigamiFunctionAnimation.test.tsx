@@ -20,10 +20,19 @@ describe("SvgOrigamiFunctionAnimation", () => {
       }),
     ).toBeInTheDocument();
     expect(
-      container.querySelector(".origami-function-paper-moving"),
+      container.querySelector(".origami-function-moving-panel"),
     ).toBeInTheDocument();
     expect(
       container.querySelector(".origami-function-hinge"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-function-paper-front"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-function-paper-back"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-function-hinge-shadow"),
     ).toBeInTheDocument();
   });
 
@@ -39,6 +48,9 @@ describe("SvgOrigamiFunctionAnimation", () => {
 
     expect(
       container.querySelector(".origami-function-active-crease"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-function-crease-preview"),
     ).toBeInTheDocument();
     expect(
       screen.getByText("origami-function-phase-5 preview-crease"),
