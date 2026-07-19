@@ -110,6 +110,8 @@ The flat-origami tab provides:
 - F3.4 adds a computation readout inside the animation SVG with the current
   phase expression, sampled intermediate value when the active phase maps to a
   plan node, and final sampled result.
+- F3.5 keeps the static crease-pattern inspector below the animation and adds a
+  comparison link from the animation panel to the static trace region.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

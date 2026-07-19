@@ -313,6 +313,11 @@ const assertOrigamiFunctionPanel = async (page) => {
       name: "Origami function animation: f(a) = sqrt(a + 1)",
     })
     .waitFor();
+  const traceLink = page.getByRole("link", { name: "View trace" });
+  await traceLink.waitFor();
+  if ((await traceLink.getAttribute("href")) !== "#origami-trace") {
+    throw new Error("Static crease-pattern comparison link target changed.");
+  }
   await page.getByRole("button", { name: "Copy result label" }).click();
   await page.getByText("Copied result label").waitFor();
   if (

@@ -924,6 +924,14 @@ function OrigamiRoadmap() {
           <p className="section-label">Fold animation</p>
           <h2 id="origami-function-animation-title">Function fold preview</h2>
         </div>
+        <aside
+          className="origami-function-comparison"
+          aria-label="Static crease-pattern comparison"
+        >
+          <h3>Static crease pattern</h3>
+          <p>{examples[exampleIndex].title}</p>
+          <a href="#origami-trace">View trace</a>
+        </aside>
         <SvgOrigamiFunctionAnimation preview={functionPreview} />
         <div
           className="origami-function-timeline"

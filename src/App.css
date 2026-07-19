@@ -557,6 +557,33 @@ select:focus-visible,
   margin-bottom: 0;
 }
 
+.origami-function-comparison {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: start;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 3%);
+}
+
+.origami-function-comparison h3 {
+  margin: 0;
+  font-size: 0.86rem;
+}
+
+.origami-function-comparison p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.origami-function-comparison a {
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
 .origami-function-animation {
   display: block;
   width: 100%;

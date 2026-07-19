@@ -296,6 +296,15 @@ describe("App", () => {
       screen.getByRole("button", { name: "Play function animation" }),
     ).toBeInTheDocument();
     expect(
+      screen.getByRole("complementary", {
+        name: "Static crease-pattern comparison",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "View trace" })).toHaveAttribute(
+      "href",
+      "#origami-trace",
+    );
+    expect(
       within(functionPanel).getByRole("button", {
         name: /Product f\(a,b\)=a\*b/i,
       }),
