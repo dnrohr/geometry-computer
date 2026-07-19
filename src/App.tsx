@@ -8,7 +8,10 @@ import { gallery, type GalleryExample } from "./domain/examples/gallery";
 import { evaluateReveal } from "./domain/reveal/evaluateReveal";
 import { compiledOrigamiArithmeticExamples } from "./domain/origami/examples";
 import { evaluateOrigamiReveal } from "./domain/origami/reveal/evaluateOrigamiReveal";
-import { validateOrigamiAllowableField } from "./domain/origami/function/allowableField";
+import {
+  DEFAULT_ORIGAMI_FUNCTION_VALUES,
+  evaluateOrigamiFunctionInput,
+} from "./domain/origami/function";
 import {
   constructionJson,
   downloadText,
@@ -519,19 +522,24 @@ function OrigamiRoadmap() {
         .id,
     );
   };
-  const functionReport = useMemo(() => {
-    try {
-      const ast = parseExpression(functionSource);
-      return {
-        ast,
-        report: validateOrigamiAllowableField(ast, defaultValues),
-      };
-    } catch (error) {
-      return {
-        error: error instanceof Error ? error.message : "Invalid expression.",
-      };
-    }
-  }, [functionSource]);
+  const functionReport = useMemo(
+    () => evaluateOrigamiFunctionInput(functionSource),
+    [functionSource],
+  );
+  const functionIssue =
+    functionReport.status === "blocked"
+      ? functionReport.validation.issues[0]?.message
+      : functionReport.status === "parse-error"
+        ? functionReport.failure.error
+        : undefined;
+  const functionVariables =
+    functionReport.status === "parse-error"
+      ? []
+      : functionReport.validation.source.variables;
+  const functionValue =
+    functionReport.status === "valid"
+      ? functionReport.validation.value?.toFixed(3)
+      : functionIssue;
 
   return (
     <main
@@ -631,35 +639,29 @@ function OrigamiRoadmap() {
         <dl className="origami-function-status" aria-live="polite">
           <div>
             <dt>Sample values</dt>
-            <dd>a=3, b=2, x=3, y=2</dd>
+            <dd>
+              {Object.entries(DEFAULT_ORIGAMI_FUNCTION_VALUES)
+                .map(([name, value]) => `${name}=${value}`)
+                .join(", ")}
+            </dd>
           </div>
           <div>
             <dt>Domain</dt>
             <dd>
-              {"error" in functionReport
-                ? "parse error"
-                : functionReport.report.allowed
-                  ? "allowable"
-                  : "blocked"}
+              {functionReport.status === "valid"
+                ? "allowable"
+                : functionReport.status === "blocked"
+                  ? "blocked"
+                  : "parse error"}
             </dd>
           </div>
           <div>
             <dt>Variables</dt>
-            <dd>
-              {"error" in functionReport
-                ? "none"
-                : functionReport.report.variables.join(", ") || "none"}
-            </dd>
+            <dd>{functionVariables.join(", ") || "none"}</dd>
           </div>
           <div>
             <dt>Sample result</dt>
-            <dd>
-              {"error" in functionReport
-                ? functionReport.error
-                : functionReport.report.allowed
-                  ? functionReport.report.value?.toFixed(3)
-                  : functionReport.report.issues[0]?.message}
-            </dd>
+            <dd>{functionValue}</dd>
           </div>
         </dl>
       </section>

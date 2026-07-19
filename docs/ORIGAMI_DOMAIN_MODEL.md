@@ -67,6 +67,14 @@ a nonnegative integer. These failures return origami-specific diagnostics so
 later UI work can block animation without touching the existing
 compass-and-straightedge compiler or error surface.
 
+`src/domain/origami/function/functionInput.ts` owns the origami function input
+boundary used by the tab. It is the only layer in the function lab that calls
+the shared expression parser, then it returns origami-specific panel states for
+valid, blocked, and parse-error inputs. Planning, animation state, paper style,
+and function-animation export contracts live in
+`src/domain/origami/function/types.ts`; they are intentionally separate from the
+current compass-and-straightedge construction, rendering, and export types.
+
 The supported O3 trace covers variables, constants, addition, subtraction,
 multiplication, division, square, and square root on deterministic baselines.
 Each macro records sampled numeric output, expression provenance, input segment
