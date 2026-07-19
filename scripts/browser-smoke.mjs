@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { mkdir } from "node:fs/promises";
+import { mkdir, readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { setTimeout as delay } from "node:timers/promises";
 import { chromium } from "playwright";
@@ -219,12 +219,97 @@ const assertOrigamiVisualContract = async (page, viewport) => {
   });
 };
 
+const downloadText = async (page, buttonName) => {
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: buttonName }).click();
+  const download = await downloadPromise;
+  const path = await download.path();
+  if (!path) throw new Error(`Download path was unavailable for ${buttonName}`);
+  return {
+    filename: download.suggestedFilename(),
+    text: await readFile(path, "utf8"),
+  };
+};
+
+const assertOrigamiExports = async (page) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page
+    .getByRole("button", { name: "Addition trace", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Multiplication trace", exact: true })
+    .click();
+  await page
+    .getByRole("img", { name: /Compiled origami trace: a\*b/i })
+    .waitFor();
+
+  const resultObjectId = "origami-segment-3";
+  const resultStepId = "origami-step-3";
+  const renderedIds = await page.evaluate((objectId) => {
+    const element = document.querySelector(`#origami-${objectId}`);
+    return {
+      objectDomId: element?.id,
+      objectLabel: element?.getAttribute("aria-label"),
+      canvasTitle: document.querySelector("#origami-canvas-title")?.textContent,
+    };
+  }, resultObjectId);
+  if (
+    renderedIds.objectDomId !== `origami-${resultObjectId}` ||
+    renderedIds.objectLabel !== "segment a * b" ||
+    renderedIds.canvasTitle !== "Compiled origami trace: a*b"
+  ) {
+    throw new Error(
+      `Origami UI ID mismatch before export: ${JSON.stringify(renderedIds)}`,
+    );
+  }
+
+  const jsonDownload = await downloadText(page, "Export origami JSON");
+  if (jsonDownload.filename !== "origami-trace.json") {
+    throw new Error(
+      `Origami JSON filename regression: ${jsonDownload.filename}`,
+    );
+  }
+  const exportedScene = JSON.parse(jsonDownload.text);
+  if (
+    exportedScene.id !== "origami-compiled-scene" ||
+    !exportedScene.objects?.some((object) => object.id === resultObjectId) ||
+    !exportedScene.steps?.some((step) => step.id === resultStepId)
+  ) {
+    throw new Error(
+      `Origami JSON export ID mismatch: ${JSON.stringify({
+        sceneId: exportedScene.id,
+        hasResultObject: exportedScene.objects?.some(
+          (object) => object.id === resultObjectId,
+        ),
+        hasResultStep: exportedScene.steps?.some(
+          (step) => step.id === resultStepId,
+        ),
+      })}`,
+    );
+  }
+
+  const svgDownload = await downloadText(page, "Export origami SVG");
+  if (svgDownload.filename !== "origami-trace.svg") {
+    throw new Error(`Origami SVG filename regression: ${svgDownload.filename}`);
+  }
+  if (
+    !svgDownload.text.includes("Compiled origami trace: a*b") ||
+    !svgDownload.text.includes(`id="origami-${resultObjectId}"`)
+  ) {
+    throw new Error(
+      `Origami SVG export ID mismatch for ${resultObjectId} in ${svgDownload.filename}`,
+    );
+  }
+};
+
 try {
   await waitForServer();
   const browser = await chromium.launch();
-  const page = await browser.newPage({
+  const context = await browser.newContext({
+    acceptDownloads: true,
     viewport: { width: 1280, height: 900 },
   });
+  const page = await context.newPage();
   const failures = [];
 
   page.on("pageerror", (error) => failures.push(`pageerror: ${error.message}`));
@@ -266,6 +351,7 @@ try {
   }
   await assertOrigamiVisualContract(page, { width: 1280, height: 900 });
   await assertOrigamiVisualContract(page, { width: 390, height: 844 });
+  await assertOrigamiExports(page);
 
   await page.getByRole("button", { name: "Compass + straightedge" }).click();
   await page.getByRole("heading", { name: "Construct a + b" }).waitFor();
@@ -283,6 +369,7 @@ try {
     throw new Error(`Browser smoke failed:\n${failures.join("\n")}`);
   }
 
+  await context.close();
   await browser.close();
   console.log(`Browser smoke passed at ${url}`);
 } finally {
