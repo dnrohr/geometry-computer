@@ -97,6 +97,19 @@ expression provenance, proof assumptions, selected branch or fold solution,
 rejected branch labels when present, sampled numeric/display value, source
 object provenance, and export IDs for the object and producing step.
 
+## Responsive Layout
+
+The origami explanation view uses four readable regions: SVG canvas, step list,
+object inspector, and proof card. On desktop the canvas and step list share the
+first row, while the inspector and proof card span the full workspace below.
+The step list and proof card have bounded heights with internal scrolling so
+long metadata or proof text does not push the canvas out of view.
+
+Below the mobile breakpoint, the regions stack into one column. Example tabs
+scroll horizontally, range controls shrink inside the header, metadata tiles
+collapse from two columns to one on narrow screens, and inspector/proof text
+wraps within its panel instead of overflowing.
+
 ## Current Limits
 
 The O4 renderer visualizes deterministic trace geometry. It does not yet render

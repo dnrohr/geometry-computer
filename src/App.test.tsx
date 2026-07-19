@@ -395,4 +395,34 @@ describe("App", () => {
     ).toBeInTheDocument();
     expect(claim).toHaveAttribute("aria-pressed", "true");
   });
+
+  it("keeps the origami explanation layout split into compact readable panels", () => {
+    const { container } = render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Multiplication trace" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /Trace a \* b Use an intercept-style fold trace/i,
+      }),
+    );
+    fireEvent.click(screen.getAllByRole("button", { name: "Why?" }).at(-1)!);
+
+    expect(
+      container.querySelector(".origami-trace-layout"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-canvas-panel"),
+    ).toBeInTheDocument();
+    expect(container.querySelector(".origami-steps-panel")).toBeInTheDocument();
+    expect(container.querySelector(".origami-inspector")).toBeInTheDocument();
+    expect(container.querySelector(".origami-proof-card")).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-step-metadata"),
+    ).toBeInTheDocument();
+    expect(container.querySelector(".origami-proof-claim")).toBeInTheDocument();
+  });
 });

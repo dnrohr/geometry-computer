@@ -364,15 +364,17 @@ select:focus-visible,
 
 .origami-trace-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.36fr);
+  grid-template-columns: minmax(0, 1.12fr) minmax(17rem, 0.48fr);
   gap: 1rem;
+  align-items: start;
 }
 
 .origami-canvas-panel {
   display: grid;
   place-items: center;
   min-width: 0;
-  min-height: 22rem;
+  min-height: clamp(18rem, 42vw, 30rem);
+  overflow: hidden;
   padding: 1rem;
   border: 1px solid var(--line);
   border-radius: 0.75rem;
@@ -382,7 +384,9 @@ select:focus-visible,
 .origami-canvas {
   display: block;
   width: 100%;
-  max-height: 34rem;
+  max-width: 100%;
+  max-height: min(34rem, 68vh);
+  aspect-ratio: 14 / 10;
 }
 
 .origami-object {
@@ -513,6 +517,11 @@ text.origami-object,
   background: #12181d;
 }
 
+.origami-steps-panel {
+  max-height: min(36rem, 78vh);
+  overflow-y: auto;
+}
+
 .origami-inspector,
 .origami-proof-card {
   grid-column: 1 / -1;
@@ -576,7 +585,7 @@ text.origami-object,
 
 .origami-inspector dl {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: minmax(5rem, 0.36fr) minmax(0, 1fr);
   gap: 0.4rem 0.8rem;
   margin: 0;
   font-size: 0.8rem;
@@ -598,6 +607,8 @@ text.origami-object,
 }
 
 .origami-proof-card {
+  max-height: min(34rem, 78vh);
+  overflow-y: auto;
   padding: 1rem;
   border: 1px solid var(--line);
   border-radius: 0.75rem;
@@ -606,6 +617,7 @@ text.origami-object,
 
 .origami-proof-card header {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   justify-content: space-between;
 }
@@ -995,6 +1007,58 @@ text.geometry-result,
     border-top: 1px solid var(--line);
     border-left: 0;
   }
+  .origami-workspace {
+    padding: 1rem;
+    border-radius: 0.75rem;
+  }
+  .origami-workspace-header {
+    align-items: stretch;
+  }
+  .origami-workspace-header > * {
+    min-width: 0;
+  }
+  .origami-workspace-header label {
+    width: 100%;
+  }
+  .origami-workspace-header input[type="range"] {
+    flex: 1;
+    min-width: 0;
+  }
+  .origami-example-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+  .origami-example-tabs button {
+    flex: 0 0 10rem;
+  }
+  .origami-canvas-panel {
+    min-height: 16rem;
+    padding: 0.5rem;
+  }
+  .origami-canvas {
+    max-height: 58vh;
+  }
+  .origami-steps-panel {
+    max-height: none;
+    overflow: visible;
+  }
+  .origami-step-metadata {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .origami-inspector dl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .origami-inspector dt {
+    margin-top: 0.25rem;
+  }
+  .origami-proof-card {
+    max-height: none;
+    overflow: visible;
+  }
+  .origami-proof-claim {
+    grid-template-columns: minmax(0, 1fr);
+  }
   .roadmap-merge-notes {
     padding-top: 1rem;
     padding-left: 0;
@@ -1019,6 +1083,16 @@ text.geometry-result,
     z-index: 2;
     background: var(--panel);
     align-self: auto;
+  }
+}
+
+@media (max-width: 460px) {
+  .origami-step-metadata {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .origami-workspace-header button {
+    width: 100%;
   }
 }
 
