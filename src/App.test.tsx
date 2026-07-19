@@ -386,6 +386,62 @@ describe("App", () => {
     );
   });
 
+  it("preserves compiled origami function animation state across workspace switches", () => {
+    render(<App />);
+    const expression = screen.getByRole("textbox", { name: "Expression" });
+    fireEvent.change(expression, { target: { value: "a+b" } });
+    fireEvent.click(
+      screen.getByRole("button", { name: "Compile construction" }),
+    );
+    fireEvent.change(screen.getByRole("slider", { name: "Reveal progress" }), {
+      target: { value: "0.42" },
+    });
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    fireEvent.change(
+      screen.getByRole("textbox", { name: "Origami function" }),
+      { target: { value: "a+b" } },
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Compile origami function" }),
+    );
+    expect(screen.getByText("origami-function-plan-a-b")).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Preview fold animation" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Preview fold animation" }),
+    );
+    expect(
+      screen.getByText("origami-function-phase-3 @ 0.50"),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Compass + straightedge" }),
+    );
+    expect(screen.getByRole("textbox", { name: "Expression" })).toHaveValue(
+      "a+b",
+    );
+    expect(screen.getByRole("slider", { name: "Reveal progress" })).toHaveValue(
+      "0.42",
+    );
+    expect(
+      screen.getByRole("heading", { name: "Construct a + b" }),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    expect(
+      screen.getByRole("textbox", { name: "Origami function" }),
+    ).toHaveValue("a+b");
+    expect(
+      screen.getByText("origami-function-phase-3 @ 0.50"),
+    ).toBeInTheDocument();
+  });
+
   it("shows compact origami step metadata for macro, axiom, branch, proof, and degeneracy", () => {
     render(<App />);
     fireEvent.click(

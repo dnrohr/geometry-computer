@@ -10,6 +10,8 @@ import { compiledOrigamiArithmeticExamples } from "./domain/origami/examples";
 import { evaluateOrigamiReveal } from "./domain/origami/reveal/evaluateOrigamiReveal";
 import {
   DEFAULT_ORIGAMI_FUNCTION_VALUES,
+  advanceOrigamiFunctionPreview,
+  compileOrigamiFunctionPreview,
   evaluateOrigamiFunctionInput,
 } from "./domain/origami/function";
 import {
@@ -434,6 +436,9 @@ function OrigamiRoadmap() {
   const examples = useMemo(() => compiledOrigamiArithmeticExamples(), []);
   const [exampleIndex, setExampleIndex] = useState(0);
   const [functionSource, setFunctionSource] = useState("sqrt(a+1)");
+  const [functionPreview, setFunctionPreview] = useState(() =>
+    compileOrigamiFunctionPreview("sqrt(a+1)"),
+  );
   const [progress, setProgress] = useState(1);
   const [activeStepId, setActiveStepId] = useState<string>();
   const [selectedObjectId, setSelectedObjectId] = useState<string>();
@@ -540,6 +545,10 @@ function OrigamiRoadmap() {
     functionReport.status === "valid"
       ? functionReport.validation.value?.toFixed(3)
       : functionIssue;
+  const compileOrigamiFunction = () =>
+    setFunctionPreview(compileOrigamiFunctionPreview(functionSource));
+  const previewOrigamiFunctionAnimation = () =>
+    setFunctionPreview((preview) => advanceOrigamiFunctionPreview(preview));
 
   return (
     <main
@@ -663,7 +672,35 @@ function OrigamiRoadmap() {
             <dt>Sample result</dt>
             <dd>{functionValue}</dd>
           </div>
+          <div>
+            <dt>Plan</dt>
+            <dd>
+              {functionPreview.status === "compiled"
+                ? functionPreview.plan.id
+                : "blocked"}
+            </dd>
+          </div>
+          <div>
+            <dt>Animation</dt>
+            <dd>
+              {functionPreview.status === "compiled"
+                ? `${functionPreview.animation.phaseId} @ ${functionPreview.animation.progress.toFixed(2)}`
+                : "not started"}
+            </dd>
+          </div>
         </dl>
+        <div className="origami-function-actions">
+          <button type="button" onClick={compileOrigamiFunction}>
+            Compile origami function
+          </button>
+          <button
+            type="button"
+            onClick={previewOrigamiFunctionAnimation}
+            disabled={functionPreview.status !== "compiled"}
+          >
+            Preview fold animation
+          </button>
+        </div>
       </section>
       <section className="origami-workspace" aria-labelledby="origami-trace">
         <div className="origami-workspace-header">

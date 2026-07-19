@@ -78,6 +78,14 @@ separate from the current compass-and-straightedge construction, rendering,
 proof, and export types. `parserBoundary.test.ts` scans production origami files
 so this separation fails loudly if a later change reaches around the boundary.
 
+`src/domain/origami/function/functionPreview.ts` provides the first F0 regression
+target for function compilation and animation state. It compiles a valid
+origami function input into a deterministic local preview plan with phases for
+placing paper, marking sampled inputs, and extracting the result. The preview is
+deliberately simple until F2/F3 add richer fold phases, but it already uses the
+origami-owned plan, animation, and paper-style contracts so tab-switching tests
+can prove this state stays separate from the compass-and-straightedge workspace.
+
 The supported O3 trace covers variables, constants, addition, subtraction,
 multiplication, division, square, and square root on deterministic baselines.
 Each macro records sampled numeric output, expression provenance, input segment

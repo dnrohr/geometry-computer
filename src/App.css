@@ -430,6 +430,19 @@ select:focus-visible,
   font-size: 0.78rem;
 }
 
+.origami-function-actions {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 2 / -1;
+  gap: 0.5rem;
+  justify-content: end;
+}
+
+.origami-function-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 .origami-trace-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.12fr) minmax(17rem, 0.48fr);
@@ -1094,6 +1107,13 @@ text.geometry-result,
   }
   .origami-function-panel {
     grid-template-columns: 1fr;
+  }
+  .origami-function-actions {
+    grid-column: auto;
+    justify-content: stretch;
+  }
+  .origami-function-actions button {
+    flex: 1 1 12rem;
   }
   .origami-example-tabs {
     flex-wrap: nowrap;

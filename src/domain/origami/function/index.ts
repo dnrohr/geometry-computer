@@ -10,6 +10,12 @@ export {
   evaluateOrigamiFunctionInput,
 } from "./functionInput";
 export {
+  DEFAULT_ORIGAMI_PAPER_STYLE,
+  advanceOrigamiFunctionPreview,
+  compileOrigamiFunctionPreview,
+  type OrigamiFunctionPreview,
+} from "./functionPreview";
+export {
   parseOrigamiExpression,
   type OrigamiParsedExpression,
 } from "./parserBoundary";

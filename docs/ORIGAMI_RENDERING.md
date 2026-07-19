@@ -86,6 +86,8 @@ The flat-origami tab provides:
 
 - An origami-only function lab panel with an expression input, sampled
   allowable-field validation, variable discovery, and a sampled-result readout.
+- Origami-local function compile and fold-animation preview controls that create
+  deterministic preview phases before the full fold animation engine exists.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.
@@ -124,6 +126,11 @@ These states do not import or mutate compass-and-straightedge interaction state.
 The function lab uses its own React state inside the origami tab, so entering an
 invalid sampled function can block future animation work without changing the
 current compass-and-straightedge expression or reveal state.
+Compiling a function stores an origami-local preview plan and animation state.
+Workspace-switching regression tests verify that advancing this preview does not
+reset the compass-and-straightedge expression, reveal progress, or constructed
+scene, and that the origami preview phase is still present when returning to the
+flat-origami tab.
 
 ## Responsive Layout
 
