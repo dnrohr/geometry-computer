@@ -1,4 +1,6 @@
 export {
+  advancedOrigamiArithmeticFixtures,
+  compiledAdvancedOrigamiArithmeticFixtures,
   compiledOrigamiArithmeticExamples,
   origamiArithmeticExamples,
 } from "./arithmeticGallery";

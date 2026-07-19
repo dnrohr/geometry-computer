@@ -92,6 +92,12 @@ baseline, midpoint, fold-equivalent guide lines, positive selected intersection,
 and extraction creases as typed scene objects. The proof assumptions carry the
 nonnegative-radicand requirement that makes the selected branch real-valued.
 
+`compiledAdvancedOrigamiArithmeticFixtures` provides focused fixture scenes for
+multiplication, division, square, and square root. These fixtures are the stable
+renderer and inspector target for N1 work: each exposes unit references, guide
+lines, crease objects, selected intersections, result segments, branch metadata,
+and proof claim references through `macroTrace`.
+
 Cubic roots and angle trisection are research spikes. They require the more
 advanced tangent/parabola family of folds and should not be treated as acceptance
 criteria for the basic arithmetic compiler.
