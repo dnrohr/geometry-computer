@@ -541,6 +541,78 @@ select:focus-visible,
   min-width: 0;
 }
 
+.origami-function-animation-panel {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.35fr) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: #10161a;
+}
+
+.origami-function-animation-panel h2 {
+  margin-bottom: 0;
+}
+
+.origami-function-animation {
+  display: block;
+  width: 100%;
+  min-height: 12rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: #0c1115;
+}
+
+.origami-function-paper-shadow {
+  fill: rgb(0 0 0 / 24%);
+  transform: translate(4px, 5px);
+}
+
+.origami-function-paper-base,
+.origami-function-paper-stationary,
+.origami-function-paper-moving polygon:first-child {
+  stroke: #f5f1e8;
+  stroke-width: 1;
+}
+
+.origami-function-paper-pattern,
+.origami-function-paper-moving-pattern {
+  opacity: 0.22;
+}
+
+.origami-function-animation pattern path {
+  fill: none;
+  stroke: #0e1418;
+  stroke-width: 1;
+}
+
+.origami-function-paper-moving {
+  transition: transform 240ms ease;
+}
+
+.origami-function-hinge {
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+}
+
+.origami-function-active-crease {
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.origami-function-animation text {
+  fill: var(--muted);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+}
+
+.origami-function-animation-value {
+  text-anchor: end;
+}
+
 .origami-trace-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.12fr) minmax(17rem, 0.48fr);
@@ -1204,6 +1276,9 @@ text.geometry-result,
     min-width: 0;
   }
   .origami-function-panel {
+    grid-template-columns: 1fr;
+  }
+  .origami-function-animation-panel {
     grid-template-columns: 1fr;
   }
   .origami-function-actions {

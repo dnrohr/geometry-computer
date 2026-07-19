@@ -285,6 +285,11 @@ describe("App", () => {
       }),
     ).toHaveValue(3);
     expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a) = sqrt(a + 1)",
+      }),
+    ).toBeInTheDocument();
+    expect(
       within(functionPanel).getByRole("button", {
         name: /Product f\(a,b\)=a\*b/i,
       }),

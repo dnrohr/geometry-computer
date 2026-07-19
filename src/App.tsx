@@ -25,6 +25,7 @@ import {
 } from "./domain/export/exportConstruction";
 import { SvgConstructionCanvas } from "./render/svg/SvgConstructionCanvas";
 import { SvgOrigamiCanvas } from "./render/origami/svg/SvgOrigamiCanvas";
+import { SvgOrigamiFunctionAnimation } from "./render/origami/function/SvgOrigamiFunctionAnimation";
 import { buildOrigamiVisualRoleMap } from "./render/origami/visualRoles";
 import { ExpressionInput } from "./ui/input/ExpressionInput";
 import { ExampleGallery } from "./ui/examples/ExampleGallery";
@@ -890,6 +891,16 @@ function OrigamiRoadmap() {
             ))}
           </fieldset>
         )}
+      </section>
+      <section
+        className="origami-function-animation-panel"
+        aria-labelledby="origami-function-animation-title"
+      >
+        <div>
+          <p className="section-label">Fold animation</p>
+          <h2 id="origami-function-animation-title">Function fold preview</h2>
+        </div>
+        <SvgOrigamiFunctionAnimation preview={functionPreview} />
       </section>
       <section className="origami-workspace" aria-labelledby="origami-trace">
         <div className="origami-workspace-header">

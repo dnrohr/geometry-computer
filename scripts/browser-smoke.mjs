@@ -304,9 +304,15 @@ const assertOrigamiExports = async (page) => {
 
 const assertOrigamiFunctionPanel = async (page) => {
   const input = page.getByRole("textbox", { name: "Origami function" });
+  const functionPanel = page.getByLabel("Fold-computed function");
   await input.waitFor();
-  await page.getByText("allowable").waitFor();
-  await page.getByText("2.000").waitFor();
+  await functionPanel.getByText("allowable").waitFor();
+  await functionPanel.getByText("2.000").waitFor();
+  await page
+    .getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    })
+    .waitFor();
   await page.getByRole("button", { name: "Copy result label" }).click();
   await page.getByText("Copied result label").waitFor();
   if (
@@ -354,9 +360,9 @@ const assertOrigamiFunctionPanel = async (page) => {
   await page
     .getByRole("button", { name: "Offset quotient f(a,b,c)=(a+b)/(c+1)" })
     .click();
-  await page.getByText("2.500").waitFor();
+  await functionPanel.getByText("2.500").waitFor();
   await page.getByRole("spinbutton", { name: "c sample value" }).fill("4");
-  await page.getByText("1.000").waitFor();
+  await functionPanel.getByText("1.000").waitFor();
   await page.getByText("origami-function-plan-f-a-b-c-a-b-c-1").waitFor();
   await page
     .getByRole("button", { name: "Shifted root f(x)=sqrt(x+1)" })
@@ -374,6 +380,12 @@ const assertOrigamiFunctionPanel = async (page) => {
   await page.getByText("origami-function-plan-f-a-sqrt-a-1").waitFor();
   await page.getByRole("button", { name: "Preview fold animation" }).click();
   await page.getByText("origami-function-phase-4 @ 0.25").waitFor();
+  await page
+    .getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    })
+    .getByText("origami-function-phase-4 align-fold", { exact: true })
+    .waitFor();
 };
 
 try {

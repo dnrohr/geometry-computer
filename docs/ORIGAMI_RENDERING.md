@@ -97,6 +97,9 @@ The flat-origami tab provides:
   deterministic preview phases before the full fold animation engine exists.
   Invalid sampled domains disable new compilation and preview advancement while
   keeping the last valid plan visible.
+- A separate `SvgOrigamiFunctionAnimation` renderer for function plans. It uses
+  SVG paper regions and CSS transforms for the early F3.1 fold preview while the
+  existing crease-pattern trace remains available below it.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.
