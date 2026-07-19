@@ -936,6 +936,32 @@ function OrigamiRoadmap() {
         <div
           className="origami-function-timeline"
           aria-label="Origami function timeline"
+          aria-keyshortcuts="ArrowLeft ArrowRight Space"
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (timelineDisabled) return;
+            if (event.key === "ArrowLeft") {
+              event.preventDefault();
+              setFunctionPreview((preview) =>
+                stepOrigamiFunctionPreviewPhase(preview, -1),
+              );
+            }
+            if (event.key === "ArrowRight") {
+              event.preventDefault();
+              setFunctionPreview((preview) =>
+                stepOrigamiFunctionPreviewPhase(preview, 1),
+              );
+            }
+            if (event.key === " ") {
+              event.preventDefault();
+              setFunctionPreview((preview) =>
+                setOrigamiFunctionPreviewPlaying(
+                  preview,
+                  preview.status !== "compiled" || !preview.animation.playing,
+                ),
+              );
+            }
+          }}
         >
           <button
             type="button"

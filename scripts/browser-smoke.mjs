@@ -424,6 +424,19 @@ const assertOrigamiFunctionPanel = async (page) => {
     .waitFor();
   await page.getByRole("checkbox", { name: "Function reduced motion" }).check();
   await page.getByRole("button", { name: "Play function animation" }).waitFor();
+  await page
+    .getByRole("checkbox", { name: "Function reduced motion" })
+    .uncheck();
+  const timeline = page.getByLabel("Origami function timeline");
+  await timeline.focus();
+  await page.keyboard.press("ArrowLeft");
+  await page.getByText("origami-function-phase-8 @ 0.50").waitFor();
+  await page.keyboard.press("ArrowRight");
+  await page.getByText("origami-function-phase-9 @ 0.57").waitFor();
+  await page.keyboard.press("Space");
+  await page
+    .getByRole("button", { name: "Pause function animation" })
+    .waitFor();
 };
 
 try {

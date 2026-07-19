@@ -538,6 +538,41 @@ describe("App", () => {
     expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
   });
 
+  it("supports keyboard control for the origami animation timeline", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    const timeline = screen.getByLabelText("Origami function timeline");
+
+    fireEvent.keyDown(timeline, { key: "ArrowRight" });
+    expect(
+      screen.getByText("origami-function-phase-2 @ 0.07"),
+    ).toBeInTheDocument();
+    fireEvent.keyDown(timeline, { key: "ArrowLeft" });
+    expect(
+      screen.getByText("origami-function-phase-1 @ 0.00"),
+    ).toBeInTheDocument();
+    fireEvent.keyDown(timeline, { key: " " });
+    expect(
+      screen.getByRole("button", { name: "Pause function animation" }),
+    ).toBeInTheDocument();
+    expect(timeline).toHaveAttribute(
+      "aria-keyshortcuts",
+      "ArrowLeft ArrowRight Space",
+    );
+    expect(
+      screen.getByRole("button", {
+        name: /Trace a Mark the supplied input length/i,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", {
+        name: "paper-boundary paper-square",
+      }),
+    ).toBeInTheDocument();
+  });
+
   it("loads origami function examples into the function input and preview plan", () => {
     render(<App />);
     fireEvent.click(

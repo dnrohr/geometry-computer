@@ -112,6 +112,10 @@ The flat-origami tab provides:
   plan node, and final sampled result.
 - F3.5 keeps the static crease-pattern inspector below the animation and adds a
   comparison link from the animation panel to the static trace region.
+- F3.6 makes the function timeline itself focusable. With focus on the timeline,
+  `ArrowLeft` and `ArrowRight` step phases and Space toggles play/pause; the
+  existing static step buttons and SVG object selections remain independently
+  keyboard reachable below the animation.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.
