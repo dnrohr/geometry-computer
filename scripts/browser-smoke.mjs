@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { setTimeout as delay } from "node:timers/promises";
 import { chromium } from "playwright";
@@ -6,6 +7,9 @@ import { chromium } from "playwright";
 const port = Number(process.env.SMOKE_PORT ?? 4175);
 const host = "127.0.0.1";
 const url = `http://${host}:${port}/`;
+const artifactDir = fileURLToPath(
+  new URL("../.artifacts/browser-smoke/", import.meta.url),
+);
 const viteBin = fileURLToPath(
   new URL("../node_modules/vite/bin/vite.js", import.meta.url),
 );
@@ -208,6 +212,11 @@ const assertOrigamiVisualContract = async (page, viewport) => {
       )}`,
     );
   }
+  await mkdir(artifactDir, { recursive: true });
+  await page.locator(".origami-workspace").screenshot({
+    path: `${artifactDir}/origami-${viewport.width}x${viewport.height}.png`,
+    animations: "disabled",
+  });
 };
 
 try {

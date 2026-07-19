@@ -133,6 +133,12 @@ scroll horizontally, range controls shrink inside the header, metadata tiles
 collapse from two columns to one on narrow screens, and inspector/proof text
 wraps within its panel instead of overflowing.
 
+`npm run smoke:browser` saves deterministic origami workspace screenshots after
+the desktop and mobile visual-contract checks. The generated files live in
+`.artifacts/browser-smoke/` with names such as `origami-1280x900.png` and
+`origami-390x844.png`. The `.artifacts/` directory is intentionally ignored by
+git so local smoke runs do not create binary churn.
+
 ## Current Limits
 
 The N2 renderer visualizes deterministic explanation geometry for the supported
