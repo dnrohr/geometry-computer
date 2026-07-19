@@ -69,6 +69,8 @@ const renderOrigamiObject = (
   object: OrigamiObject,
   state: OrigamiObjectRevealState | undefined,
   visualRoles: OrigamiVisualRoleMap,
+  idPrefix = "origami",
+  extraClassName = "",
   onSelectObject?: (id: string) => void,
   onHoverObject?: (id?: string) => void,
 ) => {
@@ -76,9 +78,9 @@ const renderOrigamiObject = (
   const visualRoleClassNames =
     visualRoles[object.id]?.map(origamiVisualRoleClassName).join(" ") ?? "";
   const common = {
-    id: `origami-${object.id}`,
+    id: `${idPrefix}-${object.id}`,
     className:
-      `origami-object origami-${object.role} ${visualRoleClassNames}`.trim(),
+      `origami-object origami-${object.role} ${visualRoleClassNames} ${extraClassName}`.trim(),
     style: {
       ...stateStyle(state),
       opacity: visible ? stateStyle(state).opacity : 0,
@@ -139,6 +141,19 @@ const renderOrigamiObject = (
   }
 };
 
+const overlayRoles = new Set([
+  "source-geometry",
+  "active-crease",
+  "reflected-geometry",
+  "selected-intersection",
+  "extracted-result",
+]);
+
+const hasOverlayRole = (
+  object: OrigamiObject,
+  visualRoles: OrigamiVisualRoleMap,
+) => visualRoles[object.id]?.some((role) => overlayRoles.has(role)) ?? false;
+
 export function SvgOrigamiCanvas({
   objects,
   title,
@@ -174,11 +189,28 @@ export function SvgOrigamiCanvas({
             object,
             renderStates[object.id],
             visualRoles,
+            "origami",
+            "",
             onSelectObject,
             onHoverObject,
           )}
         </g>
       ))}
+      <g className="origami-active-fold-overlays" aria-hidden="true">
+        {objects
+          .filter((object) => hasOverlayRole(object, visualRoles))
+          .map((object) => (
+            <g key={`overlay-${object.id}`}>
+              {renderOrigamiObject(
+                object,
+                renderStates[object.id],
+                visualRoles,
+                "origami-overlay",
+                "origami-active-fold-overlay",
+              )}
+            </g>
+          ))}
+      </g>
     </svg>
   );
 }

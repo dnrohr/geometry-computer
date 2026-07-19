@@ -485,6 +485,25 @@ text.origami-object,
   stroke-width: 0.16;
 }
 
+.origami-active-fold-overlays {
+  pointer-events: none;
+}
+
+.origami-active-fold-overlay {
+  opacity: 0.88 !important;
+  filter: drop-shadow(0 0 0.08rem rgb(255 242 187 / 70%));
+}
+
+.origami-active-fold-overlay.origami-visual-active-crease,
+.origami-active-fold-overlay.origami-visual-extracted-result {
+  stroke: #fff2bb;
+  stroke-width: 0.2;
+}
+
+.origami-active-fold-overlay.origami-visual-selected-intersection {
+  r: 0.13;
+}
+
 .origami-steps-panel,
 .origami-inspector {
   min-width: 0;

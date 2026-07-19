@@ -43,6 +43,18 @@ These classes are deliberately layered over semantic object roles such as
 same visual-role map to highlight an active fold without changing compiler
 output.
 
+## Active-Fold Overlays
+
+`SvgOrigamiCanvas` renders a noninteractive `origami-active-fold-overlays` layer
+after the base objects. Objects with active explanation roles are repeated in
+that layer with `origami-overlay-*` IDs and the `origami-active-fold-overlay`
+class. The overlay currently includes source geometry, active creases, reflected
+geometry, selected intersections, and extracted result segments for the selected
+step.
+
+The base objects keep pointer and keyboard selection. Overlay objects are marked
+`aria-hidden` through their parent layer and do not receive interaction props.
+
 ## Reveal States
 
 `evaluateOrigamiReveal` maps `OrigamiRevealAction` records into per-object

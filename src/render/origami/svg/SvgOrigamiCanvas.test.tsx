@@ -147,4 +147,48 @@ describe("SvgOrigamiCanvas", () => {
       "origami-visual-extracted-result",
     );
   });
+
+  it("renders noninteractive active-fold overlays for explanation geometry", () => {
+    const { scene } = compiledAdvancedOrigamiArithmeticFixtures().find(
+      ({ operation }) => operation === "mul",
+    )!;
+    const step = scene.steps.find(({ operation }) => operation === "mul")!;
+    const visualRoles = buildOrigamiVisualRoleMap(scene, step.id);
+    const { container } = render(
+      <SvgOrigamiCanvas
+        objects={scene.objects}
+        title={scene.title}
+        visualRoles={visualRoles}
+        onSelectObject={vi.fn()}
+      />,
+    );
+
+    expect(
+      container.querySelector(".origami-active-fold-overlays"),
+    ).toHaveAttribute("aria-hidden", "true");
+    expect(
+      container.querySelector("#origami-overlay-origami-segment-1"),
+    ).toHaveClass("origami-active-fold-overlay");
+    expect(
+      container.querySelector("#origami-overlay-origami-crease-3"),
+    ).toHaveClass(
+      "origami-active-fold-overlay",
+      "origami-visual-active-crease",
+    );
+    expect(
+      container.querySelector("#origami-overlay-origami-intersection-1"),
+    ).toHaveClass(
+      "origami-active-fold-overlay",
+      "origami-visual-selected-intersection",
+    );
+    expect(
+      container.querySelector("#origami-overlay-origami-segment-3"),
+    ).toHaveClass(
+      "origami-active-fold-overlay",
+      "origami-visual-extracted-result",
+    );
+    expect(
+      container.querySelector("#origami-overlay-origami-crease-3"),
+    ).not.toHaveAttribute("role");
+  });
 });
