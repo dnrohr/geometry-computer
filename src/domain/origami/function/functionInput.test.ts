@@ -130,6 +130,7 @@ describe("origami function input boundary", () => {
           sourceObjectIds: [],
           outputObjectIds: ["origami-segment-1"],
           proofClaimIds: [],
+          physicalStatus: "proven-physical",
         },
       ],
       diagnostics: [],

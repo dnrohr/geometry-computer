@@ -109,6 +109,29 @@ describe("origami function plan", () => {
         }),
       ],
     );
+    expect(plan.phases.map(({ physicalStatus }) => physicalStatus)).toEqual([
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "explanatory-fallback",
+      "explanatory-fallback",
+      "explanatory-fallback",
+      "explanatory-fallback",
+      "explanatory-fallback",
+      "explanatory-fallback",
+    ]);
+    expect(plan.phases[3]).toMatchObject({
+      fallback: {
+        label: "Explanatory fallback trace",
+        replacementFor: "mul:align-fold",
+      },
+    });
+    expect(plan.phases.at(-1)).toMatchObject({
+      fallback: {
+        label: "Explanatory result extraction",
+        replacementFor: "extract-result",
+      },
+    });
     expect(plan.executionOrder).toEqual([
       "origami-function-node-1",
       "origami-function-node-2",

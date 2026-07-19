@@ -203,6 +203,15 @@ const foldMotionForNode = (
   };
 };
 
+const fallbackForNode = (
+  node: OrigamiFunctionPlanNode,
+  phaseKind: OrigamiFunctionPlanPhaseKind,
+) => ({
+  label: "Explanatory fallback trace",
+  reason: `${node.expression} uses the ${branchForNode(node).label} macro, which is not yet backed by a physical fold solver.`,
+  replacementFor: `${node.kind}:${phaseKind}`,
+});
+
 export function createOrigamiFunctionPlan(
   input: ValidOrigamiFunctionInput,
 ): OrigamiFunctionPlan {
@@ -302,6 +311,7 @@ export function createOrigamiFunctionPlan(
     sourceObjectIds: [],
     outputObjectIds: ["origami-function-paper"],
     proofClaimIds: [],
+    physicalStatus: "proven-physical",
   });
 
   for (const node of nodes) {
@@ -320,6 +330,7 @@ export function createOrigamiFunctionPlan(
               sourceObjectIds: [],
               outputObjectIds: [node.outputObjectId],
               proofClaimIds: [],
+              physicalStatus: "proven-physical",
             }),
           ]
         : arithmeticPhaseKinds.map((kind) =>
@@ -333,6 +344,8 @@ export function createOrigamiFunctionPlan(
                   : [`${node.outputObjectId}-${kind}`],
               proofClaimIds: [],
               foldMotion: foldMotionForNode(node, kind),
+              physicalStatus: "explanatory-fallback",
+              fallback: fallbackForNode(node, kind),
             }),
           );
     nodePhaseIds.set(node.id, phaseIds);
@@ -345,6 +358,13 @@ export function createOrigamiFunctionPlan(
     sourceObjectIds: [resultNode.outputObjectId],
     outputObjectIds: [resultObjectId],
     proofClaimIds: [],
+    physicalStatus: "explanatory-fallback",
+    fallback: {
+      label: "Explanatory result extraction",
+      reason:
+        "The final extraction references the deterministic function plan until physical fold playback is solved.",
+      replacementFor: "extract-result",
+    },
   });
   phaseForJump.set(resultNode.id, resultPhaseId);
   operations.push({

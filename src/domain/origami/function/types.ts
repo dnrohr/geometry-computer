@@ -71,6 +71,16 @@ export type OrigamiFunctionFoldMotion = {
   selectedBranch: OrigamiFunctionSelectedBranch;
 };
 
+export type OrigamiFunctionPhasePhysicalStatus =
+  | "proven-physical"
+  | "explanatory-fallback";
+
+export type OrigamiFunctionFallbackPhase = {
+  label: string;
+  reason: string;
+  replacementFor: string;
+};
+
 export type OrigamiFunctionPlanPhase = {
   id: string;
   kind: OrigamiFunctionPlanPhaseKind;
@@ -80,6 +90,8 @@ export type OrigamiFunctionPlanPhase = {
   proofClaimIds: string[];
   exportId?: string;
   foldMotion?: OrigamiFunctionFoldMotion;
+  physicalStatus: OrigamiFunctionPhasePhysicalStatus;
+  fallback?: OrigamiFunctionFallbackPhase;
 };
 
 export type OrigamiFunctionPlanNodeKind =

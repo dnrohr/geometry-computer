@@ -106,6 +106,11 @@ stable hinge line, moving and stationary paper regions, front/back side exposure
 and the selected branch/reason. These records are deterministic animation
 contracts for the separate function tab; they are intentionally simple until a
 later physical fold solver can replace the placeholder geometry.
+F2.5 labels unsolved arithmetic macro phases with `physicalStatus:
+explanatory-fallback` plus fallback details. Setup phases such as placing paper
+and marking inputs are marked `proven-physical`; arithmetic fold playback and
+result extraction remain clear explanatory traces until the solver can prove an
+actual fold sequence.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,
