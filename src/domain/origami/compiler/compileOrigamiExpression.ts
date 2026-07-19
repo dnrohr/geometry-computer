@@ -848,17 +848,47 @@ export function compileOrigamiExpression(
           : undefined,
     });
     const actionSize = 1 / createdObjectIds.length;
+    const setupObjectIds = new Set([
+      ...sourceIds,
+      ...unitReferenceObjectIds,
+      ...guideLineObjectIds,
+    ]);
+    const emphasizedObjectIds = new Set([
+      segment.id,
+      crease.id,
+      ...foldCreaseObjectIds,
+      ...selectedIntersectionObjectIds,
+      ...reflectedObjectIds,
+      ...selectedIntersectionObjectIds,
+    ]);
     createdObjectIds.forEach((objectId, index) => {
       revealActions.push({
         id: ids.next("origami-reveal"),
         stepId,
         objectId,
-        start: index * actionSize,
-        end: (index + 1) * actionSize,
-        animation:
-          objectId === segment.id || objectId === crease.id
-            ? "draw"
-            : "fade-in",
+        start: setupObjectIds.has(objectId) ? 0 : index * actionSize,
+        end: setupObjectIds.has(objectId) ? 0.18 : (index + 1) * actionSize,
+        animation: emphasizedObjectIds.has(objectId) ? "draw" : "fade-in",
+      });
+      if (!setupObjectIds.has(objectId)) {
+        revealActions.push({
+          id: ids.next("origami-reveal"),
+          stepId,
+          objectId,
+          start: 0,
+          end: index * actionSize,
+          animation: "dim",
+        });
+      }
+    });
+    sourceIds.forEach((objectId) => {
+      revealActions.push({
+        id: ids.next("origami-reveal"),
+        stepId,
+        objectId,
+        start: 0,
+        end: 0.18,
+        animation: "highlight",
       });
     });
     return {

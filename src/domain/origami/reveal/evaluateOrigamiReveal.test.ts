@@ -41,4 +41,36 @@ describe("evaluateOrigamiReveal", () => {
       true,
     );
   });
+
+  it("keeps future dim objects visible until their real reveal action takes over", () => {
+    const actions: OrigamiRevealAction[] = [
+      {
+        id: "future",
+        stepId: "fold",
+        objectId: "guide",
+        start: 0,
+        end: 0.5,
+        animation: "dim",
+      },
+      {
+        id: "draw",
+        stepId: "fold",
+        objectId: "guide",
+        start: 0.5,
+        end: 1,
+        animation: "draw",
+      },
+    ];
+
+    expect(evaluateOrigamiReveal(actions, 0.25).guide).toMatchObject({
+      visible: true,
+      opacity: 0.12,
+      future: true,
+    });
+    expect(evaluateOrigamiReveal(actions, 0.75).guide).toMatchObject({
+      visible: true,
+      drawProgress: 0.5,
+      future: false,
+    });
+  });
 });

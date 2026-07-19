@@ -66,7 +66,10 @@ export function buildOrigamiVisualRoleMap(
 
   scene.objects.forEach((object) => {
     objectVisualRoles(object, activeStep, roles);
-    if (renderStates[object.id]?.visible === false) {
+    if (
+      renderStates[object.id]?.future ||
+      renderStates[object.id]?.visible === false
+    ) {
       addRole(roles, object.id, "hidden-future");
     }
   });

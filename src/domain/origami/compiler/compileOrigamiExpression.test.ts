@@ -217,6 +217,52 @@ describe("origami expression compiler", () => {
     );
   });
 
+  it("reveals macro sources and guides before active folds and future results", () => {
+    const scene = compileOrigamiExpression(
+      parseExpression("a*b"),
+      { a: 3, b: 2 },
+      "a*b",
+    );
+    const multiplyStep = scene.steps.find(
+      ({ operation }) => operation === "mul",
+    )!;
+    const stepIndex = scene.steps.findIndex(({ id }) => id === multiplyStep.id);
+    const stepStart = stepIndex / scene.steps.length;
+    const stepEnd = (stepIndex + 1) / scene.steps.length;
+    const sourceHighlight = scene.revealActions.find(
+      ({ stepId, objectId, animation }) =>
+        stepId === multiplyStep.id &&
+        objectId === "origami-segment-1" &&
+        animation === "highlight",
+    );
+    const guideReveal = scene.revealActions.find(
+      ({ stepId, objectId }) =>
+        stepId === multiplyStep.id && objectId === "origami-guide-line-1",
+    );
+    const creaseReveal = scene.revealActions.find(
+      ({ stepId, objectId, animation }) =>
+        stepId === multiplyStep.id &&
+        objectId === "origami-crease-4" &&
+        animation === "draw",
+    );
+    const resultFuture = scene.revealActions.find(
+      ({ stepId, objectId, animation }) =>
+        stepId === multiplyStep.id &&
+        objectId === "origami-segment-3" &&
+        animation === "dim",
+    );
+
+    expect(sourceHighlight).toMatchObject({
+      start: stepStart,
+      end: stepStart + 0.18 * (stepEnd - stepStart),
+    });
+    expect(guideReveal?.start).toBe(stepStart);
+    expect(guideReveal?.end).toBe(stepStart + 0.18 * (stepEnd - stepStart));
+    expect(creaseReveal?.start).toBeGreaterThan(stepStart);
+    expect(resultFuture?.start).toBe(stepStart);
+    expect(resultFuture?.end).toBeGreaterThan(stepStart);
+  });
+
   it("expands division with visible reciprocal construction geometry", () => {
     const scene = compileOrigamiExpression(
       parseExpression("a/b"),

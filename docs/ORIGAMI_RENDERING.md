@@ -62,6 +62,12 @@ visibility, draw progress, opacity, highlight, and dim state. Compiler-generated
 actions are normalized over the ordered origami steps, so choosing a step can
 also drive the reveal slider.
 
+For arithmetic macro steps, source segments and guide objects are introduced at
+the beginning of the step window. Active creases, selected intersections, and
+result segments draw later in the same window. Objects that belong to the active
+step but have not reached their reveal point are kept visible as quiet future
+geometry with the `hidden-future` visual role rather than disappearing entirely.
+
 ## Interaction
 
 The flat-origami tab provides:
