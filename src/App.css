@@ -622,6 +622,30 @@ text.origami-object,
   line-height: 1.55;
 }
 
+.origami-proof-claim {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  width: 100%;
+  margin-bottom: 0.4rem;
+  text-align: left;
+}
+
+.origami-proof-claim[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: rgb(232 182 92 / 12%);
+}
+
+.origami-proof-claim span {
+  min-width: 0;
+}
+
+.origami-proof-claim code {
+  color: var(--accent);
+  font-size: 0.66rem;
+  white-space: nowrap;
+}
+
 .construction-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.65fr) minmax(18rem, 0.65fr);

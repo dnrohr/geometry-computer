@@ -433,6 +433,8 @@ function OrigamiRoadmap() {
   const [activeStepId, setActiveStepId] = useState<string>();
   const [selectedObjectId, setSelectedObjectId] = useState<string>();
   const [proofId, setProofId] = useState<string>();
+  const [selectedProofClaimId, setSelectedProofClaimId] = useState<string>();
+  const [hoveredProofClaimId, setHoveredProofClaimId] = useState<string>();
   const origamiSvgRef = useRef<SVGSVGElement>(null);
   const scene = examples[exampleIndex].scene;
   const activeStep = scene.steps.find(({ id }) => id === activeStepId);
@@ -440,10 +442,15 @@ function OrigamiRoadmap() {
     ({ id }) => id === selectedObjectId,
   );
   const activeProof = scene.proofs.find(({ id }) => id === proofId);
+  const activeClaimId = hoveredProofClaimId ?? selectedProofClaimId;
+  const activeProofClaim = scene.proofs
+    .flatMap((proof) => proof.claims)
+    .find(({ id }) => id === activeClaimId);
   const highlightedIds = new Set<string>([
     ...(activeStep?.inputObjectIds ?? []),
     ...(activeStep?.outputObjectIds ?? []),
     ...(activeStep?.createdObjectIds ?? []),
+    ...(activeProofClaim?.highlightObjectIds ?? []),
   ]);
   if (selectedObjectId) highlightedIds.add(selectedObjectId);
   const renderStates = useMemo(
@@ -458,6 +465,21 @@ function OrigamiRoadmap() {
     setActiveStepId(id);
     const index = scene.steps.findIndex((step) => step.id === id);
     setProgress((index + 1) / scene.steps.length);
+  };
+  const selectOrigamiObject = (id: string) => {
+    setSelectedObjectId(id);
+    const matchingProof = scene.proofs.find((proof) =>
+      proof.claims.some((claim) => claim.highlightObjectIds.includes(id)),
+    );
+    const matchingClaim = matchingProof?.claims.find((claim) =>
+      claim.highlightObjectIds.includes(id),
+    );
+    const matchingStep = scene.steps.find(
+      (step) => step.proofId === matchingProof?.id,
+    );
+    if (matchingProof) setProofId(matchingProof.id);
+    if (matchingClaim) setSelectedProofClaimId(matchingClaim.id);
+    if (matchingStep) setActiveStepId(matchingStep.id);
   };
   const origamiStepProofStatus = (proofId?: string) => {
     if (!proofId) return "none";
@@ -608,6 +630,8 @@ function OrigamiRoadmap() {
                 setActiveStepId(undefined);
                 setSelectedObjectId(undefined);
                 setProofId(undefined);
+                setSelectedProofClaimId(undefined);
+                setHoveredProofClaimId(undefined);
               }}
             >
               {example.title}
@@ -624,7 +648,7 @@ function OrigamiRoadmap() {
               renderStates={renderStates}
               visualRoles={visualRoles}
               highlightedIds={highlightedIds}
-              onSelectObject={setSelectedObjectId}
+              onSelectObject={selectOrigamiObject}
             />
           </div>
           <aside className="origami-steps-panel" aria-labelledby="folds-title">
@@ -680,7 +704,11 @@ function OrigamiRoadmap() {
                     <button
                       className="how-button"
                       type="button"
-                      onClick={() => setProofId(step.proofId)}
+                      onClick={() => {
+                        setProofId(step.proofId);
+                        setSelectedProofClaimId(undefined);
+                        setHoveredProofClaimId(undefined);
+                      }}
                     >
                       Why?
                     </button>
@@ -717,14 +745,33 @@ function OrigamiRoadmap() {
                   <p className="section-label">Proof</p>
                   <h2 id="origami-proof-title">{activeProof.title}</h2>
                 </div>
-                <button type="button" onClick={() => setProofId(undefined)}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setProofId(undefined);
+                    setSelectedProofClaimId(undefined);
+                    setHoveredProofClaimId(undefined);
+                  }}
+                >
                   Close
                 </button>
               </header>
               <p>{activeProof.intuition}</p>
               <ul>
                 {activeProof.claims.map((claim) => (
-                  <li key={claim.id}>{claim.text}</li>
+                  <li key={claim.id}>
+                    <button
+                      type="button"
+                      className="origami-proof-claim"
+                      aria-pressed={claim.id === selectedProofClaimId}
+                      onClick={() => setSelectedProofClaimId(claim.id)}
+                      onMouseEnter={() => setHoveredProofClaimId(claim.id)}
+                      onMouseLeave={() => setHoveredProofClaimId(undefined)}
+                    >
+                      <span>{claim.text}</span>
+                      <code>{claim.highlightObjectIds.length} objects</code>
+                    </button>
+                  </li>
                 ))}
               </ul>
               <p>{activeProof.conclusion}</p>

@@ -81,6 +81,11 @@ macro-trace fallback, selected branch, proof-link status, and degeneracy count.
 These fields stay outside the step activation button so the button label remains
 focused on the step title and summary.
 
+Proof-card claims are interactive in the origami tab. Selecting or hovering a
+claim adds its `highlightObjectIds` to the canvas highlight set. Selecting a
+scene object searches proof claims for that object, opens the matching proof,
+selects the claim, and activates the step that owns the proof.
+
 ## Current Limits
 
 The O4 renderer visualizes deterministic trace geometry. It does not yet render

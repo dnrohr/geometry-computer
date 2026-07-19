@@ -342,4 +342,30 @@ describe("App", () => {
     expect(within(multiplyStep).getByText("Degeneracy")).toBeInTheDocument();
     expect(within(multiplyStep).getByText("none")).toBeInTheDocument();
   });
+
+  it("links origami proof claims with canvas object highlighting", () => {
+    const { container } = render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Multiplication trace" }),
+    );
+    fireEvent.click(screen.getAllByRole("button", { name: "Why?" }).at(-1)!);
+    const claim = screen.getByRole("button", {
+      name: /Use an intercept-style fold trace to scale one length by the other.*3 objects/i,
+    });
+
+    fireEvent.click(claim);
+    expect(claim).toHaveAttribute("aria-pressed", "true");
+    expect(
+      container.querySelector("#origami-origami-segment-3")?.parentElement,
+    ).toHaveClass("is-highlighted");
+
+    fireEvent.click(screen.getAllByRole("button", { name: /segment a/i })[0]);
+    expect(
+      screen.getByRole("heading", { name: "Origami multiplication trace" }),
+    ).toBeInTheDocument();
+    expect(claim).toHaveAttribute("aria-pressed", "true");
+  });
 });
