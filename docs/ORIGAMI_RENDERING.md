@@ -107,6 +107,9 @@ The flat-origami tab provides:
   previous phase, play/pause, next phase, scrubber, speed, and reduced-motion
   fallback. Reduced motion stops play mode and keeps phase-by-phase scrubbing
   available.
+- F3.4 adds a computation readout inside the animation SVG with the current
+  phase expression, sampled intermediate value when the active phase maps to a
+  plan node, and final sampled result.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

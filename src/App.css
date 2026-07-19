@@ -621,6 +621,21 @@ select:focus-visible,
   font-size: 10px;
 }
 
+.origami-function-value-strip rect {
+  fill: rgb(15 21 25 / 86%);
+  stroke: var(--line);
+}
+
+.origami-function-value-strip text {
+  fill: var(--foreground);
+  font-size: 9px;
+}
+
+.origami-function-value-strip text:last-child {
+  text-anchor: end;
+  fill: var(--accent);
+}
+
 .origami-function-animation-value {
   text-anchor: end;
 }

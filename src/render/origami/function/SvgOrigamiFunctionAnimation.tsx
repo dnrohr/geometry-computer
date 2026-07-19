@@ -56,6 +56,12 @@ export function SvgOrigamiFunctionAnimation({
       phase.kind === "preview-crease" ||
       phase.kind === "fold"),
   );
+  const activeNode = preview.plan.nodes.find(
+    ({ expression }) => expression === phase.expression,
+  );
+  const activeValue =
+    activeNode?.value === undefined ? "pending" : activeNode.value.toFixed(3);
+  const finalValue = preview.input.validation.value?.toFixed(3) ?? "pending";
 
   return (
     <svg
@@ -161,8 +167,17 @@ export function SvgOrigamiFunctionAnimation({
         {`${phase.id} ${phase.kind}`}
       </text>
       <text className="origami-function-animation-value" x="276" y="208">
-        {preview.input.validation.value?.toFixed(3)}
+        {finalValue}
       </text>
+      <g
+        className="origami-function-value-strip"
+        aria-label="Function animation value readout"
+      >
+        <rect x="24" y="24" width="252" height="34" rx="4" />
+        <text x="34" y="45">{`Current ${phase.expression}`}</text>
+        <text x="186" y="45">{`Value ${activeValue}`}</text>
+        <text x="266" y="45">{`Final ${finalValue}`}</text>
+      </g>
     </svg>
   );
 }

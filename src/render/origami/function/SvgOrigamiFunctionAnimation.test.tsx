@@ -34,6 +34,9 @@ describe("SvgOrigamiFunctionAnimation", () => {
     expect(
       container.querySelector(".origami-function-hinge-shadow"),
     ).toBeInTheDocument();
+    expect(screen.getByText("Current f(a, b) = a * b")).toBeInTheDocument();
+    expect(screen.getByText("Value pending")).toBeInTheDocument();
+    expect(screen.getByText("Final 6.000")).toBeInTheDocument();
   });
 
   it("uses fold-motion metadata for active animated phases", () => {
@@ -55,5 +58,7 @@ describe("SvgOrigamiFunctionAnimation", () => {
     expect(
       screen.getByText("origami-function-phase-5 preview-crease"),
     ).toBeInTheDocument();
+    expect(screen.getByText("Current a * b")).toBeInTheDocument();
+    expect(screen.getByText("Value 6.000")).toBeInTheDocument();
   });
 });

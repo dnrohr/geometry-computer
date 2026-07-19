@@ -387,6 +387,24 @@ const assertOrigamiFunctionPanel = async (page) => {
     .getByText("origami-function-phase-4 align-fold", { exact: true })
     .waitFor();
   await page
+    .getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    })
+    .getByText("Current a + 1")
+    .waitFor();
+  await page
+    .getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    })
+    .getByText("Value 4.000")
+    .waitFor();
+  await page
+    .getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    })
+    .getByText("Final 2.000")
+    .waitFor();
+  await page
     .getByRole("slider", { name: "Function animation progress" })
     .fill("0.5");
   await page.getByText("origami-function-phase-8 @ 0.50").waitFor();
