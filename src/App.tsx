@@ -446,6 +446,7 @@ function OrigamiRoadmap() {
   const [functionPreview, setFunctionPreview] = useState(() =>
     compileOrigamiFunctionPreview("sqrt(a+1)", DEFAULT_ORIGAMI_FUNCTION_VALUES),
   );
+  const [copiedFunctionReadout, setCopiedFunctionReadout] = useState("");
   const [progress, setProgress] = useState(1);
   const [activeStepId, setActiveStepId] = useState<string>();
   const [selectedObjectId, setSelectedObjectId] = useState<string>();
@@ -579,7 +580,27 @@ function OrigamiRoadmap() {
     functionReport.status === "parse-error"
       ? "none"
       : functionReport.validation.source.source;
+  const activeFunctionSampleValues =
+    functionVariables
+      .map((name) => `${name}=${functionValues[name]}`)
+      .join(", ") || "no variables";
+  const sampledFunctionReadout =
+    functionReport.status === "valid"
+      ? `${functionDisplayName} with ${activeFunctionSampleValues} => ${functionValue}`
+      : "";
   const canCompileOrigamiFunction = functionReport.status === "valid";
+  const copyOrigamiReadout = async (label: string, text: string) => {
+    if (!text || !navigator.clipboard) {
+      setCopiedFunctionReadout("Copy unavailable");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedFunctionReadout(`Copied ${label}`);
+    } catch {
+      setCopiedFunctionReadout("Copy unavailable");
+    }
+  };
   const compileOrigamiFunction = () => {
     if (!canCompileOrigamiFunction) return;
     setFunctionPreview(
@@ -736,7 +757,22 @@ function OrigamiRoadmap() {
           </div>
           <div>
             <dt>Sample result</dt>
-            <dd>{functionValue}</dd>
+            <dd className="origami-copy-row">
+              <span>{functionValue}</span>
+              <button
+                type="button"
+                aria-label="Copy sampled result"
+                onClick={() =>
+                  void copyOrigamiReadout(
+                    "sampled result",
+                    sampledFunctionReadout,
+                  )
+                }
+                disabled={!sampledFunctionReadout}
+              >
+                Copy
+              </button>
+            </dd>
           </div>
           <div>
             <dt>Domain detail</dt>
@@ -744,7 +780,19 @@ function OrigamiRoadmap() {
           </div>
           <div>
             <dt>Result label</dt>
-            <dd>{functionDisplayName}</dd>
+            <dd className="origami-copy-row">
+              <span>{functionDisplayName}</span>
+              <button
+                type="button"
+                aria-label="Copy result label"
+                onClick={() =>
+                  void copyOrigamiReadout("result label", functionDisplayName)
+                }
+                disabled={functionReport.status === "parse-error"}
+              >
+                Copy
+              </button>
+            </dd>
           </div>
           <div>
             <dt>Plan</dt>
@@ -762,6 +810,12 @@ function OrigamiRoadmap() {
                 : "not started"}
             </dd>
           </div>
+          {copiedFunctionReadout && (
+            <div>
+              <dt>Clipboard</dt>
+              <dd>{copiedFunctionReadout}</dd>
+            </div>
+          )}
         </dl>
         <div className="origami-function-actions">
           <button

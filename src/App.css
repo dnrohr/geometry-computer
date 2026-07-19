@@ -430,6 +430,30 @@ select:focus-visible,
   font-size: 0.78rem;
 }
 
+.origami-copy-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.origami-copy-row span {
+  min-width: min(100%, 7rem);
+  flex: 1 1 7rem;
+}
+
+.origami-copy-row button {
+  flex: 0 0 auto;
+  padding: 0.28rem 0.45rem;
+  font-size: 0.68rem;
+}
+
+.origami-copy-row button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 .origami-function-actions {
   display: flex;
   flex-wrap: wrap;

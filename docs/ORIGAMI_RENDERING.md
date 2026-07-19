@@ -91,6 +91,8 @@ The flat-origami tab provides:
   forms. The buttons populate signature-style examples such as `f(a,b)=a*b`,
   reset the matching sample controls, and show normalized names such as
   `f(a, b) = a * b`.
+- Copy controls for the normalized result label and sampled result string, scoped
+  to the origami function lab.
 - Origami-local function compile and fold-animation preview controls that create
   deterministic preview phases before the full fold animation engine exists.
   Invalid sampled domains disable new compilation and preview advancement while

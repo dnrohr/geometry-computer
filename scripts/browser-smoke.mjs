@@ -307,6 +307,22 @@ const assertOrigamiFunctionPanel = async (page) => {
   await input.waitFor();
   await page.getByText("allowable").waitFor();
   await page.getByText("2.000").waitFor();
+  await page.getByRole("button", { name: "Copy result label" }).click();
+  await page.getByText("Copied result label").waitFor();
+  if (
+    (await page.evaluate(() => navigator.clipboard.readText())) !==
+    "f(a) = sqrt(a + 1)"
+  ) {
+    throw new Error("Normalized origami function label was not copied.");
+  }
+  await page.getByRole("button", { name: "Copy sampled result" }).click();
+  await page.getByText("Copied sampled result").waitFor();
+  if (
+    (await page.evaluate(() => navigator.clipboard.readText())) !==
+    "f(a) = sqrt(a + 1) with a=3 => 2.000"
+  ) {
+    throw new Error("Sampled origami function result was not copied.");
+  }
 
   await input.fill("a/(b-b)");
   await page.getByText("blocked").waitFor();
@@ -366,6 +382,9 @@ try {
   const context = await browser.newContext({
     acceptDownloads: true,
     viewport: { width: 1280, height: 900 },
+  });
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], {
+    origin: new URL(url).origin,
   });
   const page = await context.newPage();
   const failures = [];

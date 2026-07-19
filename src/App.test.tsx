@@ -1,4 +1,11 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
+import { vi } from "vitest";
 import App from "./App";
 
 describe("App", () => {
@@ -617,6 +624,47 @@ describe("App", () => {
     expect(within(functionPanel).getByText("2.500")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Multiplication trace" }),
+    ).toBeInTheDocument();
+  });
+
+  it("copies normalized origami function readouts", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    const functionPanel = screen.getByRole("region", {
+      name: "Fold-computed function",
+    });
+
+    fireEvent.click(
+      within(functionPanel).getByRole("button", {
+        name: "Copy result label",
+      }),
+    );
+    await waitFor(() =>
+      expect(writeText).toHaveBeenCalledWith("f(a) = sqrt(a + 1)"),
+    );
+    expect(
+      within(functionPanel).getByText("Copied result label"),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      within(functionPanel).getByRole("button", {
+        name: "Copy sampled result",
+      }),
+    );
+    await waitFor(() =>
+      expect(writeText).toHaveBeenCalledWith(
+        "f(a) = sqrt(a + 1) with a=3 => 2.000",
+      ),
+    );
+    expect(
+      within(functionPanel).getByText("Copied sampled result"),
     ).toBeInTheDocument();
   });
 
