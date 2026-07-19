@@ -16,7 +16,7 @@ describe("origami function plan", () => {
       resultObjectId: "origami-function-result",
       resultExtraction: {
         nodeId: "origami-function-node-3",
-        phaseId: "origami-function-phase-4",
+        phaseId: "origami-function-phase-9",
         outputObjectId: "origami-function-result",
       },
     });
@@ -56,6 +56,24 @@ describe("origami function plan", () => {
       "extract-result",
     ]);
     expect(plan.operations.map(({ order }) => order)).toEqual([1, 2, 3, 4]);
+    expect(plan.operations[2].phaseIds).toEqual([
+      "origami-function-phase-4",
+      "origami-function-phase-5",
+      "origami-function-phase-6",
+      "origami-function-phase-7",
+      "origami-function-phase-8",
+    ]);
+    expect(plan.phases.map(({ kind }) => kind)).toEqual([
+      "place-paper",
+      "mark-input",
+      "mark-input",
+      "align-fold",
+      "preview-crease",
+      "fold",
+      "transfer",
+      "mark-intersection",
+      "extract-result",
+    ]);
     expect(plan.executionOrder).toEqual([
       "origami-function-node-1",
       "origami-function-node-2",
@@ -78,7 +96,7 @@ describe("origami function plan", () => {
         nodeId: "origami-function-node-3",
         expression: "a * b",
         order: 3,
-        phaseId: "origami-function-phase-4",
+        phaseId: "origami-function-phase-9",
       }),
     ]);
     expect(plan.phases.every(({ exportId }) => exportId)).toBe(true);

@@ -97,6 +97,10 @@ Plan nodes also carry an explicit topological `order` and dependency depth.
 `executionOrder` and `dependencyJumpTargets` make F2.2 animation navigation
 deterministic: later timeline work can play from inputs to result or jump to the
 node that produced any dependency without re-walking the expression tree.
+F2.3 expands each arithmetic node into animation-ready phases for alignment,
+crease preview, folding, transfer/reflection, and intersection marking. Inputs
+and constants still get compact mark phases, and the final node receives a
+separate result-extraction phase.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

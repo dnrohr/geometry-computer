@@ -699,7 +699,7 @@ describe("App", () => {
       screen.getByRole("button", { name: "Preview fold animation" }),
     );
     expect(
-      screen.getByText("origami-function-phase-3 @ 0.50"),
+      screen.getByText("origami-function-phase-5 @ 0.50"),
     ).toBeInTheDocument();
 
     fireEvent.click(
@@ -722,7 +722,7 @@ describe("App", () => {
       screen.getByRole("textbox", { name: "Origami function" }),
     ).toHaveValue("f(a,b)=a+b");
     expect(
-      screen.getByText("origami-function-phase-3 @ 0.50"),
+      screen.getByText("origami-function-phase-5 @ 0.50"),
     ).toBeInTheDocument();
   });
 

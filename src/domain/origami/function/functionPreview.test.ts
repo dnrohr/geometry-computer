@@ -12,12 +12,23 @@ describe("origami function preview plan", () => {
     expect(preview.plan).toMatchObject({
       id: "origami-function-plan-f-a-sqrt-a-1",
       resultObjectId: "origami-function-result",
-      phases: [
-        { kind: "place-paper" },
-        { kind: "mark-input", expression: "a" },
-        { kind: "extract-result", expression: "f(a) = sqrt(a + 1)" },
-      ],
     });
+    expect(preview.plan.phases.map(({ kind }) => kind)).toEqual([
+      "place-paper",
+      "mark-input",
+      "mark-input",
+      "align-fold",
+      "preview-crease",
+      "fold",
+      "transfer",
+      "mark-intersection",
+      "align-fold",
+      "preview-crease",
+      "fold",
+      "transfer",
+      "mark-intersection",
+      "extract-result",
+    ]);
     expect(preview.plan.nodes.map(({ expression }) => expression)).toEqual([
       "a",
       "1",
@@ -33,7 +44,7 @@ describe("origami function preview plan", () => {
     ]);
     expect(preview.plan.resultExtraction).toEqual({
       nodeId: "origami-function-node-4",
-      phaseId: "origami-function-phase-3",
+      phaseId: "origami-function-phase-14",
       outputObjectId: "origami-function-result",
     });
     expect(preview.animation).toMatchObject({
@@ -62,7 +73,7 @@ describe("origami function preview plan", () => {
     if (advanced.status !== "compiled") throw new Error("Expected compiled");
     expect(advanced.plan).toBe(preview.plan);
     expect(advanced.animation.progress).toBe(0.5);
-    expect(advanced.animation.phaseId).toBe("origami-function-phase-3");
+    expect(advanced.animation.phaseId).toBe("origami-function-phase-5");
   });
 
   it("compiles signature inputs into display-labeled plans", () => {

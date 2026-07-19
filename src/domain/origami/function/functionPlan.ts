@@ -7,6 +7,8 @@ import type {
   OrigamiFunctionPlanNodeKind,
   OrigamiFunctionPlanOperation,
   OrigamiFunctionPlanOperationKind,
+  OrigamiFunctionPlanPhase,
+  OrigamiFunctionPlanPhaseKind,
 } from "./types";
 
 type ValidOrigamiFunctionInput = Extract<
@@ -93,6 +95,14 @@ const expressionChildren = (expr: Expr): Expr[] => {
   }
 };
 
+const arithmeticPhaseKinds: OrigamiFunctionPlanPhaseKind[] = [
+  "align-fold",
+  "preview-crease",
+  "fold",
+  "transfer",
+  "mark-intersection",
+];
+
 export function createOrigamiFunctionPlan(
   input: ValidOrigamiFunctionInput,
 ): OrigamiFunctionPlan {
@@ -169,39 +179,73 @@ export function createOrigamiFunctionPlan(
   };
 
   const resultNode = visit(input.validation.source.ast);
-  const resultPhaseId = `origami-function-phase-${input.validation.source.variables.length + 2}`;
+  const nodePhaseIds = new Map<string, string[]>();
+  const phaseForJump = new Map<string, string>();
   const resultObjectId = "origami-function-result";
-  const phases = [
-    {
-      id: "origami-function-phase-1",
-      kind: "place-paper" as const,
-      expression: input.validation.source.source,
-      sourceObjectIds: [],
-      outputObjectIds: ["origami-function-paper"],
-      proofClaimIds: [],
-      exportId: "origami-function-export-phase-1",
-    },
-    ...input.validation.source.variables.map((variable, index) => ({
-      id: `origami-function-phase-${index + 2}`,
-      kind: "mark-input" as const,
-      expression: variable,
-      sourceObjectIds: [],
-      outputObjectIds: [`origami-function-input-${variable}`],
-      proofClaimIds: [],
-      exportId: `origami-function-export-phase-${index + 2}`,
-    })),
-    {
-      id: resultPhaseId,
-      kind: "extract-result" as const,
-      expression: input.validation.source.source,
-      sourceObjectIds: input.validation.source.variables.map(
-        (variable) => `origami-function-input-${variable}`,
-      ),
-      outputObjectIds: [resultObjectId],
-      proofClaimIds: [],
-      exportId: `origami-function-export-phase-${input.validation.source.variables.length + 2}`,
-    },
-  ];
+  const phases: OrigamiFunctionPlanPhase[] = [];
+  const addPhase = (
+    phase: Omit<OrigamiFunctionPlanPhase, "id" | "exportId">,
+  ) => {
+    const id = `origami-function-phase-${phases.length + 1}`;
+    const nextPhase = {
+      ...phase,
+      id,
+      exportId: `origami-function-export-phase-${phases.length + 1}`,
+    };
+    phases.push(nextPhase);
+    return id;
+  };
+
+  addPhase({
+    kind: "place-paper",
+    expression: input.validation.source.source,
+    sourceObjectIds: [],
+    outputObjectIds: ["origami-function-paper"],
+    proofClaimIds: [],
+  });
+
+  for (const node of nodes) {
+    const nodeSourceObjectIds = node.dependencies
+      .map((dependency) => nodes.find(({ id }) => id === dependency))
+      .filter((dependency): dependency is OrigamiFunctionPlanNode =>
+        Boolean(dependency),
+      )
+      .map(({ outputObjectId }) => outputObjectId);
+    const phaseIds =
+      node.kind === "input" || node.kind === "constant"
+        ? [
+            addPhase({
+              kind: "mark-input",
+              expression: node.expression,
+              sourceObjectIds: [],
+              outputObjectIds: [node.outputObjectId],
+              proofClaimIds: [],
+            }),
+          ]
+        : arithmeticPhaseKinds.map((kind) =>
+            addPhase({
+              kind,
+              expression: node.expression,
+              sourceObjectIds: nodeSourceObjectIds,
+              outputObjectIds:
+                kind === "mark-intersection"
+                  ? [node.outputObjectId]
+                  : [`${node.outputObjectId}-${kind}`],
+              proofClaimIds: [],
+            }),
+          );
+    nodePhaseIds.set(node.id, phaseIds);
+    phaseForJump.set(node.id, phaseIds[0]);
+  }
+
+  const resultPhaseId = addPhase({
+    kind: "extract-result",
+    expression: input.validation.source.source,
+    sourceObjectIds: [resultNode.outputObjectId],
+    outputObjectIds: [resultObjectId],
+    proofClaimIds: [],
+  });
+  phaseForJump.set(resultNode.id, resultPhaseId);
   operations.push({
     id: `origami-function-operation-${operations.length + 1}`,
     kind: "extract-result",
@@ -214,12 +258,20 @@ export function createOrigamiFunctionPlan(
     proofClaimIds: [],
   });
 
+  const operationsWithPhases = operations.map((operation) => ({
+    ...operation,
+    phaseIds:
+      operation.kind === "extract-result"
+        ? [resultPhaseId]
+        : (nodePhaseIds.get(operation.nodeId) ?? operation.phaseIds),
+  }));
+
   return {
     id: `origami-function-plan-${expressionSlug}`,
     source: input.validation.source,
     values: input.validation.values,
     nodes,
-    operations,
+    operations: operationsWithPhases,
     executionOrder: nodes.map(({ id }) => id),
     dependencyJumpTargets: nodes.map((node) => ({
       nodeId: node.id,
@@ -227,12 +279,7 @@ export function createOrigamiFunctionPlan(
       order: node.order,
       dependencyNodeIds: node.dependencies,
       outputObjectId: node.outputObjectId,
-      phaseId:
-        node.kind === "input"
-          ? phases.find(({ expression }) => expression === node.expression)?.id
-          : node.id === resultNode.id
-            ? resultPhaseId
-            : undefined,
+      phaseId: phaseForJump.get(node.id),
     })),
     lengthTransfers,
     resultExtraction: {
