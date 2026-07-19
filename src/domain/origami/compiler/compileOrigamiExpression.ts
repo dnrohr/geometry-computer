@@ -444,6 +444,174 @@ export function compileOrigamiExpression(
       );
     }
 
+    if (operation === "div") {
+      const numeratorLength = scaledLength(sourceValues[0] ?? 1);
+      const denominatorLength = scaledLength(sourceValues[1] ?? 1);
+      const unitStart = pointAt(1, y + 0.42);
+      const unitEnd = pointAt(2.6, y + 0.42);
+      const numeratorEnd = pointAt(1 + numeratorLength, y + 0.72);
+      const denominatorEnd = pointAt(
+        1,
+        y + 0.72 + Math.min(1.1, denominatorLength * 0.4),
+      );
+      const reciprocalPointPosition = pointAt(
+        1 +
+          Math.min(10.5, 1.6 / Math.max(0.35, Math.abs(sourceValues[1] ?? 1))),
+        y + 0.72,
+      );
+      const quotientPointPosition = pointAt(
+        1 + Math.min(10.5, scaledLength(value)),
+        y + 0.72,
+      );
+      const reciprocalDirection = {
+        x: unitEnd.x - denominatorEnd.x,
+        y: unitEnd.y - denominatorEnd.y,
+      };
+      const unitSegment = addObject(
+        segmentObject(
+          unitStart,
+          unitEnd,
+          metadata(
+            ids.next("origami-unit-segment"),
+            "intermediate",
+            sourceIds,
+            stepId,
+            "division unit reference",
+          ),
+        ),
+      );
+      const numeratorCopy = addObject(
+        segmentObject(
+          pointAt(1, y + 0.72),
+          numeratorEnd,
+          metadata(
+            ids.next("origami-input-copy"),
+            "intermediate",
+            sourceIds.slice(0, 1),
+            stepId,
+            `${key} numerator copy`,
+          ),
+        ),
+      );
+      const denominatorCopy = addObject(
+        segmentObject(
+          pointAt(1, y + 0.72),
+          denominatorEnd,
+          metadata(
+            ids.next("origami-input-copy"),
+            "intermediate",
+            sourceIds.slice(1, 2),
+            stepId,
+            `${key} denominator copy`,
+          ),
+        ),
+      );
+      const reciprocalGuide = addObject(
+        lineObject(
+          {
+            point: denominatorEnd,
+            direction: reciprocalDirection,
+          },
+          metadata(
+            ids.next("origami-guide-line"),
+            "intermediate",
+            [denominatorCopy.id, unitSegment.id],
+            stepId,
+            `${key} reciprocal guide`,
+          ),
+        ),
+      );
+      const quotientGuide = addObject(
+        lineObject(
+          {
+            point: numeratorEnd,
+            direction: reciprocalDirection,
+          },
+          metadata(
+            ids.next("origami-guide-line"),
+            "intermediate",
+            [numeratorCopy.id, reciprocalGuide.id],
+            stepId,
+            `${key} quotient guide`,
+          ),
+        ),
+      );
+      const reciprocalPoint = addObject(
+        pointObject(
+          reciprocalPointPosition,
+          metadata(
+            ids.next("origami-intersection"),
+            "intermediate",
+            [denominatorCopy.id, reciprocalGuide.id, unitSegment.id],
+            stepId,
+            `${key} reciprocal point`,
+          ),
+        ),
+      );
+      const quotientPoint = addObject(
+        pointObject(
+          quotientPointPosition,
+          metadata(
+            ids.next("origami-intersection"),
+            "intermediate",
+            [numeratorCopy.id, quotientGuide.id, reciprocalPoint.id],
+            stepId,
+            `${key} quotient point`,
+          ),
+        ),
+      );
+      const reciprocalCrease = addObject(
+        creaseObject(
+          {
+            point: denominatorEnd,
+            direction: reciprocalDirection,
+          },
+          "unassigned",
+          metadata(
+            ids.next("origami-crease"),
+            "crease",
+            [denominatorCopy.id, unitSegment.id],
+            stepId,
+            `${key} reciprocal crease`,
+          ),
+          "div-reciprocal-guide",
+        ),
+      );
+      const quotientCrease = addObject(
+        creaseObject(
+          {
+            point: quotientPointPosition,
+            direction: pointAt(0, 1),
+          },
+          "unassigned",
+          metadata(
+            ids.next("origami-crease"),
+            "crease",
+            [quotientPoint.id, segment.id],
+            stepId,
+            `${key} quotient projection crease`,
+          ),
+          "div-quotient-projection",
+        ),
+      );
+
+      unitReferenceObjectIds.push(unitSegment.id);
+      guideLineObjectIds.push(reciprocalGuide.id, quotientGuide.id);
+      foldCreaseObjectIds.push(reciprocalCrease.id, quotientCrease.id);
+      selectedIntersectionObjectIds.push(reciprocalPoint.id, quotientPoint.id);
+      extraCreatedObjectIds.push(
+        unitSegment.id,
+        numeratorCopy.id,
+        denominatorCopy.id,
+        reciprocalGuide.id,
+        quotientGuide.id,
+        reciprocalPoint.id,
+        quotientPoint.id,
+        reciprocalCrease.id,
+        quotientCrease.id,
+      );
+    }
+
     const createdObjectIds = [
       sourcePoint.id,
       targetPoint.id,
@@ -474,16 +642,22 @@ export function compileOrigamiExpression(
             id:
               operation === "mul"
                 ? "mul-intercept-similar-triangle"
-                : `${operation}-baseline-transfer`,
+                : operation === "div"
+                  ? "div-reciprocal-intercept"
+                  : `${operation}-baseline-transfer`,
             label:
               operation === "mul"
                 ? "Intercept similar-triangle branch"
-                : "Deterministic baseline transfer",
+                : operation === "div"
+                  ? "Reciprocal intercept branch"
+                  : "Deterministic baseline transfer",
             selected: true,
             reason:
               operation === "mul"
                 ? "The selected branch keeps the unit reference and copied factors on the positive guide axes."
-                : "The O3 trace uses one deterministic baseline placement until the richer fold geometry is expanded.",
+                : operation === "div"
+                  ? "The selected branch constructs the positive reciprocal of the denominator before projecting the quotient."
+                  : "The O3 trace uses one deterministic baseline placement until the richer fold geometry is expanded.",
           },
         ],
         degeneracyObjectIds: [],

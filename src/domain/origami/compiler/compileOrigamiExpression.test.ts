@@ -217,6 +217,60 @@ describe("origami expression compiler", () => {
     );
   });
 
+  it("expands division with visible reciprocal construction geometry", () => {
+    const scene = compileOrigamiExpression(
+      parseExpression("a/b"),
+      { a: 6, b: 2 },
+      "a/b",
+    );
+    const divisionStep = scene.steps.find(
+      ({ operation }) => operation === "div",
+    );
+    const createdObjects = new Set(divisionStep?.createdObjectIds);
+
+    expect(divisionStep?.macroTrace).toMatchObject({
+      operation: "div",
+      sourceSegmentObjectIds: ["origami-segment-1", "origami-segment-2"],
+      unitReferenceObjectIds: ["origami-unit-segment-1"],
+      guideLineObjectIds: ["origami-guide-line-1", "origami-guide-line-2"],
+      foldCreaseObjectIds: [
+        "origami-crease-3",
+        "origami-crease-4",
+        "origami-crease-5",
+      ],
+      selectedIntersectionObjectIds: [
+        "origami-intersection-1",
+        "origami-intersection-2",
+      ],
+      resultSegmentObjectIds: ["origami-segment-3"],
+      proofClaimIds: ["origami-claim-div"],
+      branchSelections: [
+        {
+          id: "div-reciprocal-intercept",
+          label: "Reciprocal intercept branch",
+          selected: true,
+        },
+      ],
+    });
+    expect(
+      scene.objects
+        .filter(({ id }) => createdObjects.has(id))
+        .map(({ id }) => id),
+    ).toEqual(
+      expect.arrayContaining([
+        "origami-unit-segment-1",
+        "origami-input-copy-1",
+        "origami-input-copy-2",
+        "origami-guide-line-1",
+        "origami-guide-line-2",
+        "origami-intersection-1",
+        "origami-intersection-2",
+        "origami-crease-4",
+        "origami-crease-5",
+      ]),
+    );
+  });
+
   it("ships one example per supported basic arithmetic family", () => {
     const examples = compiledOrigamiArithmeticExamples();
 

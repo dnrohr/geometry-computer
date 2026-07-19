@@ -50,15 +50,17 @@ corresponding fold trace.
 - Multiplication records an intercept-style scale trace with a unit reference,
   copied factor segments, ratio and parallel guide lines, a selected scaled
   point, and projection creases.
-- Division records an intercept-style reciprocal scale trace and rejects zero
-  denominators.
+- Division records an intercept-style reciprocal scale trace with a nonzero
+  denominator check, unit reference, numerator and denominator copies,
+  reciprocal and quotient guide lines, selected reciprocal/quotient points, and
+  projection creases.
 - Square is multiplication with the same source length in both roles.
 - Square root records a geometric-mean trace and rejects negative sampled
   lengths.
 
-The current division, square, and square-root objects are trace-level
-representations. Later fold-solver work should expand them into the full
-intermediate creases and intersections needed for a classroom-ready proof.
+The current square and square-root objects are trace-level representations.
+Later fold-solver work should expand them into the full intermediate creases and
+intersections needed for a classroom-ready proof.
 
 ## N1 Macro Trace Contract
 
