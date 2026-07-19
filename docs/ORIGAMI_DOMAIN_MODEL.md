@@ -80,11 +80,33 @@ the expansion point for the richer N1 geometry and records:
 - degeneracy-related object IDs once a valid scene needs to show why a branch
   failed or became ambiguous.
 
-The current compiler fills this contract with the deterministic baseline trace:
-source segment IDs, one crease marker, one result segment, a proof claim ID, and
-a selected baseline-transfer branch. Later N1 tasks should populate the empty
-guide, reflection, unit, and intersection slots with real intermediate geometry
-without changing the compass-and-straightedge compiler or renderer.
+Simple arithmetic macros fill this contract with the deterministic baseline
+trace: source segment IDs, one crease marker, one result segment, a proof claim
+ID, and a selected baseline-transfer branch. Advanced N1 macros fill the unit,
+guide, crease, selected-intersection, and result slots with inspectable
+intermediate geometry without changing the compass-and-straightedge compiler or
+renderer.
+
+The advanced macro contracts are:
+
+- `mul`: source segments are the two factors; the unit reference is the
+  normalized baseline segment; guide lines are the ratio guide and parallel
+  scale guide; fold creases include the baseline transfer, ratio guide crease,
+  and product projection crease; the selected intersection is the scaled product
+  point; the branch is `mul-intercept-similar-triangle`.
+- `div`: source segments are numerator and denominator; the unit reference is
+  the reciprocal unit segment; guide lines are reciprocal and quotient guides;
+  fold creases include the baseline transfer, reciprocal guide crease, and
+  quotient projection crease; selected intersections are reciprocal and quotient
+  points; the branch is `div-reciprocal-intercept`.
+- `square`: source segments are the original input and the visible copied
+  length; the remaining contract slots reuse the multiplication geometry; the
+  branch is `square-multiplication-specialization`.
+- `sqrt`: source segment is the radicand; the unit reference is the unit portion
+  of the unit-plus-input baseline; guide lines are the baseline and
+  geometric-mean guide; fold creases include the baseline transfer, midpoint
+  crease, and perpendicular extraction crease; the selected intersection is the
+  positive square-root point; the branch is `sqrt-geometric-mean`.
 
 The square-root macro uses this contract to represent the geometric-mean
 construction without adding circle objects yet. It records the unit-plus-input

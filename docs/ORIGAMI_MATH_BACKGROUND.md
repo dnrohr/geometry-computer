@@ -86,6 +86,35 @@ scene. Every proof claim listed by the contract must exist in the scene proofs.
 This keeps explanatory rendering and future export work anchored to typed scene
 data rather than ad hoc label matching.
 
+### Advanced Arithmetic Contracts
+
+Multiplication uses the selected branch `mul-intercept-similar-triangle`.
+Its assumptions are a positive displayed unit reference and two copied factor
+segments placed on deterministic guide axes. The trace records one unit segment,
+two guide lines, three crease objects, one selected scaled point, and one result
+segment. The result segment provenance includes both factor segment IDs.
+
+Division uses the selected branch `div-reciprocal-intercept`. Its assumptions
+are a positive displayed unit reference and a nonzero denominator; zero is
+rejected before scene creation with `DIVISION_BY_ZERO`. The trace records one
+unit segment, numerator and denominator copies, reciprocal and quotient guide
+lines, three crease objects, selected reciprocal and quotient points, and one
+result segment.
+
+Square uses the selected branch `square-multiplication-specialization`. Its
+assumption is that the second factor is a visible copy of the source length, not
+an implicit reuse. The trace therefore keeps two source segment IDs and reuses
+the multiplication unit, guide, crease, selected-intersection, and result slots.
+
+Square root uses the selected branch `sqrt-geometric-mean`. Its assumption is a
+nonnegative sampled radicand; negative values are rejected before scene creation
+with `NEGATIVE_SQUARE_ROOT`. The trace records the unit-plus-input baseline,
+midpoint, fold-equivalent geometric-mean guide, positive selected square-root
+point, perpendicular extraction creases, and one result segment. The current
+domain has no circle object, so the auxiliary circle is represented by typed
+guide-line and selected-intersection objects until a later fold certificate
+model needs stricter physical detail.
+
 ## Branch and Error Policy
 
 Every deterministic branch choice must be visible in either the selected
