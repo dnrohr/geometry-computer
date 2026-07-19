@@ -111,6 +111,11 @@ explanatory-fallback` plus fallback details. Setup phases such as placing paper
 and marking inputs are marked `proven-physical`; arithmetic fold playback and
 result extraction remain clear explanatory traces until the solver can prove an
 actual fold sequence.
+F2.6 adds plan diagnostics for nonfatal animation concerns: reused
+subexpressions, repeated variables, negative directed lengths, branch ambiguity,
+and accumulated scale. These diagnostics do not replace sampled-domain
+validation; they explain what the animation planner needs to make visible once a
+function is already allowable.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

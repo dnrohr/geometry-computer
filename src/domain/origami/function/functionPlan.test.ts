@@ -190,6 +190,35 @@ describe("origami function plan", () => {
         fromNodeId: "origami-function-node-3",
       }),
     ]);
+    expect(plan.diagnostics).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "REUSED_SUBEXPRESSION",
+          expression: "a + b",
+          nodeIds: ["origami-function-node-3"],
+        }),
+        expect.objectContaining({
+          code: "REPEATED_VARIABLE",
+          expression: "a",
+          nodeIds: ["origami-function-node-1"],
+        }),
+        expect.objectContaining({
+          code: "REPEATED_VARIABLE",
+          expression: "b",
+          nodeIds: ["origami-function-node-2"],
+        }),
+        expect.objectContaining({
+          code: "BRANCH_AMBIGUITY",
+          expression: "sqrt((a + b) * (a + b))",
+          nodeIds: ["origami-function-node-5"],
+        }),
+        expect.objectContaining({
+          code: "ACCUMULATED_SCALE",
+          expression: "(a + b) * (a + b)",
+          nodeIds: ["origami-function-node-4"],
+        }),
+      ]),
+    );
   });
 
   it("records reusable length transfers for repeated subexpressions", () => {
@@ -213,5 +242,24 @@ describe("origami function plan", () => {
       expression: "a + a",
       value: 6,
     });
+  });
+
+  it("diagnoses negative directed lengths without blocking valid plans", () => {
+    const plan = createOrigamiFunctionPlan(
+      validInput("f(a,b)=a-b", { a: 1, b: 3 }),
+    );
+
+    expect(plan.nodes.at(-1)).toMatchObject({
+      expression: "a - b",
+      value: -2,
+    });
+    expect(plan.diagnostics).toContainEqual(
+      expect.objectContaining({
+        code: "NEGATIVE_DIRECTED_LENGTH",
+        severity: "warning",
+        expression: "a - b",
+        nodeIds: ["origami-function-node-3"],
+      }),
+    );
   });
 });

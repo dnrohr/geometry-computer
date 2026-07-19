@@ -4,6 +4,7 @@ import type {
   OrigamiFunctionPanelState,
   OrigamiFunctionFoldMotion,
   OrigamiFunctionPlan,
+  OrigamiFunctionPlanDiagnostic,
   OrigamiFunctionPlanNode,
   OrigamiFunctionPlanNodeKind,
   OrigamiFunctionPlanOperation,
@@ -94,6 +95,19 @@ const expressionChildren = (expr: Expr): Expr[] => {
     case "var":
       return [];
   }
+};
+
+const collectVariableOccurrences = (
+  expr: Expr,
+  occurrences = new Map<string, number>(),
+) => {
+  if (expr.kind === "var") {
+    occurrences.set(expr.name, (occurrences.get(expr.name) ?? 0) + 1);
+  }
+  for (const child of expressionChildren(expr)) {
+    collectVariableOccurrences(child, occurrences);
+  }
+  return occurrences;
 };
 
 const arithmeticPhaseKinds: OrigamiFunctionPlanPhaseKind[] = [
@@ -211,6 +225,73 @@ const fallbackForNode = (
   reason: `${node.expression} uses the ${branchForNode(node).label} macro, which is not yet backed by a physical fold solver.`,
   replacementFor: `${node.kind}:${phaseKind}`,
 });
+
+const createPlanDiagnostics = (
+  input: ValidOrigamiFunctionInput,
+  nodes: OrigamiFunctionPlanNode[],
+  lengthTransfers: OrigamiFunctionPlan["lengthTransfers"],
+): OrigamiFunctionPlanDiagnostic[] => {
+  const diagnostics: OrigamiFunctionPlanDiagnostic[] = [];
+  const nodeByExpression = new Map(
+    nodes.map((node) => [node.expression, node]),
+  );
+
+  diagnostics.push(
+    ...lengthTransfers.map((transfer) => ({
+      code: "REUSED_SUBEXPRESSION" as const,
+      severity: "info" as const,
+      expression: transfer.expression,
+      message: `${transfer.expression} is reused, so the animation plan includes an explicit length-transfer fallback.`,
+      nodeIds: [transfer.fromNodeId],
+    })),
+  );
+
+  for (const [variable, count] of collectVariableOccurrences(
+    input.validation.source.ast,
+  )) {
+    if (count <= 1) continue;
+    const node = nodeByExpression.get(variable);
+    diagnostics.push({
+      code: "REPEATED_VARIABLE",
+      severity: "info",
+      expression: variable,
+      message: `${variable} appears ${count} times in the expression; repeated marks may be shown as copied sampled lengths.`,
+      nodeIds: node ? [node.id] : [],
+    });
+  }
+
+  for (const node of nodes) {
+    if (node.value < 0) {
+      diagnostics.push({
+        code: "NEGATIVE_DIRECTED_LENGTH",
+        severity: "warning",
+        expression: node.expression,
+        message: `${node.expression} evaluates to a negative directed length in the sampled plan.`,
+        nodeIds: [node.id],
+      });
+    }
+    if (Math.abs(node.value) > 10) {
+      diagnostics.push({
+        code: "ACCUMULATED_SCALE",
+        severity: "warning",
+        expression: node.expression,
+        message: `${node.expression} has sampled magnitude ${node.value}, so later animation may need scale management.`,
+        nodeIds: [node.id],
+      });
+    }
+    if (node.kind === "sqrt" || node.kind === "div") {
+      diagnostics.push({
+        code: "BRANCH_AMBIGUITY",
+        severity: "info",
+        expression: node.expression,
+        message: `${node.expression} has multiple geometric branches; the plan records the sampled selected branch.`,
+        nodeIds: [node.id],
+      });
+    }
+  }
+
+  return diagnostics;
+};
 
 export function createOrigamiFunctionPlan(
   input: ValidOrigamiFunctionInput,
@@ -378,6 +459,7 @@ export function createOrigamiFunctionPlan(
     outputObjectIds: [resultObjectId],
     proofClaimIds: [],
   });
+  const diagnostics = createPlanDiagnostics(input, nodes, lengthTransfers);
 
   const operationsWithPhases = operations.map((operation) => ({
     ...operation,
@@ -409,7 +491,7 @@ export function createOrigamiFunctionPlan(
       outputObjectId: resultObjectId,
     },
     phases,
-    diagnostics: [],
+    diagnostics,
     resultObjectId,
   };
 }

@@ -43,6 +43,8 @@ export type {
   OrigamiFunctionPanelState,
   OrigamiFunctionParseFailure,
   OrigamiFunctionPlan,
+  OrigamiFunctionPlanDiagnostic,
+  OrigamiFunctionPlanDiagnosticCode,
   OrigamiFunctionPlanNode,
   OrigamiFunctionPlanNodeKind,
   OrigamiFunctionPlanOperation,

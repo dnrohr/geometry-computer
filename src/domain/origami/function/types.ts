@@ -162,6 +162,21 @@ export type OrigamiFunctionResultExtraction = {
   outputObjectId: string;
 };
 
+export type OrigamiFunctionPlanDiagnosticCode =
+  | "REUSED_SUBEXPRESSION"
+  | "REPEATED_VARIABLE"
+  | "NEGATIVE_DIRECTED_LENGTH"
+  | "BRANCH_AMBIGUITY"
+  | "ACCUMULATED_SCALE";
+
+export type OrigamiFunctionPlanDiagnostic = {
+  code: OrigamiFunctionPlanDiagnosticCode;
+  severity: "info" | "warning";
+  expression: string;
+  message: string;
+  nodeIds: string[];
+};
+
 export type OrigamiFunctionPlan = {
   id: string;
   source: OrigamiFunctionSource;
@@ -173,7 +188,7 @@ export type OrigamiFunctionPlan = {
   lengthTransfers: OrigamiFunctionLengthTransfer[];
   resultExtraction: OrigamiFunctionResultExtraction;
   phases: OrigamiFunctionPlanPhase[];
-  diagnostics: OrigamiAllowableFieldIssue[];
+  diagnostics: OrigamiFunctionPlanDiagnostic[];
   resultObjectId?: string;
 };
 
