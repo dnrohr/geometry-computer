@@ -3,6 +3,7 @@ import { formatExpression } from "../../expression/format";
 import {
   creaseObject,
   labelObject,
+  lineObject,
   paperBoundaryObject,
   pointObject,
   segmentObject,
@@ -224,6 +225,7 @@ export function compileOrigamiExpression(
     sourceIds: string[],
     summary: string,
     role: OrigamiObjectMetadata["role"] = "intermediate",
+    sourceValues: number[] = [],
   ) => {
     const y = 1.2 + row++ * 1.35;
     const start = pointAt(1, y);
@@ -285,12 +287,170 @@ export function compileOrigamiExpression(
         ),
       ),
     );
+    const unitReferenceObjectIds: string[] = [];
+    const guideLineObjectIds: string[] = [];
+    const foldCreaseObjectIds = [crease.id];
+    const selectedIntersectionObjectIds: string[] = [];
+    const reflectedObjectIds: string[] = [];
+    const extraCreatedObjectIds: string[] = [];
+
+    if (operation === "mul") {
+      const firstLength = scaledLength(sourceValues[0] ?? 1);
+      const secondLength = scaledLength(sourceValues[1] ?? 1);
+      const unitStart = pointAt(1, y + 0.42);
+      const unitEnd = pointAt(2.6, y + 0.42);
+      const firstEnd = pointAt(1 + firstLength, y + 0.72);
+      const secondEnd = pointAt(
+        1,
+        y + 0.72 + Math.min(1.1, secondLength * 0.4),
+      );
+      const productGuidePoint = pointAt(
+        1 + Math.min(10.5, scaledLength(value)),
+        y + 0.72,
+      );
+      const ratioDirection = {
+        x: secondEnd.x - unitEnd.x,
+        y: secondEnd.y - unitEnd.y,
+      };
+      const unitSegment = addObject(
+        segmentObject(
+          unitStart,
+          unitEnd,
+          metadata(
+            ids.next("origami-unit-segment"),
+            "intermediate",
+            sourceIds,
+            stepId,
+            "unit reference",
+          ),
+        ),
+      );
+      const firstCopy = addObject(
+        segmentObject(
+          pointAt(1, y + 0.72),
+          firstEnd,
+          metadata(
+            ids.next("origami-input-copy"),
+            "intermediate",
+            sourceIds.slice(0, 1),
+            stepId,
+            `${key} first factor copy`,
+          ),
+        ),
+      );
+      const secondCopy = addObject(
+        segmentObject(
+          pointAt(1, y + 0.72),
+          secondEnd,
+          metadata(
+            ids.next("origami-input-copy"),
+            "intermediate",
+            sourceIds.slice(1, 2),
+            stepId,
+            `${key} second factor copy`,
+          ),
+        ),
+      );
+      const ratioGuide = addObject(
+        lineObject(
+          {
+            point: unitEnd,
+            direction: ratioDirection,
+          },
+          metadata(
+            ids.next("origami-guide-line"),
+            "intermediate",
+            [unitSegment.id, secondCopy.id],
+            stepId,
+            `${key} ratio guide`,
+          ),
+        ),
+      );
+      const scaleGuide = addObject(
+        lineObject(
+          {
+            point: firstEnd,
+            direction: ratioDirection,
+          },
+          metadata(
+            ids.next("origami-guide-line"),
+            "intermediate",
+            [firstCopy.id, ratioGuide.id],
+            stepId,
+            `${key} parallel scale guide`,
+          ),
+        ),
+      );
+      const productPoint = addObject(
+        pointObject(
+          productGuidePoint,
+          metadata(
+            ids.next("origami-intersection"),
+            "intermediate",
+            [firstCopy.id, secondCopy.id, scaleGuide.id],
+            stepId,
+            `${key} scaled point`,
+          ),
+        ),
+      );
+      const ratioCrease = addObject(
+        creaseObject(
+          {
+            point: unitEnd,
+            direction: ratioDirection,
+          },
+          "unassigned",
+          metadata(
+            ids.next("origami-crease"),
+            "crease",
+            [unitSegment.id, secondCopy.id],
+            stepId,
+            `${key} ratio crease`,
+          ),
+          "mul-ratio-guide",
+        ),
+      );
+      const projectionCrease = addObject(
+        creaseObject(
+          {
+            point: productGuidePoint,
+            direction: pointAt(0, 1),
+          },
+          "unassigned",
+          metadata(
+            ids.next("origami-crease"),
+            "crease",
+            [productPoint.id, segment.id],
+            stepId,
+            `${key} product projection crease`,
+          ),
+          "mul-product-projection",
+        ),
+      );
+
+      unitReferenceObjectIds.push(unitSegment.id);
+      guideLineObjectIds.push(ratioGuide.id, scaleGuide.id);
+      foldCreaseObjectIds.push(ratioCrease.id, projectionCrease.id);
+      selectedIntersectionObjectIds.push(productPoint.id);
+      extraCreatedObjectIds.push(
+        unitSegment.id,
+        firstCopy.id,
+        secondCopy.id,
+        ratioGuide.id,
+        scaleGuide.id,
+        productPoint.id,
+        ratioCrease.id,
+        projectionCrease.id,
+      );
+    }
+
     const createdObjectIds = [
       sourcePoint.id,
       targetPoint.id,
       segment.id,
       crease.id,
       label.id,
+      ...extraCreatedObjectIds,
     ];
     const proofClaimId = `origami-claim-${operation}`;
     steps.push({
@@ -302,20 +462,28 @@ export function compileOrigamiExpression(
         macroId: stepId,
         operation,
         sourceSegmentObjectIds: sourceIds,
-        unitReferenceObjectIds: [],
-        guideLineObjectIds: [],
-        foldCreaseObjectIds: [crease.id],
-        reflectedObjectIds: [],
-        selectedIntersectionObjectIds: [],
+        unitReferenceObjectIds,
+        guideLineObjectIds,
+        foldCreaseObjectIds,
+        reflectedObjectIds,
+        selectedIntersectionObjectIds,
         resultSegmentObjectIds: [segment.id],
         proofClaimIds: [proofClaimId],
         branchSelections: [
           {
-            id: `${operation}-baseline-transfer`,
-            label: "Deterministic baseline transfer",
+            id:
+              operation === "mul"
+                ? "mul-intercept-similar-triangle"
+                : `${operation}-baseline-transfer`,
+            label:
+              operation === "mul"
+                ? "Intercept similar-triangle branch"
+                : "Deterministic baseline transfer",
             selected: true,
             reason:
-              "The O3 trace uses one deterministic baseline placement until the richer fold geometry is expanded.",
+              operation === "mul"
+                ? "The selected branch keeps the unit reference and copied factors on the positive guide axes."
+                : "The O3 trace uses one deterministic baseline placement until the richer fold geometry is expanded.",
           },
         ],
         degeneracyObjectIds: [],
@@ -437,6 +605,8 @@ export function compileOrigamiExpression(
       operation,
       sourceIds,
       summary[operation],
+      "intermediate",
+      inputs.map(({ value }) => value),
     );
     cache.set(key, output);
     return output;

@@ -134,9 +134,9 @@ describe("origami expression compiler", () => {
       expect(scene.steps.map(({ operation }) => operation)).toEqual(
         item.operations,
       );
-      expect(scene.objects.filter(({ kind }) => kind === "crease").length).toBe(
-        scene.steps.length,
-      );
+      expect(
+        scene.objects.filter(({ kind }) => kind === "crease").length,
+      ).toBeGreaterThanOrEqual(scene.steps.length);
       expect(scene.objects.find(({ role }) => role === "result")).toMatchObject(
         {
           kind: "segment",
@@ -160,22 +160,61 @@ describe("origami expression compiler", () => {
       macroId: multiplyStep?.id,
       operation: "mul",
       sourceSegmentObjectIds: ["origami-segment-1", "origami-segment-2"],
-      unitReferenceObjectIds: [],
-      guideLineObjectIds: [],
-      foldCreaseObjectIds: ["origami-crease-3"],
+      unitReferenceObjectIds: ["origami-unit-segment-1"],
+      guideLineObjectIds: ["origami-guide-line-1", "origami-guide-line-2"],
+      foldCreaseObjectIds: [
+        "origami-crease-3",
+        "origami-crease-4",
+        "origami-crease-5",
+      ],
       reflectedObjectIds: [],
-      selectedIntersectionObjectIds: [],
+      selectedIntersectionObjectIds: ["origami-intersection-1"],
       resultSegmentObjectIds: ["origami-segment-3"],
       proofClaimIds: ["origami-claim-mul"],
       branchSelections: [
         {
-          id: "mul-baseline-transfer",
-          label: "Deterministic baseline transfer",
+          id: "mul-intercept-similar-triangle",
+          label: "Intercept similar-triangle branch",
           selected: true,
         },
       ],
       degeneracyObjectIds: [],
     });
+  });
+
+  it("expands multiplication with visible intercept construction geometry", () => {
+    const scene = compileOrigamiExpression(
+      parseExpression("a*b"),
+      { a: 3, b: 2 },
+      "a*b",
+    );
+    const multiplyStep = scene.steps.find(
+      ({ operation }) => operation === "mul",
+    );
+    const createdObjects = new Set(multiplyStep?.createdObjectIds);
+
+    expect(multiplyStep?.macroTrace?.unitReferenceObjectIds).toHaveLength(1);
+    expect(multiplyStep?.macroTrace?.guideLineObjectIds).toHaveLength(2);
+    expect(multiplyStep?.macroTrace?.foldCreaseObjectIds).toHaveLength(3);
+    expect(
+      multiplyStep?.macroTrace?.selectedIntersectionObjectIds,
+    ).toHaveLength(1);
+    expect(
+      scene.objects
+        .filter(({ id }) => createdObjects.has(id))
+        .map(({ id }) => id),
+    ).toEqual(
+      expect.arrayContaining([
+        "origami-unit-segment-1",
+        "origami-input-copy-1",
+        "origami-input-copy-2",
+        "origami-guide-line-1",
+        "origami-guide-line-2",
+        "origami-intersection-1",
+        "origami-crease-4",
+        "origami-crease-5",
+      ]),
+    );
   });
 
   it("ships one example per supported basic arithmetic family", () => {

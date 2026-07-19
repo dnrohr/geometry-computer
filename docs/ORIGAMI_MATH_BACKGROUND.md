@@ -47,16 +47,18 @@ corresponding fold trace.
   step.
 - Addition concatenates directed lengths on a baseline.
 - Subtraction transfers the second length in the opposite direction.
-- Multiplication records an intercept-style scale trace.
+- Multiplication records an intercept-style scale trace with a unit reference,
+  copied factor segments, ratio and parallel guide lines, a selected scaled
+  point, and projection creases.
 - Division records an intercept-style reciprocal scale trace and rejects zero
   denominators.
 - Square is multiplication with the same source length in both roles.
 - Square root records a geometric-mean trace and rejects negative sampled
   lengths.
 
-The current multiplication, division, square, and square-root objects are
-trace-level representations. Later fold-solver work should expand them into the
-full intermediate creases and intersections needed for a classroom-ready proof.
+The current division, square, and square-root objects are trace-level
+representations. Later fold-solver work should expand them into the full
+intermediate creases and intersections needed for a classroom-ready proof.
 
 ## N1 Macro Trace Contract
 
