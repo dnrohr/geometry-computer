@@ -54,6 +54,10 @@ const waitForServer = async () => {
   throw new Error(`Timed out waiting for ${url}.\n${serverOutput.join("")}`);
 };
 
+const setRangeValue = async (locator, value) => {
+  await locator.fill(value);
+};
+
 try {
   await waitForServer();
   const browser = await chromium.launch();
@@ -74,6 +78,39 @@ try {
     .getByRole("img", { name: /compiled geometric construction/i })
     .waitFor();
 
+  await page.getByRole("textbox", { name: "Expression" }).fill("a+b");
+  await page.getByRole("button", { name: "Compile construction" }).click();
+  await page.getByRole("heading", { name: "Construct a + b" }).waitFor();
+  await setRangeValue(
+    page.getByRole("slider", { name: "Reveal progress" }),
+    "0",
+  );
+
+  await page.getByRole("button", { name: "Flat origami roadmap" }).click();
+  await page.getByRole("heading", { name: "Origami Computer" }).waitFor();
+  await page.getByRole("img", { name: /Compiled origami trace: a/i }).waitFor();
+  await page.getByRole("button", { name: "Multiplication trace" }).click();
+  await page
+    .getByRole("img", { name: /Compiled origami trace: a\*b/i })
+    .waitFor();
+
+  await page.getByRole("button", { name: "Compass + straightedge" }).click();
+  await page.getByRole("heading", { name: "Construct a + b" }).waitFor();
+  await page.getByRole("button", { name: "Export JSON" }).waitFor();
+
+  const expressionValue = await page
+    .getByRole("textbox", { name: "Expression" })
+    .inputValue();
+  const revealValue = await page
+    .getByRole("slider", { name: "Reveal progress" })
+    .inputValue();
+  if (expressionValue !== "a+b" || revealValue !== "0") {
+    throw new Error(
+      `Tab state regression: expression=${expressionValue}, reveal=${revealValue}`,
+    );
+  }
+
+  await delay(100);
   if (failures.length > 0) {
     throw new Error(`Browser smoke failed:\n${failures.join("\n")}`);
   }
