@@ -548,6 +548,78 @@ describe("App", () => {
     expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
   });
 
+  it("repopulates function preset controls without removing trace presets", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    const functionPanel = screen.getByRole("region", {
+      name: "Fold-computed function",
+    });
+
+    fireEvent.click(
+      within(functionPanel).getByRole("button", {
+        name: /Product f\(a,b\)=a\*b/i,
+      }),
+    );
+    fireEvent.change(
+      within(functionPanel).getByRole("spinbutton", {
+        name: "a sample value",
+      }),
+      { target: { value: "4" } },
+    );
+    fireEvent.change(
+      within(functionPanel).getByRole("spinbutton", {
+        name: "b sample value",
+      }),
+      { target: { value: "1.5" } },
+    );
+
+    fireEvent.click(
+      within(functionPanel).getByRole("button", {
+        name: /Shifted root f\(x\)=sqrt\(x\+1\)/i,
+      }),
+    );
+    expect(
+      within(functionPanel).getByRole("textbox", { name: "Origami function" }),
+    ).toHaveValue("f(x)=sqrt(x+1)");
+    expect(
+      within(functionPanel).getByRole("spinbutton", {
+        name: "x sample value",
+      }),
+    ).toHaveValue(3);
+    expect(
+      within(functionPanel).queryByRole("spinbutton", {
+        name: "a sample value",
+      }),
+    ).toBeNull();
+
+    fireEvent.click(
+      within(functionPanel).getByRole("button", {
+        name: /Offset quotient f\(a,b,c\)=\(a\+b\)\/\(c\+1\)/i,
+      }),
+    );
+    expect(
+      within(functionPanel).getByRole("spinbutton", {
+        name: "a sample value",
+      }),
+    ).toHaveValue(3);
+    expect(
+      within(functionPanel).getByRole("spinbutton", {
+        name: "b sample value",
+      }),
+    ).toHaveValue(2);
+    expect(
+      within(functionPanel).getByRole("spinbutton", {
+        name: "c sample value",
+      }),
+    ).toHaveValue(1);
+    expect(within(functionPanel).getByText("2.500")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Multiplication trace" }),
+    ).toBeInTheDocument();
+  });
+
   it("preserves compiled origami function animation state across workspace switches", () => {
     render(<App />);
     const expression = screen.getByRole("textbox", { name: "Expression" });

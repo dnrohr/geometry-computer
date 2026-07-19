@@ -342,6 +342,17 @@ const assertOrigamiFunctionPanel = async (page) => {
   await page.getByRole("spinbutton", { name: "c sample value" }).fill("4");
   await page.getByText("1.000").waitFor();
   await page.getByText("origami-function-plan-f-a-b-c-a-b-c-1").waitFor();
+  await page
+    .getByRole("button", { name: "Shifted root f(x)=sqrt(x+1)" })
+    .click();
+  await page.getByRole("spinbutton", { name: "x sample value" }).waitFor();
+  if (
+    (await page
+      .getByRole("spinbutton", { name: "x sample value" })
+      .inputValue()) !== "3"
+  ) {
+    throw new Error("Function preset did not reset the x sample value.");
+  }
   await input.fill("sqrt(a+1)");
   await page.getByRole("button", { name: "Compile origami function" }).click();
   await page.getByText("origami-function-plan-f-a-sqrt-a-1").waitFor();

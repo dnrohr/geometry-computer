@@ -89,7 +89,8 @@ The flat-origami tab provides:
   controls for sampled values, and a sampled-result readout.
 - Function example presets for product, shifted square-root, and offset quotient
   forms. The buttons populate signature-style examples such as `f(a,b)=a*b`,
-  and the result label shows normalized names such as `f(a, b) = a * b`.
+  reset the matching sample controls, and show normalized names such as
+  `f(a, b) = a * b`.
 - Origami-local function compile and fold-animation preview controls that create
   deterministic preview phases before the full fold animation engine exists.
   Invalid sampled domains disable new compilation and preview advancement while
