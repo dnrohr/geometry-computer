@@ -302,6 +302,24 @@ const assertOrigamiExports = async (page) => {
   }
 };
 
+const assertOrigamiFunctionPanel = async (page) => {
+  const input = page.getByRole("textbox", { name: "Origami function" });
+  await input.waitFor();
+  await page.getByText("allowable").waitFor();
+  await page.getByText("2.000").waitFor();
+
+  await input.fill("a/(b-b)");
+  await page.getByText("blocked").waitFor();
+  await page
+    .getByText(
+      "Division by zero is outside the sampled origami function domain.",
+    )
+    .waitFor();
+
+  await input.fill("sqrt(a+1)");
+  await page.getByText("allowable").waitFor();
+};
+
 try {
   await waitForServer();
   const browser = await chromium.launch();
@@ -330,6 +348,7 @@ try {
 
   await page.getByRole("button", { name: "Flat origami roadmap" }).click();
   await page.getByRole("heading", { name: "Origami Computer" }).waitFor();
+  await assertOrigamiFunctionPanel(page);
   const origamiExamples = [
     { button: "Input length", image: /Compiled origami trace: a/i },
     { button: "Constant length", image: /Compiled origami trace: 2/i },

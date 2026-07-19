@@ -8,6 +8,7 @@ import { gallery, type GalleryExample } from "./domain/examples/gallery";
 import { evaluateReveal } from "./domain/reveal/evaluateReveal";
 import { compiledOrigamiArithmeticExamples } from "./domain/origami/examples";
 import { evaluateOrigamiReveal } from "./domain/origami/reveal/evaluateOrigamiReveal";
+import { validateOrigamiAllowableField } from "./domain/origami/function/allowableField";
 import {
   constructionJson,
   downloadText,
@@ -429,6 +430,7 @@ function CompassStraightedgeWorkspace() {
 function OrigamiRoadmap() {
   const examples = useMemo(() => compiledOrigamiArithmeticExamples(), []);
   const [exampleIndex, setExampleIndex] = useState(0);
+  const [functionSource, setFunctionSource] = useState("sqrt(a+1)");
   const [progress, setProgress] = useState(1);
   const [activeStepId, setActiveStepId] = useState<string>();
   const [selectedObjectId, setSelectedObjectId] = useState<string>();
@@ -517,6 +519,19 @@ function OrigamiRoadmap() {
         .id,
     );
   };
+  const functionReport = useMemo(() => {
+    try {
+      const ast = parseExpression(functionSource);
+      return {
+        ast,
+        report: validateOrigamiAllowableField(ast, defaultValues),
+      };
+    } catch (error) {
+      return {
+        error: error instanceof Error ? error.message : "Invalid expression.",
+      };
+    }
+  }, [functionSource]);
 
   return (
     <main
@@ -595,6 +610,58 @@ function OrigamiRoadmap() {
             </dd>
           </dl>
         </aside>
+      </section>
+      <section
+        className="origami-function-panel"
+        aria-labelledby="origami-function-title"
+      >
+        <div>
+          <p className="section-label">Function lab</p>
+          <h2 id="origami-function-title">Fold-computed function</h2>
+        </div>
+        <label>
+          Origami function
+          <input
+            aria-label="Origami function"
+            value={functionSource}
+            onChange={(event) => setFunctionSource(event.target.value)}
+            spellCheck={false}
+          />
+        </label>
+        <dl className="origami-function-status" aria-live="polite">
+          <div>
+            <dt>Sample values</dt>
+            <dd>a=3, b=2, x=3, y=2</dd>
+          </div>
+          <div>
+            <dt>Domain</dt>
+            <dd>
+              {"error" in functionReport
+                ? "parse error"
+                : functionReport.report.allowed
+                  ? "allowable"
+                  : "blocked"}
+            </dd>
+          </div>
+          <div>
+            <dt>Variables</dt>
+            <dd>
+              {"error" in functionReport
+                ? "none"
+                : functionReport.report.variables.join(", ") || "none"}
+            </dd>
+          </div>
+          <div>
+            <dt>Sample result</dt>
+            <dd>
+              {"error" in functionReport
+                ? functionReport.error
+                : functionReport.report.allowed
+                  ? functionReport.report.value?.toFixed(3)
+                  : functionReport.report.issues[0]?.message}
+            </dd>
+          </div>
+        </dl>
       </section>
       <section className="origami-workspace" aria-labelledby="origami-trace">
         <div className="origami-workspace-header">

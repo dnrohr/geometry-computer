@@ -362,6 +362,74 @@ select:focus-visible,
   background: rgb(232 182 92 / 12%);
 }
 
+.origami-function-panel {
+  display: grid;
+  grid-template-columns: minmax(13rem, 0.62fr) minmax(15rem, 0.82fr) minmax(
+      18rem,
+      1.2fr
+    );
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: #12181d;
+}
+
+.origami-function-panel h2 {
+  margin-bottom: 0;
+}
+
+.origami-function-panel label {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.origami-function-panel input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.7rem 0.8rem;
+  color: var(--foreground);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: #0f1519;
+  font: inherit;
+  font-family: "SFMono-Regular", Consolas, monospace;
+}
+
+.origami-function-status {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+  margin: 0;
+}
+
+.origami-function-status div {
+  min-width: 0;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 3%);
+}
+
+.origami-function-status dt {
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.origami-function-status dd {
+  margin: 0.2rem 0 0;
+  overflow-wrap: anywhere;
+  color: var(--foreground);
+  font-size: 0.78rem;
+}
+
 .origami-trace-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.12fr) minmax(17rem, 0.48fr);
@@ -1023,6 +1091,9 @@ text.geometry-result,
   .origami-workspace-header input[type="range"] {
     flex: 1;
     min-width: 0;
+  }
+  .origami-function-panel {
+    grid-template-columns: 1fr;
   }
   .origami-example-tabs {
     flex-wrap: nowrap;

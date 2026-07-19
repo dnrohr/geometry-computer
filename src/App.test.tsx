@@ -258,6 +258,14 @@ describe("App", () => {
         name: /Compiled origami trace: a/i,
       }),
     ).toBeInTheDocument();
+    const functionPanel = screen.getByRole("region", {
+      name: "Fold-computed function",
+    });
+    expect(
+      within(functionPanel).getByRole("textbox", { name: "Origami function" }),
+    ).toHaveValue("sqrt(a+1)");
+    expect(within(functionPanel).getByText("allowable")).toBeInTheDocument();
+    expect(within(functionPanel).getByText("2.000")).toBeInTheDocument();
     fireEvent.click(
       screen.getByRole("button", { name: "Multiplication trace" }),
     );
@@ -340,6 +348,42 @@ describe("App", () => {
     expect(
       screen.getByRole("heading", { name: "Construct a + b" }),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("textbox", { name: "Origami function" }),
+    ).toBeNull();
+  });
+
+  it("keeps origami function validation local to the flat origami tab", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+
+    const functionInput = screen.getByRole("textbox", {
+      name: "Origami function",
+    });
+    fireEvent.change(functionInput, { target: { value: "a/(b-b)" } });
+
+    const functionPanel = screen.getByRole("region", {
+      name: "Fold-computed function",
+    });
+    expect(within(functionPanel).getByText("blocked")).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText(
+        "Division by zero is outside the sampled origami function domain.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Origami Computer" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Compass + straightedge" }),
+    );
+    expect(screen.getByRole("textbox", { name: "Expression" })).toHaveValue(
+      "sqrt(3*a - b*b)",
+    );
   });
 
   it("shows compact origami step metadata for macro, axiom, branch, proof, and degeneracy", () => {

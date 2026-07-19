@@ -84,6 +84,8 @@ geometry with the `hidden-future` visual role rather than disappearing entirely.
 
 The flat-origami tab provides:
 
+- An origami-only function lab panel with an expression input, sampled
+  allowable-field validation, variable discovery, and a sampled-result readout.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.
@@ -119,6 +121,9 @@ The interaction state is intentionally local to the origami tab:
   the canvas highlight set, with hover taking temporary precedence.
 
 These states do not import or mutate compass-and-straightedge interaction state.
+The function lab uses its own React state inside the origami tab, so entering an
+invalid sampled function can block future animation work without changing the
+current compass-and-straightedge expression or reveal state.
 
 ## Responsive Layout
 
