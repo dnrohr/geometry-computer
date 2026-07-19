@@ -64,6 +64,28 @@ export type OrigamiProvenance = {
   sourceObjectIds: string[];
 };
 
+export type OrigamiMacroBranchSelection = {
+  id: string;
+  label: string;
+  selected: boolean;
+  reason: string;
+};
+
+export type OrigamiArithmeticMacroTrace = {
+  macroId: string;
+  operation: OrigamiArithmeticMacroKind;
+  sourceSegmentObjectIds: string[];
+  unitReferenceObjectIds: string[];
+  guideLineObjectIds: string[];
+  foldCreaseObjectIds: string[];
+  reflectedObjectIds: string[];
+  selectedIntersectionObjectIds: string[];
+  resultSegmentObjectIds: string[];
+  proofClaimIds: string[];
+  branchSelections: OrigamiMacroBranchSelection[];
+  degeneracyObjectIds: string[];
+};
+
 type OrigamiObjectData =
   | {
       kind: "paper-boundary";
@@ -106,6 +128,7 @@ export type OrigamiFoldStep = {
   summary: string;
   axiom?: OrigamiAxiomKind;
   operation?: OrigamiArithmeticMacroKind;
+  macroTrace?: OrigamiArithmeticMacroTrace;
   inputObjectIds: string[];
   outputObjectIds: string[];
   createdObjectIds: string[];

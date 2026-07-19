@@ -66,6 +66,26 @@ is a named specialization of multiplication, and square root is modeled as a
 geometric-mean fold trace. The O3 compiler establishes deterministic scene data;
 O4 turns that data into an interactive crease-pattern explanation.
 
+Each arithmetic fold step can now carry a `macroTrace` contract. This contract is
+the expansion point for the richer N1 geometry and records:
+
+- source segments used by the macro.
+- unit-reference objects used to normalize products, quotients, and geometric
+  means.
+- guide lines, fold creases, reflected objects, and selected intersections.
+- result segments produced by the macro.
+- proof claim IDs that justify the construction.
+- branch selections, including the selected branch and the reason for choosing
+  it.
+- degeneracy-related object IDs once a valid scene needs to show why a branch
+  failed or became ambiguous.
+
+The current compiler fills this contract with the deterministic baseline trace:
+source segment IDs, one crease marker, one result segment, a proof claim ID, and
+a selected baseline-transfer branch. Later N1 tasks should populate the empty
+guide, reflection, unit, and intersection slots with real intermediate geometry
+without changing the compass-and-straightedge compiler or renderer.
+
 Cubic roots and angle trisection are research spikes. They require the more
 advanced tangent/parabola family of folds and should not be treated as acceptance
 criteria for the basic arithmetic compiler.

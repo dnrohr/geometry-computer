@@ -146,6 +146,38 @@ describe("origami expression compiler", () => {
     }
   });
 
+  it("records the N1 arithmetic macro trace contract on compiled steps", () => {
+    const scene = compileOrigamiExpression(
+      parseExpression("a*b"),
+      { a: 3, b: 2 },
+      "a*b",
+    );
+    const multiplyStep = scene.steps.find(
+      ({ operation }) => operation === "mul",
+    );
+
+    expect(multiplyStep?.macroTrace).toMatchObject({
+      macroId: multiplyStep?.id,
+      operation: "mul",
+      sourceSegmentObjectIds: ["origami-segment-1", "origami-segment-2"],
+      unitReferenceObjectIds: [],
+      guideLineObjectIds: [],
+      foldCreaseObjectIds: ["origami-crease-3"],
+      reflectedObjectIds: [],
+      selectedIntersectionObjectIds: [],
+      resultSegmentObjectIds: ["origami-segment-3"],
+      proofClaimIds: ["origami-claim-mul"],
+      branchSelections: [
+        {
+          id: "mul-baseline-transfer",
+          label: "Deterministic baseline transfer",
+          selected: true,
+        },
+      ],
+      degeneracyObjectIds: [],
+    });
+  });
+
   it("ships one example per supported basic arithmetic family", () => {
     const examples = compiledOrigamiArithmeticExamples();
 

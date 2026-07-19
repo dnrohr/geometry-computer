@@ -58,6 +58,27 @@ The current multiplication, division, square, and square-root objects are
 trace-level representations. Later fold-solver work should expand them into the
 full intermediate creases and intersections needed for a classroom-ready proof.
 
+## N1 Macro Trace Contract
+
+Advanced arithmetic work should expand the existing `macroTrace` on each
+arithmetic fold step instead of inventing a second trace format. The contract is
+designed to hold both today's simple baseline traces and the later full
+constructions:
+
+- multiplication and division should add unit references, guide lines, copied
+  input lengths, projected or scaled points, selected intersections, and result
+  segments.
+- square should reuse the multiplication contract while preserving the duplicated
+  input provenance.
+- square root should add the unit-plus-input baseline, midpoint, auxiliary
+  guide, extraction crease, selected intersection, nonnegative-input assumption,
+  and result segment.
+
+Every populated object-reference slot in the contract is validated against the
+scene. Every proof claim listed by the contract must exist in the scene proofs.
+This keeps explanatory rendering and future export work anchored to typed scene
+data rather than ad hoc label matching.
+
 ## Branch and Error Policy
 
 Every deterministic branch choice must be visible in either the selected

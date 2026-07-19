@@ -292,11 +292,34 @@ export function compileOrigamiExpression(
       crease.id,
       label.id,
     ];
+    const proofClaimId = `origami-claim-${operation}`;
     steps.push({
       id: stepId,
       title: `Trace ${key}`,
       summary,
       operation,
+      macroTrace: {
+        macroId: stepId,
+        operation,
+        sourceSegmentObjectIds: sourceIds,
+        unitReferenceObjectIds: [],
+        guideLineObjectIds: [],
+        foldCreaseObjectIds: [crease.id],
+        reflectedObjectIds: [],
+        selectedIntersectionObjectIds: [],
+        resultSegmentObjectIds: [segment.id],
+        proofClaimIds: [proofClaimId],
+        branchSelections: [
+          {
+            id: `${operation}-baseline-transfer`,
+            label: "Deterministic baseline transfer",
+            selected: true,
+            reason:
+              "The O3 trace uses one deterministic baseline placement until the richer fold geometry is expanded.",
+          },
+        ],
+        degeneracyObjectIds: [],
+      },
       inputObjectIds: sourceIds,
       outputObjectIds: [segment.id],
       createdObjectIds,
@@ -311,7 +334,7 @@ export function compileOrigamiExpression(
       givens: proofText.givens,
       claims: [
         {
-          id: `origami-claim-${operation}`,
+          id: proofClaimId,
           text: summary,
           highlightObjectIds: [segment.id, ...sourceIds],
         },

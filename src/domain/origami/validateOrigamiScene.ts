@@ -105,6 +105,9 @@ export function validateOrigamiScene(scene: OrigamiFoldScene) {
   const objectIds = new Set(scene.objects.map(({ id }) => id));
   const stepIds = new Set(scene.steps.map(({ id }) => id));
   const proofIds = new Set(scene.proofs.map(({ id }) => id));
+  const proofClaimIds = new Set(
+    scene.proofs.flatMap((proof) => proof.claims.map(({ id }) => id)),
+  );
 
   scene.objects.forEach((object) => {
     assertFiniteObject(object);
@@ -147,6 +150,30 @@ export function validateOrigamiScene(scene: OrigamiFoldScene) {
         step.id,
       ),
     );
+    if (step.macroTrace) {
+      const traceObjectReferences = [
+        ...step.macroTrace.sourceSegmentObjectIds,
+        ...step.macroTrace.unitReferenceObjectIds,
+        ...step.macroTrace.guideLineObjectIds,
+        ...step.macroTrace.foldCreaseObjectIds,
+        ...step.macroTrace.reflectedObjectIds,
+        ...step.macroTrace.selectedIntersectionObjectIds,
+        ...step.macroTrace.resultSegmentObjectIds,
+        ...step.macroTrace.degeneracyObjectIds,
+      ];
+      assertKnownIds(
+        "Macro trace object",
+        traceObjectReferences,
+        objectIds,
+        step.id,
+      );
+      assertKnownIds(
+        "Macro trace proof claim",
+        step.macroTrace.proofClaimIds,
+        proofClaimIds,
+        step.id,
+      );
+    }
     if (step.proofId && !proofIds.has(step.proofId))
       throw new OrigamiSceneError(
         `Step ${step.id} references missing proof ${step.proofId}.`,

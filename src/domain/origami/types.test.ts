@@ -121,6 +121,58 @@ describe("origami domain model", () => {
     ).toThrow(/missing-point referenced by fold-1 does not exist/i);
   });
 
+  it("validates arithmetic macro trace object and proof-claim references", () => {
+    const scene = simplePointToPointFoldScene();
+    const stepWithMacroTrace = {
+      ...scene.steps[0],
+      operation: "mul" as const,
+      macroTrace: {
+        macroId: "fold-1",
+        operation: "mul" as const,
+        sourceSegmentObjectIds: ["point-a"],
+        unitReferenceObjectIds: [],
+        guideLineObjectIds: [],
+        foldCreaseObjectIds: ["missing-crease"],
+        reflectedObjectIds: [],
+        selectedIntersectionObjectIds: [],
+        resultSegmentObjectIds: ["crease-a-to-b"],
+        proofClaimIds: ["claim-1"],
+        branchSelections: [
+          {
+            id: "branch-1",
+            label: "Selected branch",
+            selected: true,
+            reason: "Fixture branch choice.",
+          },
+        ],
+        degeneracyObjectIds: [],
+      },
+    };
+
+    expect(() =>
+      validateOrigamiScene({
+        ...scene,
+        steps: [stepWithMacroTrace],
+      }),
+    ).toThrow(/missing-crease referenced by fold-1 does not exist/i);
+
+    expect(() =>
+      validateOrigamiScene({
+        ...scene,
+        steps: [
+          {
+            ...stepWithMacroTrace,
+            macroTrace: {
+              ...stepWithMacroTrace.macroTrace,
+              foldCreaseObjectIds: ["crease-a-to-b"],
+              proofClaimIds: ["missing-claim"],
+            },
+          },
+        ],
+      }),
+    ).toThrow(/missing-claim referenced by fold-1 does not exist/i);
+  });
+
   it("rejects non-finite coordinates and zero direction folds", () => {
     const scene = simplePointToPointFoldScene();
     expect(() =>
