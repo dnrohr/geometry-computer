@@ -564,6 +564,8 @@ replay, or share.
   timeline model is stable.
 - F6.4 Add a compact share text block containing the function, sample values,
   supported-domain assumptions, and result.
+  Current implementation adds this block to the function lab with solver
+  readiness and active animation phase context plus a copy action.
 - F6.5 Add import/replay for a saved origami animation JSON file, scoped to the
   origami tab.
 - F6.6 Extend browser smoke tests to verify function-plan JSON and SVG exports

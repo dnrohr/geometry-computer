@@ -557,19 +557,23 @@ const assertOrigamiExports = async (page) => {
 };
 
 const assertOrigamiFunctionPanel = async (page) => {
-  const input = page.getByRole("textbox", { name: "Origami function" });
+  const input = page.getByRole("textbox", {
+    exact: true,
+    name: "Origami function",
+  });
   const functionPanel = page.getByLabel("Fold-computed function");
+  const functionStatus = functionPanel.locator(".origami-function-status");
   await input.waitFor();
-  await functionPanel.getByText("allowable").waitFor();
-  await functionPanel.getByText("2.000").waitFor();
-  await functionPanel.getByText("6/14 fallback phases, 8 certified").waitFor();
-  await functionPanel
+  await functionStatus.getByText("allowable").waitFor();
+  await functionStatus.getByText("2.000").waitFor();
+  await functionStatus.getByText("6/14 fallback phases, 8 certified").waitFor();
+  await functionStatus
     .getByText("origami-function-phase-9 align-fold arithmetic-macro-fold")
     .waitFor();
-  await functionPanel
+  await functionStatus
     .getByText("paper-placement origami-function-paper")
     .waitFor();
-  await functionPanel
+  await functionStatus
     .getByText("The paper boundary is placed as the fixed computation domain.")
     .waitFor();
   await page.getByRole("heading", { name: "Solver work backlog" }).waitFor();
@@ -578,11 +582,11 @@ const assertOrigamiFunctionPanel = async (page) => {
       name: "Jump to solver work origami-function-phase-9",
     })
     .click();
-  await page.getByText("origami-function-phase-9 @ 0.57").waitFor();
-  await page
+  await functionStatus.getByText("origami-function-phase-9 @ 0.57").waitFor();
+  await functionStatus
     .getByText("sqrt:align-fold positive-geometric-mean-branch")
     .waitFor();
-  await page
+  await functionStatus
     .getByText(
       "sqrt(a + 1) uses the Positive geometric-mean branch macro, which is not yet backed by a physical fold solver.",
     )
@@ -613,6 +617,31 @@ const assertOrigamiFunctionPanel = async (page) => {
       name: "Origami function animation: f(a) = sqrt(a + 1)",
     })
     .waitFor();
+  const functionShareBlock = page.getByLabel("Origami function share block");
+  await functionShareBlock.waitFor();
+  const shareText = await functionShareBlock.inputValue();
+  if (
+    !shareText.includes("f(a) = sqrt(a + 1)") ||
+    !shareText.includes("Samples: a=3") ||
+    !shareText.includes(
+      "Domain assumption: sampled inputs stay inside the real origami function field",
+    ) ||
+    !shareText.includes("Result: 2.000") ||
+    !shareText.includes("Fold solver: 6/14 fallback phases, 8 certified") ||
+    !shareText.includes("Animation: origami-function-phase-9 @ 0.57")
+  ) {
+    throw new Error(`Function share block mismatch: ${shareText}`);
+  }
+  await page.getByRole("button", { name: "Copy function share block" }).click();
+  await page.getByText("Copied function share block").waitFor();
+  const copiedShareText = await page.evaluate(() =>
+    navigator.clipboard.readText(),
+  );
+  if (
+    copiedShareText.replace(/\r\n/g, "\n") !== shareText.replace(/\r\n/g, "\n")
+  ) {
+    throw new Error("Function share block was not copied.");
+  }
   await page.getByLabel("Function paper front color").fill("#ffffff");
   await page.getByLabel("Function paper back color").fill("#101820");
   await page
@@ -799,13 +828,13 @@ const assertOrigamiFunctionPanel = async (page) => {
   }
 
   await input.fill("sqrt(a+1)");
-  await page.getByText("allowable").waitFor();
+  await functionStatus.getByText("allowable").waitFor();
   await page
     .getByRole("button", { name: "Offset quotient f(a,b,c)=(a+b)/(c+1)" })
     .click();
-  await functionPanel.getByText("2.500").waitFor();
+  await functionStatus.getByText("2.500").waitFor();
   await page.getByRole("spinbutton", { name: "c sample value" }).fill("4");
-  await functionPanel.getByText("1.000").waitFor();
+  await functionStatus.getByText("1.000").waitFor();
   await page.getByText("origami-function-plan-f-a-b-c-a-b-c-1").waitFor();
   await page
     .getByRole("button", { name: "Shifted root f(x)=sqrt(x+1)" })
@@ -822,7 +851,7 @@ const assertOrigamiFunctionPanel = async (page) => {
   await page.getByRole("button", { name: "Compile origami function" }).click();
   await page.getByText("origami-function-plan-f-a-sqrt-a-1").waitFor();
   await page.getByRole("button", { name: "Preview fold animation" }).click();
-  await page.getByText("origami-function-phase-4 @ 0.25").waitFor();
+  await functionStatus.getByText("origami-function-phase-4 @ 0.25").waitFor();
   await page
     .getByRole("img", {
       name: "Origami function animation: f(a) = sqrt(a + 1)",
@@ -850,9 +879,9 @@ const assertOrigamiFunctionPanel = async (page) => {
   await page
     .getByRole("slider", { name: "Function animation progress" })
     .fill("0.5");
-  await page.getByText("origami-function-phase-8 @ 0.50").waitFor();
+  await functionStatus.getByText("origami-function-phase-8 @ 0.50").waitFor();
   await page.getByRole("button", { name: "Next function phase" }).click();
-  await page.getByText("origami-function-phase-9 @ 0.57").waitFor();
+  await functionStatus.getByText("origami-function-phase-9 @ 0.57").waitFor();
   await page
     .getByRole("combobox", { name: "Function animation speed" })
     .selectOption("2");
@@ -868,9 +897,9 @@ const assertOrigamiFunctionPanel = async (page) => {
   const timeline = page.getByLabel("Origami function timeline");
   await timeline.focus();
   await page.keyboard.press("ArrowLeft");
-  await page.getByText("origami-function-phase-8 @ 0.50").waitFor();
+  await functionStatus.getByText("origami-function-phase-8 @ 0.50").waitFor();
   await page.keyboard.press("ArrowRight");
-  await page.getByText("origami-function-phase-9 @ 0.57").waitFor();
+  await functionStatus.getByText("origami-function-phase-9 @ 0.57").waitFor();
   await page.keyboard.press("Space");
   await page
     .getByRole("button", { name: "Pause function animation" })

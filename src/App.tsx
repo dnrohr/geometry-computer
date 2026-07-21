@@ -618,6 +618,25 @@ function OrigamiRoadmap() {
     functionReport.status === "valid"
       ? `${functionDisplayName} with ${activeFunctionSampleValues} => ${functionValue}`
       : "";
+  const functionShareText =
+    functionReport.status === "valid"
+      ? [
+          functionDisplayName,
+          `Samples: ${activeFunctionSampleValues}`,
+          "Domain assumption: sampled inputs stay inside the real origami function field",
+          `Result: ${functionValue}`,
+          functionPreview.status === "compiled"
+            ? `Fold solver: ${
+                functionPreview.plan.solverReadiness.status === "ready"
+                  ? "ready"
+                  : `${functionPreview.plan.solverReadiness.fallbackPhases}/${functionPreview.plan.solverReadiness.totalPhases} fallback phases, ${functionPreview.plan.solverReadiness.certifiedPhases} certified`
+              }`
+            : "Fold solver: not compiled",
+          functionPreview.status === "compiled"
+            ? `Animation: ${functionPreview.animation.phaseId} @ ${functionPreview.animation.progress.toFixed(2)}`
+            : "Animation: not compiled",
+        ].join("\n")
+      : "";
   const canCompileOrigamiFunction = functionReport.status === "valid";
   const copyOrigamiReadout = async (label: string, text: string) => {
     if (!text || !navigator.clipboard) {
@@ -957,6 +976,34 @@ function OrigamiRoadmap() {
             Preview fold animation
           </button>
         </div>
+        <section
+          className="origami-function-share"
+          aria-labelledby="origami-function-share-title"
+        >
+          <div className="origami-function-share-heading">
+            <h3 id="origami-function-share-title">Share block</h3>
+            <button
+              type="button"
+              aria-label="Copy function share block"
+              onClick={() =>
+                void copyOrigamiReadout(
+                  "function share block",
+                  functionShareText,
+                )
+              }
+              disabled={!functionShareText}
+            >
+              Copy
+            </button>
+          </div>
+          <textarea
+            aria-label="Origami function share block"
+            readOnly
+            value={
+              functionShareText || "Resolve the function issue before sharing."
+            }
+          />
+        </section>
         <div
           className="origami-function-examples"
           aria-label="Origami function examples"

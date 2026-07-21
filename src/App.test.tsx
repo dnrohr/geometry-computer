@@ -307,6 +307,25 @@ describe("App", () => {
       ),
     ).toBeInTheDocument();
     expect(
+      within(functionPanel).getByRole("textbox", {
+        name: "Origami function share block",
+      }),
+    ).toHaveValue(
+      [
+        "f(a) = sqrt(a + 1)",
+        "Samples: a=3",
+        "Domain assumption: sampled inputs stay inside the real origami function field",
+        "Result: 2.000",
+        "Fold solver: 6/14 fallback phases, 8 certified",
+        "Animation: origami-function-phase-1 @ 0.00",
+      ].join("\n"),
+    );
+    expect(
+      within(functionPanel).getByRole("button", {
+        name: "Copy function share block",
+      }),
+    ).toBeInTheDocument();
+    expect(
       within(functionPanel).getByRole("slider", { name: "a sample slider" }),
     ).toHaveValue("3");
     expect(
@@ -355,6 +374,13 @@ describe("App", () => {
     expect(
       within(functionPanel).getByText("origami-function-phase-9 @ 0.57"),
     ).toBeInTheDocument();
+    expect(
+      (
+        within(functionPanel).getByRole("textbox", {
+          name: "Origami function share block",
+        }) as HTMLTextAreaElement
+      ).value,
+    ).toContain("Animation: origami-function-phase-9 @ 0.57");
     expect(
       within(functionPanel).getByText(
         "sqrt:align-fold positive-geometric-mean-branch",
@@ -799,7 +825,7 @@ describe("App", () => {
     expect(
       within(functionPanel).getByRole("slider", { name: "b sample slider" }),
     ).toHaveValue("1.5");
-    expect(within(functionPanel).getByText(/a=4, b=1.5/)).toBeInTheDocument();
+    expect(within(functionPanel).getAllByText(/a=4, b=1.5/).length).toBe(2);
     expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
   });
 
@@ -913,6 +939,27 @@ describe("App", () => {
     );
     expect(
       within(functionPanel).getByText("Copied sampled result"),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      within(functionPanel).getByRole("button", {
+        name: "Copy function share block",
+      }),
+    );
+    await waitFor(() =>
+      expect(writeText).toHaveBeenCalledWith(
+        [
+          "f(a) = sqrt(a + 1)",
+          "Samples: a=3",
+          "Domain assumption: sampled inputs stay inside the real origami function field",
+          "Result: 2.000",
+          "Fold solver: 6/14 fallback phases, 8 certified",
+          "Animation: origami-function-phase-1 @ 0.00",
+        ].join("\n"),
+      ),
+    );
+    expect(
+      within(functionPanel).getByText("Copied function share block"),
     ).toBeInTheDocument();
   });
 

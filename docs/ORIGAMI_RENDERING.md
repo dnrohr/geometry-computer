@@ -166,6 +166,10 @@ The flat-origami tab provides:
   tab can download the visible current phase and a hidden final-phase snapshot,
   each serialized from the same SVG renderer and carrying plan, phase, kind, and
   physical-status data attributes.
+- F6.4 adds a compact share block to the function lab. It contains the
+  normalized function label, sample values, sampled-domain assumption, numeric
+  result, solver readiness, and current animation phase, with an origami-local
+  copy button.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.
