@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import {
   advanceOrigamiFunctionPreview,
   compileOrigamiFunctionPreview,
+  setOrigamiFunctionPreviewPaperStyle,
   setOrigamiFunctionPreviewProgress,
 } from "../../../domain/origami/function";
 import { SvgOrigamiFunctionAnimation } from "./SvgOrigamiFunctionAnimation";
@@ -41,6 +42,12 @@ describe("SvgOrigamiFunctionAnimation", () => {
     expect(
       container.querySelector(".origami-function-paper-front-pattern"),
     ).toHaveAttribute("data-pattern", "grid");
+    expect(
+      container.querySelector(".origami-function-paper-front-pattern"),
+    ).toHaveAttribute("data-pattern-scale", "1");
+    expect(
+      container.querySelector(".origami-function-paper-front-pattern"),
+    ).toHaveAttribute("data-pattern-rotation", "0");
     expect(
       container.querySelector(".origami-function-paper-back-pattern"),
     ).toHaveAttribute("data-pattern", "diagonal-stripe");
@@ -110,5 +117,29 @@ describe("SvgOrigamiFunctionAnimation", () => {
     expect(back).toHaveStyle({ fill: "#365f91", opacity: "1" });
     expect(shadow).toBeInTheDocument();
     expect(Number((shadow as SVGElement).style.opacity)).toBeCloseTo(0.232);
+  });
+
+  it("applies paper pattern scale and rotation to SVG patterns", () => {
+    const preview = compileOrigamiFunctionPreview("f(a,b)=a*b");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+    const styled = setOrigamiFunctionPreviewPaperStyle(preview, {
+      patternScale: 1.75,
+      patternRotation: 45,
+    });
+    if (styled.status !== "compiled") throw new Error("Expected compiled");
+
+    const { container } = render(
+      <SvgOrigamiFunctionAnimation preview={styled} />,
+    );
+
+    expect(
+      container.querySelector("#origami-function-pattern-grid"),
+    ).toHaveAttribute("patternTransform", "rotate(45) scale(1.75)");
+    expect(
+      container.querySelector(".origami-function-paper-front-pattern"),
+    ).toHaveAttribute("data-pattern-scale", "1.75");
+    expect(
+      container.querySelector(".origami-function-paper-front-pattern"),
+    ).toHaveAttribute("data-pattern-rotation", "45");
   });
 });

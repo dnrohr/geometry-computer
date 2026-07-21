@@ -166,6 +166,11 @@ export function setOrigamiFunctionPreviewPaperStyle(
   paperStyle: Partial<OrigamiPaperStyle>,
 ): OrigamiFunctionPreview {
   if (preview.status !== "compiled") return preview;
+  const nextOpacity = paperStyle.opacity ?? preview.paperStyle.opacity;
+  const nextPatternScale =
+    paperStyle.patternScale ?? preview.paperStyle.patternScale;
+  const nextPatternRotation =
+    paperStyle.patternRotation ?? preview.paperStyle.patternRotation;
   return {
     ...preview,
     paperStyle: {
@@ -175,9 +180,27 @@ export function setOrigamiFunctionPreviewPaperStyle(
         0.2,
         Math.min(
           1,
-          Number.isFinite(paperStyle.opacity ?? preview.paperStyle.opacity)
-            ? (paperStyle.opacity ?? preview.paperStyle.opacity)
+          Number.isFinite(nextOpacity)
+            ? nextOpacity
             : preview.paperStyle.opacity,
+        ),
+      ),
+      patternScale: Math.max(
+        0.5,
+        Math.min(
+          3,
+          Number.isFinite(nextPatternScale)
+            ? nextPatternScale
+            : preview.paperStyle.patternScale,
+        ),
+      ),
+      patternRotation: Math.max(
+        0,
+        Math.min(
+          360,
+          Number.isFinite(nextPatternRotation)
+            ? nextPatternRotation
+            : preview.paperStyle.patternRotation,
         ),
       ),
     },

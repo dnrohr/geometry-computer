@@ -639,6 +639,12 @@ describe("App", () => {
     fireEvent.change(screen.getByLabelText("Function paper opacity"), {
       target: { value: "0.65" },
     });
+    fireEvent.change(screen.getByLabelText("Function paper pattern scale"), {
+      target: { value: "1.75" },
+    });
+    fireEvent.change(screen.getByLabelText("Function paper pattern rotation"), {
+      target: { value: "45" },
+    });
 
     expect(screen.getByLabelText("Function paper front color")).toHaveValue(
       "#ffffff",
@@ -658,6 +664,18 @@ describe("App", () => {
         opacity: "0.65",
       },
     );
+    expect(screen.getByLabelText("Function paper pattern scale")).toHaveValue(
+      "1.75",
+    );
+    expect(
+      screen.getByLabelText("Function paper pattern rotation"),
+    ).toHaveValue("45");
+    expect(
+      container.querySelector(".origami-function-paper-front-pattern"),
+    ).toHaveAttribute("data-pattern-scale", "1.75");
+    expect(
+      container.querySelector(".origami-function-paper-front-pattern"),
+    ).toHaveAttribute("data-pattern-rotation", "45");
     expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
   });
 

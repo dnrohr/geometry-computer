@@ -121,6 +121,8 @@ describe("origami function preview plan", () => {
       frontColor: "#ffffff",
       backColor: "#101820",
       opacity: 2,
+      patternScale: 10,
+      patternRotation: -15,
     });
 
     expect(styled.status).toBe("compiled");
@@ -130,6 +132,8 @@ describe("origami function preview plan", () => {
       frontColor: "#ffffff",
       backColor: "#101820",
       opacity: 1,
+      patternScale: 3,
+      patternRotation: 0,
     });
   });
 

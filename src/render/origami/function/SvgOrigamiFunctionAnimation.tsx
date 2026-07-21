@@ -11,6 +11,8 @@ const movingPoints = "150,18 282,18 282,198 150,198";
 const patternId = (pattern: string) => `origami-function-pattern-${pattern}`;
 const patternFill = (pattern: string) =>
   pattern === "solid" ? "none" : `url(#${patternId(pattern)})`;
+const patternTransform = (scale: number, rotation: number) =>
+  `rotate(${rotation}) scale(${scale})`;
 
 const phaseLabel = (
   preview: Extract<OrigamiFunctionPreview, { status: "compiled" }>,
@@ -70,6 +72,10 @@ export function SvgOrigamiFunctionAnimation({
   const activeValue =
     activeNode?.value === undefined ? "pending" : activeNode.value.toFixed(3);
   const finalValue = preview.input.validation.value?.toFixed(3) ?? "pending";
+  const paperPatternTransform = patternTransform(
+    preview.paperStyle.patternScale,
+    preview.paperStyle.patternRotation,
+  );
 
   return (
     <svg
@@ -86,6 +92,7 @@ export function SvgOrigamiFunctionAnimation({
           width="16"
           height="16"
           patternUnits="userSpaceOnUse"
+          patternTransform={paperPatternTransform}
         >
           <path d="M 16 0 L 0 0 0 16" />
         </pattern>
@@ -94,6 +101,7 @@ export function SvgOrigamiFunctionAnimation({
           width="14"
           height="14"
           patternUnits="userSpaceOnUse"
+          patternTransform={paperPatternTransform}
         >
           <circle cx="3" cy="3" r="1.4" />
         </pattern>
@@ -102,6 +110,7 @@ export function SvgOrigamiFunctionAnimation({
           width="12"
           height="12"
           patternUnits="userSpaceOnUse"
+          patternTransform={paperPatternTransform}
         >
           <path d="M -3 12 L 12 -3 M 3 15 L 15 3" />
         </pattern>
@@ -110,6 +119,7 @@ export function SvgOrigamiFunctionAnimation({
           width="28"
           height="14"
           patternUnits="userSpaceOnUse"
+          patternTransform={paperPatternTransform}
         >
           <path d="M 0 7 C 7 1, 14 13, 21 7 S 35 7, 42 7" />
         </pattern>
@@ -118,6 +128,7 @@ export function SvgOrigamiFunctionAnimation({
           width="20"
           height="20"
           patternUnits="userSpaceOnUse"
+          patternTransform={paperPatternTransform}
         >
           <path d="M 20 0 L 0 0 0 20 M 10 0 L 10 20 M 0 10 L 20 10" />
         </pattern>
@@ -126,6 +137,7 @@ export function SvgOrigamiFunctionAnimation({
           width="10"
           height="10"
           patternUnits="userSpaceOnUse"
+          patternTransform={paperPatternTransform}
         >
           <path d="M 0 0 L 10 10 M 10 0 L 0 10" />
         </pattern>
@@ -143,6 +155,8 @@ export function SvgOrigamiFunctionAnimation({
         className="origami-function-paper-pattern"
         points={paperPoints}
         fill={patternFill(preview.paperStyle.frontPattern)}
+        data-pattern-scale={preview.paperStyle.patternScale}
+        data-pattern-rotation={preview.paperStyle.patternRotation}
       />
       <polygon
         className="origami-function-paper-stationary"
@@ -198,12 +212,16 @@ export function SvgOrigamiFunctionAnimation({
           points={movingPoints}
           fill={patternFill(preview.paperStyle.backPattern)}
           data-pattern={preview.paperStyle.backPattern}
+          data-pattern-scale={preview.paperStyle.patternScale}
+          data-pattern-rotation={preview.paperStyle.patternRotation}
         />
         <polygon
           className="origami-function-paper-front-pattern"
           points={movingPoints}
           fill={patternFill(preview.paperStyle.frontPattern)}
           data-pattern={preview.paperStyle.frontPattern}
+          data-pattern-scale={preview.paperStyle.patternScale}
+          data-pattern-rotation={preview.paperStyle.patternRotation}
         />
         <polyline
           className="origami-function-paper-back-edge"

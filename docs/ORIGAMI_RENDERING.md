@@ -130,6 +130,9 @@ The flat-origami tab provides:
 - F4.3 makes side exposure clearer in the fold animation with side-tagged front
   and back fills, separate front/back edge outlines, a moving-panel shadow, and
   a hinge highlight/shadow pair.
+- F4.4 adds origami-local pattern scale and rotation sliders. The animation
+  applies them through SVG pattern transforms so grid, stripe, dot, wave,
+  coordinate, and high-contrast presets can be tuned for the current fold size.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

@@ -505,9 +505,14 @@ const assertOrigamiFunctionPanel = async (page) => {
     .getByRole("combobox", { name: "Function paper back pattern" })
     .selectOption("high-contrast");
   await page.getByLabel("Function paper opacity").fill("0.65");
+  await page.getByLabel("Function paper pattern scale").fill("1.75");
+  await page.getByLabel("Function paper pattern rotation").fill("45");
   const paperStyle = await page.evaluate(() => {
     const base = document.querySelector(".origami-function-paper-base");
     const back = document.querySelector(".origami-function-paper-back");
+    const gridPattern = document.querySelector(
+      "#origami-function-pattern-grid",
+    );
     const frontPattern = document.querySelector(
       ".origami-function-paper-front-pattern",
     );
@@ -522,9 +527,21 @@ const assertOrigamiFunctionPanel = async (page) => {
         frontPattern instanceof SVGElement
           ? frontPattern.dataset.pattern
           : undefined,
+      frontPatternScale:
+        frontPattern instanceof SVGElement
+          ? frontPattern.dataset.patternScale
+          : undefined,
+      frontPatternRotation:
+        frontPattern instanceof SVGElement
+          ? frontPattern.dataset.patternRotation
+          : undefined,
       backPattern:
         backPattern instanceof SVGElement
           ? backPattern.dataset.pattern
+          : undefined,
+      gridPatternTransform:
+        gridPattern instanceof SVGElement
+          ? gridPattern.getAttribute("patternTransform")
           : undefined,
     };
   });
@@ -533,7 +550,10 @@ const assertOrigamiFunctionPanel = async (page) => {
     paperStyle.baseOpacity !== "0.65" ||
     paperStyle.backFill !== "rgb(16, 24, 32)" ||
     paperStyle.frontPattern !== "washi-wave" ||
-    paperStyle.backPattern !== "high-contrast"
+    paperStyle.frontPatternScale !== "1.75" ||
+    paperStyle.frontPatternRotation !== "45" ||
+    paperStyle.backPattern !== "high-contrast" ||
+    paperStyle.gridPatternTransform !== "rotate(45) scale(1.75)"
   ) {
     throw new Error(
       `Function paper style controls did not apply: ${JSON.stringify(paperStyle)}`,

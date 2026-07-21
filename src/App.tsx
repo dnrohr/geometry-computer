@@ -1052,6 +1052,40 @@ function OrigamiRoadmap() {
               }
             />
           </label>
+          <label>
+            Pattern scale
+            <input
+              aria-label="Function paper pattern scale"
+              type="range"
+              min="0.5"
+              max="3"
+              step="0.25"
+              disabled={timelineDisabled}
+              value={paperStyle?.patternScale ?? 1}
+              onChange={(event) =>
+                updateOrigamiPaperStyle({
+                  patternScale: Number(event.target.value),
+                })
+              }
+            />
+          </label>
+          <label>
+            Pattern rotation
+            <input
+              aria-label="Function paper pattern rotation"
+              type="range"
+              min="0"
+              max="360"
+              step="15"
+              disabled={timelineDisabled}
+              value={paperStyle?.patternRotation ?? 0}
+              onChange={(event) =>
+                updateOrigamiPaperStyle({
+                  patternRotation: Number(event.target.value),
+                })
+              }
+            />
+          </label>
         </fieldset>
         <div
           className="origami-function-timeline"
