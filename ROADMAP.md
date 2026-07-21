@@ -562,6 +562,8 @@ replay, or share.
   final crease-pattern SVG with per-phase crease provenance.
 - F6.3 Add an animated export path such as WebM, GIF, or SVG animation after the
   timeline model is stable.
+  Current implementation exports a deterministic standalone animated SVG with
+  phase frames, crease reveal timing, paper style, and final result metadata.
 - F6.4 Add a compact share text block containing the function, sample values,
   supported-domain assumptions, and result.
   Current implementation adds this block to the function lab with solver

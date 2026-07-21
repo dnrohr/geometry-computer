@@ -153,6 +153,9 @@ The current-phase snapshot uses the visible timeline state; the final snapshot
 uses the same compiled plan and paper style at the result-extraction phase. A
 separate crease-pattern snapshot flattens the plan into the full set of planned
 fold creases and marks each crease with its producing phase ID.
+F6.3 adds a deterministic animated SVG export for function previews. It packages
+the phase list, phase timing, final sampled result, paper color, and fold-crease
+provenance into a standalone SVG with built-in animation elements.
 F6.4 exposes a share text contract derived from the origami function preview.
 It includes the normalized source, active sample values, sampled-domain
 assumption, result, solver readiness, and animation phase without importing

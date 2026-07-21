@@ -15,6 +15,7 @@ import {
   compileOrigamiFunctionPreview,
   evaluateOrigamiFunctionInput,
   origamiFunctionAnimationJson,
+  origamiFunctionAnimatedSvg,
   origamiFunctionExamples,
   origamiVariableControls,
   replayOrigamiFunctionAnimationJson,
@@ -1165,6 +1166,21 @@ function OrigamiRoadmap() {
             }
           >
             Export function crease SVG
+          </button>
+          <button
+            type="button"
+            disabled={timelineDisabled}
+            onClick={() => {
+              const svg = origamiFunctionAnimatedSvg(functionPreview);
+              if (!svg) return;
+              downloadText(
+                "origami-function-animated.svg",
+                svg,
+                "image/svg+xml",
+              );
+            }}
+          >
+            Export function animated SVG
           </button>
           <label className="origami-function-import-control">
             Import replay JSON

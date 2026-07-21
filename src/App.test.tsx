@@ -246,8 +246,11 @@ describe("App", () => {
     fireEvent.click(
       screen.getByRole("button", { name: "Export function crease SVG" }),
     );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Export function animated SVG" }),
+    );
     fireEvent.click(screen.getByRole("button", { name: "Export origami SVG" }));
-    expect(click).toHaveBeenCalledTimes(9);
+    expect(click).toHaveBeenCalledTimes(10);
     click.mockRestore();
   });
 
@@ -355,6 +358,9 @@ describe("App", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Export function crease SVG" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Export function animated SVG" }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("img", {

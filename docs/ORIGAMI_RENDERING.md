@@ -168,6 +168,9 @@ The flat-origami tab provides:
   physical-status data attributes. It also exports a final crease-pattern SVG
   that flattens every planned fold-motion crease onto the sheet with
   `data-crease-phase-id` provenance.
+- F6.3 adds `Export function animated SVG`. The exported file is deterministic
+  for the compiled plan and paper style, includes one animated frame per phase,
+  and progressively reveals planned crease lines with phase provenance.
 - F6.4 adds a compact share block to the function lab. It contains the
   normalized function label, sample values, sampled-domain assumption, numeric
   result, solver readiness, and current animation phase, with an origami-local

@@ -9,6 +9,7 @@ export {
   DEFAULT_ORIGAMI_FUNCTION_VALUES,
   evaluateOrigamiFunctionInput,
 } from "./functionInput";
+export { origamiFunctionAnimatedSvg } from "./functionAnimatedSvg";
 export {
   origamiFunctionExamples,
   type OrigamiFunctionExample,
