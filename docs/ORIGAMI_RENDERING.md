@@ -139,6 +139,9 @@ The flat-origami tab provides:
 - F4.6 adds readability guards: crease preview and active crease marks render
   with dark underlay strokes, and browser smoke checks readout contrast for the
   animation value strip.
+- F5.1 surfaces function-plan solver readiness in the origami tab. The function
+  lab shows ready versus fallback phase counts so arithmetic playback remains
+  honest about which steps still need a physical fold solver.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

@@ -177,6 +177,17 @@ export type OrigamiFunctionPlanDiagnostic = {
   nodeIds: string[];
 };
 
+export type OrigamiFunctionSolverReadinessStatus = "ready" | "needs-solver";
+
+export type OrigamiFunctionSolverReadiness = {
+  status: OrigamiFunctionSolverReadinessStatus;
+  totalPhases: number;
+  provenPhysicalPhases: number;
+  fallbackPhases: number;
+  fallbackPhaseIds: string[];
+  summary: string;
+};
+
 export type OrigamiFunctionPlan = {
   id: string;
   source: OrigamiFunctionSource;
@@ -189,6 +200,7 @@ export type OrigamiFunctionPlan = {
   resultExtraction: OrigamiFunctionResultExtraction;
   phases: OrigamiFunctionPlanPhase[];
   diagnostics: OrigamiFunctionPlanDiagnostic[];
+  solverReadiness: OrigamiFunctionSolverReadiness;
   resultObjectId?: string;
 };
 

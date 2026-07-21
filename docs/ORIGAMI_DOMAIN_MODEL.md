@@ -116,6 +116,10 @@ subexpressions, repeated variables, negative directed lengths, branch ambiguity,
 and accumulated scale. These diagnostics do not replace sampled-domain
 validation; they explain what the animation planner needs to make visible once a
 function is already allowable.
+F5.1 adds a solver-readiness report to each function plan. The report is derived
+from the phase `physicalStatus` fields, counts proven versus fallback phases,
+lists fallback phase IDs, and tells the UI/export layer whether the current
+function animation is physically ready or still waiting on fold-solver support.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

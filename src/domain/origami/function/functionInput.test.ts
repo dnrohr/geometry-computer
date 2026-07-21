@@ -134,6 +134,15 @@ describe("origami function input boundary", () => {
         },
       ],
       diagnostics: [],
+      solverReadiness: {
+        status: "ready",
+        totalPhases: 1,
+        provenPhysicalPhases: 1,
+        fallbackPhases: 0,
+        fallbackPhaseIds: [],
+        summary:
+          "All function animation phases are backed by physical fold steps.",
+      },
       resultObjectId: "origami-segment-3",
     };
     const animation: OrigamiFoldAnimationState = {

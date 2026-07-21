@@ -668,6 +668,10 @@ function OrigamiRoadmap() {
     functionPreview.status === "compiled"
       ? functionPreview.paperStyle
       : undefined;
+  const solverReadiness =
+    functionPreview.status === "compiled"
+      ? functionPreview.plan.solverReadiness
+      : undefined;
   const updateOrigamiPaperStyle = (
     paperStyleUpdate: Parameters<typeof setOrigamiFunctionPreviewPaperStyle>[1],
   ) =>
@@ -848,6 +852,22 @@ function OrigamiRoadmap() {
                 : "not started"}
             </dd>
           </div>
+          <div>
+            <dt>Fold solver</dt>
+            <dd>
+              {solverReadiness
+                ? solverReadiness.status === "ready"
+                  ? "ready"
+                  : `${solverReadiness.fallbackPhases}/${solverReadiness.totalPhases} fallback phases`
+                : "not compiled"}
+            </dd>
+          </div>
+          {solverReadiness && (
+            <div>
+              <dt>Solver detail</dt>
+              <dd>{solverReadiness.summary}</dd>
+            </div>
+          )}
           {copiedFunctionReadout && (
             <div>
               <dt>Clipboard</dt>

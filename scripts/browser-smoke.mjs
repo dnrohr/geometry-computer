@@ -562,6 +562,7 @@ const assertOrigamiFunctionPanel = async (page) => {
   await input.waitFor();
   await functionPanel.getByText("allowable").waitFor();
   await functionPanel.getByText("2.000").waitFor();
+  await functionPanel.getByText("11/14 fallback phases").waitFor();
   await page
     .getByRole("img", {
       name: "Origami function animation: f(a) = sqrt(a + 1)",

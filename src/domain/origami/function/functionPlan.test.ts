@@ -158,6 +158,38 @@ describe("origami function plan", () => {
       }),
     ]);
     expect(plan.phases.every(({ exportId }) => exportId)).toBe(true);
+    expect(plan.solverReadiness).toMatchObject({
+      status: "needs-solver",
+      totalPhases: plan.phases.length,
+      fallbackPhases: 6,
+      provenPhysicalPhases: 3,
+    });
+    expect(plan.solverReadiness.fallbackPhaseIds).toEqual(
+      plan.phases
+        .filter(
+          ({ physicalStatus }) => physicalStatus === "explanatory-fallback",
+        )
+        .map(({ id }) => id),
+    );
+  });
+
+  it("marks plans ready when every function phase is physically proven", () => {
+    const plan = createOrigamiFunctionPlan(validInput("f(a)=a"));
+
+    expect(plan.phases.map(({ physicalStatus }) => physicalStatus)).toEqual([
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+    ]);
+    expect(plan.solverReadiness).toEqual({
+      status: "ready",
+      totalPhases: 3,
+      provenPhysicalPhases: 3,
+      fallbackPhases: 0,
+      fallbackPhaseIds: [],
+      summary:
+        "All function animation phases are backed by physical fold steps.",
+    });
   });
 
   it("keeps dependencies before dependents in execution order", () => {

@@ -280,6 +280,14 @@ describe("App", () => {
       within(functionPanel).getByText("f(a) = sqrt(a + 1)"),
     ).toBeInTheDocument();
     expect(
+      within(functionPanel).getByText("11/14 fallback phases"),
+    ).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText(
+        "11 of 14 function animation phases still need physical fold-solver support.",
+      ),
+    ).toBeInTheDocument();
+    expect(
       within(functionPanel).getByRole("slider", { name: "a sample slider" }),
     ).toHaveValue("3");
     expect(

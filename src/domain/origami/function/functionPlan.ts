@@ -11,6 +11,7 @@ import type {
   OrigamiFunctionPlanOperationKind,
   OrigamiFunctionPlanPhase,
   OrigamiFunctionPlanPhaseKind,
+  OrigamiFunctionSolverReadiness,
 } from "./types";
 
 type ValidOrigamiFunctionInput = Extract<
@@ -293,6 +294,28 @@ const createPlanDiagnostics = (
   return diagnostics;
 };
 
+const createSolverReadiness = (
+  phases: OrigamiFunctionPlanPhase[],
+): OrigamiFunctionSolverReadiness => {
+  const fallbackPhaseIds = phases
+    .filter(({ physicalStatus }) => physicalStatus === "explanatory-fallback")
+    .map(({ id }) => id);
+  const provenPhysicalPhases = phases.length - fallbackPhaseIds.length;
+  const status = fallbackPhaseIds.length === 0 ? "ready" : "needs-solver";
+
+  return {
+    status,
+    totalPhases: phases.length,
+    provenPhysicalPhases,
+    fallbackPhases: fallbackPhaseIds.length,
+    fallbackPhaseIds,
+    summary:
+      status === "ready"
+        ? "All function animation phases are backed by physical fold steps."
+        : `${fallbackPhaseIds.length} of ${phases.length} function animation phases still need physical fold-solver support.`,
+  };
+};
+
 export function createOrigamiFunctionPlan(
   input: ValidOrigamiFunctionInput,
 ): OrigamiFunctionPlan {
@@ -433,19 +456,25 @@ export function createOrigamiFunctionPlan(
     phaseForJump.set(node.id, phaseIds[0]);
   }
 
+  const resultExtractionIsPhysical =
+    resultNode.kind === "input" || resultNode.kind === "constant";
   const resultPhaseId = addPhase({
     kind: "extract-result",
     expression: input.validation.source.source,
     sourceObjectIds: [resultNode.outputObjectId],
     outputObjectIds: [resultObjectId],
     proofClaimIds: [],
-    physicalStatus: "explanatory-fallback",
-    fallback: {
-      label: "Explanatory result extraction",
-      reason:
-        "The final extraction references the deterministic function plan until physical fold playback is solved.",
-      replacementFor: "extract-result",
-    },
+    physicalStatus: resultExtractionIsPhysical
+      ? "proven-physical"
+      : "explanatory-fallback",
+    fallback: resultExtractionIsPhysical
+      ? undefined
+      : {
+          label: "Explanatory result extraction",
+          reason:
+            "The final extraction references the deterministic function plan until physical fold playback is solved.",
+          replacementFor: "extract-result",
+        },
   });
   phaseForJump.set(resultNode.id, resultPhaseId);
   operations.push({
@@ -460,6 +489,7 @@ export function createOrigamiFunctionPlan(
     proofClaimIds: [],
   });
   const diagnostics = createPlanDiagnostics(input, nodes, lengthTransfers);
+  const solverReadiness = createSolverReadiness(phases);
 
   const operationsWithPhases = operations.map((operation) => ({
     ...operation,
@@ -492,6 +522,7 @@ export function createOrigamiFunctionPlan(
     },
     phases,
     diagnostics,
+    solverReadiness,
     resultObjectId,
   };
 }

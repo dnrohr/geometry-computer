@@ -63,6 +63,8 @@ export type {
   OrigamiFunctionResultExtraction,
   OrigamiFunctionSelectedBranch,
   OrigamiFunctionSideExposure,
+  OrigamiFunctionSolverReadiness,
+  OrigamiFunctionSolverReadinessStatus,
   OrigamiFunctionSource,
   OrigamiFunctionValidation,
   OrigamiPaperPattern,
