@@ -170,6 +170,10 @@ The flat-origami tab provides:
   normalized function label, sample values, sampled-domain assumption, numeric
   result, solver readiness, and current animation phase, with an origami-local
   copy button.
+- F6.5 adds import/replay for saved function-animation JSON. The origami tab
+  replays imports by recompiling the function source and sample values, then
+  restoring paper style and the saved animation phase while leaving playback
+  paused.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

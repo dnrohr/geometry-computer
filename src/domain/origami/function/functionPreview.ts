@@ -25,6 +25,18 @@ export type OrigamiFunctionPreview =
       input: Exclude<OrigamiFunctionPanelState, { status: "valid" }>;
     };
 
+export type OrigamiFunctionAnimationReplay =
+  | {
+      status: "replayed";
+      preview: Extract<OrigamiFunctionPreview, { status: "compiled" }>;
+      source: string;
+      values: Record<string, number>;
+    }
+  | {
+      status: "error";
+      error: string;
+    };
+
 export const DEFAULT_ORIGAMI_PAPER_STYLE: OrigamiPaperStyle = {
   frontColor: "#f7f0d4",
   backColor: "#365f91",
@@ -270,3 +282,112 @@ export const origamiFunctionAnimationJson = (
   exportedAt?: string,
 ) =>
   JSON.stringify(origamiFunctionAnimationExport(preview, exportedAt), null, 2);
+
+export function replayOrigamiFunctionAnimationExport(
+  exported: unknown,
+): OrigamiFunctionAnimationReplay {
+  if (!isRecord(exported) || exported.version !== 1) {
+    return { status: "error", error: "Import must be a version 1 animation." };
+  }
+  if (!isRecord(exported.plan) || !isRecord(exported.plan.source)) {
+    return { status: "error", error: "Import is missing its function source." };
+  }
+  const source = exported.plan.source.source;
+  if (typeof source !== "string" || !source.trim()) {
+    return { status: "error", error: "Import has an invalid function source." };
+  }
+  const values = numericRecord(exported.plan.values);
+  if (!values) {
+    return { status: "error", error: "Import has invalid sample values." };
+  }
+  if (!isRecord(exported.animation)) {
+    return {
+      status: "error",
+      error: "Import is missing animation timeline state.",
+    };
+  }
+  const phaseId = exported.animation.phaseId;
+  if (typeof phaseId !== "string") {
+    return { status: "error", error: "Import has an invalid animation phase." };
+  }
+  const compiled = compileOrigamiFunctionPreview(source, values);
+  if (compiled.status !== "compiled") {
+    return {
+      status: "error",
+      error: "Imported function is outside the sampled origami domain.",
+    };
+  }
+  if (
+    typeof exported.animation.planId === "string" &&
+    exported.animation.planId !== compiled.plan.id
+  ) {
+    return {
+      status: "error",
+      error: "Import plan ID does not match the recompiled function.",
+    };
+  }
+  if (!compiled.plan.phases.some(({ id }) => id === phaseId)) {
+    return { status: "error", error: "Import references an unknown phase." };
+  }
+  const styled = isRecord(exported.paperStyle)
+    ? setOrigamiFunctionPreviewPaperStyle(compiled, exported.paperStyle)
+    : compiled;
+  if (styled.status !== "compiled") {
+    return {
+      status: "error",
+      error: "Imported function could not restore paper style.",
+    };
+  }
+  const phased = setOrigamiFunctionPreviewPhase(styled, phaseId);
+  if (phased.status !== "compiled") {
+    return { status: "error", error: "Imported phase could not be replayed." };
+  }
+  return {
+    status: "replayed",
+    preview: {
+      ...phased,
+      animation: {
+        ...phased.animation,
+        playing: false,
+        reducedMotion:
+          typeof exported.animation.reducedMotion === "boolean"
+            ? exported.animation.reducedMotion
+            : phased.animation.reducedMotion,
+        speed:
+          typeof exported.animation.speed === "number"
+            ? Math.max(0.25, Math.min(4, exported.animation.speed))
+            : phased.animation.speed,
+      },
+    },
+    source,
+    values,
+  };
+}
+
+export function replayOrigamiFunctionAnimationJson(
+  json: string,
+): OrigamiFunctionAnimationReplay {
+  try {
+    return replayOrigamiFunctionAnimationExport(JSON.parse(json));
+  } catch {
+    return { status: "error", error: "Import must be valid JSON." };
+  }
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function numericRecord(value: unknown): Record<string, number> | undefined {
+  if (!isRecord(value)) return undefined;
+  const entries = Object.entries(value);
+  if (
+    entries.some(
+      ([key, item]) =>
+        !key || typeof item !== "number" || !Number.isFinite(item),
+    )
+  ) {
+    return undefined;
+  }
+  return Object.fromEntries(entries) as Record<string, number>;
+}

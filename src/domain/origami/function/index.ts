@@ -20,6 +20,8 @@ export {
   compileOrigamiFunctionPreview,
   origamiFunctionAnimationExport,
   origamiFunctionAnimationJson,
+  replayOrigamiFunctionAnimationExport,
+  replayOrigamiFunctionAnimationJson,
   setOrigamiFunctionPreviewPlaying,
   setOrigamiFunctionPreviewPaperStyle,
   setOrigamiFunctionPreviewPhase,
@@ -27,6 +29,7 @@ export {
   setOrigamiFunctionPreviewReducedMotion,
   setOrigamiFunctionPreviewSpeed,
   stepOrigamiFunctionPreviewPhase,
+  type OrigamiFunctionAnimationReplay,
   type OrigamiFunctionPreview,
 } from "./functionPreview";
 export {

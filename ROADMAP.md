@@ -568,6 +568,9 @@ replay, or share.
   readiness and active animation phase context plus a copy action.
 - F6.5 Add import/replay for a saved origami animation JSON file, scoped to the
   origami tab.
+  Current implementation imports saved function-animation JSON by recompiling
+  the source and sample values, restoring paper style and phase, and reporting
+  replay errors inside the origami function lab.
 - F6.6 Extend browser smoke tests to verify function-plan JSON and SVG exports
   contain the same scene, phase, paper-style, and result IDs shown in the UI.
 

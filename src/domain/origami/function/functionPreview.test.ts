@@ -3,6 +3,8 @@ import {
   compileOrigamiFunctionPreview,
   origamiFunctionAnimationExport,
   origamiFunctionAnimationJson,
+  replayOrigamiFunctionAnimationExport,
+  replayOrigamiFunctionAnimationJson,
   setOrigamiFunctionPreviewPlaying,
   setOrigamiFunctionPreviewPaperStyle,
   setOrigamiFunctionPreviewPhase,
@@ -227,6 +229,68 @@ describe("origami function preview plan", () => {
     expect(exported?.solverReadiness.workItems[0]).toBe(
       exported?.activePhase.solverWorkItem,
     );
+  });
+
+  it("replays a saved animation export from source and sample values", () => {
+    const preview = compileOrigamiFunctionPreview("sqrt(a+1)", { a: 8 });
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+    const jumped = setOrigamiFunctionPreviewPhase(
+      setOrigamiFunctionPreviewPaperStyle(preview, {
+        frontColor: "#ffffff",
+        backPattern: "high-contrast",
+        patternScale: 1.75,
+      }),
+      "origami-function-phase-9",
+    );
+    if (jumped.status !== "compiled") throw new Error("Expected compiled");
+    const exported = origamiFunctionAnimationExport({
+      ...jumped,
+      animation: {
+        ...jumped.animation,
+        playing: true,
+        reducedMotion: true,
+        speed: 2,
+      },
+    });
+
+    const replayed = replayOrigamiFunctionAnimationExport(exported);
+
+    expect(replayed.status).toBe("replayed");
+    if (replayed.status !== "replayed") throw new Error("Expected replayed");
+    expect(replayed.source).toBe("f(a) = sqrt(a + 1)");
+    expect(replayed.values).toEqual({ a: 8 });
+    expect(replayed.preview.plan.id).toBe(preview.plan.id);
+    expect(replayed.preview.animation).toMatchObject({
+      phaseId: "origami-function-phase-9",
+      playing: false,
+      reducedMotion: true,
+      speed: 2,
+    });
+    expect(replayed.preview.paperStyle).toMatchObject({
+      frontColor: "#ffffff",
+      backPattern: "high-contrast",
+      patternScale: 1.75,
+    });
+  });
+
+  it("rejects malformed and mismatched animation replays", () => {
+    expect(replayOrigamiFunctionAnimationJson("{")).toEqual({
+      status: "error",
+      error: "Import must be valid JSON.",
+    });
+
+    const preview = compileOrigamiFunctionPreview("a+b");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+    const exported = origamiFunctionAnimationExport(preview);
+    expect(
+      replayOrigamiFunctionAnimationExport({
+        ...exported,
+        animation: { ...exported?.animation, planId: "other-plan" },
+      }),
+    ).toEqual({
+      status: "error",
+      error: "Import plan ID does not match the recompiled function.",
+    });
   });
 
   it("compiles signature inputs into display-labeled plans", () => {

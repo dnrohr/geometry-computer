@@ -654,6 +654,22 @@ select:focus-visible,
   padding: 0.48rem 0.65rem;
 }
 
+.origami-function-import-control {
+  display: grid;
+  gap: 0.22rem;
+  align-items: center;
+  min-width: min(100%, 11rem);
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 750;
+}
+
+.origami-function-import-control input {
+  max-width: 15rem;
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+
 .origami-function-export-renderer {
   position: absolute;
   overflow: hidden;

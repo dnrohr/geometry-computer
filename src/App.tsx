@@ -17,6 +17,7 @@ import {
   origamiFunctionAnimationJson,
   origamiFunctionExamples,
   origamiVariableControls,
+  replayOrigamiFunctionAnimationJson,
   setOrigamiFunctionPreviewPlaying,
   setOrigamiFunctionPreviewPaperStyle,
   setOrigamiFunctionPreviewPhase,
@@ -457,6 +458,7 @@ function OrigamiRoadmap() {
     compileOrigamiFunctionPreview("sqrt(a+1)", DEFAULT_ORIGAMI_FUNCTION_VALUES),
   );
   const [copiedFunctionReadout, setCopiedFunctionReadout] = useState("");
+  const [functionImportStatus, setFunctionImportStatus] = useState("");
   const [progress, setProgress] = useState(1);
   const [activeStepId, setActiveStepId] = useState<string>();
   const [selectedObjectId, setSelectedObjectId] = useState<string>();
@@ -681,6 +683,23 @@ function OrigamiRoadmap() {
     setFunctionValues(nextValues);
     if (nextPreview.status === "compiled") {
       setFunctionPreview(nextPreview);
+    }
+  };
+  const importOrigamiFunctionAnimation = async (file?: File) => {
+    if (!file) return;
+    try {
+      const replay = replayOrigamiFunctionAnimationJson(await file.text());
+      if (replay.status === "error") {
+        setFunctionImportStatus(replay.error);
+        return;
+      }
+      setFunctionSource(replay.source);
+      setFunctionValues(replay.values);
+      setFunctionPreview(replay.preview);
+      setCopiedFunctionReadout("");
+      setFunctionImportStatus(`Imported ${replay.preview.animation.phaseId}`);
+    } catch {
+      setFunctionImportStatus("Import could not be read.");
     }
   };
   const previewOrigamiFunctionAnimation = () =>
@@ -956,6 +975,12 @@ function OrigamiRoadmap() {
               <dd>{copiedFunctionReadout}</dd>
             </div>
           )}
+          {functionImportStatus && (
+            <div>
+              <dt>Import</dt>
+              <dd>{functionImportStatus}</dd>
+            </div>
+          )}
         </dl>
         <div className="origami-function-actions">
           <button
@@ -1126,6 +1151,20 @@ function OrigamiRoadmap() {
           >
             Export function final SVG
           </button>
+          <label className="origami-function-import-control">
+            Import replay JSON
+            <input
+              aria-label="Import function animation JSON"
+              type="file"
+              accept="application/json,.json"
+              onChange={(event) => {
+                void importOrigamiFunctionAnimation(
+                  event.target.files?.[0] ?? undefined,
+                );
+                event.target.value = "";
+              }}
+            />
+          </label>
         </div>
         <div className="origami-function-export-renderer" aria-hidden="true">
           <SvgOrigamiFunctionAnimation

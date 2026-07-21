@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { mkdir, readFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { setTimeout as delay } from "node:timers/promises";
 import { chromium } from "playwright";
@@ -779,6 +779,20 @@ const assertOrigamiFunctionPanel = async (page) => {
     throw new Error(
       `Function final SVG export mismatch: ${finalFunctionSvg.filename}`,
     );
+  }
+  await mkdir(artifactDir, { recursive: true });
+  const replayPath = `${artifactDir}/origami-function-replay.json`;
+  await writeFile(replayPath, animationDownload.text, "utf8");
+  await page
+    .getByLabel("Import function animation JSON")
+    .setInputFiles(replayPath);
+  await functionStatus.getByText("Imported origami-function-phase-9").waitFor();
+  await functionStatus.getByText("origami-function-phase-9 @ 0.57").waitFor();
+  if (
+    (await page.getByLabel("Function paper front color").inputValue()) !==
+    "#ffffff"
+  ) {
+    throw new Error("Imported function replay did not restore paper style.");
   }
   const traceLink = page.getByRole("link", { name: "View trace" });
   await traceLink.waitFor();

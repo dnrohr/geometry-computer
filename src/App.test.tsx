@@ -7,6 +7,12 @@ import {
 } from "@testing-library/react";
 import { vi } from "vitest";
 import App from "./App";
+import {
+  compileOrigamiFunctionPreview,
+  origamiFunctionAnimationJson,
+  setOrigamiFunctionPreviewPaperStyle,
+  setOrigamiFunctionPreviewPhase,
+} from "./domain/origami/function";
 
 describe("App", () => {
   it("renders the default nested square-root construction and controls", () => {
@@ -961,6 +967,70 @@ describe("App", () => {
     expect(
       within(functionPanel).getByText("Copied function share block"),
     ).toBeInTheDocument();
+  });
+
+  it("imports and replays saved origami function animation JSON", async () => {
+    const preview = compileOrigamiFunctionPreview("f(a,b)=a*b", {
+      a: 4,
+      b: 1.5,
+    });
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+    const styled = setOrigamiFunctionPreviewPaperStyle(preview, {
+      frontColor: "#ffffff",
+      backColor: "#101820",
+      backPattern: "high-contrast",
+      patternScale: 1.75,
+    });
+    const replayPhase = setOrigamiFunctionPreviewPhase(
+      styled,
+      "origami-function-phase-4",
+    );
+    const json = origamiFunctionAnimationJson(replayPhase);
+
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    const input = screen.getByLabelText("Import function animation JSON");
+    fireEvent.change(input, {
+      target: {
+        files: [
+          new File([json], "origami-function-animation.json", {
+            type: "application/json",
+          }),
+        ],
+      },
+    });
+
+    const functionPanel = screen.getByRole("region", {
+      name: "Fold-computed function",
+    });
+    await waitFor(() =>
+      expect(
+        within(functionPanel).getByText("Imported origami-function-phase-4"),
+      ).toBeInTheDocument(),
+    );
+    expect(
+      within(functionPanel).getByRole("textbox", { name: "Origami function" }),
+    ).toHaveValue("f(a, b) = a * b");
+    expect(
+      within(functionPanel).getByText("origami-function-phase-4 @ 0.33"),
+    ).toBeInTheDocument();
+    expect(
+      (
+        within(functionPanel).getByRole("textbox", {
+          name: "Origami function share block",
+        }) as HTMLTextAreaElement
+      ).value,
+    ).toContain("Samples: a=4, b=1.5");
+    expect(screen.getByLabelText("Function paper front color")).toHaveValue(
+      "#ffffff",
+    );
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a, b) = a * b",
+      }),
+    ).toHaveAttribute("data-phase-id", "origami-function-phase-4");
   });
 
   it("preserves compiled origami function animation state across workspace switches", () => {

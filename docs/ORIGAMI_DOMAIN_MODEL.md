@@ -155,6 +155,10 @@ F6.4 exposes a share text contract derived from the origami function preview.
 It includes the normalized source, active sample values, sampled-domain
 assumption, result, solver readiness, and animation phase without importing
 compass-and-straightedge export helpers beyond the generic download utility.
+F6.5 imports saved function-animation JSON by recompiling the exported function
+source and sample values through the origami function boundary, then restoring
+paper style and the saved phase. The imported plan object is treated as replay
+metadata, not as trusted executable state.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,
