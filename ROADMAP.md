@@ -640,6 +640,9 @@ share selected concepts with the original geometry computer.
 - F8.1 Compare function parsing, expression normalization, sampled values,
   operation traces, proof claims, object provenance, exports, and animation
   timelines across both systems.
+  Current implementation expands `docs/ORIGAMI_MERGER_REVIEW.md` with each
+  comparison category and adds compatibility tests for function-lab values,
+  provenance, exports, and timeline differences.
 - F8.2 Identify which concepts are truly shared, which are merely similar, and
   which must stay system-specific because folds and compass construction explain
   computation differently.
