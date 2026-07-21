@@ -562,9 +562,9 @@ const assertOrigamiFunctionPanel = async (page) => {
   await input.waitFor();
   await functionPanel.getByText("allowable").waitFor();
   await functionPanel.getByText("2.000").waitFor();
-  await functionPanel.getByText("11/14 fallback phases, 3 certified").waitFor();
+  await functionPanel.getByText("6/14 fallback phases, 8 certified").waitFor();
   await functionPanel
-    .getByText("origami-function-phase-4 align-fold arithmetic-macro-fold")
+    .getByText("origami-function-phase-9 align-fold arithmetic-macro-fold")
     .waitFor();
   await page
     .getByRole("img", {
@@ -653,7 +653,7 @@ const assertOrigamiFunctionPanel = async (page) => {
     animationExport.paperStyle.patternScale !== 1.75 ||
     animationExport.paperStyle.patternRotation !== 45 ||
     animationExport.plan.solverReadiness.workItems[0]?.phaseId !==
-      "origami-function-phase-4" ||
+      "origami-function-phase-9" ||
     animationExport.plan.solverReadiness.workItems[0]?.requiredCapability !==
       "arithmetic-macro-fold" ||
     animationExport.animation.planId !== animationExport.plan.id

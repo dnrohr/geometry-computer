@@ -128,6 +128,9 @@ F5.3 turns fallback phases into solver work items. Each item records the phase,
 expression, replacement target, required solver capability, and selected branch
 when available, so the exported function animation doubles as a physical-solver
 backlog.
+F5.4 certifies baseline addition and directed subtraction function phases. These
+arithmetic macros now emit fold certificates instead of fallback work items, and
+plans whose final result is add/sub can become fully solver-ready.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

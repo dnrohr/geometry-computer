@@ -84,7 +84,9 @@ export type OrigamiFunctionFallbackPhase = {
 export type OrigamiFunctionFoldCertificateMethod =
   | "paper-placement"
   | "mark-length"
-  | "identity-result";
+  | "identity-result"
+  | "baseline-addition-transfer"
+  | "directed-subtraction-transfer";
 
 export type OrigamiFunctionFoldCertificate = {
   id: string;

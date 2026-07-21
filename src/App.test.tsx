@@ -280,16 +280,16 @@ describe("App", () => {
       within(functionPanel).getByText("f(a) = sqrt(a + 1)"),
     ).toBeInTheDocument();
     expect(
-      within(functionPanel).getByText("11/14 fallback phases, 3 certified"),
+      within(functionPanel).getByText("6/14 fallback phases, 8 certified"),
     ).toBeInTheDocument();
     expect(
       within(functionPanel).getByText(
-        "11 of 14 function animation phases still need physical fold-solver support.",
+        "6 of 14 function animation phases still need physical fold-solver support.",
       ),
     ).toBeInTheDocument();
     expect(
       within(functionPanel).getByText(
-        "origami-function-phase-4 align-fold arithmetic-macro-fold",
+        "origami-function-phase-9 align-fold arithmetic-macro-fold",
       ),
     ).toBeInTheDocument();
     expect(

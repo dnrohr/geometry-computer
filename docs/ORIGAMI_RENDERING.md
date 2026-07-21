@@ -146,6 +146,9 @@ The flat-origami tab provides:
   carry fold certificates that are exported with the function animation plan.
 - F5.3 shows the next solver work item in the function lab, and the animation
   JSON export includes the full fallback work-item list.
+- F5.4 reduces fallback work by certifying baseline addition/subtraction phases;
+  the solver readout updates as these arithmetic macros become physically
+  backed.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

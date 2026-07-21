@@ -247,6 +247,43 @@ describe("origami function plan", () => {
     });
   });
 
+  it("certifies baseline addition as a physical fold sequence", () => {
+    const plan = createOrigamiFunctionPlan(validInput("f(a,b)=a+b"));
+
+    expect(plan.phases.map(({ physicalStatus }) => physicalStatus)).toEqual([
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+    ]);
+    expect(
+      plan.phases.slice(3, 8).map(({ foldCertificate }) => foldCertificate),
+    ).toEqual([
+      expect.objectContaining({
+        method: "baseline-addition-transfer",
+        targetObjectIds: ["origami-function-node-output-3-align-fold"],
+      }),
+      expect.objectContaining({ method: "baseline-addition-transfer" }),
+      expect.objectContaining({ method: "baseline-addition-transfer" }),
+      expect.objectContaining({ method: "baseline-addition-transfer" }),
+      expect.objectContaining({
+        method: "baseline-addition-transfer",
+        targetObjectIds: ["origami-function-node-output-3"],
+      }),
+    ]);
+    expect(plan.solverReadiness).toMatchObject({
+      status: "ready",
+      fallbackPhases: 0,
+      certifiedPhases: 9,
+      workItems: [],
+    });
+  });
+
   it("keeps dependencies before dependents in execution order", () => {
     const plan = createOrigamiFunctionPlan(validInput("sqrt((a+b)*(a+b))"));
     const orderByNode = new Map(

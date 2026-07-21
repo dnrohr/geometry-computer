@@ -229,6 +229,9 @@ const fallbackForNode = (
   replacementFor: `${node.kind}:${phaseKind}`,
 });
 
+const arithmeticPhaseIsPhysical = (node: OrigamiFunctionPlanNode) =>
+  node.kind === "add" || node.kind === "sub";
+
 const createPlanDiagnostics = (
   input: ValidOrigamiFunctionInput,
   nodes: OrigamiFunctionPlanNode[],
@@ -382,6 +385,26 @@ const certificateForPhase = (
     case "fold":
     case "transfer":
     case "mark-intersection":
+      if (
+        phase.foldMotion?.selectedBranch.id === "baseline-addition-transfer" ||
+        phase.foldMotion?.selectedBranch.id === "directed-subtraction-transfer"
+      ) {
+        const isSubtraction =
+          phase.foldMotion.selectedBranch.id ===
+          "directed-subtraction-transfer";
+        return {
+          id: `${phaseId}-certificate`,
+          phaseId,
+          method: isSubtraction
+            ? "directed-subtraction-transfer"
+            : "baseline-addition-transfer",
+          targetObjectIds: phase.outputObjectIds,
+          summary: isSubtraction
+            ? "The directed subtraction length is certified as a baseline transfer fold."
+            : "The addition length is certified as a baseline transfer fold.",
+        };
+      }
+      return undefined;
     case "diagnostic":
       return undefined;
   }
@@ -520,8 +543,12 @@ export function createOrigamiFunctionPlan(
                   : [`${node.outputObjectId}-${kind}`],
               proofClaimIds: [],
               foldMotion: foldMotionForNode(node, kind),
-              physicalStatus: "explanatory-fallback",
-              fallback: fallbackForNode(node, kind),
+              physicalStatus: arithmeticPhaseIsPhysical(node)
+                ? "proven-physical"
+                : "explanatory-fallback",
+              fallback: arithmeticPhaseIsPhysical(node)
+                ? undefined
+                : fallbackForNode(node, kind),
             }),
           );
     nodePhaseIds.set(node.id, phaseIds);
@@ -529,7 +556,10 @@ export function createOrigamiFunctionPlan(
   }
 
   const resultExtractionIsPhysical =
-    resultNode.kind === "input" || resultNode.kind === "constant";
+    resultNode.kind === "input" ||
+    resultNode.kind === "constant" ||
+    resultNode.kind === "add" ||
+    resultNode.kind === "sub";
   const resultPhaseId = addPhase({
     kind: "extract-result",
     expression: input.validation.source.source,
