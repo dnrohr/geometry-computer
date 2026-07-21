@@ -600,6 +600,9 @@ worth exploring while staying honest about mathematical limits.
   previous and next fold-motion crease ghosts in the visible animation.
 - F7.3 Add optional soundless haptic-style visual cues: crease snap, branch
   selected, result extracted, and domain warning.
+  Current implementation adds an optional visual-cue toggle that surfaces those
+  events from validation status, active fold phase, solver branch metadata, and
+  result extraction without changing compiled plans or exports.
 - F7.4 Add a step minimap showing where each operation sits in the full
   computation.
 - F7.5 Add curated function challenges such as "make 2a+b", "compute a scaled

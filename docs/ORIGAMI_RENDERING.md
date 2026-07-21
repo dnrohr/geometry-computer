@@ -185,6 +185,10 @@ The flat-origami tab provides:
 - F7.2 adds optional onion-skin fold ghosts. When enabled, the visible function
   animation draws faint previous and next fold-motion creases with phase IDs so
   neighboring motion is easier to compare without changing the active phase.
+- F7.3 adds optional soundless visual fold cues. The cue strip reports crease
+  snap, branch selected, result extracted, and domain warning states from the
+  current UI preview and validation status without changing the SVG renderer,
+  compiled function plan, timeline phase, or export helpers.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

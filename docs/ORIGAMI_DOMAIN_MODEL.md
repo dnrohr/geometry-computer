@@ -170,6 +170,10 @@ function plan, animation phase, solver readiness, or exported computation data.
 F7.2 keeps onion-skin state in the same UI/renderer layer. The ghosts are
 derived from neighboring `foldMotion` phases and annotate those phase IDs in the
 visible SVG, but they do not become plan phases, solver work, or export state.
+F7.3 keeps visual fold cues in the origami tab UI. Cue labels are derived from
+validation status, the active phase, selected solver branch metadata, and result
+extraction state, but they do not alter parser behavior, plan phases, solver
+readiness, animation exports, or compass-and-straightedge modules.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

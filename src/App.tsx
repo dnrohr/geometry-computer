@@ -466,6 +466,7 @@ function OrigamiRoadmap() {
   const [functionCameraMode, setFunctionCameraMode] =
     useState<OrigamiFunctionCameraMode>("whole");
   const [functionOnionSkin, setFunctionOnionSkin] = useState(false);
+  const [functionVisualCues, setFunctionVisualCues] = useState(false);
   const [progress, setProgress] = useState(1);
   const [activeStepId, setActiveStepId] = useState<string>();
   const [selectedObjectId, setSelectedObjectId] = useState<string>();
@@ -734,6 +735,55 @@ function OrigamiRoadmap() {
           ({ id }) => id === functionPreview.animation.phaseId,
         )?.foldCertificate
       : undefined;
+  const activeFunctionPhase =
+    functionPreview.status === "compiled"
+      ? functionPreview.plan.phases.find(
+          ({ id }) => id === functionPreview.animation.phaseId,
+        )
+      : undefined;
+  const functionVisualCueItems = useMemo(() => {
+    if (!functionVisualCues) return [];
+    const cues: Array<{
+      id: string;
+      label: string;
+      tone: "info" | "success" | "warning";
+    }> = [];
+    if (functionReport.status !== "valid") {
+      cues.push({
+        id: "domain-warning",
+        label: "Domain warning",
+        tone: "warning",
+      });
+    }
+    if (
+      activeFunctionPhase?.foldMotion &&
+      ["align-fold", "preview-crease", "fold", "transfer"].includes(
+        activeFunctionPhase.kind,
+      )
+    ) {
+      cues.push({ id: "crease-snap", label: "Crease snap", tone: "info" });
+    }
+    if (activeSolverWorkItem?.selectedBranchId) {
+      cues.push({
+        id: "branch-selected",
+        label: "Branch selected",
+        tone: "info",
+      });
+    }
+    if (activeFunctionPhase?.kind === "extract-result") {
+      cues.push({
+        id: "result-extracted",
+        label: "Result extracted",
+        tone: "success",
+      });
+    }
+    return cues;
+  }, [
+    activeFunctionPhase,
+    activeSolverWorkItem,
+    functionReport.status,
+    functionVisualCues,
+  ]);
   const finalFunctionPreview = useMemo(() => {
     if (functionPreview.status !== "compiled") return functionPreview;
     const finalPhase = functionPreview.plan.phases.at(-1);
@@ -1146,6 +1196,41 @@ function OrigamiRoadmap() {
           />
           Onion skin folds
         </label>
+        <label className="origami-function-cue-toggle">
+          <input
+            aria-label="Show visual fold cues"
+            type="checkbox"
+            checked={functionVisualCues}
+            onChange={(event) => setFunctionVisualCues(event.target.checked)}
+          />
+          Visual fold cues
+        </label>
+        {functionVisualCues && (
+          <div
+            className="origami-function-cue-strip"
+            aria-label="Function visual cues"
+            aria-live="polite"
+          >
+            {functionVisualCueItems.length > 0 ? (
+              functionVisualCueItems.map((cue) => (
+                <span
+                  key={cue.id}
+                  className={`origami-function-cue origami-function-cue-${cue.tone}`}
+                  data-cue={cue.id}
+                >
+                  {cue.label}
+                </span>
+              ))
+            ) : (
+              <span
+                className="origami-function-cue origami-function-cue-info"
+                data-cue="idle"
+              >
+                Ready
+              </span>
+            )}
+          </div>
+        )}
         <div className="origami-function-export-controls">
           <button
             type="button"

@@ -881,6 +881,67 @@ select:focus-visible,
   font-weight: 750;
 }
 
+.origami-function-cue-toggle {
+  display: inline-flex;
+  grid-column: 1 / -1;
+  gap: 0.45rem;
+  align-items: center;
+  width: fit-content;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
+.origami-function-cue-strip {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 1 / -1;
+  gap: 0.45rem;
+  align-items: center;
+  min-height: 2rem;
+}
+
+.origami-function-cue {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.65rem;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 4%);
+  color: var(--text);
+  font-size: 0.7rem;
+  font-weight: 800;
+  animation: origami-function-cue-pulse 640ms ease-out;
+}
+
+.origami-function-cue-info {
+  border-color: rgb(129 199 212 / 55%);
+  background: rgb(129 199 212 / 12%);
+}
+
+.origami-function-cue-success {
+  border-color: rgb(148 211 162 / 55%);
+  background: rgb(148 211 162 / 12%);
+}
+
+.origami-function-cue-warning {
+  border-color: rgb(240 184 75 / 65%);
+  background: rgb(240 184 75 / 14%);
+}
+
+@keyframes origami-function-cue-pulse {
+  from {
+    box-shadow: 0 0 0 0 rgb(240 184 75 / 28%);
+    transform: translateY(1px);
+  }
+
+  to {
+    box-shadow: 0 0 0 0.42rem rgb(240 184 75 / 0%);
+    transform: translateY(0);
+  }
+}
+
 .origami-function-timeline {
   display: grid;
   grid-column: 1 / -1;

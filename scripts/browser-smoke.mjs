@@ -656,6 +656,20 @@ const assertOrigamiFunctionPanel = async (page) => {
       `Function onion-skin ghosts mismatch: ${JSON.stringify(onionSkin)}`,
     );
   }
+  await page.getByRole("checkbox", { name: "Show visual fold cues" }).check();
+  const visualCues = await page
+    .getByLabel("Function visual cues")
+    .evaluate((element) =>
+      Array.from(element.querySelectorAll("[data-cue]")).map(
+        (node) => node.textContent,
+      ),
+    );
+  if (
+    !visualCues.includes("Crease snap") ||
+    !visualCues.includes("Branch selected")
+  ) {
+    throw new Error(`Function visual cues mismatch: ${visualCues.join(", ")}`);
+  }
   const functionShareBlock = page.getByLabel("Origami function share block");
   await functionShareBlock.waitFor();
   const shareText = await functionShareBlock.inputValue();
@@ -907,6 +921,18 @@ const assertOrigamiFunctionPanel = async (page) => {
       /Denominator b - b: Division by zero is outside the sampled origami function domain\./,
     )
     .waitFor();
+  const warningCues = await page
+    .getByLabel("Function visual cues")
+    .evaluate((element) =>
+      Array.from(element.querySelectorAll("[data-cue]")).map(
+        (node) => node.textContent,
+      ),
+    );
+  if (!warningCues.includes("Domain warning")) {
+    throw new Error(
+      `Function domain warning cue missing: ${warningCues.join(", ")}`,
+    );
+  }
   await page.getByText("origami-function-plan-f-a-sqrt-a-1").waitFor();
   await page
     .getByRole("button", { name: "Compile origami function" })

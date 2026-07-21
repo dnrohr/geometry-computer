@@ -605,6 +605,41 @@ describe("App", () => {
     );
   });
 
+  it("shows optional visual cues for origami function fold events", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    fireEvent.click(
+      screen.getByRole("checkbox", { name: "Show visual fold cues" }),
+    );
+
+    const cueStrip = screen.getByLabelText("Function visual cues");
+    expect(within(cueStrip).getByText("Ready")).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Jump to solver work origami-function-phase-9",
+      }),
+    );
+    expect(within(cueStrip).getByText("Crease snap")).toBeInTheDocument();
+    expect(within(cueStrip).getByText("Branch selected")).toBeInTheDocument();
+
+    fireEvent.change(
+      screen.getByRole("slider", { name: "Function animation progress" }),
+      { target: { value: "1" } },
+    );
+    expect(within(cueStrip).getByText("Result extracted")).toBeInTheDocument();
+
+    fireEvent.change(
+      screen.getByRole("textbox", { name: "Origami function" }),
+      {
+        target: { value: "a/(b-b)" },
+      },
+    );
+    expect(within(cueStrip).getByText("Domain warning")).toBeInTheDocument();
+  });
+
   it("keeps origami function validation local to the flat origami tab", () => {
     render(<App />);
     fireEvent.click(
