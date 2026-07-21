@@ -11,7 +11,9 @@ export {
 } from "./functionInput";
 export { origamiFunctionAnimatedSvg } from "./functionAnimatedSvg";
 export {
+  origamiFunctionChallenges,
   origamiFunctionExamples,
+  type OrigamiFunctionChallenge,
   type OrigamiFunctionExample,
 } from "./functionExamples";
 export { createOrigamiFunctionPlan } from "./functionPlan";

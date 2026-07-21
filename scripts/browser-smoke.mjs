@@ -985,6 +985,26 @@ const assertOrigamiFunctionPanel = async (page) => {
     throw new Error("Invalid sampled function did not disable compilation.");
   }
 
+  const challengeRegion = page.getByRole("region", {
+    name: "Function challenges",
+  });
+  if ((await challengeRegion.getByText("15 expected folds").count()) !== 2) {
+    throw new Error("Function challenge 15-fold labels changed.");
+  }
+  await challengeRegion.getByText("14 expected folds").waitFor();
+  await challengeRegion
+    .getByRole("button", {
+      name: "Make 2a + b challenge f(a,b)=2*a+b",
+    })
+    .click();
+  await functionStatus.getByText("5.500").waitFor();
+  await challengeRegion
+    .getByRole("button", {
+      name: "Scaled reciprocal challenge f(a,b)=a/(b+1)",
+    })
+    .click();
+  await functionStatus.getByText("1.000").waitFor();
+
   await input.fill("sqrt(a+1)");
   await functionStatus.getByText("allowable").waitFor();
   await page

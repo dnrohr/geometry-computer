@@ -546,6 +546,76 @@ select:focus-visible,
   font-size: 0.7rem;
 }
 
+.origami-function-challenges {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 0.55rem;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 3%);
+}
+
+.origami-function-challenges-heading {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.origami-function-challenges-heading h3 {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+}
+
+.origami-function-challenges-heading span {
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.origami-function-challenge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11.5rem, 1fr));
+  gap: 0.5rem;
+}
+
+.origami-function-challenge-grid button {
+  display: grid;
+  gap: 0.24rem;
+  min-width: 0;
+  padding: 0.65rem 0.7rem;
+  text-align: left;
+  background: #151b20;
+}
+
+.origami-function-challenge-grid span:first-child {
+  color: var(--foreground);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.origami-function-challenge-grid code {
+  overflow-wrap: anywhere;
+  color: var(--accent);
+  font-size: 0.7rem;
+}
+
+.origami-function-challenge-grid span:not(:first-child) {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 650;
+}
+
+.origami-function-challenge-grid strong {
+  color: var(--foreground);
+  font-size: 0.68rem;
+}
+
 .origami-variable-controls {
   display: grid;
   grid-column: 1 / -1;

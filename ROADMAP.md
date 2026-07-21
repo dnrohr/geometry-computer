@@ -610,6 +610,9 @@ worth exploring while staying honest about mathematical limits.
   phase jump controls.
 - F7.5 Add curated function challenges such as "make 2a+b", "compute a scaled
   reciprocal", and "extract sqrt(a+1)" with expected fold counts.
+  Current implementation adds compiler-backed challenge cards for those three
+  tasks, each with sample values and expected phase counts verified against the
+  generated function plan.
 - F7.6 Add a presentation mode that hides editing controls and plays the fold
   proof as a clean teaching sequence.
 - F7.7 Add a paper-style randomizer with named palettes that preserve contrast

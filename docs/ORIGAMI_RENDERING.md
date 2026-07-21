@@ -193,6 +193,9 @@ The flat-origami tab provides:
   phase, marks the active phase with `aria-current`, distinguishes proven and
   explanatory fallback phases, and jumps through the same local preview state as
   the timeline controls.
+- F7.5 adds curated function challenge cards with prompts and expected fold
+  counts. Selecting a challenge loads the same input controls and compiled
+  preview path as freeform expressions and function presets.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

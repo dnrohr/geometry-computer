@@ -879,6 +879,46 @@ describe("App", () => {
     expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
   });
 
+  it("loads curated origami function challenges with expected fold counts", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    const functionPanel = screen.getByRole("region", {
+      name: "Fold-computed function",
+    });
+    const challenges = within(functionPanel).getByRole("region", {
+      name: "Function challenges",
+    });
+
+    expect(within(challenges).getAllByText("15 expected folds")).toHaveLength(
+      2,
+    );
+    expect(
+      within(challenges).getByText("14 expected folds"),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      within(challenges).getByRole("button", {
+        name: /Make 2a \+ b challenge f\(a,b\)=2\*a\+b/i,
+      }),
+    );
+    expect(
+      within(functionPanel).getByRole("textbox", { name: "Origami function" }),
+    ).toHaveValue("f(a,b)=2*a+b");
+    expect(within(functionPanel).getByText("5.500")).toBeInTheDocument();
+
+    fireEvent.click(
+      within(challenges).getByRole("button", {
+        name: /Scaled reciprocal challenge f\(a,b\)=a\/\(b\+1\)/i,
+      }),
+    );
+    expect(
+      within(functionPanel).getByRole("textbox", { name: "Origami function" }),
+    ).toHaveValue("f(a,b)=a/(b+1)");
+    expect(within(functionPanel).getByText("1.000")).toBeInTheDocument();
+  });
+
   it("updates origami function paper style controls locally", () => {
     const { container } = render(<App />);
     fireEvent.click(

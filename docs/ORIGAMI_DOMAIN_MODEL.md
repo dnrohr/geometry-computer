@@ -179,6 +179,10 @@ Each marker uses phase ID, kind, expression, physical status, and fallback label
 from the compiled preview, then jumps by setting local animation phase state.
 It does not add phases, mutate solver metadata, or create shared construction
 interfaces.
+F7.5 adds curated function challenges beside the existing presets. Challenges
+reuse the signature-aware parser boundary and `compileOrigamiFunctionPreview`,
+and their expected fold counts are tested against the generated plan phase
+counts so the labels stay tied to compiler behavior.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

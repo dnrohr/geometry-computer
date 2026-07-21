@@ -16,6 +16,7 @@ import {
   evaluateOrigamiFunctionInput,
   origamiFunctionAnimationJson,
   origamiFunctionAnimatedSvg,
+  origamiFunctionChallenges,
   origamiFunctionExamples,
   origamiVariableControls,
   replayOrigamiFunctionAnimationJson,
@@ -1125,6 +1126,30 @@ function OrigamiRoadmap() {
             </button>
           ))}
         </div>
+        <section
+          className="origami-function-challenges"
+          aria-labelledby="origami-function-challenges-title"
+        >
+          <div className="origami-function-challenges-heading">
+            <h3 id="origami-function-challenges-title">Function challenges</h3>
+            <span>{origamiFunctionChallenges.length} compiler-backed</span>
+          </div>
+          <div className="origami-function-challenge-grid">
+            {origamiFunctionChallenges.map((challenge) => (
+              <button
+                key={challenge.displaySource}
+                type="button"
+                aria-label={`${challenge.title} challenge ${challenge.displaySource}`}
+                onClick={() => selectOrigamiFunctionExample(challenge)}
+              >
+                <span>{challenge.title}</span>
+                <code>{challenge.displaySource}</code>
+                <span>{challenge.prompt}</span>
+                <strong>{challenge.expectedFoldCount} expected folds</strong>
+              </button>
+            ))}
+          </div>
+        </section>
         {variableControls.length > 0 && (
           <fieldset className="origami-variable-controls">
             <legend>Sample variables</legend>
