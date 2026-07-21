@@ -776,6 +776,25 @@ const assertOrigamiFunctionPanel = async (page) => {
   ) {
     throw new Error("Function share block was not copied.");
   }
+  await page
+    .getByRole("combobox", { name: "Function paper palette" })
+    .selectOption("blueprint-gold");
+  const paletteStyle = await page.evaluate(() => {
+    const base = document.querySelector(".origami-function-paper-base");
+    const back = document.querySelector(".origami-function-paper-back");
+    return {
+      baseFill: base instanceof SVGElement ? base.style.fill : undefined,
+      backFill: back instanceof SVGElement ? back.style.fill : undefined,
+    };
+  });
+  if (
+    paletteStyle.baseFill !== "rgb(238, 246, 255)" ||
+    paletteStyle.backFill !== "rgb(18, 53, 91)"
+  ) {
+    throw new Error(
+      `Function paper palette did not apply: ${JSON.stringify(paletteStyle)}`,
+    );
+  }
   await page.getByLabel("Function paper front color").fill("#ffffff");
   await page.getByLabel("Function paper back color").fill("#101820");
   await page

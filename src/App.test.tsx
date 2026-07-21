@@ -981,6 +981,20 @@ describe("App", () => {
       screen.getByRole("button", { name: "Flat origami roadmap" }),
     );
 
+    fireEvent.change(
+      screen.getByRole("combobox", { name: "Function paper palette" }),
+      { target: { value: "coral-night" } },
+    );
+    expect(
+      screen.getByRole("combobox", { name: "Function paper palette" }),
+    ).toHaveValue("coral-night");
+    expect(screen.getByLabelText("Function paper front color")).toHaveValue(
+      "#ffe1d6",
+    );
+    expect(screen.getByLabelText("Function paper back color")).toHaveValue(
+      "#1b1f3b",
+    );
+
     fireEvent.change(screen.getByLabelText("Function paper front color"), {
       target: { value: "#ffffff" },
     });
@@ -1008,6 +1022,9 @@ describe("App", () => {
     expect(screen.getByLabelText("Function paper front color")).toHaveValue(
       "#ffffff",
     );
+    expect(
+      screen.getByRole("combobox", { name: "Function paper palette" }),
+    ).toHaveValue("custom");
     expect(screen.getByLabelText("Function paper back color")).toHaveValue(
       "#101820",
     );
@@ -1035,6 +1052,21 @@ describe("App", () => {
     expect(
       container.querySelector(".origami-function-paper-front-pattern"),
     ).toHaveAttribute("data-pattern-rotation", "45");
+
+    const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Random paper palette" }),
+    );
+    randomSpy.mockRestore();
+    expect(
+      screen.getByRole("combobox", { name: "Function paper palette" }),
+    ).toHaveValue("mint-ink");
+    expect(screen.getByLabelText("Function paper front color")).toHaveValue(
+      "#dff7ea",
+    );
+    expect(screen.getByLabelText("Function paper back color")).toHaveValue(
+      "#143642",
+    );
     expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
   });
 

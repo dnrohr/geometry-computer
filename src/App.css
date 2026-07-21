@@ -1296,6 +1296,46 @@ select:focus-visible,
   text-transform: uppercase;
 }
 
+.origami-paper-palette-controls {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(10rem, 1fr) auto auto;
+  gap: 0.55rem;
+  align-items: end;
+  min-width: 0;
+}
+
+.origami-paper-palette-controls label {
+  display: grid;
+  gap: 0.22rem;
+  min-width: 0;
+}
+
+.origami-paper-palette-controls select {
+  width: 100%;
+}
+
+.origami-paper-palette-controls button {
+  min-height: 2.3rem;
+  padding: 0.45rem 0.65rem;
+}
+
+.origami-paper-palette-swatches {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  min-height: 2.3rem;
+}
+
+.origami-paper-palette-swatches span {
+  display: block;
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 1px solid rgb(255 255 255 / 52%);
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 32%);
+}
+
 .origami-paper-style-controls label {
   display: grid;
   gap: 0.35rem;
@@ -1996,6 +2036,12 @@ text.geometry-result,
   }
   .origami-paper-style-controls {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .origami-paper-palette-controls {
+    grid-template-columns: 1fr;
+  }
+  .origami-paper-palette-controls button {
+    width: 100%;
   }
   .origami-function-actions {
     grid-column: auto;

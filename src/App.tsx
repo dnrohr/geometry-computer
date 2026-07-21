@@ -18,7 +18,9 @@ import {
   origamiFunctionAnimatedSvg,
   origamiFunctionChallenges,
   origamiFunctionExamples,
+  origamiFunctionPaperPalettes,
   origamiVariableControls,
+  randomOrigamiPaperPalette,
   replayOrigamiFunctionAnimationJson,
   setOrigamiFunctionPreviewPlaying,
   setOrigamiFunctionPreviewPaperStyle,
@@ -474,6 +476,8 @@ function OrigamiRoadmap() {
     useState<OrigamiFunctionCameraMode>("whole");
   const [functionOnionSkin, setFunctionOnionSkin] = useState(false);
   const [functionVisualCues, setFunctionVisualCues] = useState(false);
+  const [functionPaperPaletteId, setFunctionPaperPaletteId] =
+    useState("classic-grid");
   const [functionPresentationMode, setFunctionPresentationMode] =
     useState(false);
   const [progress, setProgress] = useState(1);
@@ -672,6 +676,7 @@ function OrigamiRoadmap() {
   };
   const compileOrigamiFunction = () => {
     if (!canCompileOrigamiFunction) return;
+    setFunctionPaperPaletteId("classic-grid");
     setFunctionPreview(
       compileOrigamiFunctionPreview(functionSource, functionValues),
     );
@@ -682,6 +687,7 @@ function OrigamiRoadmap() {
       ...DEFAULT_ORIGAMI_FUNCTION_VALUES,
       ...example.values,
     });
+    setFunctionPaperPaletteId("classic-grid");
     setFunctionPreview(
       compileOrigamiFunctionPreview(example.displaySource, {
         ...DEFAULT_ORIGAMI_FUNCTION_VALUES,
@@ -715,6 +721,7 @@ function OrigamiRoadmap() {
       setFunctionValues(replay.values);
       setFunctionPreview(replay.preview);
       setCopiedFunctionReadout("");
+      setFunctionPaperPaletteId("custom");
       setFunctionImportStatus(`Imported ${replay.preview.animation.phaseId}`);
     } catch {
       setFunctionImportStatus("Import could not be read.");
@@ -840,10 +847,24 @@ function OrigamiRoadmap() {
   }, [functionPreview]);
   const updateOrigamiPaperStyle = (
     paperStyleUpdate: Parameters<typeof setOrigamiFunctionPreviewPaperStyle>[1],
-  ) =>
+    paletteId = "custom",
+  ) => {
+    setFunctionPaperPaletteId(paletteId);
     setFunctionPreview((preview) =>
       setOrigamiFunctionPreviewPaperStyle(preview, paperStyleUpdate),
     );
+  };
+  const applyOrigamiPaperPalette = (paletteId: string) => {
+    const palette = origamiFunctionPaperPalettes.find(
+      ({ id }) => id === paletteId,
+    );
+    if (!palette) return;
+    updateOrigamiPaperStyle(palette.style, palette.id);
+  };
+  const randomizeOrigamiPaperPalette = () => {
+    const palette = randomOrigamiPaperPalette(functionPaperPaletteId);
+    updateOrigamiPaperStyle(palette.style, palette.id);
+  };
 
   return (
     <main
@@ -1505,6 +1526,56 @@ function OrigamiRoadmap() {
           hidden={functionPresentationMode}
         >
           <legend>Paper style</legend>
+          <div className="origami-paper-palette-controls">
+            <label>
+              Palette
+              <select
+                aria-label="Function paper palette"
+                disabled={timelineDisabled}
+                value={functionPaperPaletteId}
+                onChange={(event) =>
+                  event.target.value === "custom"
+                    ? setFunctionPaperPaletteId("custom")
+                    : applyOrigamiPaperPalette(event.target.value)
+                }
+              >
+                <option value="custom">Custom</option>
+                {origamiFunctionPaperPalettes.map((palette) => (
+                  <option key={palette.id} value={palette.id}>
+                    {palette.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button
+              type="button"
+              disabled={timelineDisabled}
+              onClick={randomizeOrigamiPaperPalette}
+            >
+              Random paper palette
+            </button>
+            <div
+              className="origami-paper-palette-swatches"
+              aria-label="Function paper palette swatches"
+            >
+              <span
+                style={{ backgroundColor: paperStyle?.frontColor }}
+                title="Front paper color"
+              />
+              <span
+                style={{ backgroundColor: paperStyle?.backColor }}
+                title="Back paper color"
+              />
+              <span
+                style={{ backgroundColor: paperStyle?.creaseColor }}
+                title="Crease color"
+              />
+              <span
+                style={{ backgroundColor: paperStyle?.highlightColor }}
+                title="Highlight color"
+              />
+            </div>
+          </div>
           <label>
             Front
             <input

@@ -40,6 +40,14 @@ export {
   type OrigamiParsedExpression,
 } from "./parserBoundary";
 export {
+  ORIGAMI_PAPER_PALETTE_MIN_CONTRAST,
+  origamiFunctionPaperPalettes,
+  origamiPaperContrastRatio,
+  origamiPaperPaletteHasContrast,
+  randomOrigamiPaperPalette,
+  type OrigamiFunctionPaperPalette,
+} from "./paperPalettes";
+export {
   DEFAULT_ORIGAMI_VARIABLE_RANGE,
   clampOrigamiVariableValue,
   origamiVariableControls,

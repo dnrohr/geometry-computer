@@ -620,6 +620,9 @@ worth exploring while staying honest about mathematical limits.
   and starts the fold animation with a compact phase status.
 - F7.7 Add a paper-style randomizer with named palettes that preserve contrast
   constraints.
+  Current implementation adds named paper palettes, a random palette button,
+  swatches, and tests that enforce front/back contrast for every curated
+  palette.
 
 Acceptance checks:
 

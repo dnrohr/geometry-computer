@@ -187,6 +187,11 @@ F7.6 keeps presentation mode in the origami tab UI. Entering presentation mode
 sets local preview playback to the first phase and hides editing controls, while
 exit pauses playback and restores the normal controls. It does not change plan
 generation, paper style data, exports, or shared compass-and-straightedge code.
+F7.7 keeps named paper palettes in the origami function domain. Each palette is
+an `OrigamiPaperStyle` with a tested minimum contrast ratio between the front
+and back paper colors. The UI can apply a named palette or choose a different
+palette through the randomizer without changing plan generation or exports
+beyond the existing paper-style metadata.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

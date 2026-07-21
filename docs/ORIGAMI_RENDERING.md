@@ -200,6 +200,10 @@ The flat-origami tab provides:
   visible function animation to the first phase, turns playback on, hides
   editing/export/style/timeline controls, and shows a compact phase status plus
   an exit button that restores the normal lab controls.
+- F7.7 adds named paper palettes, palette swatches, and a random palette button
+  to the function paper-style controls. Palette definitions live in the origami
+  function domain and are tested for front/back contrast before the renderer
+  receives them as ordinary `OrigamiPaperStyle` values.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.
