@@ -574,6 +574,24 @@ const assertOrigamiFunctionPanel = async (page) => {
     .click();
   await page.getByText("origami-function-phase-9 @ 0.57").waitFor();
   await page
+    .getByText("sqrt:align-fold positive-geometric-mean-branch")
+    .waitFor();
+  await page
+    .getByText(
+      "sqrt(a + 1) uses the Positive geometric-mean branch macro, which is not yet backed by a physical fold solver.",
+    )
+    .waitFor();
+  const activeSolverItem = await page
+    .getByRole("button", {
+      name: "Jump to solver work origami-function-phase-9",
+    })
+    .getAttribute("aria-current");
+  if (activeSolverItem !== "step") {
+    throw new Error(
+      `Active solver work item was not marked current: ${activeSolverItem}`,
+    );
+  }
+  await page
     .getByRole("img", {
       name: "Origami function animation: f(a) = sqrt(a + 1)",
     })

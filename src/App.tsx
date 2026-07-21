@@ -674,6 +674,12 @@ function OrigamiRoadmap() {
       ? functionPreview.plan.solverReadiness
       : undefined;
   const nextSolverWorkItem = solverReadiness?.workItems[0];
+  const activeSolverWorkItem =
+    functionPreview.status === "compiled"
+      ? solverReadiness?.workItems.find(
+          ({ phaseId }) => phaseId === functionPreview.animation.phaseId,
+        )
+      : undefined;
   const updateOrigamiPaperStyle = (
     paperStyleUpdate: Parameters<typeof setOrigamiFunctionPreviewPaperStyle>[1],
   ) =>
@@ -875,6 +881,18 @@ function OrigamiRoadmap() {
               <dt>Next solver item</dt>
               <dd>{`${nextSolverWorkItem.phaseId} ${nextSolverWorkItem.phaseKind} ${nextSolverWorkItem.requiredCapability}`}</dd>
             </div>
+          )}
+          {activeSolverWorkItem && (
+            <>
+              <div>
+                <dt>Active solver item</dt>
+                <dd>{`${activeSolverWorkItem.replacementFor} ${activeSolverWorkItem.selectedBranchId ?? "no branch"}`}</dd>
+              </div>
+              <div>
+                <dt>Active solver detail</dt>
+                <dd>{activeSolverWorkItem.summary}</dd>
+              </div>
+            </>
           )}
           {copiedFunctionReadout && (
             <div>
@@ -1294,6 +1312,12 @@ function OrigamiRoadmap() {
                   <button
                     type="button"
                     aria-label={`Jump to solver work ${item.phaseId}`}
+                    aria-current={
+                      functionPreview.status === "compiled" &&
+                      item.phaseId === functionPreview.animation.phaseId
+                        ? "step"
+                        : undefined
+                    }
                     disabled={timelineDisabled}
                     onClick={() =>
                       setFunctionPreview((preview) =>

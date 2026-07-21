@@ -320,10 +320,25 @@ describe("App", () => {
       }),
     );
     expect(
+      screen.getByRole("button", {
+        name: "Jump to solver work origami-function-phase-9",
+      }),
+    ).toHaveAttribute("aria-current", "step");
+    expect(
       screen.getByRole("slider", { name: "Function animation progress" }),
     ).toHaveValue(String(8 / 14));
     expect(
       within(functionPanel).getByText("origami-function-phase-9 @ 0.57"),
+    ).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText(
+        "sqrt:align-fold positive-geometric-mean-branch",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText(
+        "sqrt(a + 1) uses the Positive geometric-mean branch macro, which is not yet backed by a physical fold solver.",
+      ),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("group", { name: "Paper style" }),

@@ -134,6 +134,9 @@ plans whose final result is add/sub can become fully solver-ready.
 F5.5 adds direct phase navigation for solver work items. The preview model can
 jump to a named animation phase, which lets UI and smoke tests inspect fallback
 items without deriving progress positions themselves.
+F5.6 exposes the active solver work item for the current function animation
+phase. The UI shows its replacement target, selected branch, and summary so a
+fallback phase can be inspected as an actionable solver requirement.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

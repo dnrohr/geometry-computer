@@ -826,6 +826,11 @@ select:focus-visible,
   font-weight: 750;
 }
 
+.origami-function-solver-work button[aria-current="step"] {
+  border-color: var(--accent);
+  background: rgb(240 184 75 / 12%);
+}
+
 .origami-paper-style-controls {
   display: grid;
   grid-column: 1 / -1;

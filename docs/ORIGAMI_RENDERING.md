@@ -151,6 +151,8 @@ The flat-origami tab provides:
   backed.
 - F5.5 renders a solver work backlog below the animation controls. Each item
   jumps the function animation directly to the fallback phase it represents.
+- F5.6 marks the active backlog item and shows its branch and solver detail when
+  the animation is paused on a fallback phase.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.
