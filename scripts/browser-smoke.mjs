@@ -587,6 +587,10 @@ const assertOrigamiFunctionPanel = async (page) => {
       "sqrt(a + 1) uses the Positive geometric-mean branch macro, which is not yet backed by a physical fold solver.",
     )
     .waitFor();
+  await functionPanel.getByText("origami-function-node-output-3").waitFor();
+  await functionPanel
+    .getByText("origami-function-node-output-4-align-fold")
+    .waitFor();
   if (
     await functionPanel
       .getByText("paper-placement origami-function-paper")
@@ -694,6 +698,10 @@ const assertOrigamiFunctionPanel = async (page) => {
       "origami-function-phase-9" ||
     animationExport.plan.solverReadiness.workItems[0]?.requiredCapability !==
       "arithmetic-macro-fold" ||
+    animationExport.plan.solverReadiness.workItems[0]?.sourceObjectIds[0] !==
+      "origami-function-node-output-3" ||
+    animationExport.plan.solverReadiness.workItems[0]?.outputObjectIds[0] !==
+      "origami-function-node-output-4-align-fold" ||
     animationExport.animation.planId !== animationExport.plan.id
   ) {
     throw new Error(

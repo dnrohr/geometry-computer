@@ -156,6 +156,8 @@ The flat-origami tab provides:
 - F5.7 shows active fold-certificate details for certified phases, so proven
   paper placement, length marking, baseline arithmetic, and identity extraction
   steps are inspectable in the function lab.
+- F5.8 shows active solver input/output object IDs and exports them with each
+  solver work item, giving future fold-solver work a concrete object contract.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

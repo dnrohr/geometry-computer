@@ -141,6 +141,9 @@ F5.7 exposes the active fold certificate for physically proven function phases.
 When playback is on a certified phase, the UI shows the certificate method,
 target object IDs, and summary; fallback phases continue to show solver work
 details instead.
+F5.8 adds source and output object IDs to every solver work item. The function
+animation export and active fallback readout now identify exactly which planned
+objects a future physical solver must consume and produce.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

@@ -317,6 +317,8 @@ const createSolverReadiness = (
         phaseId: phase.id,
         phaseKind: phase.kind,
         expression: phase.expression,
+        sourceObjectIds: phase.sourceObjectIds,
+        outputObjectIds: phase.outputObjectIds,
         replacementFor: phase.fallback?.replacementFor ?? phase.kind,
         requiredCapability,
         selectedBranchId: phase.foldMotion?.selectedBranch.id,

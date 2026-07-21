@@ -204,6 +204,8 @@ export type OrigamiFunctionSolverWorkItem = {
   phaseId: string;
   phaseKind: OrigamiFunctionPlanPhaseKind;
   expression: string;
+  sourceObjectIds: string[];
+  outputObjectIds: string[];
   replacementFor: string;
   requiredCapability: OrigamiFunctionSolverCapability;
   selectedBranchId?: string;

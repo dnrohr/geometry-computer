@@ -182,6 +182,11 @@ describe("origami function plan", () => {
         phaseId: "origami-function-phase-4",
         phaseKind: "align-fold",
         expression: "a * b",
+        sourceObjectIds: [
+          "origami-function-node-output-1",
+          "origami-function-node-output-2",
+        ],
+        outputObjectIds: ["origami-function-node-output-3-align-fold"],
         replacementFor: "mul:align-fold",
         requiredCapability: "arithmetic-macro-fold",
         selectedBranchId: "intercept-product-branch",

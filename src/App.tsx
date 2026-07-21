@@ -898,6 +898,16 @@ function OrigamiRoadmap() {
                 <dt>Active solver detail</dt>
                 <dd>{activeSolverWorkItem.summary}</dd>
               </div>
+              <div>
+                <dt>Solver inputs</dt>
+                <dd>
+                  {activeSolverWorkItem.sourceObjectIds.join(", ") || "none"}
+                </dd>
+              </div>
+              <div>
+                <dt>Solver outputs</dt>
+                <dd>{activeSolverWorkItem.outputObjectIds.join(", ")}</dd>
+              </div>
             </>
           )}
           {activeFoldCertificate && (

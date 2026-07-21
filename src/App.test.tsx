@@ -349,6 +349,14 @@ describe("App", () => {
       ),
     ).toBeInTheDocument();
     expect(
+      within(functionPanel).getByText("origami-function-node-output-3"),
+    ).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText(
+        "origami-function-node-output-4-align-fold",
+      ),
+    ).toBeInTheDocument();
+    expect(
       within(functionPanel).queryByText(
         "paper-placement origami-function-paper",
       ),
