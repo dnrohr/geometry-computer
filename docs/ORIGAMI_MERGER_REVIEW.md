@@ -206,6 +206,41 @@ These should not be hidden behind a shared abstraction yet:
 - Physical fold solver backlog: Fallback phases and required fold-solver
   capabilities are origami-only readiness data.
 
+## F8.3 Compatibility Gates
+
+No shared function-plan, proof-card, export, or expression-control interface
+should be extracted until its paired compatibility tests exist.
+
+- function-plan: blocked-until-tested.
+  Compass plans must prove operation order, macro/primitive step links, object
+  provenance, and reveal actions.
+  Origami plans must prove node order, operation phases, fold certificates,
+  solver readiness, and result extraction.
+  A shared function-plan interface needs one test that compiles the same
+  function through both systems and asserts the shared fields without hiding
+  system-specific details.
+- proof-card: blocked-until-tested.
+  Compass proof cards must prove Euclidean macro assumptions, givens, claims,
+  highlighted objects, and conclusions.
+  Origami proof cards must prove fold claims, fold certificates, branch choices,
+  fallback status, and highlighted crease objects.
+  A shared proof-card interface needs paired tests that open a compass proof and
+  an origami proof for the same arithmetic family.
+- export: blocked-until-tested.
+  Compass exports must prove JSON scene data, visible SVG export, and clean
+  final SVG export.
+  Origami exports must prove function-animation JSON, replay, current/final SVG
+  snapshots, crease-pattern SVG, and animated SVG.
+  A shared export interface needs schema tests for both export families and
+  browser smoke coverage for both download flows.
+- expression-control: blocked-until-tested.
+  Compass expression controls must prove expression input, sample variables,
+  gallery loading, validation, and compile behavior.
+  Origami expression controls must prove function signatures, allowable-field
+  validation, variable controls, examples, challenges, and share text.
+  A shared expression-control interface needs UI tests that exercise both
+  workspaces without removing either system's labels or validation states.
+
 ## Decision
 
 Do not merge the compiler, renderer, export, or proof paths yet. The only shared

@@ -5,6 +5,7 @@ import {
   compileOrigamiFunctionPreview,
   origamiFunctionAnimationExport,
 } from "./origami/function";
+import { mergerCompatibilityGates } from "./mergerCompatibility";
 import { mergerConcepts } from "./mergerConcepts";
 import { parseExpression } from "./parser/parseExpression";
 import { compileOrigamiExpression } from "./origami/compiler/compileOrigamiExpression";
@@ -126,6 +127,18 @@ describe("origami and compass-straightedge merger readiness", () => {
     for (const { concept, reason } of mergerConcepts) {
       expect(review).toContain(concept);
       expect(normalizedReview).toContain(reason);
+    }
+  });
+
+  it("documents every F8.3 compatibility gate before shared interfaces", () => {
+    const review = readFileSync("docs/ORIGAMI_MERGER_REVIEW.md", "utf8");
+    const normalizedReview = review.replace(/\s+/g, " ");
+
+    for (const gate of mergerCompatibilityGates) {
+      expect(review).toContain(gate.candidate);
+      expect(normalizedReview).toContain(gate.compassEvidence);
+      expect(normalizedReview).toContain(gate.origamiEvidence);
+      expect(normalizedReview).toContain(gate.requiredCompatibilityTest);
     }
   });
 });

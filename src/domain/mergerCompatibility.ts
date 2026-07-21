@@ -1,0 +1,61 @@
+export type SharedInterfaceCandidate =
+  | "function-plan"
+  | "proof-card"
+  | "export"
+  | "expression-control";
+
+export type CompatibilityGate = {
+  candidate: SharedInterfaceCandidate;
+  status: "blocked-until-tested";
+  compassEvidence: string;
+  origamiEvidence: string;
+  requiredCompatibilityTest: string;
+};
+
+export const mergerCompatibilityGates: CompatibilityGate[] = [
+  {
+    candidate: "function-plan",
+    status: "blocked-until-tested",
+    compassEvidence:
+      "Compass plans must prove operation order, macro/primitive step links, object provenance, and reveal actions.",
+    origamiEvidence:
+      "Origami plans must prove node order, operation phases, fold certificates, solver readiness, and result extraction.",
+    requiredCompatibilityTest:
+      "A shared function-plan interface needs one test that compiles the same function through both systems and asserts the shared fields without hiding system-specific details.",
+  },
+  {
+    candidate: "proof-card",
+    status: "blocked-until-tested",
+    compassEvidence:
+      "Compass proof cards must prove Euclidean macro assumptions, givens, claims, highlighted objects, and conclusions.",
+    origamiEvidence:
+      "Origami proof cards must prove fold claims, fold certificates, branch choices, fallback status, and highlighted crease objects.",
+    requiredCompatibilityTest:
+      "A shared proof-card interface needs paired tests that open a compass proof and an origami proof for the same arithmetic family.",
+  },
+  {
+    candidate: "export",
+    status: "blocked-until-tested",
+    compassEvidence:
+      "Compass exports must prove JSON scene data, visible SVG export, and clean final SVG export.",
+    origamiEvidence:
+      "Origami exports must prove function-animation JSON, replay, current/final SVG snapshots, crease-pattern SVG, and animated SVG.",
+    requiredCompatibilityTest:
+      "A shared export interface needs schema tests for both export families and browser smoke coverage for both download flows.",
+  },
+  {
+    candidate: "expression-control",
+    status: "blocked-until-tested",
+    compassEvidence:
+      "Compass expression controls must prove expression input, sample variables, gallery loading, validation, and compile behavior.",
+    origamiEvidence:
+      "Origami expression controls must prove function signatures, allowable-field validation, variable controls, examples, challenges, and share text.",
+    requiredCompatibilityTest:
+      "A shared expression-control interface needs UI tests that exercise both workspaces without removing either system's labels or validation states.",
+  },
+];
+
+export const compatibilityGateFor = (
+  candidate: SharedInterfaceCandidate,
+): CompatibilityGate | undefined =>
+  mergerCompatibilityGates.find((gate) => gate.candidate === candidate);

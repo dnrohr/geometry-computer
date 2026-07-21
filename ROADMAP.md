@@ -650,6 +650,8 @@ share selected concepts with the original geometry computer.
   the merger review aligned with shared, similar, and system-specific reasons.
 - F8.3 Add compatibility tests before extracting any shared function-plan,
   proof-card, export, or expression-control interfaces.
+  Current implementation adds a compatibility-gate matrix for those four
+  candidate interfaces and tests that block premature shared-interface modules.
 - F8.4 Consider a construction-system selector only after both systems can
   compute, render, inspect, prove, and export the same function family.
 - F8.5 Keep the separate tab if merging would make fold animation or paper-side
