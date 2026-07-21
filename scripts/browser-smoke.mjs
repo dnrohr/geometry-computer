@@ -302,6 +302,20 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
         .length,
       backLayers: document.querySelectorAll(".origami-function-paper-back")
         .length,
+      movingShadows: document.querySelectorAll(
+        ".origami-function-moving-panel-shadow",
+      ).length,
+      frontEdges: document.querySelectorAll(
+        ".origami-function-paper-front-edge",
+      ).length,
+      backEdges: document.querySelectorAll(".origami-function-paper-back-edge")
+        .length,
+      stationaryEdges: document.querySelectorAll(
+        ".origami-function-paper-stationary-edge",
+      ).length,
+      hingeHighlights: document.querySelectorAll(
+        ".origami-function-hinge-highlight",
+      ).length,
       creasePreviews: document.querySelectorAll(
         ".origami-function-crease-preview",
       ).length,
@@ -319,6 +333,11 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
     contract.movingPanels < 1 ||
     contract.frontLayers < 1 ||
     contract.backLayers < 1 ||
+    contract.movingShadows < 1 ||
+    contract.frontEdges < 1 ||
+    contract.backEdges < 1 ||
+    contract.stationaryEdges < 1 ||
+    contract.hingeHighlights < 1 ||
     contract.creasePreviews < 1
   ) {
     throw new Error(
@@ -327,6 +346,11 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
           movingPanels: contract.movingPanels,
           frontLayers: contract.frontLayers,
           backLayers: contract.backLayers,
+          movingShadows: contract.movingShadows,
+          frontEdges: contract.frontEdges,
+          backEdges: contract.backEdges,
+          stationaryEdges: contract.stationaryEdges,
+          hingeHighlights: contract.hingeHighlights,
           creasePreviews: contract.creasePreviews,
         },
       )}`,

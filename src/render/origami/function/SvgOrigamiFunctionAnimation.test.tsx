@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import {
   advanceOrigamiFunctionPreview,
   compileOrigamiFunctionPreview,
+  setOrigamiFunctionPreviewProgress,
 } from "../../../domain/origami/function";
 import { SvgOrigamiFunctionAnimation } from "./SvgOrigamiFunctionAnimation";
 
@@ -29,8 +30,14 @@ describe("SvgOrigamiFunctionAnimation", () => {
       container.querySelector(".origami-function-paper-front"),
     ).toBeInTheDocument();
     expect(
+      container.querySelector(".origami-function-paper-front"),
+    ).toHaveAttribute("data-side", "front");
+    expect(
       container.querySelector(".origami-function-paper-back"),
     ).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-function-paper-back"),
+    ).toHaveAttribute("data-side", "back");
     expect(
       container.querySelector(".origami-function-paper-front-pattern"),
     ).toHaveAttribute("data-pattern", "grid");
@@ -39,6 +46,21 @@ describe("SvgOrigamiFunctionAnimation", () => {
     ).toHaveAttribute("data-pattern", "diagonal-stripe");
     expect(
       container.querySelector(".origami-function-hinge-shadow"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-function-moving-panel-shadow"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-function-paper-stationary-edge"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-function-paper-front-edge"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-function-paper-back-edge"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-function-hinge-highlight"),
     ).toBeInTheDocument();
     expect(screen.getByText("Current f(a, b) = a * b")).toBeInTheDocument();
     expect(screen.getByText("Value pending")).toBeInTheDocument();
@@ -66,5 +88,27 @@ describe("SvgOrigamiFunctionAnimation", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("Current a * b")).toBeInTheDocument();
     expect(screen.getByText("Value 6.000")).toBeInTheDocument();
+  });
+
+  it("exposes the back side and keeps side fills distinct during fold phases", () => {
+    const preview = compileOrigamiFunctionPreview("f(a,b)=a*b");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+    const advanced = setOrigamiFunctionPreviewProgress(preview, 0.7);
+    if (advanced.status !== "compiled") throw new Error("Expected compiled");
+
+    const { container } = render(
+      <SvgOrigamiFunctionAnimation preview={advanced} />,
+    );
+
+    const front = container.querySelector(".origami-function-paper-front");
+    const back = container.querySelector(".origami-function-paper-back");
+    const shadow = container.querySelector(
+      ".origami-function-moving-panel-shadow",
+    );
+
+    expect(front).toHaveStyle({ fill: "#f7f0d4", opacity: "0.24" });
+    expect(back).toHaveStyle({ fill: "#365f91", opacity: "1" });
+    expect(shadow).toBeInTheDocument();
+    expect(Number((shadow as SVGElement).style.opacity)).toBeCloseTo(0.232);
   });
 });

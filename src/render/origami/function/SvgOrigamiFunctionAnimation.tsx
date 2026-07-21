@@ -53,6 +53,10 @@ export function SvgOrigamiFunctionAnimation({
   const movingTransform = motion
     ? `rotate(${directionSign * foldProgress * 18}deg) skewY(${directionSign * foldProgress * 5}deg)`
     : "none";
+  const movingShadowTransform =
+    movingTransform === "none"
+      ? "translate(3px, 4px)"
+      : `${movingTransform} translate(3px, 4px)`;
   const showBack = motion?.sideExposure.after === "back";
   const showCreasePreview = Boolean(
     motion &&
@@ -143,9 +147,24 @@ export function SvgOrigamiFunctionAnimation({
       <polygon
         className="origami-function-paper-stationary"
         points={stationaryPoints}
+        data-side="front"
         style={{
           fill: preview.paperStyle.frontColor,
           opacity: preview.paperStyle.opacity,
+        }}
+      />
+      <polyline
+        className="origami-function-paper-stationary-edge"
+        points={`${stationaryPoints} 18,18`}
+      />
+      <polygon
+        className="origami-function-moving-panel-shadow"
+        points={movingPoints}
+        style={{
+          opacity: 0.12 + foldProgress * 0.16,
+          transform: movingShadowTransform,
+          transformBox: "fill-box",
+          transformOrigin: "left center",
         }}
       />
       <g
@@ -159,6 +178,7 @@ export function SvgOrigamiFunctionAnimation({
         <polygon
           className="origami-function-paper-back"
           points={movingPoints}
+          data-side="back"
           style={{
             fill: preview.paperStyle.backColor,
             opacity: (showBack ? 1 : 0.18) * preview.paperStyle.opacity,
@@ -167,6 +187,7 @@ export function SvgOrigamiFunctionAnimation({
         <polygon
           className="origami-function-paper-front"
           points={movingPoints}
+          data-side="front"
           style={{
             fill: preview.paperStyle.frontColor,
             opacity: (showBack ? 0.24 : 1) * preview.paperStyle.opacity,
@@ -184,12 +205,27 @@ export function SvgOrigamiFunctionAnimation({
           fill={patternFill(preview.paperStyle.frontPattern)}
           data-pattern={preview.paperStyle.frontPattern}
         />
+        <polyline
+          className="origami-function-paper-back-edge"
+          points={`${movingPoints} 150,18`}
+        />
+        <polyline
+          className="origami-function-paper-front-edge"
+          points={`${movingPoints} 150,18`}
+        />
       </g>
       <rect
         className="origami-function-hinge-shadow"
         x="146"
         y="18"
         width="8"
+        height="180"
+      />
+      <rect
+        className="origami-function-hinge-highlight"
+        x="149"
+        y="18"
+        width="2"
         height="180"
       />
       <line

@@ -127,6 +127,9 @@ The flat-origami tab provides:
 - F4.2 provides pattern presets for solid, grid, dots, diagonal stripe, washi
   wave, coordinate grid, and high contrast. The animation renderer applies
   separate front/back pattern overlays.
+- F4.3 makes side exposure clearer in the fold animation with side-tagged front
+  and back fills, separate front/back edge outlines, a moving-panel shadow, and
+  a hinge highlight/shadow pair.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

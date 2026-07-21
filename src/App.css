@@ -606,6 +606,10 @@ select:focus-visible,
   stroke-width: 1;
 }
 
+.origami-function-paper-back {
+  stroke: #0e1418;
+}
+
 .origami-function-paper-pattern,
 .origami-function-paper-front-pattern,
 .origami-function-paper-back-pattern {
@@ -626,9 +630,42 @@ select:focus-visible,
   transition: transform 240ms ease;
 }
 
+.origami-function-moving-panel-shadow {
+  fill: rgb(0 0 0 / 100%);
+  filter: blur(0.7px);
+  transform: translate(3px, 4px);
+  transition:
+    opacity 240ms ease,
+    transform 240ms ease;
+}
+
+.origami-function-paper-stationary-edge,
+.origami-function-paper-front-edge,
+.origami-function-paper-back-edge {
+  fill: none;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.origami-function-paper-stationary-edge,
+.origami-function-paper-front-edge {
+  stroke: rgb(255 255 255 / 70%);
+  stroke-width: 1.1;
+}
+
+.origami-function-paper-back-edge {
+  stroke: rgb(14 20 24 / 82%);
+  stroke-dasharray: 5 3;
+  stroke-width: 1.5;
+}
+
 .origami-function-hinge-shadow {
-  fill: rgb(0 0 0 / 18%);
+  fill: rgb(0 0 0 / 22%);
   filter: blur(1px);
+}
+
+.origami-function-hinge-highlight {
+  fill: rgb(255 255 255 / 26%);
 }
 
 .origami-function-hinge {
