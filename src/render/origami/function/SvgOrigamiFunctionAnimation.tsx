@@ -3,6 +3,7 @@ import type { OrigamiFunctionPreview } from "../../../domain/origami/function";
 
 type SvgOrigamiFunctionAnimationProps = {
   preview: OrigamiFunctionPreview;
+  snapshotMode?: "animation" | "crease-pattern";
   svgRef?: Ref<SVGSVGElement>;
 };
 
@@ -27,6 +28,7 @@ const phaseLabel = (
 
 export function SvgOrigamiFunctionAnimation({
   preview,
+  snapshotMode = "animation",
   svgRef,
 }: SvgOrigamiFunctionAnimationProps) {
   if (preview.status !== "compiled") {
@@ -80,6 +82,10 @@ export function SvgOrigamiFunctionAnimation({
     preview.paperStyle.patternScale,
     preview.paperStyle.patternRotation,
   );
+  const isCreasePattern = snapshotMode === "crease-pattern";
+  const creasePatternPhases = preview.plan.phases.filter(
+    ({ foldMotion }) => foldMotion,
+  );
 
   return (
     <svg
@@ -92,9 +98,18 @@ export function SvgOrigamiFunctionAnimation({
       data-phase-id={phase.id}
       data-phase-kind={phase.kind}
       data-physical-status={phase.physicalStatus}
+      data-snapshot-mode={snapshotMode}
     >
-      <title>{`Origami function animation: ${preview.plan.source.source}`}</title>
-      <desc>{`${phase.id} ${phase.kind} ${phase.expression}`}</desc>
+      <title>
+        {isCreasePattern
+          ? `Origami function crease pattern: ${preview.plan.source.source}`
+          : `Origami function animation: ${preview.plan.source.source}`}
+      </title>
+      <desc>
+        {isCreasePattern
+          ? `Final crease pattern with ${creasePatternPhases.length} planned fold creases.`
+          : `${phase.id} ${phase.kind} ${phase.expression}`}
+      </desc>
       <defs>
         <pattern
           id={patternId("grid")}
@@ -180,67 +195,71 @@ export function SvgOrigamiFunctionAnimation({
         className="origami-function-paper-stationary-edge"
         points={`${stationaryPoints} 18,18`}
       />
-      <polygon
-        className="origami-function-moving-panel-shadow"
-        points={movingPoints}
-        style={{
-          opacity: 0.12 + foldProgress * 0.16,
-          transform: movingShadowTransform,
-          transformBox: "fill-box",
-          transformOrigin: "left center",
-        }}
-      />
-      <g
-        className="origami-function-moving-panel"
-        style={{
-          transform: movingTransform,
-          transformBox: "fill-box",
-          transformOrigin: "left center",
-        }}
-      >
-        <polygon
-          className="origami-function-paper-back"
-          points={movingPoints}
-          data-side="back"
-          style={{
-            fill: preview.paperStyle.backColor,
-            opacity: (showBack ? 1 : 0.18) * preview.paperStyle.opacity,
-          }}
-        />
-        <polygon
-          className="origami-function-paper-front"
-          points={movingPoints}
-          data-side="front"
-          style={{
-            fill: preview.paperStyle.frontColor,
-            opacity: (showBack ? 0.24 : 1) * preview.paperStyle.opacity,
-          }}
-        />
-        <polygon
-          className="origami-function-paper-back-pattern"
-          points={movingPoints}
-          fill={patternFill(preview.paperStyle.backPattern)}
-          data-pattern={preview.paperStyle.backPattern}
-          data-pattern-scale={preview.paperStyle.patternScale}
-          data-pattern-rotation={preview.paperStyle.patternRotation}
-        />
-        <polygon
-          className="origami-function-paper-front-pattern"
-          points={movingPoints}
-          fill={patternFill(preview.paperStyle.frontPattern)}
-          data-pattern={preview.paperStyle.frontPattern}
-          data-pattern-scale={preview.paperStyle.patternScale}
-          data-pattern-rotation={preview.paperStyle.patternRotation}
-        />
-        <polyline
-          className="origami-function-paper-back-edge"
-          points={`${movingPoints} 150,18`}
-        />
-        <polyline
-          className="origami-function-paper-front-edge"
-          points={`${movingPoints} 150,18`}
-        />
-      </g>
+      {!isCreasePattern && (
+        <>
+          <polygon
+            className="origami-function-moving-panel-shadow"
+            points={movingPoints}
+            style={{
+              opacity: 0.12 + foldProgress * 0.16,
+              transform: movingShadowTransform,
+              transformBox: "fill-box",
+              transformOrigin: "left center",
+            }}
+          />
+          <g
+            className="origami-function-moving-panel"
+            style={{
+              transform: movingTransform,
+              transformBox: "fill-box",
+              transformOrigin: "left center",
+            }}
+          >
+            <polygon
+              className="origami-function-paper-back"
+              points={movingPoints}
+              data-side="back"
+              style={{
+                fill: preview.paperStyle.backColor,
+                opacity: (showBack ? 1 : 0.18) * preview.paperStyle.opacity,
+              }}
+            />
+            <polygon
+              className="origami-function-paper-front"
+              points={movingPoints}
+              data-side="front"
+              style={{
+                fill: preview.paperStyle.frontColor,
+                opacity: (showBack ? 0.24 : 1) * preview.paperStyle.opacity,
+              }}
+            />
+            <polygon
+              className="origami-function-paper-back-pattern"
+              points={movingPoints}
+              fill={patternFill(preview.paperStyle.backPattern)}
+              data-pattern={preview.paperStyle.backPattern}
+              data-pattern-scale={preview.paperStyle.patternScale}
+              data-pattern-rotation={preview.paperStyle.patternRotation}
+            />
+            <polygon
+              className="origami-function-paper-front-pattern"
+              points={movingPoints}
+              fill={patternFill(preview.paperStyle.frontPattern)}
+              data-pattern={preview.paperStyle.frontPattern}
+              data-pattern-scale={preview.paperStyle.patternScale}
+              data-pattern-rotation={preview.paperStyle.patternRotation}
+            />
+            <polyline
+              className="origami-function-paper-back-edge"
+              points={`${movingPoints} 150,18`}
+            />
+            <polyline
+              className="origami-function-paper-front-edge"
+              points={`${movingPoints} 150,18`}
+            />
+          </g>
+        </>
+      )}
       <rect
         className="origami-function-hinge-shadow"
         x="146"
@@ -263,7 +282,7 @@ export function SvgOrigamiFunctionAnimation({
         y2="198"
         style={{ stroke: preview.paperStyle.creaseColor }}
       />
-      {showCreasePreview && (
+      {showCreasePreview && !isCreasePattern && (
         <>
           <line
             className="origami-function-crease-underlay"
@@ -282,7 +301,7 @@ export function SvgOrigamiFunctionAnimation({
           />
         </>
       )}
-      {motion && (
+      {motion && !isCreasePattern && (
         <>
           <line
             className="origami-function-active-crease-underlay"
@@ -300,6 +319,26 @@ export function SvgOrigamiFunctionAnimation({
             style={{ stroke: preview.paperStyle.highlightColor }}
           />
         </>
+      )}
+      {isCreasePattern && (
+        <g
+          className="origami-function-crease-pattern"
+          aria-label="Final function crease pattern"
+        >
+          {creasePatternPhases.map((creasePhase, index) => (
+            <line
+              key={creasePhase.id}
+              className="origami-function-crease-pattern-line"
+              x1="42"
+              y1={54 + (creasePhase.foldMotion?.hingeLine.point.y ?? 0) * 12}
+              x2="258"
+              y2={54 + (creasePhase.foldMotion?.hingeLine.point.y ?? 0) * 12}
+              data-crease-phase-id={creasePhase.id}
+              data-crease-index={index + 1}
+              style={{ stroke: preview.paperStyle.creaseColor }}
+            />
+          ))}
+        </g>
       )}
       <text className="origami-function-animation-phase" x="24" y="208">
         {`${phase.id} ${phase.kind}`}

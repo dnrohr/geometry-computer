@@ -163,4 +163,38 @@ describe("SvgOrigamiFunctionAnimation", () => {
       container.querySelector(".origami-function-paper-front-pattern"),
     ).toHaveAttribute("data-pattern-rotation", "45");
   });
+
+  it("renders a final crease-pattern snapshot from planned fold motions", () => {
+    const preview = compileOrigamiFunctionPreview("sqrt(a+1)");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+
+    const { container } = render(
+      <SvgOrigamiFunctionAnimation
+        preview={preview}
+        snapshotMode="crease-pattern"
+      />,
+    );
+
+    const svg = screen.getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    });
+    const lines = container.querySelectorAll(
+      ".origami-function-crease-pattern-line",
+    );
+
+    expect(svg).toHaveAttribute("data-snapshot-mode", "crease-pattern");
+    expect(svg.querySelector("title")?.textContent).toBe(
+      "Origami function crease pattern: f(a) = sqrt(a + 1)",
+    );
+    expect(lines.length).toBe(
+      preview.plan.phases.filter(({ foldMotion }) => foldMotion).length,
+    );
+    expect(lines[0]).toHaveAttribute(
+      "data-crease-phase-id",
+      "origami-function-phase-4",
+    );
+    expect(
+      container.querySelector(".origami-function-moving-panel"),
+    ).not.toBeInTheDocument();
+  });
 });

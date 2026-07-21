@@ -165,7 +165,9 @@ The flat-origami tab provides:
 - F6.2 starts static SVG snapshot export for function animations. The origami
   tab can download the visible current phase and a hidden final-phase snapshot,
   each serialized from the same SVG renderer and carrying plan, phase, kind, and
-  physical-status data attributes.
+  physical-status data attributes. It also exports a final crease-pattern SVG
+  that flattens every planned fold-motion crease onto the sheet with
+  `data-crease-phase-id` provenance.
 - F6.4 adds a compact share block to the function lab. It contains the
   normalized function label, sample values, sampled-domain assumption, numeric
   result, solver readiness, and current animation phase, with an origami-local

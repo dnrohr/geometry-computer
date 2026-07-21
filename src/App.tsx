@@ -468,6 +468,7 @@ function OrigamiRoadmap() {
   const origamiSvgRef = useRef<SVGSVGElement>(null);
   const functionAnimationSvgRef = useRef<SVGSVGElement>(null);
   const finalFunctionAnimationSvgRef = useRef<SVGSVGElement>(null);
+  const functionCreasePatternSvgRef = useRef<SVGSVGElement>(null);
   const scene = examples[exampleIndex].scene;
   useEffect(() => {
     if (
@@ -1151,6 +1152,20 @@ function OrigamiRoadmap() {
           >
             Export function final SVG
           </button>
+          <button
+            type="button"
+            disabled={timelineDisabled}
+            onClick={() =>
+              functionCreasePatternSvgRef.current &&
+              downloadText(
+                "origami-function-crease-pattern.svg",
+                serializeSvg(functionCreasePatternSvgRef.current),
+                "image/svg+xml",
+              )
+            }
+          >
+            Export function crease SVG
+          </button>
           <label className="origami-function-import-control">
             Import replay JSON
             <input
@@ -1170,6 +1185,11 @@ function OrigamiRoadmap() {
           <SvgOrigamiFunctionAnimation
             preview={finalFunctionPreview}
             svgRef={finalFunctionAnimationSvgRef}
+          />
+          <SvgOrigamiFunctionAnimation
+            preview={finalFunctionPreview}
+            snapshotMode="crease-pattern"
+            svgRef={functionCreasePatternSvgRef}
           />
         </div>
         <fieldset className="origami-paper-style-controls">

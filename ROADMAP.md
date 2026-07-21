@@ -558,8 +558,8 @@ replay, or share.
 - F6.2 Export static SVG snapshots for current phase, final crease pattern, and
   final result view.
   Current implementation exports the visible function-animation phase and a
-  final result-phase function SVG from the origami renderer; final crease-pattern
-  packaging remains as the next export refinement.
+  final result-phase function SVG from the origami renderer, plus a flattened
+  final crease-pattern SVG with per-phase crease provenance.
 - F6.3 Add an animated export path such as WebM, GIF, or SVG animation after the
   timeline model is stable.
 - F6.4 Add a compact share text block containing the function, sample values,

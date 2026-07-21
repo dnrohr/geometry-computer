@@ -784,6 +784,17 @@ select:focus-visible,
   stroke-width: 7;
 }
 
+.origami-function-crease-pattern-line {
+  opacity: 0.86;
+  stroke-linecap: round;
+  stroke-width: 2.4;
+  vector-effect: non-scaling-stroke;
+}
+
+.origami-function-crease-pattern-line:nth-child(even) {
+  stroke-dasharray: 5 4;
+}
+
 .origami-function-animation text {
   fill: var(--muted);
   font-family: "SFMono-Regular", Consolas, monospace;

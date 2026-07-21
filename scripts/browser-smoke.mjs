@@ -780,6 +780,23 @@ const assertOrigamiFunctionPanel = async (page) => {
       `Function final SVG export mismatch: ${finalFunctionSvg.filename}`,
     );
   }
+  const creasePatternSvg = await downloadText(
+    page,
+    "Export function crease SVG",
+  );
+  if (
+    creasePatternSvg.filename !== "origami-function-crease-pattern.svg" ||
+    !creasePatternSvg.text.includes('data-snapshot-mode="crease-pattern"') ||
+    !creasePatternSvg.text.includes("origami-function-crease-pattern-line") ||
+    !creasePatternSvg.text.includes(
+      'data-crease-phase-id="origami-function-phase-4"',
+    ) ||
+    !creasePatternSvg.text.includes("Final crease pattern with")
+  ) {
+    throw new Error(
+      `Function crease SVG export mismatch: ${creasePatternSvg.filename}`,
+    );
+  }
   await mkdir(artifactDir, { recursive: true });
   const replayPath = `${artifactDir}/origami-function-replay.json`;
   await writeFile(replayPath, animationDownload.text, "utf8");

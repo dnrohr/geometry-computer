@@ -150,7 +150,9 @@ either its fold certificate or matching solver work item so export consumers do
 not need to recompute the active proof/work context from the full plan.
 F6.2 exports function-animation SVG snapshots from the origami renderer itself.
 The current-phase snapshot uses the visible timeline state; the final snapshot
-uses the same compiled plan and paper style at the result-extraction phase.
+uses the same compiled plan and paper style at the result-extraction phase. A
+separate crease-pattern snapshot flattens the plan into the full set of planned
+fold creases and marks each crease with its producing phase ID.
 F6.4 exposes a share text contract derived from the origami function preview.
 It includes the normalized source, active sample values, sampled-domain
 assumption, result, solver readiness, and animation phase without importing
