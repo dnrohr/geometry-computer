@@ -539,6 +539,46 @@ describe("App", () => {
     ).toBeNull();
   });
 
+  it("switches origami function fold camera views without recompiling", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+
+    expect(
+      screen.getByRole("group", { name: "Function fold camera" }),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Active fold" }));
+    expect(screen.getByRole("button", { name: "Active fold" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a) = sqrt(a + 1)",
+      }),
+    ).toHaveAttribute("data-camera-mode", "active-fold");
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a) = sqrt(a + 1)",
+      }),
+    ).toHaveAttribute("viewBox", "36 38 228 146");
+
+    fireEvent.click(screen.getByRole("button", { name: "Whole" }));
+    expect(screen.getByRole("button", { name: "Whole" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a) = sqrt(a + 1)",
+      }),
+    ).toHaveAttribute("data-camera-mode", "whole");
+    expect(
+      screen.getByText("origami-function-plan-f-a-sqrt-a-1"),
+    ).toBeInTheDocument();
+  });
+
   it("keeps origami function validation local to the flat origami tab", () => {
     render(<App />);
     fireEvent.click(

@@ -179,6 +179,9 @@ The flat-origami tab provides:
   replays imports by recompiling the function source and sample values, then
   restoring paper style and the saved animation phase while leaving playback
   paused.
+- F7.1 adds a fold camera control for function animations. Whole, paper,
+  active-fold, and result views update the visible SVG viewBox without changing
+  the compiled plan, timeline phase, or export helpers.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

@@ -118,6 +118,30 @@ describe("SvgOrigamiFunctionAnimation", () => {
     expect(screen.getByText("Value 6.000")).toBeInTheDocument();
   });
 
+  it("changes the visible viewBox for fold camera modes", () => {
+    const preview = compileOrigamiFunctionPreview("sqrt(a+1)");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+
+    const { rerender } = render(
+      <SvgOrigamiFunctionAnimation preview={preview} cameraMode="paper" />,
+    );
+    const svg = screen.getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    });
+
+    expect(svg).toHaveAttribute("data-camera-mode", "paper");
+    expect(svg).toHaveAttribute("viewBox", "12 12 276 192");
+
+    rerender(
+      <SvgOrigamiFunctionAnimation
+        preview={preview}
+        cameraMode="active-fold"
+      />,
+    );
+    expect(svg).toHaveAttribute("data-camera-mode", "active-fold");
+    expect(svg).toHaveAttribute("viewBox", "36 38 228 146");
+  });
+
   it("exposes the back side and keeps side fills distinct during fold phases", () => {
     const preview = compileOrigamiFunctionPreview("f(a,b)=a*b");
     if (preview.status !== "compiled") throw new Error("Expected compiled");

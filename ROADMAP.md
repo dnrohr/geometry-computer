@@ -592,6 +592,8 @@ worth exploring while staying honest about mathematical limits.
 
 - F7.1 Add a "fold camera" mode with zoom-to-active-fold, fit-to-paper,
   follow-result, and whole-construction views.
+  Current implementation adds whole, paper, active-fold, and result camera
+  modes for the visible function-animation SVG.
 - F7.2 Add onion-skin ghosts for previous and next fold states so motion is
   easier to understand.
 - F7.3 Add optional soundless haptic-style visual cues: crease snap, branch

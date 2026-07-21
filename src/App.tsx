@@ -36,7 +36,10 @@ import {
 } from "./domain/export/exportConstruction";
 import { SvgConstructionCanvas } from "./render/svg/SvgConstructionCanvas";
 import { SvgOrigamiCanvas } from "./render/origami/svg/SvgOrigamiCanvas";
-import { SvgOrigamiFunctionAnimation } from "./render/origami/function/SvgOrigamiFunctionAnimation";
+import {
+  SvgOrigamiFunctionAnimation,
+  type OrigamiFunctionCameraMode,
+} from "./render/origami/function/SvgOrigamiFunctionAnimation";
 import { buildOrigamiVisualRoleMap } from "./render/origami/visualRoles";
 import { ExpressionInput } from "./ui/input/ExpressionInput";
 import { ExampleGallery } from "./ui/examples/ExampleGallery";
@@ -460,6 +463,8 @@ function OrigamiRoadmap() {
   );
   const [copiedFunctionReadout, setCopiedFunctionReadout] = useState("");
   const [functionImportStatus, setFunctionImportStatus] = useState("");
+  const [functionCameraMode, setFunctionCameraMode] =
+    useState<OrigamiFunctionCameraMode>("whole");
   const [progress, setProgress] = useState(1);
   const [activeStepId, setActiveStepId] = useState<string>();
   const [selectedObjectId, setSelectedObjectId] = useState<string>();
@@ -1103,9 +1108,33 @@ function OrigamiRoadmap() {
           <a href="#origami-trace">View trace</a>
         </aside>
         <SvgOrigamiFunctionAnimation
+          cameraMode={functionCameraMode}
           preview={functionPreview}
           svgRef={functionAnimationSvgRef}
         />
+        <fieldset
+          className="origami-function-camera-controls"
+          aria-label="Function fold camera"
+        >
+          <legend>Fold camera</legend>
+          {(
+            [
+              ["whole", "Whole"],
+              ["paper", "Paper"],
+              ["active-fold", "Active fold"],
+              ["result", "Result"],
+            ] satisfies Array<[OrigamiFunctionCameraMode, string]>
+          ).map(([mode, label]) => (
+            <button
+              key={mode}
+              type="button"
+              aria-pressed={functionCameraMode === mode}
+              onClick={() => setFunctionCameraMode(mode)}
+            >
+              {label}
+            </button>
+          ))}
+        </fieldset>
         <div className="origami-function-export-controls">
           <button
             type="button"

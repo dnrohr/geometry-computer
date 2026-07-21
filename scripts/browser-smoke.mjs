@@ -617,6 +617,24 @@ const assertOrigamiFunctionPanel = async (page) => {
       name: "Origami function animation: f(a) = sqrt(a + 1)",
     })
     .waitFor();
+  await page.getByRole("button", { exact: true, name: "Result" }).click();
+  const resultCamera = await page
+    .getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    })
+    .evaluate((element) => ({
+      cameraMode: element.getAttribute("data-camera-mode"),
+      viewBox: element.getAttribute("viewBox"),
+    }));
+  if (
+    resultCamera.cameraMode !== "result" ||
+    resultCamera.viewBox !== "150 132 132 78"
+  ) {
+    throw new Error(
+      `Function fold camera result view mismatch: ${JSON.stringify(resultCamera)}`,
+    );
+  }
+  await page.getByRole("button", { exact: true, name: "Whole" }).click();
   const functionShareBlock = page.getByLabel("Origami function share block");
   await functionShareBlock.waitFor();
   const shareText = await functionShareBlock.inputValue();

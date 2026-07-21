@@ -824,6 +824,39 @@ select:focus-visible,
   text-anchor: end;
 }
 
+.origami-function-camera-controls {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 1 / -1;
+  gap: 0.45rem;
+  align-items: center;
+  min-width: 0;
+  margin: 0;
+  padding: 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 3%);
+}
+
+.origami-function-camera-controls legend {
+  padding: 0 0.25rem;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.origami-function-camera-controls button {
+  min-width: 5.25rem;
+  padding: 0.4rem 0.55rem;
+  font-size: 0.7rem;
+}
+
+.origami-function-camera-controls button[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: rgb(240 184 75 / 14%);
+}
+
 .origami-function-timeline {
   display: grid;
   grid-column: 1 / -1;

@@ -164,6 +164,9 @@ F6.5 imports saved function-animation JSON by recompiling the exported function
 source and sample values through the origami function boundary, then restoring
 paper style and the saved phase. The imported plan object is treated as replay
 metadata, not as trusted executable state.
+F7.1 keeps fold camera state in the origami UI/renderer layer. Camera modes
+change only the visible function-animation SVG viewBox; they do not alter the
+function plan, animation phase, solver readiness, or exported computation data.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

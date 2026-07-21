@@ -1,7 +1,14 @@
 import type { Ref } from "react";
 import type { OrigamiFunctionPreview } from "../../../domain/origami/function";
 
+export type OrigamiFunctionCameraMode =
+  | "whole"
+  | "paper"
+  | "active-fold"
+  | "result";
+
 type SvgOrigamiFunctionAnimationProps = {
+  cameraMode?: OrigamiFunctionCameraMode;
   preview: OrigamiFunctionPreview;
   snapshotMode?: "animation" | "crease-pattern";
   svgRef?: Ref<SVGSVGElement>;
@@ -27,6 +34,7 @@ const phaseLabel = (
 };
 
 export function SvgOrigamiFunctionAnimation({
+  cameraMode = "whole",
   preview,
   snapshotMode = "animation",
   svgRef,
@@ -86,6 +94,7 @@ export function SvgOrigamiFunctionAnimation({
   const creasePatternPhases = preview.plan.phases.filter(
     ({ foldMotion }) => foldMotion,
   );
+  const viewBox = viewBoxForCamera(cameraMode, isCreasePattern);
 
   return (
     <svg
@@ -93,12 +102,13 @@ export function SvgOrigamiFunctionAnimation({
       className="origami-function-animation"
       role="img"
       aria-label={`Origami function animation: ${preview.plan.source.source}`}
-      viewBox="0 0 300 216"
+      viewBox={viewBox}
       data-plan-id={preview.plan.id}
       data-phase-id={phase.id}
       data-phase-kind={phase.kind}
       data-physical-status={phase.physicalStatus}
       data-snapshot-mode={snapshotMode}
+      data-camera-mode={cameraMode}
     >
       <title>
         {isCreasePattern
@@ -357,4 +367,15 @@ export function SvgOrigamiFunctionAnimation({
       </g>
     </svg>
   );
+}
+
+function viewBoxForCamera(
+  cameraMode: OrigamiFunctionCameraMode,
+  isCreasePattern: boolean,
+) {
+  if (isCreasePattern) return "0 0 300 216";
+  if (cameraMode === "paper") return "12 12 276 192";
+  if (cameraMode === "active-fold") return "36 38 228 146";
+  if (cameraMode === "result") return "150 132 132 78";
+  return "0 0 300 216";
 }
