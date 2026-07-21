@@ -635,6 +635,27 @@ const assertOrigamiFunctionPanel = async (page) => {
     );
   }
   await page.getByRole("button", { exact: true, name: "Whole" }).click();
+  await page.getByRole("checkbox", { name: "Show onion skin folds" }).check();
+  const onionSkin = await page
+    .getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    })
+    .evaluate((element) => ({
+      previous: element
+        .querySelector("[data-onion-skin='previous']")
+        ?.getAttribute("data-onion-phase-id"),
+      next: element
+        .querySelector("[data-onion-skin='next']")
+        ?.getAttribute("data-onion-phase-id"),
+    }));
+  if (
+    onionSkin.previous !== "origami-function-phase-8" ||
+    onionSkin.next !== "origami-function-phase-10"
+  ) {
+    throw new Error(
+      `Function onion-skin ghosts mismatch: ${JSON.stringify(onionSkin)}`,
+    );
+  }
   const functionShareBlock = page.getByLabel("Origami function share block");
   await functionShareBlock.waitFor();
   const shareText = await functionShareBlock.inputValue();

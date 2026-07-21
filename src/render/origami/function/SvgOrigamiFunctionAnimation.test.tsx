@@ -3,6 +3,7 @@ import {
   advanceOrigamiFunctionPreview,
   compileOrigamiFunctionPreview,
   setOrigamiFunctionPreviewPaperStyle,
+  setOrigamiFunctionPreviewPhase,
   setOrigamiFunctionPreviewProgress,
 } from "../../../domain/origami/function";
 import { SvgOrigamiFunctionAnimation } from "./SvgOrigamiFunctionAnimation";
@@ -140,6 +141,27 @@ describe("SvgOrigamiFunctionAnimation", () => {
     );
     expect(svg).toHaveAttribute("data-camera-mode", "active-fold");
     expect(svg).toHaveAttribute("viewBox", "36 38 228 146");
+  });
+
+  it("renders neighboring onion-skin fold ghosts when enabled", () => {
+    const preview = compileOrigamiFunctionPreview("sqrt(a+1)");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+    const active = setOrigamiFunctionPreviewPhase(
+      preview,
+      "origami-function-phase-9",
+    );
+
+    const { container } = render(
+      <SvgOrigamiFunctionAnimation preview={active} onionSkin />,
+    );
+
+    expect(
+      container.querySelector("[data-onion-skin='previous']"),
+    ).toHaveAttribute("data-onion-phase-id", "origami-function-phase-8");
+    expect(container.querySelector("[data-onion-skin='next']")).toHaveAttribute(
+      "data-onion-phase-id",
+      "origami-function-phase-10",
+    );
   });
 
   it("exposes the back side and keeps side fills distinct during fold phases", () => {

@@ -182,6 +182,9 @@ The flat-origami tab provides:
 - F7.1 adds a fold camera control for function animations. Whole, paper,
   active-fold, and result views update the visible SVG viewBox without changing
   the compiled plan, timeline phase, or export helpers.
+- F7.2 adds optional onion-skin fold ghosts. When enabled, the visible function
+  animation draws faint previous and next fold-motion creases with phase IDs so
+  neighboring motion is easier to compare without changing the active phase.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

@@ -167,6 +167,9 @@ metadata, not as trusted executable state.
 F7.1 keeps fold camera state in the origami UI/renderer layer. Camera modes
 change only the visible function-animation SVG viewBox; they do not alter the
 function plan, animation phase, solver readiness, or exported computation data.
+F7.2 keeps onion-skin state in the same UI/renderer layer. The ghosts are
+derived from neighboring `foldMotion` phases and annotate those phase IDs in the
+visible SVG, but they do not become plan phases, solver work, or export state.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

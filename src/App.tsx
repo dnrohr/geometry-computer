@@ -465,6 +465,7 @@ function OrigamiRoadmap() {
   const [functionImportStatus, setFunctionImportStatus] = useState("");
   const [functionCameraMode, setFunctionCameraMode] =
     useState<OrigamiFunctionCameraMode>("whole");
+  const [functionOnionSkin, setFunctionOnionSkin] = useState(false);
   const [progress, setProgress] = useState(1);
   const [activeStepId, setActiveStepId] = useState<string>();
   const [selectedObjectId, setSelectedObjectId] = useState<string>();
@@ -1109,6 +1110,7 @@ function OrigamiRoadmap() {
         </aside>
         <SvgOrigamiFunctionAnimation
           cameraMode={functionCameraMode}
+          onionSkin={functionOnionSkin}
           preview={functionPreview}
           svgRef={functionAnimationSvgRef}
         />
@@ -1135,6 +1137,15 @@ function OrigamiRoadmap() {
             </button>
           ))}
         </fieldset>
+        <label className="origami-function-onion-toggle">
+          <input
+            aria-label="Show onion skin folds"
+            type="checkbox"
+            checked={functionOnionSkin}
+            onChange={(event) => setFunctionOnionSkin(event.target.checked)}
+          />
+          Onion skin folds
+        </label>
         <div className="origami-function-export-controls">
           <button
             type="button"

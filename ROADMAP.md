@@ -596,6 +596,8 @@ worth exploring while staying honest about mathematical limits.
   modes for the visible function-animation SVG.
 - F7.2 Add onion-skin ghosts for previous and next fold states so motion is
   easier to understand.
+  Current implementation adds an optional onion-skin toggle that renders
+  previous and next fold-motion crease ghosts in the visible animation.
 - F7.3 Add optional soundless haptic-style visual cues: crease snap, branch
   selected, result extracted, and domain warning.
 - F7.4 Add a step minimap showing where each operation sits in the full

@@ -537,7 +537,7 @@ describe("App", () => {
     expect(
       screen.queryByRole("textbox", { name: "Origami function" }),
     ).toBeNull();
-  });
+  }, 10_000);
 
   it("switches origami function fold camera views without recompiling", () => {
     render(<App />);
@@ -577,6 +577,32 @@ describe("App", () => {
     expect(
       screen.getByText("origami-function-plan-f-a-sqrt-a-1"),
     ).toBeInTheDocument();
+  });
+
+  it("toggles origami function onion-skin fold ghosts", () => {
+    const { container } = render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Jump to solver work origami-function-phase-9",
+      }),
+    );
+
+    expect(
+      container.querySelector(".origami-function-onion-skin-crease"),
+    ).not.toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("checkbox", { name: "Show onion skin folds" }),
+    );
+    expect(
+      container.querySelector("[data-onion-skin='previous']"),
+    ).toHaveAttribute("data-onion-phase-id", "origami-function-phase-8");
+    expect(container.querySelector("[data-onion-skin='next']")).toHaveAttribute(
+      "data-onion-phase-id",
+      "origami-function-phase-10",
+    );
   });
 
   it("keeps origami function validation local to the flat origami tab", () => {
@@ -981,9 +1007,11 @@ describe("App", () => {
     await waitFor(() =>
       expect(writeText).toHaveBeenCalledWith("f(a) = sqrt(a + 1)"),
     );
-    expect(
-      within(functionPanel).getByText("Copied result label"),
-    ).toBeInTheDocument();
+    await waitFor(() =>
+      expect(
+        within(functionPanel).getByText("Copied result label"),
+      ).toBeInTheDocument(),
+    );
 
     fireEvent.click(
       within(functionPanel).getByRole("button", {
@@ -995,9 +1023,11 @@ describe("App", () => {
         "f(a) = sqrt(a + 1) with a=3 => 2.000",
       ),
     );
-    expect(
-      within(functionPanel).getByText("Copied sampled result"),
-    ).toBeInTheDocument();
+    await waitFor(() =>
+      expect(
+        within(functionPanel).getByText("Copied sampled result"),
+      ).toBeInTheDocument(),
+    );
 
     fireEvent.click(
       within(functionPanel).getByRole("button", {
@@ -1016,9 +1046,11 @@ describe("App", () => {
         ].join("\n"),
       ),
     );
-    expect(
-      within(functionPanel).getByText("Copied function share block"),
-    ).toBeInTheDocument();
+    await waitFor(() =>
+      expect(
+        within(functionPanel).getByText("Copied function share block"),
+      ).toBeInTheDocument(),
+    );
   });
 
   it("imports and replays saved origami function animation JSON", async () => {

@@ -795,6 +795,19 @@ select:focus-visible,
   stroke-dasharray: 5 4;
 }
 
+.origami-function-onion-skin-crease {
+  fill: none;
+  opacity: 0.45;
+  stroke: rgb(255 255 255 / 80%);
+  stroke-dasharray: 2 5;
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+.origami-function-onion-skin-crease-next {
+  stroke: var(--accent);
+}
+
 .origami-function-animation text {
   fill: var(--muted);
   font-family: "SFMono-Regular", Consolas, monospace;
@@ -855,6 +868,17 @@ select:focus-visible,
 .origami-function-camera-controls button[aria-pressed="true"] {
   border-color: var(--accent);
   background: rgb(240 184 75 / 14%);
+}
+
+.origami-function-onion-toggle {
+  display: inline-flex;
+  grid-column: 1 / -1;
+  gap: 0.45rem;
+  align-items: center;
+  width: fit-content;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 750;
 }
 
 .origami-function-timeline {

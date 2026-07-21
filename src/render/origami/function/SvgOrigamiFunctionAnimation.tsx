@@ -9,6 +9,7 @@ export type OrigamiFunctionCameraMode =
 
 type SvgOrigamiFunctionAnimationProps = {
   cameraMode?: OrigamiFunctionCameraMode;
+  onionSkin?: boolean;
   preview: OrigamiFunctionPreview;
   snapshotMode?: "animation" | "crease-pattern";
   svgRef?: Ref<SVGSVGElement>;
@@ -35,6 +36,7 @@ const phaseLabel = (
 
 export function SvgOrigamiFunctionAnimation({
   cameraMode = "whole",
+  onionSkin = false,
   preview,
   snapshotMode = "animation",
   svgRef,
@@ -94,6 +96,13 @@ export function SvgOrigamiFunctionAnimation({
   const creasePatternPhases = preview.plan.phases.filter(
     ({ foldMotion }) => foldMotion,
   );
+  const phaseIndex = preview.plan.phases.findIndex(({ id }) => id === phase.id);
+  const onionSkinPhases = onionSkin
+    ? [
+        nearestMotionPhase(preview, phaseIndex, -1),
+        nearestMotionPhase(preview, phaseIndex, 1),
+      ].filter((item): item is NonNullable<typeof item> => Boolean(item))
+    : [];
   const viewBox = viewBoxForCamera(cameraMode, isCreasePattern);
 
   return (
@@ -330,6 +339,25 @@ export function SvgOrigamiFunctionAnimation({
           />
         </>
       )}
+      {onionSkinPhases.length > 0 && !isCreasePattern && (
+        <g
+          className="origami-function-onion-skin"
+          aria-label="Neighboring fold ghosts"
+        >
+          {onionSkinPhases.map(({ phase: ghostPhase, relation }) => (
+            <line
+              key={`${relation}-${ghostPhase.id}`}
+              className={`origami-function-onion-skin-crease origami-function-onion-skin-crease-${relation}`}
+              x1="44"
+              y1={54 + (ghostPhase.foldMotion?.hingeLine.point.y ?? 0) * 12}
+              x2="256"
+              y2={54 + (ghostPhase.foldMotion?.hingeLine.point.y ?? 0) * 12}
+              data-onion-skin={relation}
+              data-onion-phase-id={ghostPhase.id}
+            />
+          ))}
+        </g>
+      )}
       {isCreasePattern && (
         <g
           className="origami-function-crease-pattern"
@@ -378,4 +406,25 @@ function viewBoxForCamera(
   if (cameraMode === "active-fold") return "36 38 228 146";
   if (cameraMode === "result") return "150 132 132 78";
   return "0 0 300 216";
+}
+
+function nearestMotionPhase(
+  preview: Extract<OrigamiFunctionPreview, { status: "compiled" }>,
+  fromIndex: number,
+  direction: -1 | 1,
+) {
+  for (
+    let index = fromIndex + direction;
+    index >= 0 && index < preview.plan.phases.length;
+    index += direction
+  ) {
+    const phase = preview.plan.phases[index];
+    if (phase.foldMotion) {
+      return {
+        phase,
+        relation: direction < 0 ? "previous" : "next",
+      } as const;
+    }
+  }
+  return undefined;
 }
