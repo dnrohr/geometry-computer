@@ -674,8 +674,79 @@ select:focus-visible,
   background: #10161a;
 }
 
+.origami-function-panel-presenting {
+  display: none;
+}
+
+.origami-function-animation-panel-presenting {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.origami-function-animation-panel-presenting .origami-function-animation {
+  min-height: 24rem;
+}
+
+.origami-function-animation-panel-presenting
+  :is(
+    .origami-function-export-controls,
+    .origami-paper-style-controls,
+    .origami-function-timeline,
+    .origami-function-solver-work
+  ) {
+  display: none;
+}
+
+.origami-function-animation-heading {
+  display: flex;
+  grid-column: 1 / -1;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.origami-function-animation-heading > div {
+  min-width: 0;
+}
+
+.origami-function-animation-heading button {
+  flex: 0 0 auto;
+}
+
+.origami-function-animation-heading button[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: rgb(240 184 75 / 14%);
+}
+
 .origami-function-animation-panel h2 {
   margin-bottom: 0;
+}
+
+.origami-function-presentation-status {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(6rem, auto) minmax(8rem, auto) minmax(0, 1fr);
+  gap: 0.55rem;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid rgb(240 184 75 / 36%);
+  border-radius: 0.5rem;
+  background: rgb(240 184 75 / 9%);
+}
+
+.origami-function-presentation-status span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.origami-function-presentation-status strong {
+  min-width: 0;
+  color: var(--foreground);
+  font-size: 0.86rem;
 }
 
 .origami-function-comparison {

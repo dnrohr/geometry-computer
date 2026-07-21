@@ -675,6 +675,62 @@ describe("App", () => {
     ).toBeInTheDocument();
   });
 
+  it("plays a clean origami function presentation mode and restores controls", () => {
+    const { container } = render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    fireEvent.change(
+      screen.getByRole("slider", { name: "Function animation progress" }),
+      { target: { value: "0.5" } },
+    );
+    fireEvent.click(
+      screen.getByRole("checkbox", { name: "Function reduced motion" }),
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Start presentation mode" }),
+    );
+
+    expect(
+      container.querySelector(".origami-function-animation-panel"),
+    ).toHaveAttribute("data-presentation-mode", "active");
+    expect(
+      screen.getByRole("button", { name: "Exit presentation mode" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.getByLabelText("Function presentation status"),
+    ).toHaveTextContent("Phase 1 of 14");
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a) = sqrt(a + 1)",
+      }),
+    ).toHaveAttribute("data-phase-id", "origami-function-phase-1");
+    expect(
+      screen.queryByRole("textbox", { name: "Origami function" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: "Export function animation JSON" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("group", { name: "Function fold camera" }),
+    ).toBeNull();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Exit presentation mode" }),
+    );
+
+    expect(
+      container.querySelector(".origami-function-animation-panel"),
+    ).toHaveAttribute("data-presentation-mode", "off");
+    expect(
+      screen.getByRole("textbox", { name: "Origami function" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Play function animation" }),
+    ).toBeInTheDocument();
+  });
+
   it("keeps origami function validation local to the flat origami tab", () => {
     render(<App />);
     fireEvent.click(

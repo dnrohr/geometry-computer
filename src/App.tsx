@@ -474,6 +474,8 @@ function OrigamiRoadmap() {
     useState<OrigamiFunctionCameraMode>("whole");
   const [functionOnionSkin, setFunctionOnionSkin] = useState(false);
   const [functionVisualCues, setFunctionVisualCues] = useState(false);
+  const [functionPresentationMode, setFunctionPresentationMode] =
+    useState(false);
   const [progress, setProgress] = useState(1);
   const [activeStepId, setActiveStepId] = useState<string>();
   const [selectedObjectId, setSelectedObjectId] = useState<string>();
@@ -720,6 +722,28 @@ function OrigamiRoadmap() {
   };
   const previewOrigamiFunctionAnimation = () =>
     setFunctionPreview((preview) => advanceOrigamiFunctionPreview(preview));
+  const startOrigamiFunctionPresentation = () => {
+    if (timelineDisabled) return;
+    setFunctionPresentationMode(true);
+    setFunctionCameraMode("whole");
+    setFunctionPreview((preview) => {
+      if (preview.status !== "compiled") return preview;
+      const firstPhase = preview.plan.phases[0];
+      const resetPreview = firstPhase
+        ? setOrigamiFunctionPreviewPhase(preview, firstPhase.id)
+        : preview;
+      return setOrigamiFunctionPreviewPlaying(
+        setOrigamiFunctionPreviewReducedMotion(resetPreview, false),
+        true,
+      );
+    });
+  };
+  const exitOrigamiFunctionPresentation = () => {
+    setFunctionPresentationMode(false);
+    setFunctionPreview((preview) =>
+      setOrigamiFunctionPreviewPlaying(preview, false),
+    );
+  };
   const timelineDisabled = functionPreview.status !== "compiled";
   const paperStyle =
     functionPreview.status === "compiled"
@@ -900,7 +924,10 @@ function OrigamiRoadmap() {
         </aside>
       </section>
       <section
-        className="origami-function-panel"
+        className={`origami-function-panel${
+          functionPresentationMode ? " origami-function-panel-presenting" : ""
+        }`}
+        hidden={functionPresentationMode}
         aria-labelledby="origami-function-title"
       >
         <div>
@@ -1190,69 +1217,118 @@ function OrigamiRoadmap() {
         )}
       </section>
       <section
-        className="origami-function-animation-panel"
+        className={`origami-function-animation-panel${
+          functionPresentationMode
+            ? " origami-function-animation-panel-presenting"
+            : ""
+        }`}
+        data-presentation-mode={functionPresentationMode ? "active" : "off"}
         aria-labelledby="origami-function-animation-title"
       >
-        <div>
-          <p className="section-label">Fold animation</p>
-          <h2 id="origami-function-animation-title">Function fold preview</h2>
+        <div className="origami-function-animation-heading">
+          <div>
+            <p className="section-label">Fold animation</p>
+            <h2 id="origami-function-animation-title">Function fold preview</h2>
+          </div>
+          <button
+            type="button"
+            aria-pressed={functionPresentationMode}
+            disabled={timelineDisabled && !functionPresentationMode}
+            onClick={
+              functionPresentationMode
+                ? exitOrigamiFunctionPresentation
+                : startOrigamiFunctionPresentation
+            }
+          >
+            {functionPresentationMode
+              ? "Exit presentation mode"
+              : "Start presentation mode"}
+          </button>
         </div>
-        <aside
-          className="origami-function-comparison"
-          aria-label="Static crease-pattern comparison"
-        >
-          <h3>Static crease pattern</h3>
-          <p>{examples[exampleIndex].title}</p>
-          <a href="#origami-trace">View trace</a>
-        </aside>
+        {!functionPresentationMode && (
+          <aside
+            className="origami-function-comparison"
+            aria-label="Static crease-pattern comparison"
+          >
+            <h3>Static crease pattern</h3>
+            <p>{examples[exampleIndex].title}</p>
+            <a href="#origami-trace">View trace</a>
+          </aside>
+        )}
         <SvgOrigamiFunctionAnimation
           cameraMode={functionCameraMode}
           onionSkin={functionOnionSkin}
           preview={functionPreview}
           svgRef={functionAnimationSvgRef}
         />
-        <fieldset
-          className="origami-function-camera-controls"
-          aria-label="Function fold camera"
-        >
-          <legend>Fold camera</legend>
-          {(
-            [
-              ["whole", "Whole"],
-              ["paper", "Paper"],
-              ["active-fold", "Active fold"],
-              ["result", "Result"],
-            ] satisfies Array<[OrigamiFunctionCameraMode, string]>
-          ).map(([mode, label]) => (
-            <button
-              key={mode}
-              type="button"
-              aria-pressed={functionCameraMode === mode}
-              onClick={() => setFunctionCameraMode(mode)}
-            >
-              {label}
-            </button>
-          ))}
-        </fieldset>
-        <label className="origami-function-onion-toggle">
-          <input
-            aria-label="Show onion skin folds"
-            type="checkbox"
-            checked={functionOnionSkin}
-            onChange={(event) => setFunctionOnionSkin(event.target.checked)}
-          />
-          Onion skin folds
-        </label>
-        <label className="origami-function-cue-toggle">
-          <input
-            aria-label="Show visual fold cues"
-            type="checkbox"
-            checked={functionVisualCues}
-            onChange={(event) => setFunctionVisualCues(event.target.checked)}
-          />
-          Visual fold cues
-        </label>
-        {functionVisualCues && (
+        {functionPresentationMode && (
+          <div
+            className="origami-function-presentation-status"
+            aria-label="Function presentation status"
+            aria-live="polite"
+          >
+            <span>
+              Phase {Math.max(1, activeFunctionPhaseIndex + 1)} of{" "}
+              {functionPhaseMinimapItems.length}
+            </span>
+            <strong>
+              {activeFunctionPhase
+                ? formatOrigamiPhaseKind(activeFunctionPhase.kind)
+                : "Waiting"}
+            </strong>
+            <span>
+              {activeFunctionPhase?.expression ?? functionDisplayName}
+            </span>
+          </div>
+        )}
+        {!functionPresentationMode && (
+          <fieldset
+            className="origami-function-camera-controls"
+            aria-label="Function fold camera"
+          >
+            <legend>Fold camera</legend>
+            {(
+              [
+                ["whole", "Whole"],
+                ["paper", "Paper"],
+                ["active-fold", "Active fold"],
+                ["result", "Result"],
+              ] satisfies Array<[OrigamiFunctionCameraMode, string]>
+            ).map(([mode, label]) => (
+              <button
+                key={mode}
+                type="button"
+                aria-pressed={functionCameraMode === mode}
+                onClick={() => setFunctionCameraMode(mode)}
+              >
+                {label}
+              </button>
+            ))}
+          </fieldset>
+        )}
+        {!functionPresentationMode && (
+          <label className="origami-function-onion-toggle">
+            <input
+              aria-label="Show onion skin folds"
+              type="checkbox"
+              checked={functionOnionSkin}
+              onChange={(event) => setFunctionOnionSkin(event.target.checked)}
+            />
+            Onion skin folds
+          </label>
+        )}
+        {!functionPresentationMode && (
+          <label className="origami-function-cue-toggle">
+            <input
+              aria-label="Show visual fold cues"
+              type="checkbox"
+              checked={functionVisualCues}
+              onChange={(event) => setFunctionVisualCues(event.target.checked)}
+            />
+            Visual fold cues
+          </label>
+        )}
+        {!functionPresentationMode && functionVisualCues && (
           <div
             className="origami-function-cue-strip"
             aria-label="Function visual cues"
@@ -1278,7 +1354,7 @@ function OrigamiRoadmap() {
             )}
           </div>
         )}
-        {functionPhaseMinimapItems.length > 0 && (
+        {!functionPresentationMode && functionPhaseMinimapItems.length > 0 && (
           <section
             className="origami-function-minimap"
             aria-labelledby="origami-function-minimap-title"
@@ -1319,7 +1395,10 @@ function OrigamiRoadmap() {
             </div>
           </section>
         )}
-        <div className="origami-function-export-controls">
+        <div
+          className="origami-function-export-controls"
+          hidden={functionPresentationMode}
+        >
           <button
             type="button"
             disabled={timelineDisabled}
@@ -1421,7 +1500,10 @@ function OrigamiRoadmap() {
             svgRef={functionCreasePatternSvgRef}
           />
         </div>
-        <fieldset className="origami-paper-style-controls">
+        <fieldset
+          className="origami-paper-style-controls"
+          hidden={functionPresentationMode}
+        >
           <legend>Paper style</legend>
           <label>
             Front
@@ -1565,6 +1647,7 @@ function OrigamiRoadmap() {
         </fieldset>
         <div
           className="origami-function-timeline"
+          hidden={functionPresentationMode}
           aria-label="Origami function timeline"
           aria-keyshortcuts="ArrowLeft ArrowRight Space"
           tabIndex={0}
@@ -1711,39 +1794,43 @@ function OrigamiRoadmap() {
             />
           </label>
         </div>
-        {solverReadiness && solverReadiness.workItems.length > 0 && (
-          <section
-            className="origami-function-solver-work"
-            aria-labelledby="origami-function-solver-work-title"
-          >
-            <h3 id="origami-function-solver-work-title">Solver work backlog</h3>
-            <ol>
-              {solverReadiness.workItems.map((item) => (
-                <li key={item.id}>
-                  <button
-                    type="button"
-                    aria-label={`Jump to solver work ${item.phaseId}`}
-                    aria-current={
-                      functionPreview.status === "compiled" &&
-                      item.phaseId === functionPreview.animation.phaseId
-                        ? "step"
-                        : undefined
-                    }
-                    disabled={timelineDisabled}
-                    onClick={() =>
-                      setFunctionPreview((preview) =>
-                        setOrigamiFunctionPreviewPhase(preview, item.phaseId),
-                      )
-                    }
-                  >
-                    <span>{item.phaseId}</span>
-                    <span>{`${item.phaseKind} · ${item.requiredCapability}`}</span>
-                  </button>
-                </li>
-              ))}
-            </ol>
-          </section>
-        )}
+        {!functionPresentationMode &&
+          solverReadiness &&
+          solverReadiness.workItems.length > 0 && (
+            <section
+              className="origami-function-solver-work"
+              aria-labelledby="origami-function-solver-work-title"
+            >
+              <h3 id="origami-function-solver-work-title">
+                Solver work backlog
+              </h3>
+              <ol>
+                {solverReadiness.workItems.map((item) => (
+                  <li key={item.id}>
+                    <button
+                      type="button"
+                      aria-label={`Jump to solver work ${item.phaseId}`}
+                      aria-current={
+                        functionPreview.status === "compiled" &&
+                        item.phaseId === functionPreview.animation.phaseId
+                          ? "step"
+                          : undefined
+                      }
+                      disabled={timelineDisabled}
+                      onClick={() =>
+                        setFunctionPreview((preview) =>
+                          setOrigamiFunctionPreviewPhase(preview, item.phaseId),
+                        )
+                      }
+                    >
+                      <span>{item.phaseId}</span>
+                      <span>{`${item.phaseKind} · ${item.requiredCapability}`}</span>
+                    </button>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
       </section>
       <section className="origami-workspace" aria-labelledby="origami-trace">
         <div className="origami-workspace-header">

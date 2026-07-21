@@ -196,6 +196,10 @@ The flat-origami tab provides:
 - F7.5 adds curated function challenge cards with prompts and expected fold
   counts. Selecting a challenge loads the same input controls and compiled
   preview path as freeform expressions and function presets.
+- F7.6 adds function presentation mode. Starting presentation mode resets the
+  visible function animation to the first phase, turns playback on, hides
+  editing/export/style/timeline controls, and shows a compact phase status plus
+  an exit button that restores the normal lab controls.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

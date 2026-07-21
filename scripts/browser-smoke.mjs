@@ -652,6 +652,47 @@ const assertOrigamiFunctionPanel = async (page) => {
       hasText: "origami-function-phase-9 @ 0.57",
     })
     .waitFor();
+  await page.getByRole("button", { name: "Start presentation mode" }).click();
+  const presentationMode = await page
+    .locator(".origami-function-animation-panel")
+    .getAttribute("data-presentation-mode");
+  if (presentationMode !== "active") {
+    throw new Error(`Presentation mode did not activate: ${presentationMode}`);
+  }
+  await page
+    .getByLabel("Function presentation status")
+    .getByText("Phase 1 of 14")
+    .waitFor();
+  if (
+    (await page
+      .getByRole("textbox", { exact: true, name: "Origami function" })
+      .count()) !== 0
+  ) {
+    throw new Error("Function input remained visible in presentation mode.");
+  }
+  if (
+    (await page
+      .getByRole("button", { name: "Export function animation JSON" })
+      .count()) !== 0
+  ) {
+    throw new Error(
+      "Function export controls remained visible in presentation mode.",
+    );
+  }
+  await page.getByRole("button", { name: "Exit presentation mode" }).click();
+  await page
+    .getByRole("textbox", { exact: true, name: "Origami function" })
+    .waitFor();
+  await page
+    .getByRole("button", {
+      name: "Jump to function phase origami-function-phase-9",
+    })
+    .click();
+  await page
+    .locator(".origami-function-status dd", {
+      hasText: "origami-function-phase-9 @ 0.57",
+    })
+    .waitFor();
   await page
     .getByRole("img", {
       name: "Origami function animation: f(a) = sqrt(a + 1)",

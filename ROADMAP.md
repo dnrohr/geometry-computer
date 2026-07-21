@@ -615,6 +615,9 @@ worth exploring while staying honest about mathematical limits.
   generated function plan.
 - F7.6 Add a presentation mode that hides editing controls and plays the fold
   proof as a clean teaching sequence.
+  Current implementation adds a reversible presentation mode that hides the
+  function editor, export/style/timeline controls, resets to the first phase,
+  and starts the fold animation with a compact phase status.
 - F7.7 Add a paper-style randomizer with named palettes that preserve contrast
   constraints.
 

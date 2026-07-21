@@ -183,6 +183,10 @@ F7.5 adds curated function challenges beside the existing presets. Challenges
 reuse the signature-aware parser boundary and `compileOrigamiFunctionPreview`,
 and their expected fold counts are tested against the generated plan phase
 counts so the labels stay tied to compiler behavior.
+F7.6 keeps presentation mode in the origami tab UI. Entering presentation mode
+sets local preview playback to the first phase and hides editing controls, while
+exit pauses playback and restores the normal controls. It does not change plan
+generation, paper style data, exports, or shared compass-and-straightedge code.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,
