@@ -19,6 +19,7 @@ import {
   origamiVariableControls,
   setOrigamiFunctionPreviewPlaying,
   setOrigamiFunctionPreviewPaperStyle,
+  setOrigamiFunctionPreviewPhase,
   setOrigamiFunctionPreviewProgress,
   setOrigamiFunctionPreviewReducedMotion,
   setOrigamiFunctionPreviewSpeed,
@@ -1281,6 +1282,33 @@ function OrigamiRoadmap() {
             />
           </label>
         </div>
+        {solverReadiness && solverReadiness.workItems.length > 0 && (
+          <section
+            className="origami-function-solver-work"
+            aria-labelledby="origami-function-solver-work-title"
+          >
+            <h3 id="origami-function-solver-work-title">Solver work backlog</h3>
+            <ol>
+              {solverReadiness.workItems.map((item) => (
+                <li key={item.id}>
+                  <button
+                    type="button"
+                    aria-label={`Jump to solver work ${item.phaseId}`}
+                    disabled={timelineDisabled}
+                    onClick={() =>
+                      setFunctionPreview((preview) =>
+                        setOrigamiFunctionPreviewPhase(preview, item.phaseId),
+                      )
+                    }
+                  >
+                    <span>{item.phaseId}</span>
+                    <span>{`${item.phaseKind} · ${item.requiredCapability}`}</span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
       </section>
       <section className="origami-workspace" aria-labelledby="origami-trace">
         <div className="origami-workspace-header">

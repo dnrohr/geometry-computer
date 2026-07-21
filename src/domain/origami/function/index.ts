@@ -22,6 +22,7 @@ export {
   origamiFunctionAnimationJson,
   setOrigamiFunctionPreviewPlaying,
   setOrigamiFunctionPreviewPaperStyle,
+  setOrigamiFunctionPreviewPhase,
   setOrigamiFunctionPreviewProgress,
   setOrigamiFunctionPreviewReducedMotion,
   setOrigamiFunctionPreviewSpeed,

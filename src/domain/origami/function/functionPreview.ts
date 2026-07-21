@@ -96,6 +96,24 @@ export function setOrigamiFunctionPreviewProgress(
   };
 }
 
+export function setOrigamiFunctionPreviewPhase(
+  preview: OrigamiFunctionPreview,
+  phaseId: string,
+): OrigamiFunctionPreview {
+  if (preview.status !== "compiled") return preview;
+  const phaseIndex = preview.plan.phases.findIndex(({ id }) => id === phaseId);
+  if (phaseIndex < 0) return preview;
+  return {
+    ...preview,
+    animation: animationForPlan(
+      preview.plan,
+      phaseIndex === preview.plan.phases.length - 1
+        ? 1
+        : phaseIndex / preview.plan.phases.length,
+    ),
+  };
+}
+
 export function stepOrigamiFunctionPreviewPhase(
   preview: OrigamiFunctionPreview,
   delta: number,

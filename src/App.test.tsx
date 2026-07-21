@@ -312,6 +312,20 @@ describe("App", () => {
       screen.getByRole("button", { name: "Play function animation" }),
     ).toBeInTheDocument();
     expect(
+      screen.getByRole("heading", { name: "Solver work backlog" }),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Jump to solver work origami-function-phase-9",
+      }),
+    );
+    expect(
+      screen.getByRole("slider", { name: "Function animation progress" }),
+    ).toHaveValue(String(8 / 14));
+    expect(
+      within(functionPanel).getByText("origami-function-phase-9 @ 0.57"),
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole("group", { name: "Paper style" }),
     ).toBeInTheDocument();
     expect(screen.getByLabelText("Function paper front color")).toHaveValue(

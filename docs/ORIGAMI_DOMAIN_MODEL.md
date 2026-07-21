@@ -131,6 +131,9 @@ backlog.
 F5.4 certifies baseline addition and directed subtraction function phases. These
 arithmetic macros now emit fold certificates instead of fallback work items, and
 plans whose final result is add/sub can become fully solver-ready.
+F5.5 adds direct phase navigation for solver work items. The preview model can
+jump to a named animation phase, which lets UI and smoke tests inspect fallback
+items without deriving progress positions themselves.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

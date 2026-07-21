@@ -5,6 +5,7 @@ import {
   origamiFunctionAnimationJson,
   setOrigamiFunctionPreviewPlaying,
   setOrigamiFunctionPreviewPaperStyle,
+  setOrigamiFunctionPreviewPhase,
   setOrigamiFunctionPreviewProgress,
   setOrigamiFunctionPreviewReducedMotion,
   setOrigamiFunctionPreviewSpeed,
@@ -113,6 +114,26 @@ describe("origami function preview plan", () => {
       playing: false,
       reducedMotion: true,
     });
+  });
+
+  it("jumps directly to a named function animation phase", () => {
+    const preview = compileOrigamiFunctionPreview("sqrt(a+1)");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+
+    const jumped = setOrigamiFunctionPreviewPhase(
+      preview,
+      "origami-function-phase-9",
+    );
+    if (jumped.status !== "compiled") throw new Error("Expected compiled");
+    expect(jumped.animation).toMatchObject({
+      phaseId: "origami-function-phase-9",
+      progress: 8 / 14,
+      playing: false,
+    });
+
+    expect(setOrigamiFunctionPreviewPhase(jumped, "missing-phase")).toBe(
+      jumped,
+    );
   });
 
   it("updates paper style without changing the compiled function plan", () => {

@@ -149,6 +149,8 @@ The flat-origami tab provides:
 - F5.4 reduces fallback work by certifying baseline addition/subtraction phases;
   the solver readout updates as these arithmetic macros become physically
   backed.
+- F5.5 renders a solver work backlog below the animation controls. Each item
+  jumps the function animation directly to the fallback phase it represents.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

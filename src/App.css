@@ -777,6 +777,55 @@ select:focus-visible,
   opacity: 0.45;
 }
 
+.origami-function-solver-work {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 3%);
+}
+
+.origami-function-solver-work h3 {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+}
+
+.origami-function-solver-work ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.origami-function-solver-work button {
+  display: grid;
+  gap: 0.2rem;
+  width: 100%;
+  min-width: 0;
+  padding: 0.55rem 0.65rem;
+  text-align: left;
+}
+
+.origami-function-solver-work button span:first-child {
+  color: var(--foreground);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.76rem;
+}
+
+.origami-function-solver-work button span:last-child {
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 750;
+}
+
 .origami-paper-style-controls {
   display: grid;
   grid-column: 1 / -1;
