@@ -5,6 +5,7 @@ import {
   compileOrigamiFunctionPreview,
   origamiFunctionAnimationExport,
 } from "./origami/function";
+import { mergerConcepts } from "./mergerConcepts";
 import { parseExpression } from "./parser/parseExpression";
 import { compileOrigamiExpression } from "./origami/compiler/compileOrigamiExpression";
 
@@ -116,5 +117,15 @@ describe("origami and compass-straightedge merger readiness", () => {
     expect(review).toContain(
       "Do not merge the compiler, renderer, export, or proof paths yet.",
     );
+  });
+
+  it("keeps the written concept classification aligned with F8.2 data", () => {
+    const review = readFileSync("docs/ORIGAMI_MERGER_REVIEW.md", "utf8");
+    const normalizedReview = review.replace(/\s+/g, " ");
+
+    for (const { concept, reason } of mergerConcepts) {
+      expect(review).toContain(concept);
+      expect(normalizedReview).toContain(reason);
+    }
   });
 });

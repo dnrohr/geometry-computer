@@ -164,35 +164,47 @@ state is a construction-reading aid.
 
 These concepts are compatible enough to keep aligned:
 
-- Parsed expression AST as the input boundary.
-- Sampled numeric values for examples and tests.
-- Arithmetic operation family names.
-- Result provenance tied back to formatted expressions.
-- Proof references attached to generated work.
-- JSON-safe scene and function-preview data.
+- Parsed expression AST: Both systems already consume the same parser output
+  before choosing a construction model.
+- Sampled numeric values: Both compilers use sample values to evaluate the
+  expression and validate expected results.
+- Arithmetic operation family names: Operation families such as addition and
+  square root stay comparable in tests and docs.
+- Result expression provenance: Both systems tie the displayed result back to a
+  formatted expression.
+- JSON-safe generated data: Both paths can serialize generated scenes or
+  function previews without UI-only state.
 
 ## Similar but Not Identical
 
 These concepts should stay separate until more evidence accumulates:
 
-- Step and phase models.
-- Proof cards versus fold certificates and solver readiness.
-- Object provenance fields and object namespaces.
-- Progressive reveal versus fold animation playback.
-- Export controls and exported metadata.
+- Step and phase models: Compass steps describe macro and primitive construction
+  levels; origami phases describe fold computation and solver readiness.
+- Proof references: Compass proof cards and origami fold certificates both
+  justify work, but they cite different mathematical objects.
+- Object provenance fields: Both preserve provenance, while compass and origami
+  object namespaces and metadata differ.
+- Progressive visual state: Compass reveal progress and origami fold playback
+  are deterministic, but they explain different actions.
+- Export controls: Both expose JSON and SVG-style exports, while their schemas
+  and replay semantics remain different.
 
 ## System-Specific Concepts
 
 These should not be hidden behind a shared abstraction yet:
 
-- Huzita-Hatori axiom selection and branch ordering.
-- Mountain/valley assignment and side exposure.
-- Fold degeneracy categories and physical solver backlog.
-- Compass circle/ray/arc construction scaffolding.
-- Clean final compass construction extraction.
-- Origami paper styling, crease-pattern export, animated SVG export, import
-  replay, fold camera, onion-skin ghosts, visual cues, minimap, challenges,
-  presentation mode, and palette randomizer.
+- Huzita-Hatori axiom selection: Fold axiom choice and branch ordering only
+  belong to the origami solver path.
+- Mountain/valley assignment and side exposure: Paper orientation is essential
+  to folds and has no compass-and-straightedge equivalent.
+- Compass construction scaffolding: Circles, rays, arcs, triangles, and clean
+  final extraction are Euclidean construction concerns.
+- Origami function animation controls: Fold camera, onion-skin ghosts, cues,
+  minimap, presentation mode, replay, and paper palettes explain
+  folding-specific computation.
+- Physical fold solver backlog: Fallback phases and required fold-solver
+  capabilities are origami-only readiness data.
 
 ## Decision
 
