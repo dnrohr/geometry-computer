@@ -81,6 +81,19 @@ export type OrigamiFunctionFallbackPhase = {
   replacementFor: string;
 };
 
+export type OrigamiFunctionFoldCertificateMethod =
+  | "paper-placement"
+  | "mark-length"
+  | "identity-result";
+
+export type OrigamiFunctionFoldCertificate = {
+  id: string;
+  phaseId: string;
+  method: OrigamiFunctionFoldCertificateMethod;
+  targetObjectIds: string[];
+  summary: string;
+};
+
 export type OrigamiFunctionPlanPhase = {
   id: string;
   kind: OrigamiFunctionPlanPhaseKind;
@@ -91,6 +104,7 @@ export type OrigamiFunctionPlanPhase = {
   exportId?: string;
   foldMotion?: OrigamiFunctionFoldMotion;
   physicalStatus: OrigamiFunctionPhasePhysicalStatus;
+  foldCertificate?: OrigamiFunctionFoldCertificate;
   fallback?: OrigamiFunctionFallbackPhase;
 };
 
@@ -183,6 +197,7 @@ export type OrigamiFunctionSolverReadiness = {
   status: OrigamiFunctionSolverReadinessStatus;
   totalPhases: number;
   provenPhysicalPhases: number;
+  certifiedPhases: number;
   fallbackPhases: number;
   fallbackPhaseIds: string[];
   summary: string;

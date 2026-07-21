@@ -142,6 +142,8 @@ The flat-origami tab provides:
 - F5.1 surfaces function-plan solver readiness in the origami tab. The function
   lab shows ready versus fallback phase counts so arithmetic playback remains
   honest about which steps still need a physical fold solver.
+- F5.2 includes certified-phase counts in that readout. Proven setup phases now
+  carry fold certificates that are exported with the function animation plan.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

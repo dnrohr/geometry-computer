@@ -131,6 +131,14 @@ describe("origami function input boundary", () => {
           outputObjectIds: ["origami-segment-1"],
           proofClaimIds: [],
           physicalStatus: "proven-physical",
+          foldCertificate: {
+            id: "origami-phase-1-certificate",
+            phaseId: "origami-phase-1",
+            method: "mark-length",
+            targetObjectIds: ["origami-segment-1"],
+            summary:
+              "The sampled input or constant length is directly marked on the paper baseline.",
+          },
         },
       ],
       diagnostics: [],
@@ -138,6 +146,7 @@ describe("origami function input boundary", () => {
         status: "ready",
         totalPhases: 1,
         provenPhysicalPhases: 1,
+        certifiedPhases: 1,
         fallbackPhases: 0,
         fallbackPhaseIds: [],
         summary:

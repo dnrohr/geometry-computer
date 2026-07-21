@@ -158,11 +158,24 @@ describe("origami function plan", () => {
       }),
     ]);
     expect(plan.phases.every(({ exportId }) => exportId)).toBe(true);
+    expect(plan.phases[0].foldCertificate).toMatchObject({
+      method: "paper-placement",
+      phaseId: "origami-function-phase-1",
+      targetObjectIds: ["origami-function-paper"],
+    });
+    expect(plan.phases[1].foldCertificate).toMatchObject({
+      method: "mark-length",
+      targetObjectIds: ["origami-function-node-output-1"],
+    });
+    expect(
+      plan.phases.filter(({ foldCertificate }) => foldCertificate).length,
+    ).toBe(3);
     expect(plan.solverReadiness).toMatchObject({
       status: "needs-solver",
       totalPhases: plan.phases.length,
       fallbackPhases: 6,
       provenPhysicalPhases: 3,
+      certifiedPhases: 3,
     });
     expect(plan.solverReadiness.fallbackPhaseIds).toEqual(
       plan.phases
@@ -185,10 +198,15 @@ describe("origami function plan", () => {
       status: "ready",
       totalPhases: 3,
       provenPhysicalPhases: 3,
+      certifiedPhases: 3,
       fallbackPhases: 0,
       fallbackPhaseIds: [],
       summary:
         "All function animation phases are backed by physical fold steps.",
+    });
+    expect(plan.phases.at(-1)?.foldCertificate).toMatchObject({
+      method: "identity-result",
+      targetObjectIds: ["origami-function-result"],
     });
   });
 

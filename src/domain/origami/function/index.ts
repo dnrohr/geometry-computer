@@ -45,6 +45,8 @@ export type {
   OrigamiFunctionFoldDirection,
   OrigamiFunctionFoldMotion,
   OrigamiFunctionFallbackPhase,
+  OrigamiFunctionFoldCertificate,
+  OrigamiFunctionFoldCertificateMethod,
   OrigamiFunctionHingeLine,
   OrigamiFunctionLengthTransfer,
   OrigamiFunctionPaperRegion,

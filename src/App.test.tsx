@@ -280,7 +280,7 @@ describe("App", () => {
       within(functionPanel).getByText("f(a) = sqrt(a + 1)"),
     ).toBeInTheDocument();
     expect(
-      within(functionPanel).getByText("11/14 fallback phases"),
+      within(functionPanel).getByText("11/14 fallback phases, 3 certified"),
     ).toBeInTheDocument();
     expect(
       within(functionPanel).getByText(

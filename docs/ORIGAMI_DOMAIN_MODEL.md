@@ -120,6 +120,10 @@ F5.1 adds a solver-readiness report to each function plan. The report is derived
 from the phase `physicalStatus` fields, counts proven versus fallback phases,
 lists fallback phase IDs, and tells the UI/export layer whether the current
 function animation is physically ready or still waiting on fold-solver support.
+F5.2 adds fold certificates for phases that are already physically proven:
+paper placement, direct length marking, and identity result extraction. The
+readiness report now also counts certified phases so future solver work can
+replace fallback phases with explicit proof artifacts one step at a time.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

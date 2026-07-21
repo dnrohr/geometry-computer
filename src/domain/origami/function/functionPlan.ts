@@ -12,6 +12,7 @@ import type {
   OrigamiFunctionPlanPhase,
   OrigamiFunctionPlanPhaseKind,
   OrigamiFunctionSolverReadiness,
+  OrigamiFunctionFoldCertificate,
 } from "./types";
 
 type ValidOrigamiFunctionInput = Extract<
@@ -301,12 +302,16 @@ const createSolverReadiness = (
     .filter(({ physicalStatus }) => physicalStatus === "explanatory-fallback")
     .map(({ id }) => id);
   const provenPhysicalPhases = phases.length - fallbackPhaseIds.length;
+  const certifiedPhases = phases.filter(({ foldCertificate }) =>
+    Boolean(foldCertificate),
+  ).length;
   const status = fallbackPhaseIds.length === 0 ? "ready" : "needs-solver";
 
   return {
     status,
     totalPhases: phases.length,
     provenPhysicalPhases,
+    certifiedPhases,
     fallbackPhases: fallbackPhaseIds.length,
     fallbackPhaseIds,
     summary:
@@ -314,6 +319,49 @@ const createSolverReadiness = (
         ? "All function animation phases are backed by physical fold steps."
         : `${fallbackPhaseIds.length} of ${phases.length} function animation phases still need physical fold-solver support.`,
   };
+};
+
+const certificateForPhase = (
+  phase: Omit<OrigamiFunctionPlanPhase, "id" | "exportId">,
+  phaseId: string,
+): OrigamiFunctionFoldCertificate | undefined => {
+  if (phase.physicalStatus !== "proven-physical") return undefined;
+  switch (phase.kind) {
+    case "place-paper":
+      return {
+        id: `${phaseId}-certificate`,
+        phaseId,
+        method: "paper-placement",
+        targetObjectIds: phase.outputObjectIds,
+        summary:
+          "The paper boundary is placed as the fixed computation domain.",
+      };
+    case "mark-input":
+      return {
+        id: `${phaseId}-certificate`,
+        phaseId,
+        method: "mark-length",
+        targetObjectIds: phase.outputObjectIds,
+        summary:
+          "The sampled input or constant length is directly marked on the paper baseline.",
+      };
+    case "extract-result":
+      return {
+        id: `${phaseId}-certificate`,
+        phaseId,
+        method: "identity-result",
+        targetObjectIds: phase.outputObjectIds,
+        summary:
+          "The result is already present as a marked length and needs no additional fold.",
+      };
+    case "align-fold":
+    case "preview-crease":
+    case "fold":
+    case "transfer":
+    case "mark-intersection":
+    case "diagnostic":
+      return undefined;
+  }
 };
 
 export function createOrigamiFunctionPlan(
@@ -404,6 +452,7 @@ export function createOrigamiFunctionPlan(
       ...phase,
       id,
       exportId: `origami-function-export-phase-${phases.length + 1}`,
+      foldCertificate: certificateForPhase(phase, id),
     };
     phases.push(nextPhase);
     return id;

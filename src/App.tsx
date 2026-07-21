@@ -858,7 +858,7 @@ function OrigamiRoadmap() {
               {solverReadiness
                 ? solverReadiness.status === "ready"
                   ? "ready"
-                  : `${solverReadiness.fallbackPhases}/${solverReadiness.totalPhases} fallback phases`
+                  : `${solverReadiness.fallbackPhases}/${solverReadiness.totalPhases} fallback phases, ${solverReadiness.certifiedPhases} certified`
                 : "not compiled"}
             </dd>
           </div>
