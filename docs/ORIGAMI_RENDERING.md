@@ -144,6 +144,8 @@ The flat-origami tab provides:
   honest about which steps still need a physical fold solver.
 - F5.2 includes certified-phase counts in that readout. Proven setup phases now
   carry fold certificates that are exported with the function animation plan.
+- F5.3 shows the next solver work item in the function lab, and the animation
+  JSON export includes the full fallback work-item list.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

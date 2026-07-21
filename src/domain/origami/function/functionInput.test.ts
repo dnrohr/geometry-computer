@@ -149,6 +149,7 @@ describe("origami function input boundary", () => {
         certifiedPhases: 1,
         fallbackPhases: 0,
         fallbackPhaseIds: [],
+        workItems: [],
         summary:
           "All function animation phases are backed by physical fold steps.",
       },

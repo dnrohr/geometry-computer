@@ -563,6 +563,9 @@ const assertOrigamiFunctionPanel = async (page) => {
   await functionPanel.getByText("allowable").waitFor();
   await functionPanel.getByText("2.000").waitFor();
   await functionPanel.getByText("11/14 fallback phases, 3 certified").waitFor();
+  await functionPanel
+    .getByText("origami-function-phase-4 align-fold arithmetic-macro-fold")
+    .waitFor();
   await page
     .getByRole("img", {
       name: "Origami function animation: f(a) = sqrt(a + 1)",
@@ -649,6 +652,10 @@ const assertOrigamiFunctionPanel = async (page) => {
     animationExport.paperStyle.backPattern !== "high-contrast" ||
     animationExport.paperStyle.patternScale !== 1.75 ||
     animationExport.paperStyle.patternRotation !== 45 ||
+    animationExport.plan.solverReadiness.workItems[0]?.phaseId !==
+      "origami-function-phase-4" ||
+    animationExport.plan.solverReadiness.workItems[0]?.requiredCapability !==
+      "arithmetic-macro-fold" ||
     animationExport.animation.planId !== animationExport.plan.id
   ) {
     throw new Error(

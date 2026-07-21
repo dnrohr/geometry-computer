@@ -193,6 +193,21 @@ export type OrigamiFunctionPlanDiagnostic = {
 
 export type OrigamiFunctionSolverReadinessStatus = "ready" | "needs-solver";
 
+export type OrigamiFunctionSolverCapability =
+  | "arithmetic-macro-fold"
+  | "result-extraction-fold";
+
+export type OrigamiFunctionSolverWorkItem = {
+  id: string;
+  phaseId: string;
+  phaseKind: OrigamiFunctionPlanPhaseKind;
+  expression: string;
+  replacementFor: string;
+  requiredCapability: OrigamiFunctionSolverCapability;
+  selectedBranchId?: string;
+  summary: string;
+};
+
 export type OrigamiFunctionSolverReadiness = {
   status: OrigamiFunctionSolverReadinessStatus;
   totalPhases: number;
@@ -200,6 +215,7 @@ export type OrigamiFunctionSolverReadiness = {
   certifiedPhases: number;
   fallbackPhases: number;
   fallbackPhaseIds: string[];
+  workItems: OrigamiFunctionSolverWorkItem[];
   summary: string;
 };
 

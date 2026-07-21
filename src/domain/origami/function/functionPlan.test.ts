@@ -177,6 +177,42 @@ describe("origami function plan", () => {
       provenPhysicalPhases: 3,
       certifiedPhases: 3,
     });
+    expect(plan.solverReadiness.workItems).toEqual([
+      expect.objectContaining({
+        phaseId: "origami-function-phase-4",
+        phaseKind: "align-fold",
+        expression: "a * b",
+        replacementFor: "mul:align-fold",
+        requiredCapability: "arithmetic-macro-fold",
+        selectedBranchId: "intercept-product-branch",
+      }),
+      expect.objectContaining({
+        phaseId: "origami-function-phase-5",
+        phaseKind: "preview-crease",
+        replacementFor: "mul:preview-crease",
+      }),
+      expect.objectContaining({
+        phaseId: "origami-function-phase-6",
+        phaseKind: "fold",
+        replacementFor: "mul:fold",
+      }),
+      expect.objectContaining({
+        phaseId: "origami-function-phase-7",
+        phaseKind: "transfer",
+        replacementFor: "mul:transfer",
+      }),
+      expect.objectContaining({
+        phaseId: "origami-function-phase-8",
+        phaseKind: "mark-intersection",
+        replacementFor: "mul:mark-intersection",
+      }),
+      expect.objectContaining({
+        phaseId: "origami-function-phase-9",
+        phaseKind: "extract-result",
+        expression: "f(a, b) = a * b",
+        requiredCapability: "result-extraction-fold",
+      }),
+    ]);
     expect(plan.solverReadiness.fallbackPhaseIds).toEqual(
       plan.phases
         .filter(
@@ -201,6 +237,7 @@ describe("origami function plan", () => {
       certifiedPhases: 3,
       fallbackPhases: 0,
       fallbackPhaseIds: [],
+      workItems: [],
       summary:
         "All function animation phases are backed by physical fold steps.",
     });

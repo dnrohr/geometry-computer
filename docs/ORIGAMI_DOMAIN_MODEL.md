@@ -124,6 +124,10 @@ F5.2 adds fold certificates for phases that are already physically proven:
 paper placement, direct length marking, and identity result extraction. The
 readiness report now also counts certified phases so future solver work can
 replace fallback phases with explicit proof artifacts one step at a time.
+F5.3 turns fallback phases into solver work items. Each item records the phase,
+expression, replacement target, required solver capability, and selected branch
+when available, so the exported function animation doubles as a physical-solver
+backlog.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

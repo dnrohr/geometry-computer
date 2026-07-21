@@ -672,6 +672,7 @@ function OrigamiRoadmap() {
     functionPreview.status === "compiled"
       ? functionPreview.plan.solverReadiness
       : undefined;
+  const nextSolverWorkItem = solverReadiness?.workItems[0];
   const updateOrigamiPaperStyle = (
     paperStyleUpdate: Parameters<typeof setOrigamiFunctionPreviewPaperStyle>[1],
   ) =>
@@ -866,6 +867,12 @@ function OrigamiRoadmap() {
             <div>
               <dt>Solver detail</dt>
               <dd>{solverReadiness.summary}</dd>
+            </div>
+          )}
+          {nextSolverWorkItem && (
+            <div>
+              <dt>Next solver item</dt>
+              <dd>{`${nextSolverWorkItem.phaseId} ${nextSolverWorkItem.phaseKind} ${nextSolverWorkItem.requiredCapability}`}</dd>
             </div>
           )}
           {copiedFunctionReadout && (

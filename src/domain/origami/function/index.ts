@@ -67,6 +67,8 @@ export type {
   OrigamiFunctionSideExposure,
   OrigamiFunctionSolverReadiness,
   OrigamiFunctionSolverReadinessStatus,
+  OrigamiFunctionSolverCapability,
+  OrigamiFunctionSolverWorkItem,
   OrigamiFunctionSource,
   OrigamiFunctionValidation,
   OrigamiPaperPattern,

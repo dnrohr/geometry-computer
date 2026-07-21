@@ -13,6 +13,7 @@ import type {
   OrigamiFunctionPlanPhaseKind,
   OrigamiFunctionSolverReadiness,
   OrigamiFunctionFoldCertificate,
+  OrigamiFunctionSolverWorkItem,
 } from "./types";
 
 type ValidOrigamiFunctionInput = Extract<
@@ -298,9 +299,30 @@ const createPlanDiagnostics = (
 const createSolverReadiness = (
   phases: OrigamiFunctionPlanPhase[],
 ): OrigamiFunctionSolverReadiness => {
-  const fallbackPhaseIds = phases
-    .filter(({ physicalStatus }) => physicalStatus === "explanatory-fallback")
-    .map(({ id }) => id);
+  const fallbackPhases = phases.filter(
+    ({ physicalStatus }) => physicalStatus === "explanatory-fallback",
+  );
+  const fallbackPhaseIds = fallbackPhases.map(({ id }) => id);
+  const workItems: OrigamiFunctionSolverWorkItem[] = fallbackPhases.map(
+    (phase) => {
+      const requiredCapability =
+        phase.kind === "extract-result"
+          ? "result-extraction-fold"
+          : "arithmetic-macro-fold";
+      return {
+        id: `${phase.id}-solver-work`,
+        phaseId: phase.id,
+        phaseKind: phase.kind,
+        expression: phase.expression,
+        replacementFor: phase.fallback?.replacementFor ?? phase.kind,
+        requiredCapability,
+        selectedBranchId: phase.foldMotion?.selectedBranch.id,
+        summary:
+          phase.fallback?.reason ??
+          `${phase.expression} needs physical fold-solver support.`,
+      };
+    },
+  );
   const provenPhysicalPhases = phases.length - fallbackPhaseIds.length;
   const certifiedPhases = phases.filter(({ foldCertificate }) =>
     Boolean(foldCertificate),
@@ -314,6 +336,7 @@ const createSolverReadiness = (
     certifiedPhases,
     fallbackPhases: fallbackPhaseIds.length,
     fallbackPhaseIds,
+    workItems,
     summary:
       status === "ready"
         ? "All function animation phases are backed by physical fold steps."

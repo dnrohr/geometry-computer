@@ -288,6 +288,11 @@ describe("App", () => {
       ),
     ).toBeInTheDocument();
     expect(
+      within(functionPanel).getByText(
+        "origami-function-phase-4 align-fold arithmetic-macro-fold",
+      ),
+    ).toBeInTheDocument();
+    expect(
       within(functionPanel).getByRole("slider", { name: "a sample slider" }),
     ).toHaveValue("3");
     expect(
