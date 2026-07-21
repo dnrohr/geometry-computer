@@ -605,6 +605,9 @@ worth exploring while staying honest about mathematical limits.
   result extraction without changing compiled plans or exports.
 - F7.4 Add a step minimap showing where each operation sits in the full
   computation.
+  Current implementation adds a compact function-phase minimap with numbered
+  operation markers, active-phase state, fallback/proven styling, and direct
+  phase jump controls.
 - F7.5 Add curated function challenges such as "make 2a+b", "compute a scaled
   reciprocal", and "extract sqrt(a+1)" with expected fold counts.
 - F7.6 Add a presentation mode that hides editing controls and plays the fold

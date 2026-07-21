@@ -189,6 +189,10 @@ The flat-origami tab provides:
   snap, branch selected, result extracted, and domain warning states from the
   current UI preview and validation status without changing the SVG renderer,
   compiled function plan, timeline phase, or export helpers.
+- F7.4 adds a function step minimap. The minimap renders one button per compiled
+  phase, marks the active phase with `aria-current`, distinguishes proven and
+  explanatory fallback phases, and jumps through the same local preview state as
+  the timeline controls.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

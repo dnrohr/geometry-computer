@@ -112,6 +112,12 @@ const origamiRoadmap = [
   },
 ];
 
+const formatOrigamiPhaseKind = (kind: string) =>
+  kind
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+
 const build = (
   source: string,
   values: Record<string, number>,
@@ -741,6 +747,22 @@ function OrigamiRoadmap() {
           ({ id }) => id === functionPreview.animation.phaseId,
         )
       : undefined;
+  const functionPhaseMinimapItems =
+    functionPreview.status === "compiled"
+      ? functionPreview.plan.phases.map((phase, index) => ({
+          id: phase.id,
+          index,
+          kind: phase.kind,
+          label: formatOrigamiPhaseKind(phase.kind),
+          expression: phase.expression,
+          physicalStatus: phase.physicalStatus,
+          fallbackLabel: phase.fallback?.label,
+          isActive: phase.id === functionPreview.animation.phaseId,
+        }))
+      : [];
+  const activeFunctionPhaseIndex = functionPhaseMinimapItems.findIndex(
+    ({ isActive }) => isActive,
+  );
   const functionVisualCueItems = useMemo(() => {
     if (!functionVisualCues) return [];
     const cues: Array<{
@@ -1230,6 +1252,47 @@ function OrigamiRoadmap() {
               </span>
             )}
           </div>
+        )}
+        {functionPhaseMinimapItems.length > 0 && (
+          <section
+            className="origami-function-minimap"
+            aria-labelledby="origami-function-minimap-title"
+          >
+            <div className="origami-function-minimap-header">
+              <h3 id="origami-function-minimap-title">Step minimap</h3>
+              <span>
+                {activeFunctionPhaseIndex + 1} of{" "}
+                {functionPhaseMinimapItems.length}
+              </span>
+            </div>
+            <div
+              className="origami-function-minimap-track"
+              aria-label="Origami function step minimap"
+            >
+              {functionPhaseMinimapItems.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  aria-label={`Jump to function phase ${item.id}`}
+                  aria-current={item.isActive ? "step" : undefined}
+                  className={`origami-function-minimap-step origami-function-minimap-step-${item.physicalStatus}`}
+                  data-phase-id={item.id}
+                  data-phase-kind={item.kind}
+                  disabled={timelineDisabled}
+                  title={`${item.label}: ${item.expression}`}
+                  onClick={() =>
+                    setFunctionPreview((preview) =>
+                      setOrigamiFunctionPreviewPhase(preview, item.id),
+                    )
+                  }
+                >
+                  <span>{item.index + 1}</span>
+                  <span>{item.label}</span>
+                  {item.fallbackLabel && <span>{item.fallbackLabel}</span>}
+                </button>
+              ))}
+            </div>
+          </section>
         )}
         <div className="origami-function-export-controls">
           <button

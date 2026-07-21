@@ -612,6 +612,46 @@ const assertOrigamiFunctionPanel = async (page) => {
       `Active solver work item was not marked current: ${activeSolverItem}`,
     );
   }
+  const minimap = page.getByLabel("Origami function step minimap");
+  await minimap.waitFor();
+  const minimapCount = await minimap
+    .getByRole("button", { name: /Jump to function phase/ })
+    .count();
+  if (minimapCount !== 14) {
+    throw new Error(
+      `Function step minimap expected 14 phases, got ${minimapCount}`,
+    );
+  }
+  const activeMinimapItem = await page
+    .getByRole("button", {
+      name: "Jump to function phase origami-function-phase-9",
+    })
+    .getAttribute("aria-current");
+  if (activeMinimapItem !== "step") {
+    throw new Error(
+      `Active function minimap item was not marked current: ${activeMinimapItem}`,
+    );
+  }
+  await page
+    .getByRole("button", {
+      name: "Jump to function phase origami-function-phase-10",
+    })
+    .click();
+  await page
+    .locator(".origami-function-status dd", {
+      hasText: "origami-function-phase-10 @ 0.64",
+    })
+    .waitFor();
+  await page
+    .getByRole("button", {
+      name: "Jump to function phase origami-function-phase-9",
+    })
+    .click();
+  await page
+    .locator(".origami-function-status dd", {
+      hasText: "origami-function-phase-9 @ 0.57",
+    })
+    .waitFor();
   await page
     .getByRole("img", {
       name: "Origami function animation: f(a) = sqrt(a + 1)",

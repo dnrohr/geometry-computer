@@ -174,6 +174,11 @@ F7.3 keeps visual fold cues in the origami tab UI. Cue labels are derived from
 validation status, the active phase, selected solver branch metadata, and result
 extraction state, but they do not alter parser behavior, plan phases, solver
 readiness, animation exports, or compass-and-straightedge modules.
+F7.4 keeps the function step minimap as a UI projection of existing plan phases.
+Each marker uses phase ID, kind, expression, physical status, and fallback label
+from the compiled preview, then jumps by setting local animation phase state.
+It does not add phases, mutate solver metadata, or create shared construction
+interfaces.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

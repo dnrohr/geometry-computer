@@ -640,6 +640,41 @@ describe("App", () => {
     expect(within(cueStrip).getByText("Domain warning")).toBeInTheDocument();
   });
 
+  it("uses the origami function step minimap to jump across computation phases", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+
+    const minimap = screen.getByLabelText("Origami function step minimap");
+    expect(
+      within(minimap).getAllByRole("button", {
+        name: /Jump to function phase origami-function-phase-/,
+      }),
+    ).toHaveLength(14);
+    expect(
+      screen.getByRole("button", {
+        name: "Jump to function phase origami-function-phase-1",
+      }),
+    ).toHaveAttribute("aria-current", "step");
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Jump to function phase origami-function-phase-9",
+      }),
+    );
+
+    expect(
+      screen.getByRole("button", {
+        name: "Jump to function phase origami-function-phase-9",
+      }),
+    ).toHaveAttribute("aria-current", "step");
+    expect(screen.getByText("9 of 14")).toBeInTheDocument();
+    expect(
+      screen.getByText("origami-function-phase-9 @ 0.57"),
+    ).toBeInTheDocument();
+  });
+
   it("keeps origami function validation local to the flat origami tab", () => {
     render(<App />);
     fireEvent.click(
