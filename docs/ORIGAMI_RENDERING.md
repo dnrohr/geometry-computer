@@ -133,6 +133,9 @@ The flat-origami tab provides:
 - F4.4 adds origami-local pattern scale and rotation sliders. The animation
   applies them through SVG pattern transforms so grid, stripe, dot, wave,
   coordinate, and high-contrast presets can be tuned for the current fold size.
+- F4.5 exports the function animation as origami-local JSON with plan,
+  animation, and paper-style state while smoke tests verify compass SVG exports
+  do not include origami animation state.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

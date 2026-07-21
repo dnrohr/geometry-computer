@@ -14,6 +14,7 @@ import {
   clampOrigamiVariableValue,
   compileOrigamiFunctionPreview,
   evaluateOrigamiFunctionInput,
+  origamiFunctionAnimationJson,
   origamiFunctionExamples,
   origamiVariableControls,
   setOrigamiFunctionPreviewPlaying,
@@ -945,6 +946,24 @@ function OrigamiRoadmap() {
           <a href="#origami-trace">View trace</a>
         </aside>
         <SvgOrigamiFunctionAnimation preview={functionPreview} />
+        <button
+          type="button"
+          disabled={timelineDisabled}
+          onClick={() => {
+            const json = origamiFunctionAnimationJson(
+              functionPreview,
+              new Date().toISOString(),
+            );
+            if (!json) return;
+            downloadText(
+              "origami-function-animation.json",
+              json,
+              "application/json",
+            );
+          }}
+        >
+          Export function animation JSON
+        </button>
         <fieldset className="origami-paper-style-controls">
           <legend>Paper style</legend>
           <label>

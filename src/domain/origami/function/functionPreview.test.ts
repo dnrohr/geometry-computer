@@ -1,6 +1,8 @@
 import {
   advanceOrigamiFunctionPreview,
   compileOrigamiFunctionPreview,
+  origamiFunctionAnimationExport,
+  origamiFunctionAnimationJson,
   setOrigamiFunctionPreviewPlaying,
   setOrigamiFunctionPreviewPaperStyle,
   setOrigamiFunctionPreviewProgress,
@@ -135,6 +137,35 @@ describe("origami function preview plan", () => {
       patternScale: 3,
       patternRotation: 0,
     });
+  });
+
+  it("exports compiled animation state with origami-local paper style", () => {
+    const preview = compileOrigamiFunctionPreview("a+b");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+    const styled = setOrigamiFunctionPreviewPaperStyle(preview, {
+      frontColor: "#ffffff",
+      backColor: "#101820",
+      patternScale: 1.75,
+      patternRotation: 45,
+    });
+
+    const exported = origamiFunctionAnimationExport(
+      styled,
+      "2026-07-21T21:00:00.000Z",
+    );
+    const json = origamiFunctionAnimationJson(
+      styled,
+      "2026-07-21T21:00:00.000Z",
+    );
+
+    expect(exported?.paperStyle).toMatchObject({
+      frontColor: "#ffffff",
+      backColor: "#101820",
+      patternScale: 1.75,
+      patternRotation: 45,
+    });
+    expect(exported?.animation.planId).toBe(preview.plan.id);
+    expect(JSON.parse(json).paperStyle.patternRotation).toBe(45);
   });
 
   it("compiles signature inputs into display-labeled plans", () => {

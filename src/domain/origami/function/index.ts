@@ -18,6 +18,8 @@ export {
   DEFAULT_ORIGAMI_PAPER_STYLE,
   advanceOrigamiFunctionPreview,
   compileOrigamiFunctionPreview,
+  origamiFunctionAnimationExport,
+  origamiFunctionAnimationJson,
   setOrigamiFunctionPreviewPlaying,
   setOrigamiFunctionPreviewPaperStyle,
   setOrigamiFunctionPreviewProgress,

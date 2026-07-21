@@ -228,8 +228,11 @@ describe("App", () => {
     fireEvent.click(
       screen.getByRole("button", { name: "Export origami JSON" }),
     );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Export function animation JSON" }),
+    );
     fireEvent.click(screen.getByRole("button", { name: "Export origami SVG" }));
-    expect(click).toHaveBeenCalledTimes(5);
+    expect(click).toHaveBeenCalledTimes(6);
     click.mockRestore();
   });
 

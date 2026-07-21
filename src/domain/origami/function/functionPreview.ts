@@ -5,6 +5,7 @@ import {
 import { createOrigamiFunctionPlan } from "./functionPlan";
 import type {
   OrigamiFoldAnimationState,
+  OrigamiFunctionAnimationExport,
   OrigamiFunctionPanelState,
   OrigamiFunctionPlan,
   OrigamiPaperStyle,
@@ -206,3 +207,23 @@ export function setOrigamiFunctionPreviewPaperStyle(
     },
   };
 }
+
+export function origamiFunctionAnimationExport(
+  preview: OrigamiFunctionPreview,
+  exportedAt?: string,
+): OrigamiFunctionAnimationExport | undefined {
+  if (preview.status !== "compiled") return undefined;
+  return {
+    version: 1,
+    plan: preview.plan,
+    animation: preview.animation,
+    paperStyle: preview.paperStyle,
+    ...(exportedAt ? { exportedAt } : {}),
+  };
+}
+
+export const origamiFunctionAnimationJson = (
+  preview: OrigamiFunctionPreview,
+  exportedAt?: string,
+) =>
+  JSON.stringify(origamiFunctionAnimationExport(preview, exportedAt), null, 2);

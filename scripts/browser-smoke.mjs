@@ -559,6 +559,30 @@ const assertOrigamiFunctionPanel = async (page) => {
       `Function paper style controls did not apply: ${JSON.stringify(paperStyle)}`,
     );
   }
+  const animationDownload = await downloadText(
+    page,
+    "Export function animation JSON",
+  );
+  if (animationDownload.filename !== "origami-function-animation.json") {
+    throw new Error(
+      `Function animation JSON filename regression: ${animationDownload.filename}`,
+    );
+  }
+  const animationExport = JSON.parse(animationDownload.text);
+  if (
+    animationExport.version !== 1 ||
+    animationExport.paperStyle.frontColor !== "#ffffff" ||
+    animationExport.paperStyle.backColor !== "#101820" ||
+    animationExport.paperStyle.frontPattern !== "washi-wave" ||
+    animationExport.paperStyle.backPattern !== "high-contrast" ||
+    animationExport.paperStyle.patternScale !== 1.75 ||
+    animationExport.paperStyle.patternRotation !== 45 ||
+    animationExport.animation.planId !== animationExport.plan.id
+  ) {
+    throw new Error(
+      `Function animation export missing paper style: ${JSON.stringify(animationExport)}`,
+    );
+  }
   const traceLink = page.getByRole("link", { name: "View trace" });
   await traceLink.waitFor();
   if ((await traceLink.getAttribute("href")) !== "#origami-trace") {
@@ -751,6 +775,25 @@ try {
   await page.getByRole("button", { name: "Compass + straightedge" }).click();
   await page.getByRole("heading", { name: "Construct a + b" }).waitFor();
   await page.getByRole("button", { name: "Export JSON" }).waitFor();
+
+  const compassSvgDownload = await downloadText(page, "Export current SVG");
+  if (
+    compassSvgDownload.filename !== "construction.svg" ||
+    compassSvgDownload.text.includes("paperStyle") ||
+    compassSvgDownload.text.includes("origami-function-animation")
+  ) {
+    throw new Error(
+      `Compass SVG export was polluted by origami animation state: ${JSON.stringify(
+        {
+          filename: compassSvgDownload.filename,
+          hasPaperStyle: compassSvgDownload.text.includes("paperStyle"),
+          hasFunctionAnimation: compassSvgDownload.text.includes(
+            "origami-function-animation",
+          ),
+        },
+      )}`,
+    );
+  }
 
   const expressionValue = await page
     .getByRole("textbox", { name: "Expression" })
