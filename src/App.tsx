@@ -464,6 +464,8 @@ function OrigamiRoadmap() {
   const [selectedProofClaimId, setSelectedProofClaimId] = useState<string>();
   const [hoveredProofClaimId, setHoveredProofClaimId] = useState<string>();
   const origamiSvgRef = useRef<SVGSVGElement>(null);
+  const functionAnimationSvgRef = useRef<SVGSVGElement>(null);
+  const finalFunctionAnimationSvgRef = useRef<SVGSVGElement>(null);
   const scene = examples[exampleIndex].scene;
   useEffect(() => {
     if (
@@ -686,6 +688,13 @@ function OrigamiRoadmap() {
           ({ id }) => id === functionPreview.animation.phaseId,
         )?.foldCertificate
       : undefined;
+  const finalFunctionPreview = useMemo(() => {
+    if (functionPreview.status !== "compiled") return functionPreview;
+    const finalPhase = functionPreview.plan.phases.at(-1);
+    return finalPhase
+      ? setOrigamiFunctionPreviewPhase(functionPreview, finalPhase.id)
+      : functionPreview;
+  }, [functionPreview]);
   const updateOrigamiPaperStyle = (
     paperStyleUpdate: Parameters<typeof setOrigamiFunctionPreviewPaperStyle>[1],
   ) =>
@@ -1019,25 +1028,64 @@ function OrigamiRoadmap() {
           <p>{examples[exampleIndex].title}</p>
           <a href="#origami-trace">View trace</a>
         </aside>
-        <SvgOrigamiFunctionAnimation preview={functionPreview} />
-        <button
-          type="button"
-          disabled={timelineDisabled}
-          onClick={() => {
-            const json = origamiFunctionAnimationJson(
-              functionPreview,
-              new Date().toISOString(),
-            );
-            if (!json) return;
-            downloadText(
-              "origami-function-animation.json",
-              json,
-              "application/json",
-            );
-          }}
-        >
-          Export function animation JSON
-        </button>
+        <SvgOrigamiFunctionAnimation
+          preview={functionPreview}
+          svgRef={functionAnimationSvgRef}
+        />
+        <div className="origami-function-export-controls">
+          <button
+            type="button"
+            disabled={timelineDisabled}
+            onClick={() => {
+              const json = origamiFunctionAnimationJson(
+                functionPreview,
+                new Date().toISOString(),
+              );
+              if (!json) return;
+              downloadText(
+                "origami-function-animation.json",
+                json,
+                "application/json",
+              );
+            }}
+          >
+            Export function animation JSON
+          </button>
+          <button
+            type="button"
+            disabled={timelineDisabled}
+            onClick={() =>
+              functionAnimationSvgRef.current &&
+              downloadText(
+                "origami-function-current.svg",
+                serializeSvg(functionAnimationSvgRef.current),
+                "image/svg+xml",
+              )
+            }
+          >
+            Export function current SVG
+          </button>
+          <button
+            type="button"
+            disabled={timelineDisabled}
+            onClick={() =>
+              finalFunctionAnimationSvgRef.current &&
+              downloadText(
+                "origami-function-final.svg",
+                serializeSvg(finalFunctionAnimationSvgRef.current),
+                "image/svg+xml",
+              )
+            }
+          >
+            Export function final SVG
+          </button>
+        </div>
+        <div className="origami-function-export-renderer" aria-hidden="true">
+          <SvgOrigamiFunctionAnimation
+            preview={finalFunctionPreview}
+            svgRef={finalFunctionAnimationSvgRef}
+          />
+        </div>
         <fieldset className="origami-paper-style-controls">
           <legend>Paper style</legend>
           <label>

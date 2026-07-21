@@ -162,6 +162,10 @@ The flat-origami tab provides:
   function animation JSON export. The active phase mirrors the UI readout by
   carrying its certificate when the phase is proven or its solver work item when
   the phase is still explanatory.
+- F6.2 starts static SVG snapshot export for function animations. The origami
+  tab can download the visible current phase and a hidden final-phase snapshot,
+  each serialized from the same SVG renderer and carrying plan, phase, kind, and
+  physical-status data attributes.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

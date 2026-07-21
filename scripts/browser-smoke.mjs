@@ -716,6 +716,41 @@ const assertOrigamiFunctionPanel = async (page) => {
       `Function animation export missing active metadata: ${JSON.stringify(animationExport)}`,
     );
   }
+  const currentFunctionSvg = await downloadText(
+    page,
+    "Export function current SVG",
+  );
+  if (
+    currentFunctionSvg.filename !== "origami-function-current.svg" ||
+    !currentFunctionSvg.text.includes(
+      'data-phase-id="origami-function-phase-9"',
+    ) ||
+    !currentFunctionSvg.text.includes('data-phase-kind="align-fold"') ||
+    !currentFunctionSvg.text.includes(
+      'data-physical-status="explanatory-fallback"',
+    ) ||
+    !currentFunctionSvg.text.includes("origami-function-paper-front-pattern")
+  ) {
+    throw new Error(
+      `Function current SVG export mismatch: ${currentFunctionSvg.filename}`,
+    );
+  }
+  const finalFunctionSvg = await downloadText(
+    page,
+    "Export function final SVG",
+  );
+  if (
+    finalFunctionSvg.filename !== "origami-function-final.svg" ||
+    !finalFunctionSvg.text.includes(
+      'data-phase-id="origami-function-phase-14"',
+    ) ||
+    !finalFunctionSvg.text.includes('data-phase-kind="extract-result"') ||
+    !finalFunctionSvg.text.includes("Final 2.000")
+  ) {
+    throw new Error(
+      `Function final SVG export mismatch: ${finalFunctionSvg.filename}`,
+    );
+  }
   const traceLink = page.getByRole("link", { name: "View trace" });
   await traceLink.waitFor();
   if ((await traceLink.getAttribute("href")) !== "#origami-trace") {

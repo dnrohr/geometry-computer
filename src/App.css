@@ -593,6 +593,25 @@ select:focus-visible,
   background: #0c1115;
 }
 
+.origami-function-export-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.origami-function-export-controls button {
+  padding: 0.48rem 0.65rem;
+}
+
+.origami-function-export-renderer {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  opacity: 0;
+}
+
 .origami-function-paper-shadow {
   fill: rgb(0 0 0 / 24%);
   transform: translate(4px, 5px);

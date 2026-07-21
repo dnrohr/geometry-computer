@@ -22,6 +22,21 @@ describe("SvgOrigamiFunctionAnimation", () => {
       }),
     ).toBeInTheDocument();
     expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a, b) = a * b",
+      }),
+    ).toHaveAttribute("data-plan-id", preview.plan.id);
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a, b) = a * b",
+      }),
+    ).toHaveAttribute("data-phase-id", "origami-function-phase-1");
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a, b) = a * b",
+      }),
+    ).toHaveAttribute("data-physical-status", "proven-physical");
+    expect(
       container.querySelector(".origami-function-moving-panel"),
     ).toBeInTheDocument();
     expect(

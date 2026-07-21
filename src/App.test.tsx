@@ -231,8 +231,14 @@ describe("App", () => {
     fireEvent.click(
       screen.getByRole("button", { name: "Export function animation JSON" }),
     );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Export function current SVG" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Export function final SVG" }),
+    );
     fireEvent.click(screen.getByRole("button", { name: "Export origami SVG" }));
-    expect(click).toHaveBeenCalledTimes(6);
+    expect(click).toHaveBeenCalledTimes(8);
     click.mockRestore();
   });
 
@@ -313,6 +319,17 @@ describe("App", () => {
         name: "Origami function animation: f(a) = sqrt(a + 1)",
       }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Export function current SVG" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Export function final SVG" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a) = sqrt(a + 1)",
+      }),
+    ).toHaveAttribute("data-phase-id", "origami-function-phase-1");
     expect(
       screen.getByRole("slider", { name: "Function animation progress" }),
     ).toHaveValue("0");

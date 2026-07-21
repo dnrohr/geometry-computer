@@ -1,7 +1,9 @@
+import type { Ref } from "react";
 import type { OrigamiFunctionPreview } from "../../../domain/origami/function";
 
 type SvgOrigamiFunctionAnimationProps = {
   preview: OrigamiFunctionPreview;
+  svgRef?: Ref<SVGSVGElement>;
 };
 
 const paperPoints = "18,18 282,18 282,198 18,198";
@@ -25,10 +27,12 @@ const phaseLabel = (
 
 export function SvgOrigamiFunctionAnimation({
   preview,
+  svgRef,
 }: SvgOrigamiFunctionAnimationProps) {
   if (preview.status !== "compiled") {
     return (
       <svg
+        ref={svgRef}
         className="origami-function-animation"
         role="img"
         aria-label="Origami function animation unavailable"
@@ -79,10 +83,15 @@ export function SvgOrigamiFunctionAnimation({
 
   return (
     <svg
+      ref={svgRef}
       className="origami-function-animation"
       role="img"
       aria-label={`Origami function animation: ${preview.plan.source.source}`}
       viewBox="0 0 300 216"
+      data-plan-id={preview.plan.id}
+      data-phase-id={phase.id}
+      data-phase-kind={phase.kind}
+      data-physical-status={phase.physicalStatus}
     >
       <title>{`Origami function animation: ${preview.plan.source.source}`}</title>
       <desc>{`${phase.id} ${phase.kind} ${phase.expression}`}</desc>
