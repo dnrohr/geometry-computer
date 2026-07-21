@@ -153,6 +153,9 @@ The flat-origami tab provides:
   jumps the function animation directly to the fallback phase it represents.
 - F5.6 marks the active backlog item and shows its branch and solver detail when
   the animation is paused on a fallback phase.
+- F5.7 shows active fold-certificate details for certified phases, so proven
+  paper placement, length marking, baseline arithmetic, and identity extraction
+  steps are inspectable in the function lab.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

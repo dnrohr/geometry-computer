@@ -566,6 +566,12 @@ const assertOrigamiFunctionPanel = async (page) => {
   await functionPanel
     .getByText("origami-function-phase-9 align-fold arithmetic-macro-fold")
     .waitFor();
+  await functionPanel
+    .getByText("paper-placement origami-function-paper")
+    .waitFor();
+  await functionPanel
+    .getByText("The paper boundary is placed as the fixed computation domain.")
+    .waitFor();
   await page.getByRole("heading", { name: "Solver work backlog" }).waitFor();
   await page
     .getByRole("button", {
@@ -581,6 +587,13 @@ const assertOrigamiFunctionPanel = async (page) => {
       "sqrt(a + 1) uses the Positive geometric-mean branch macro, which is not yet backed by a physical fold solver.",
     )
     .waitFor();
+  if (
+    await functionPanel
+      .getByText("paper-placement origami-function-paper")
+      .isVisible()
+  ) {
+    throw new Error("Certified phase detail stayed visible on fallback phase.");
+  }
   const activeSolverItem = await page
     .getByRole("button", {
       name: "Jump to solver work origami-function-phase-9",

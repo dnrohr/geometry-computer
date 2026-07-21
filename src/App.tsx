@@ -680,6 +680,12 @@ function OrigamiRoadmap() {
           ({ phaseId }) => phaseId === functionPreview.animation.phaseId,
         )
       : undefined;
+  const activeFoldCertificate =
+    functionPreview.status === "compiled"
+      ? functionPreview.plan.phases.find(
+          ({ id }) => id === functionPreview.animation.phaseId,
+        )?.foldCertificate
+      : undefined;
   const updateOrigamiPaperStyle = (
     paperStyleUpdate: Parameters<typeof setOrigamiFunctionPreviewPaperStyle>[1],
   ) =>
@@ -891,6 +897,18 @@ function OrigamiRoadmap() {
               <div>
                 <dt>Active solver detail</dt>
                 <dd>{activeSolverWorkItem.summary}</dd>
+              </div>
+            </>
+          )}
+          {activeFoldCertificate && (
+            <>
+              <div>
+                <dt>Active certificate</dt>
+                <dd>{`${activeFoldCertificate.method} ${activeFoldCertificate.targetObjectIds.join(", ")}`}</dd>
+              </div>
+              <div>
+                <dt>Certificate detail</dt>
+                <dd>{activeFoldCertificate.summary}</dd>
               </div>
             </>
           )}

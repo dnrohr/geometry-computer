@@ -293,6 +293,14 @@ describe("App", () => {
       ),
     ).toBeInTheDocument();
     expect(
+      within(functionPanel).getByText("paper-placement origami-function-paper"),
+    ).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText(
+        "The paper boundary is placed as the fixed computation domain.",
+      ),
+    ).toBeInTheDocument();
+    expect(
       within(functionPanel).getByRole("slider", { name: "a sample slider" }),
     ).toHaveValue("3");
     expect(
@@ -340,6 +348,11 @@ describe("App", () => {
         "sqrt(a + 1) uses the Positive geometric-mean branch macro, which is not yet backed by a physical fold solver.",
       ),
     ).toBeInTheDocument();
+    expect(
+      within(functionPanel).queryByText(
+        "paper-placement origami-function-paper",
+      ),
+    ).toBeNull();
     expect(
       screen.getByRole("group", { name: "Paper style" }),
     ).toBeInTheDocument();

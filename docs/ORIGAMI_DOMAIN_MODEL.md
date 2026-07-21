@@ -137,6 +137,10 @@ items without deriving progress positions themselves.
 F5.6 exposes the active solver work item for the current function animation
 phase. The UI shows its replacement target, selected branch, and summary so a
 fallback phase can be inspected as an actionable solver requirement.
+F5.7 exposes the active fold certificate for physically proven function phases.
+When playback is on a certified phase, the UI shows the certificate method,
+target object IDs, and summary; fallback phases continue to show solver work
+details instead.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,
