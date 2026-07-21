@@ -144,6 +144,10 @@ details instead.
 F5.8 adds source and output object IDs to every solver work item. The function
 animation export and active fallback readout now identify exactly which planned
 objects a future physical solver must consume and produce.
+F5.9 adds a top-level active-phase snapshot to the function-animation export.
+The snapshot records the current phase kind, expression, physical status, and
+either its fold certificate or matching solver work item so export consumers do
+not need to recompute the active proof/work context from the full plan.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

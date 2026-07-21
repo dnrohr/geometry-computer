@@ -178,10 +178,20 @@ describe("origami function input boundary", () => {
       version: 1,
       plan,
       animation,
+      activePhase: {
+        phaseId: "origami-phase-1",
+        phaseKind: "mark-input",
+        expression: "a",
+        physicalStatus: "proven-physical",
+        foldCertificate: plan.phases[0].foldCertificate,
+      },
+      solverReadiness: plan.solverReadiness,
       paperStyle,
     };
 
     expect(exported.plan.phases[0].kind).toBe("mark-input");
+    expect(exported.activePhase.foldCertificate?.method).toBe("mark-length");
+    expect(exported.solverReadiness.status).toBe("ready");
     expect(exported.paperStyle.backPattern).toBe("diagonal-stripe");
   });
 });

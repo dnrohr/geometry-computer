@@ -5,6 +5,7 @@ import {
 import { createOrigamiFunctionPlan } from "./functionPlan";
 import type {
   OrigamiFoldAnimationState,
+  OrigamiFunctionAnimationActivePhase,
   OrigamiFunctionAnimationExport,
   OrigamiFunctionPanelState,
   OrigamiFunctionPlan,
@@ -231,12 +232,36 @@ export function origamiFunctionAnimationExport(
   exportedAt?: string,
 ): OrigamiFunctionAnimationExport | undefined {
   if (preview.status !== "compiled") return undefined;
+  const activePhase = activePhaseForExport(preview);
   return {
     version: 1,
     plan: preview.plan,
     animation: preview.animation,
+    activePhase,
+    solverReadiness: preview.plan.solverReadiness,
     paperStyle: preview.paperStyle,
     ...(exportedAt ? { exportedAt } : {}),
+  };
+}
+
+function activePhaseForExport(
+  preview: Extract<OrigamiFunctionPreview, { status: "compiled" }>,
+): OrigamiFunctionAnimationActivePhase {
+  const phase =
+    preview.plan.phases.find(({ id }) => id === preview.animation.phaseId) ??
+    preview.plan.phases[0];
+  const solverWorkItem = preview.plan.solverReadiness.workItems.find(
+    ({ phaseId }) => phaseId === phase.id,
+  );
+  return {
+    phaseId: phase.id,
+    phaseKind: phase.kind,
+    expression: phase.expression,
+    physicalStatus: phase.physicalStatus,
+    ...(phase.foldCertificate
+      ? { foldCertificate: phase.foldCertificate }
+      : {}),
+    ...(solverWorkItem ? { solverWorkItem } : {}),
   };
 }
 

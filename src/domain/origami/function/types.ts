@@ -273,6 +273,17 @@ export type OrigamiFunctionAnimationExport = {
   version: 1;
   plan: OrigamiFunctionPlan;
   animation: OrigamiFoldAnimationState;
+  activePhase: OrigamiFunctionAnimationActivePhase;
+  solverReadiness: OrigamiFunctionSolverReadiness;
   paperStyle: OrigamiPaperStyle;
   exportedAt?: string;
+};
+
+export type OrigamiFunctionAnimationActivePhase = {
+  phaseId: string;
+  phaseKind: OrigamiFunctionPlanPhaseKind;
+  expression: string;
+  physicalStatus: OrigamiFunctionPhasePhysicalStatus;
+  foldCertificate?: OrigamiFunctionFoldCertificate;
+  solverWorkItem?: OrigamiFunctionSolverWorkItem;
 };

@@ -552,6 +552,9 @@ replay, or share.
 
 - F6.1 Export the function plan as JSON with expression, sample values,
   animation phases, paper style, proof links, diagnostics, and result metadata.
+  Current export progress includes top-level solver readiness and active-phase
+  metadata so a saved animation identifies the visible certified fold or solver
+  work item without re-deriving it from the full plan.
 - F6.2 Export static SVG snapshots for current phase, final crease pattern, and
   final result view.
 - F6.3 Add an animated export path such as WebM, GIF, or SVG animation after the

@@ -158,6 +158,10 @@ The flat-origami tab provides:
   steps are inspectable in the function lab.
 - F5.8 shows active solver input/output object IDs and exports them with each
   solver work item, giving future fold-solver work a concrete object contract.
+- F5.9 adds top-level `activePhase` and `solverReadiness` fields to the
+  function animation JSON export. The active phase mirrors the UI readout by
+  carrying its certificate when the phase is proven or its solver work item when
+  the phase is still explanatory.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

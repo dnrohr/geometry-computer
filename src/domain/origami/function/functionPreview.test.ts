@@ -186,7 +186,47 @@ describe("origami function preview plan", () => {
       patternRotation: 45,
     });
     expect(exported?.animation.planId).toBe(preview.plan.id);
+    expect(exported?.solverReadiness.status).toBe("ready");
+    expect(exported?.activePhase).toMatchObject({
+      phaseId: "origami-function-phase-1",
+      phaseKind: "place-paper",
+      physicalStatus: "proven-physical",
+      foldCertificate: {
+        method: "paper-placement",
+        targetObjectIds: ["origami-function-paper"],
+      },
+    });
     expect(JSON.parse(json).paperStyle.patternRotation).toBe(45);
+  });
+
+  it("exports active fallback phase solver work metadata", () => {
+    const preview = compileOrigamiFunctionPreview("sqrt(a+1)");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+    const jumped = setOrigamiFunctionPreviewPhase(
+      preview,
+      "origami-function-phase-9",
+    );
+    if (jumped.status !== "compiled") throw new Error("Expected compiled");
+
+    const exported = origamiFunctionAnimationExport(jumped);
+
+    expect(exported?.activePhase).toMatchObject({
+      phaseId: "origami-function-phase-9",
+      phaseKind: "align-fold",
+      expression: "sqrt(a + 1)",
+      physicalStatus: "explanatory-fallback",
+      solverWorkItem: {
+        phaseId: "origami-function-phase-9",
+        replacementFor: "sqrt:align-fold",
+        requiredCapability: "arithmetic-macro-fold",
+        selectedBranchId: "positive-geometric-mean-branch",
+        sourceObjectIds: ["origami-function-node-output-3"],
+        outputObjectIds: ["origami-function-node-output-4-align-fold"],
+      },
+    });
+    expect(exported?.solverReadiness.workItems[0]).toBe(
+      exported?.activePhase.solverWorkItem,
+    );
   });
 
   it("compiles signature inputs into display-labeled plans", () => {

@@ -694,6 +694,8 @@ const assertOrigamiFunctionPanel = async (page) => {
     animationExport.paperStyle.backPattern !== "high-contrast" ||
     animationExport.paperStyle.patternScale !== 1.75 ||
     animationExport.paperStyle.patternRotation !== 45 ||
+    animationExport.solverReadiness.workItems[0]?.phaseId !==
+      "origami-function-phase-9" ||
     animationExport.plan.solverReadiness.workItems[0]?.phaseId !==
       "origami-function-phase-9" ||
     animationExport.plan.solverReadiness.workItems[0]?.requiredCapability !==
@@ -702,10 +704,16 @@ const assertOrigamiFunctionPanel = async (page) => {
       "origami-function-node-output-3" ||
     animationExport.plan.solverReadiness.workItems[0]?.outputObjectIds[0] !==
       "origami-function-node-output-4-align-fold" ||
+    animationExport.activePhase.phaseId !== "origami-function-phase-9" ||
+    animationExport.activePhase.phaseKind !== "align-fold" ||
+    animationExport.activePhase.solverWorkItem?.sourceObjectIds[0] !==
+      "origami-function-node-output-3" ||
+    animationExport.activePhase.solverWorkItem?.outputObjectIds[0] !==
+      "origami-function-node-output-4-align-fold" ||
     animationExport.animation.planId !== animationExport.plan.id
   ) {
     throw new Error(
-      `Function animation export missing paper style: ${JSON.stringify(animationExport)}`,
+      `Function animation export missing active metadata: ${JSON.stringify(animationExport)}`,
     );
   }
   const traceLink = page.getByRole("link", { name: "View trace" });
