@@ -235,6 +235,34 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
     .waitFor();
 
   const contract = await page.evaluate(() => {
+    const parseRgb = (value) => {
+      const match = value.match(/rgba?\(([^)]+)\)/);
+      if (!match) return undefined;
+      const [r, g, b] = match[1]
+        .split(",")
+        .slice(0, 3)
+        .map((part) => Number(part.trim()));
+      return Number.isFinite(r) && Number.isFinite(g) && Number.isFinite(b)
+        ? { r, g, b }
+        : undefined;
+    };
+    const luminance = (color) => {
+      const channel = [color.r, color.g, color.b].map((value) => {
+        const normalized = value / 255;
+        return normalized <= 0.03928
+          ? normalized / 12.92
+          : ((normalized + 0.055) / 1.055) ** 2.4;
+      });
+      return channel[0] * 0.2126 + channel[1] * 0.7152 + channel[2] * 0.0722;
+    };
+    const contrast = (foreground, background) => {
+      const fg = parseRgb(foreground);
+      const bg = parseRgb(background);
+      if (!fg || !bg) return undefined;
+      const lighter = Math.max(luminance(fg), luminance(bg));
+      const darker = Math.min(luminance(fg), luminance(bg));
+      return (lighter + 0.05) / (darker + 0.05);
+    };
     const rectFor = (selector) => {
       const element = document.querySelector(selector);
       if (!element) return undefined;
@@ -316,9 +344,38 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
       hingeHighlights: document.querySelectorAll(
         ".origami-function-hinge-highlight",
       ).length,
+      creaseUnderlays: document.querySelectorAll(
+        ".origami-function-crease-underlay",
+      ).length,
+      activeCreaseUnderlays: document.querySelectorAll(
+        ".origami-function-active-crease-underlay",
+      ).length,
       creasePreviews: document.querySelectorAll(
         ".origami-function-crease-preview",
       ).length,
+      readoutContrast: (() => {
+        const rect = document.querySelector(
+          ".origami-function-value-strip rect",
+        );
+        const text = document.querySelector(
+          ".origami-function-value-strip text",
+        );
+        const resultText = document.querySelector(
+          ".origami-function-value-strip text:last-child",
+        );
+        if (
+          !(rect instanceof SVGElement) ||
+          !(text instanceof SVGElement) ||
+          !(resultText instanceof SVGElement)
+        ) {
+          return {};
+        }
+        const rectFill = getComputedStyle(rect).fill;
+        return {
+          text: contrast(getComputedStyle(text).fill, rectFill),
+          result: contrast(getComputedStyle(resultText).fill, rectFill),
+        };
+      })(),
     };
   });
 
@@ -338,6 +395,8 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
     contract.backEdges < 1 ||
     contract.stationaryEdges < 1 ||
     contract.hingeHighlights < 1 ||
+    contract.creaseUnderlays < 1 ||
+    contract.activeCreaseUnderlays < 1 ||
     contract.creasePreviews < 1
   ) {
     throw new Error(
@@ -351,8 +410,20 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
           backEdges: contract.backEdges,
           stationaryEdges: contract.stationaryEdges,
           hingeHighlights: contract.hingeHighlights,
+          creaseUnderlays: contract.creaseUnderlays,
+          activeCreaseUnderlays: contract.activeCreaseUnderlays,
           creasePreviews: contract.creasePreviews,
         },
+      )}`,
+    );
+  }
+  if (
+    (contract.readoutContrast.text ?? 0) < 4.5 ||
+    (contract.readoutContrast.result ?? 0) < 4.5
+  ) {
+    throw new Error(
+      `Function animation readout contrast too low at ${viewport.width}x${viewport.height}: ${JSON.stringify(
+        contract.readoutContrast,
       )}`,
     );
   }

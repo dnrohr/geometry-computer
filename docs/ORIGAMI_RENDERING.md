@@ -136,6 +136,9 @@ The flat-origami tab provides:
 - F4.5 exports the function animation as origami-local JSON with plan,
   animation, and paper-style state while smoke tests verify compass SVG exports
   do not include origami animation state.
+- F4.6 adds readability guards: crease preview and active crease marks render
+  with dark underlay strokes, and browser smoke checks readout contrast for the
+  animation value strip.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

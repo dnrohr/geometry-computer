@@ -255,24 +255,42 @@ export function SvgOrigamiFunctionAnimation({
         style={{ stroke: preview.paperStyle.creaseColor }}
       />
       {showCreasePreview && (
-        <line
-          className="origami-function-crease-preview"
-          x1="58"
-          y1={72 + (motion?.hingeLine.point.y ?? 0) * 10}
-          x2="242"
-          y2={72 + (motion?.hingeLine.point.y ?? 0) * 10}
-          style={{ stroke: preview.paperStyle.creaseColor }}
-        />
+        <>
+          <line
+            className="origami-function-crease-underlay"
+            x1="58"
+            y1={72 + (motion?.hingeLine.point.y ?? 0) * 10}
+            x2="242"
+            y2={72 + (motion?.hingeLine.point.y ?? 0) * 10}
+          />
+          <line
+            className="origami-function-crease-preview"
+            x1="58"
+            y1={72 + (motion?.hingeLine.point.y ?? 0) * 10}
+            x2="242"
+            y2={72 + (motion?.hingeLine.point.y ?? 0) * 10}
+            style={{ stroke: preview.paperStyle.creaseColor }}
+          />
+        </>
       )}
       {motion && (
-        <line
-          className="origami-function-active-crease"
-          x1="42"
-          y1={54 + motion.hingeLine.point.y * 12}
-          x2="258"
-          y2={54 + motion.hingeLine.point.y * 12}
-          style={{ stroke: preview.paperStyle.highlightColor }}
-        />
+        <>
+          <line
+            className="origami-function-active-crease-underlay"
+            x1="42"
+            y1={54 + motion.hingeLine.point.y * 12}
+            x2="258"
+            y2={54 + motion.hingeLine.point.y * 12}
+          />
+          <line
+            className="origami-function-active-crease"
+            x1="42"
+            y1={54 + motion.hingeLine.point.y * 12}
+            x2="258"
+            y2={54 + motion.hingeLine.point.y * 12}
+            style={{ stroke: preview.paperStyle.highlightColor }}
+          />
+        </>
       )}
       <text className="origami-function-animation-phase" x="24" y="208">
         {`${phase.id} ${phase.kind}`}

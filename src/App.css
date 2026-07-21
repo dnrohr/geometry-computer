@@ -679,15 +679,32 @@ select:focus-visible,
   stroke-dasharray: 3 5;
 }
 
+.origami-function-crease-underlay {
+  opacity: 0.7;
+  stroke: #0e1418;
+  stroke-width: 5;
+  stroke-dasharray: 3 5;
+}
+
 .origami-function-active-crease {
   stroke-width: 3;
   stroke-linecap: round;
+}
+
+.origami-function-active-crease-underlay {
+  opacity: 0.82;
+  stroke: #0e1418;
+  stroke-linecap: round;
+  stroke-width: 7;
 }
 
 .origami-function-animation text {
   fill: var(--muted);
   font-family: "SFMono-Regular", Consolas, monospace;
   font-size: 10px;
+  paint-order: stroke;
+  stroke: rgb(12 17 21 / 70%);
+  stroke-width: 2px;
 }
 
 .origami-function-value-strip rect {
@@ -698,6 +715,7 @@ select:focus-visible,
 .origami-function-value-strip text {
   fill: var(--foreground);
   font-size: 9px;
+  stroke: none;
 }
 
 .origami-function-value-strip text:last-child {

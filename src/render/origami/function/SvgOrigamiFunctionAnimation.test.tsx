@@ -88,7 +88,13 @@ describe("SvgOrigamiFunctionAnimation", () => {
       container.querySelector(".origami-function-active-crease"),
     ).toBeInTheDocument();
     expect(
+      container.querySelector(".origami-function-active-crease-underlay"),
+    ).toBeInTheDocument();
+    expect(
       container.querySelector(".origami-function-crease-preview"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-function-crease-underlay"),
     ).toBeInTheDocument();
     expect(
       screen.getByText("origami-function-phase-5 preview-crease"),
