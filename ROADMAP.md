@@ -395,6 +395,9 @@ nonblank rendering, console stability, and responsive explanation layouts.
   SVGs, missing overlay highlights, or missing active creases.
 - N3.5 Save deterministic screenshots or image snapshots for the origami tab and
   document where generated artifacts live and which files are ignored by git.
+  Current implementation saves desktop and mobile origami workspace screenshots
+  under `.artifacts/browser-smoke/`, documents the artifact names in
+  `docs/ORIGAMI_RENDERING.md`, and ignores `.artifacts/` in git.
 - N3.6 Add export smoke checks for origami JSON and SVG once export controls are
   available, verifying the files contain the same scene IDs shown in the UI.
 - N3.7 Document a short manual browser smoke procedure in the roadmap until the
