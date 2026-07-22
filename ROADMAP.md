@@ -658,6 +658,9 @@ share selected concepts with the original geometry computer.
   inspect, prove, and export parity and keeps the selector status not-ready.
 - F8.5 Keep the separate tab if merging would make fold animation or paper-side
   styling harder to understand.
+  Current implementation records a keep-separate decision with protected
+  workflows and merge risks for fold animation, paper styling, and compass
+  construction.
 
 Acceptance checks:
 

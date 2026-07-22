@@ -8,6 +8,7 @@ import {
 import {
   constructionSystemSelectorReadiness,
   mergerCompatibilityGates,
+  separateTabDecision,
 } from "./mergerCompatibility";
 import { mergerConcepts } from "./mergerConcepts";
 import { parseExpression } from "./parser/parseExpression";
@@ -163,5 +164,20 @@ describe("origami and compass-straightedge merger readiness", () => {
     expect(normalizedReview).toContain(
       constructionSystemSelectorReadiness.decision,
     );
+  });
+
+  it("documents the F8.5 separate-tab decision", () => {
+    const review = readFileSync("docs/ORIGAMI_MERGER_REVIEW.md", "utf8");
+    const normalizedReview = review.replace(/\s+/g, " ");
+
+    expect(review).toContain("F8.5 Separate Tab Decision");
+    expect(review).toContain(separateTabDecision.status);
+    for (const workflow of separateTabDecision.protectedWorkflows) {
+      expect(normalizedReview).toContain(workflow);
+    }
+    for (const risk of separateTabDecision.mergeRisks) {
+      expect(normalizedReview).toContain(risk);
+    }
+    expect(normalizedReview).toContain(separateTabDecision.decision);
   });
 });

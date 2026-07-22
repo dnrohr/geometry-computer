@@ -27,6 +27,13 @@ export type ConstructionSystemSelectorReadiness = {
   decision: string;
 };
 
+export type SeparateTabDecision = {
+  status: "keep-separate";
+  protectedWorkflows: string[];
+  mergeRisks: string[];
+  decision: string;
+};
+
 export const mergerCompatibilityGates: CompatibilityGate[] = [
   {
     candidate: "function-plan",
@@ -104,3 +111,19 @@ export const isConstructionSystemSelectorReady = (
     : readiness.requiredCapabilities.every(
         (capability) => readiness.missingEvidence[capability] === "",
       );
+
+export const separateTabDecision: SeparateTabDecision = {
+  status: "keep-separate",
+  protectedWorkflows: [
+    "Fold animation playback with phase IDs, speed, reduced motion, fold camera, onion-skin ghosts, visual cues, minimap, and presentation mode.",
+    "Two-sided paper styling with front/back colors, patterns, opacity, palette randomizer, crease color, highlight color, and replay/export metadata.",
+    "Compass-and-straightedge construction workflow with expression input, construction diagram, step list, object inspector, proof cards, reveal controls, and clean SVG export.",
+  ],
+  mergeRisks: [
+    "A shared workspace would make fold animation compete with compass reveal controls for timeline meaning.",
+    "A shared styling panel would blur origami front/back paper semantics with compass construction visual hierarchy.",
+    "A merged inspector would either hide fold-specific solver readiness or force compass users through irrelevant paper state.",
+  ],
+  decision:
+    "Keep the flat-origami function lab in a separate tab until a merge can preserve fold animation clarity, paper-side styling, and the original compass-and-straightedge workflow.",
+};

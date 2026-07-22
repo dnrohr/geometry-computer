@@ -266,6 +266,33 @@ Decision: Keep the existing separate tabs. Do not introduce a
 construction-system selector until all required capabilities have paired parity
 tests.
 
+## F8.5 Separate Tab Decision
+
+Status: keep-separate.
+
+Protected workflows:
+
+- Fold animation playback with phase IDs, speed, reduced motion, fold camera,
+  onion-skin ghosts, visual cues, minimap, and presentation mode.
+- Two-sided paper styling with front/back colors, patterns, opacity, palette
+  randomizer, crease color, highlight color, and replay/export metadata.
+- Compass-and-straightedge construction workflow with expression input,
+  construction diagram, step list, object inspector, proof cards, reveal
+  controls, and clean SVG export.
+
+Merge risks:
+
+- A shared workspace would make fold animation compete with compass reveal
+  controls for timeline meaning.
+- A shared styling panel would blur origami front/back paper semantics with
+  compass construction visual hierarchy.
+- A merged inspector would either hide fold-specific solver readiness or force
+  compass users through irrelevant paper state.
+
+Decision: Keep the flat-origami function lab in a separate tab until a merge can
+preserve fold animation clarity, paper-side styling, and the original
+compass-and-straightedge workflow.
+
 ## Decision
 
 Do not merge the compiler, renderer, export, or proof paths yet. The only shared

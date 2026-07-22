@@ -4,6 +4,7 @@ import {
   constructionSystemSelectorReadiness,
   isConstructionSystemSelectorReady,
   mergerCompatibilityGates,
+  separateTabDecision,
   type SharedInterfaceCandidate,
 } from "./mergerCompatibility";
 
@@ -66,6 +67,31 @@ describe("merger compatibility gates", () => {
         expect.stringContaining("proof cards and origami fold certificates"),
         expect.stringContaining("different schemas"),
       ]),
+    );
+  });
+
+  it("keeps separate tabs when merging would obscure fold animation or paper styling", () => {
+    expect(separateTabDecision).toMatchObject({
+      status: "keep-separate",
+    });
+    expect(separateTabDecision.protectedWorkflows).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("Fold animation playback"),
+        expect.stringContaining("Two-sided paper styling"),
+        expect.stringContaining(
+          "Compass-and-straightedge construction workflow",
+        ),
+      ]),
+    );
+    expect(separateTabDecision.mergeRisks).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("timeline meaning"),
+        expect.stringContaining("front/back paper semantics"),
+        expect.stringContaining("irrelevant paper state"),
+      ]),
+    );
+    expect(separateTabDecision.decision).toContain(
+      "Keep the flat-origami function lab in a separate tab",
     );
   });
 });
