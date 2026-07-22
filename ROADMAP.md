@@ -488,6 +488,10 @@ computer while animation work is still experimental.
 - F0.5 Add regression tests that compile and animate origami functions, switch
   back to compass-and-straightedge, and verify the original construction state
   is unchanged.
+  Current implementation adds an app regression that compiles a compass `a+b`
+  construction, compiles and advances an origami function fold animation,
+  switches back to compass-and-straightedge, and verifies both the compass
+  construction state and origami animation phase survive workspace switching.
 
 Acceptance checks:
 
