@@ -566,6 +566,9 @@ animation rather than only static crease-pattern explanation.
   explicit result extraction metadata.
 - F2.2 Topologically order computation steps so animations can play from inputs
   to final output and jump to any dependency.
+  Current implementation emits dependency-first plan nodes with stable
+  `executionOrder`, dependency depth, and `dependencyJumpTargets`; preview state
+  and the function step minimap can jump directly to named animation phases.
 - F2.3 Split arithmetic macros into animation-ready phases: place paper, mark
   inputs, align fold, preview candidate crease, fold, transfer/reflection, mark
   intersection, extract result.
