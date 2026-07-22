@@ -590,6 +590,10 @@ animation rather than only static crease-pattern explanation.
   `ready`.
 - F2.6 Add plan diagnostics for reused subexpressions, repeated variables,
   negative directed lengths, branch ambiguity, and accumulated scale.
+  Current implementation creates nonfatal plan diagnostics for reused
+  subexpressions, repeated variables, negative directed lengths, branch
+  ambiguity, and accumulated scale, with node IDs linking each message back to
+  the sampled plan.
 
 Acceptance checks:
 
