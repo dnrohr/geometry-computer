@@ -617,6 +617,10 @@ the existing inspectable SVG trace.
   crease-pattern snapshot mode for static inspection.
 - F3.2 Represent paper as layered polygons with front-side and back-side fills,
   fold hinges, moving panels, shadows, and crease previews.
+  Current implementation renders layered SVG polygons for the paper base,
+  stationary side, moving panel, front/back fills and patterns, hinge
+  shadow/highlight, moving-panel shadow, edge outlines, and active/preview
+  crease lines.
 - F3.3 Animate phase transitions with a timeline model that supports play,
   pause, scrub, previous step, next step, speed control, and reduced-motion
   fallback.
