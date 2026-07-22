@@ -343,6 +343,10 @@ proof claim attached to each construction step.
   object/step export IDs in the origami object inspector.
 - N2.7 Add compact desktop and mobile layouts that keep the SVG, step list,
   inspector, and proof cards readable without overlapping text or controls.
+  Current implementation uses a two-column desktop origami trace layout, stacks
+  the canvas, steps, inspector, and proof card below the mobile breakpoint, and
+  verifies desktop/mobile nonoverlap, nonblank SVGs, active highlights, and
+  unclipped controls in `npm run smoke:browser`.
 - N2.8 Update `docs/ORIGAMI_RENDERING.md` with the visual roles, interaction
   states, and reveal rules used by the implementation.
 
