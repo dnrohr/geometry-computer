@@ -578,6 +578,9 @@ animation rather than only static crease-pattern explanation.
   `mark-intersection` phase sequences.
 - F2.4 Record fold direction, hinge line, moving paper region, stationary paper
   region, side exposure, and selected branch for each animated fold.
+  Current implementation attaches `foldMotion` to arithmetic phases with fold
+  direction, stable hinge IDs, moving/stationary paper regions, front/back side
+  exposure, and branch IDs/reasons that also feed solver work-item metadata.
 - F2.5 Add deterministic fallback phases for macros that are not yet physically
   solved, clearly labeling them as explanatory traces rather than proven fold
   sequences.
