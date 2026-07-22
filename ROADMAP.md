@@ -611,6 +611,10 @@ the existing inspectable SVG trace.
 - F3.1 Add a separate animation renderer for the origami tab, using SVG and CSS
   transforms first; consider HTML canvas or WebGL only if SVG cannot express
   convincing fold motion.
+  Current implementation uses the dedicated
+  `src/render/origami/function/SvgOrigamiFunctionAnimation.tsx` SVG renderer in
+  the origami tab, with CSS transforms for moving fold panels and a separate
+  crease-pattern snapshot mode for static inspection.
 - F3.2 Represent paper as layered polygons with front-side and back-side fills,
   fold hinges, moving panels, shadows, and crease previews.
 - F3.3 Animate phase transitions with a timeline model that supports play,
