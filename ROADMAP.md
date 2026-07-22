@@ -332,6 +332,10 @@ proof claim attached to each construction step.
 - N2.5 Refine reveal-state behavior so source and guide objects appear before
   the fold that uses them, while future objects remain visually quiet until their
   step is reached.
+  Current implementation introduces macro source and guide objects at the start
+  of the active step, keeps future objects visible with low-opacity dim reveal
+  state, and tags them with the `hidden-future` visual role until their draw
+  action takes over.
 - N2.6 Add an inspector section for fold assumptions, selected solution, rejected
   branches, numeric sampled value, expression provenance, and export IDs.
 - N2.7 Add compact desktop and mobile layouts that keep the SVG, step list,
