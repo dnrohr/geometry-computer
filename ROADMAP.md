@@ -647,6 +647,10 @@ the existing inspectable SVG trace.
 - F3.7 Add browser visual-contract checks that ensure animation frames are
   nonblank, paper regions stay within the viewport, and controls do not overlap
   at desktop or mobile widths.
+  Current implementation extends `npm run smoke:browser` with desktop and
+  mobile function-animation visual contracts for nonblank SVG/layers, in-viewport
+  paper regions, readout contrast, unclipped controls, and nonoverlapping
+  timeline controls, saving screenshots under `.artifacts/browser-smoke/`.
 
 Acceptance checks:
 
