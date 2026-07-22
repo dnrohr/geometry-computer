@@ -584,6 +584,10 @@ animation rather than only static crease-pattern explanation.
 - F2.5 Add deterministic fallback phases for macros that are not yet physically
   solved, clearly labeling them as explanatory traces rather than proven fold
   sequences.
+  Current implementation marks unsolved macro phases as
+  `explanatory-fallback`, attaches fallback labels/reasons, derives solver
+  readiness/work items from those phases, and reports proven-only plans as
+  `ready`.
 - F2.6 Add plan diagnostics for reused subexpressions, repeated variables,
   negative directed lengths, branch ambiguity, and accumulated scale.
 
