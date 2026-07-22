@@ -520,6 +520,10 @@ drive a deterministic fold computation.
   signatures, and emits normalized result labels such as `g(a, b) = a * b`.
 - F1.3 Add variable controls with numeric inputs, steppers, and sliders for
   sampled values, including per-variable min, max, and default values.
+  Current implementation derives active controls with
+  `src/domain/origami/function/variableControls.ts` and renders each variable
+  as paired slider/number inputs in the origami tab, with clamped range,
+  stepper metadata, and preset-populated defaults.
 - F1.4 Validate the sampled domain before compiling, showing denominator and
   radicand issues inline without crashing the scene.
 - F1.5 Preserve example gallery presets, but let each preset populate the new
