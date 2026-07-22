@@ -624,6 +624,9 @@ the existing inspectable SVG trace.
 - F3.3 Animate phase transitions with a timeline model that supports play,
   pause, scrub, previous step, next step, speed control, and reduced-motion
   fallback.
+  Current implementation keeps timeline state in the origami function preview
+  model and exposes local play/pause, previous/next phase, scrub, speed, reduced
+  motion, presentation reset, and keyboard controls in the origami tab.
 - F3.4 Show the computation value evolving beside the animation, including
   current subexpression, sampled numeric value, and final result.
 - F3.5 Keep static crease-pattern inspection available beside or below the
