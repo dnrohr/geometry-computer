@@ -384,6 +384,9 @@ nonblank rendering, console stability, and responsive explanation layouts.
 - N3.3 Add origami gallery smoke coverage that opens every origami example and
   verifies the SVG contains paper geometry, at least one crease, labels, active
   step metadata, and no empty viewport.
+  Current implementation opens every origami arithmetic gallery example and
+  verifies a nonempty SVG, paper geometry, crease geometry, labels, and step
+  metadata for Macro, Proof, and Degeneracy.
 - N3.4 Add visual-contract checks for desktop and mobile widths that detect
   overlapping panels, clipped button text, blank SVG output, and missing active
   highlights.
