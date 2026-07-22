@@ -315,6 +315,9 @@ proof claim attached to each construction step.
 - N2.2 Add active-fold overlays in `SvgOrigamiCanvas` that highlight the crease,
   input objects, reflected objects, intersections, and result segment for the
   selected step.
+  Current implementation renders a noninteractive active-fold overlay layer for
+  selected macro steps and axiom folds, including active creases, source inputs,
+  reflected geometry, selected intersections, and extracted result segments.
 - N2.3 Upgrade the origami steps panel so each step shows its macro family,
   fold axiom, branch choice, proof status, and any degeneracy note without
   crowding the layout.

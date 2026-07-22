@@ -64,7 +64,8 @@ after the base objects. Objects with active explanation roles are repeated in
 that layer with `origami-overlay-*` IDs and the `origami-active-fold-overlay`
 class. The overlay currently includes source geometry, active creases, reflected
 geometry, selected intersections, and extracted result segments for the selected
-step.
+step. Macro steps derive this set from `macroTrace`; axiom folds derive active
+creases from selected step outputs and source geometry from step inputs.
 
 The base objects keep pointer and keyboard selection. Overlay objects are marked
 `aria-hidden` through their parent layer and do not receive interaction props.

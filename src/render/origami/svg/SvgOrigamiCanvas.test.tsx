@@ -191,4 +191,37 @@ describe("SvgOrigamiCanvas", () => {
       container.querySelector("#origami-overlay-origami-crease-3"),
     ).not.toHaveAttribute("role");
   });
+
+  it("renders active-fold overlays for axiom fold geometry", () => {
+    const scene = simplePointToPointFoldScene();
+    const visualRoles = buildOrigamiVisualRoleMap(scene, "fold-1");
+    const { container } = render(
+      <SvgOrigamiCanvas
+        objects={scene.objects}
+        title={scene.title}
+        visualRoles={visualRoles}
+      />,
+    );
+
+    expect(container.querySelector("#origami-overlay-point-a")).toHaveClass(
+      "origami-active-fold-overlay",
+      "origami-visual-source-geometry",
+    );
+    expect(container.querySelector("#origami-overlay-point-b")).toHaveClass(
+      "origami-active-fold-overlay",
+      "origami-visual-source-geometry",
+    );
+    expect(
+      container.querySelector("#origami-overlay-crease-a-to-b"),
+    ).toHaveClass(
+      "origami-active-fold-overlay",
+      "origami-visual-active-crease",
+    );
+    expect(
+      container.querySelector("#origami-overlay-reflected-point-a"),
+    ).toHaveClass(
+      "origami-active-fold-overlay",
+      "origami-visual-reflected-geometry",
+    );
+  });
 });

@@ -120,6 +120,9 @@ export function buildOrigamiVisualRoleMap(
 ): OrigamiVisualRoleMap {
   const roles = new Map<string, Set<OrigamiVisualRole>>();
   const activeStep = scene.steps.find(({ id }) => id === activeStepId);
+  const objectById = new Map(
+    scene.objects.map((object) => [object.id, object]),
+  );
 
   scene.objects.forEach((object) => {
     objectVisualRoles(object, activeStep, roles);
@@ -133,6 +136,13 @@ export function buildOrigamiVisualRoleMap(
 
   if (activeStep) {
     addIds(roles, activeStep.inputObjectIds, "source-geometry");
+    addIds(
+      roles,
+      activeStep.outputObjectIds.filter(
+        (objectId) => objectById.get(objectId)?.data.kind === "crease",
+      ),
+      "active-crease",
+    );
     addIds(
       roles,
       activeStep.degeneracies?.flatMap(({ objectIds }) => objectIds) ?? [],
