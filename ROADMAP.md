@@ -475,6 +475,10 @@ computer while animation work is still experimental.
   proving the `Origami function` input is absent from the compass workspace.
 - F0.3 Keep origami function parsing, validation, planning, animation state,
   paper styling, and export types under origami-specific modules.
+  Current implementation keeps those contracts under
+  `src/domain/origami/function`, with tests covering origami-owned panel state,
+  plan, animation state, paper style, solver readiness, and animation export
+  types.
 - F0.4 Reuse the shared expression parser only as the syntax boundary; keep
   compiler, renderer, animation, and proof models separate.
 - F0.5 Add regression tests that compile and animate origami functions, switch
