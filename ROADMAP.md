@@ -400,6 +400,10 @@ nonblank rendering, console stability, and responsive explanation layouts.
   `docs/ORIGAMI_RENDERING.md`, and ignores `.artifacts/` in git.
 - N3.6 Add export smoke checks for origami JSON and SVG once export controls are
   available, verifying the files contain the same scene IDs shown in the UI.
+  Current implementation exports the multiplication trace as JSON and SVG in
+  browser smoke, checking the rendered result DOM ID against
+  `origami-segment-3`, the JSON scene/object/step IDs, and the SVG title/object
+  ID.
 - N3.7 Document a short manual browser smoke procedure in the roadmap until the
   automated checks cover every required interaction.
 
