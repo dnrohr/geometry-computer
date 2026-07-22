@@ -406,6 +406,9 @@ nonblank rendering, console stability, and responsive explanation layouts.
   ID.
 - N3.7 Document a short manual browser smoke procedure in the roadmap until the
   automated checks cover every required interaction.
+  Current implementation documents a seven-step manual smoke procedure covering
+  automated smoke, manual app launch, tab-state preservation, gallery examples,
+  desktop/mobile highlights, origami exports, and console/error monitoring.
 
 Manual browser smoke procedure:
 
