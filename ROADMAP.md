@@ -372,6 +372,9 @@ nonblank rendering, console stability, and responsive explanation layouts.
 - N3.1 Add a browser smoke-test command that starts the Vite app, opens the
   local URL, waits for the app shell, and fails on uncaught errors or unexpected
   console errors.
+  Current implementation provides `npm run smoke:browser`, which starts Vite on
+  a strict local port, waits for the app shell, opens Chromium, and fails on
+  page errors or browser console errors.
 - N3.2 Add smoke coverage for both tabs: compile a compass-and-straightedge
   expression, switch to the origami tab, switch back, and verify the original
   construction state is still intact.
