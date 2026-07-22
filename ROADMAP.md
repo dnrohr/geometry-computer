@@ -538,6 +538,9 @@ drive a deterministic fold computation.
   and recompiles the preview plan without exposing compass controls.
 - F1.6 Add copyable normalized-expression and sampled-result readouts so users
   can verify what is being computed.
+  Current implementation exposes copy buttons for the normalized result label
+  and sampled result, plus a function share block with samples, result, solver
+  status, and animation phase for verification outside the live UI.
 
 Acceptance checks:
 
