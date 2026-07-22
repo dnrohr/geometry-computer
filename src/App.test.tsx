@@ -486,21 +486,31 @@ describe("App", () => {
     expect(
       within(inspector).getByText("origami-segment-3"),
     ).toBeInTheDocument();
-    expect(within(inspector).getByText("Assumptions")).toBeInTheDocument();
+    expect(
+      within(inspector).getByText("Expression provenance"),
+    ).toBeInTheDocument();
+    expect(within(inspector).getByText("a * b")).toBeInTheDocument();
+    expect(within(inspector).getByText("Fold assumptions")).toBeInTheDocument();
     expect(
       within(inspector).getByText(
         "This trace records the arithmetic dependency; detailed crease geometry is expanded in the rendering milestone.",
       ),
     ).toBeInTheDocument();
-    expect(within(inspector).getByText("Selected")).toBeInTheDocument();
+    expect(
+      within(inspector).getByText("Selected solution"),
+    ).toBeInTheDocument();
     expect(
       within(inspector).getByText("Intercept similar-triangle branch"),
     ).toBeInTheDocument();
-    expect(within(inspector).getByText("Rejected")).toBeInTheDocument();
+    expect(
+      within(inspector).getByText("Rejected branches"),
+    ).toBeInTheDocument();
     expect(within(inspector).getAllByText("none").length).toBeGreaterThan(0);
-    expect(within(inspector).getByText("Sample")).toBeInTheDocument();
+    expect(within(inspector).getByText("Sampled value")).toBeInTheDocument();
     expect(within(inspector).getByText("6")).toBeInTheDocument();
-    expect(within(inspector).getByText("Provenance")).toBeInTheDocument();
+    expect(
+      within(inspector).getByText("Source provenance"),
+    ).toBeInTheDocument();
     expect(
       within(inspector).getByText(/origami-point-5, origami-point-6/),
     ).toBeInTheDocument();

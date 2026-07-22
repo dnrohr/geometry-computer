@@ -338,6 +338,9 @@ proof claim attached to each construction step.
   action takes over.
 - N2.6 Add an inspector section for fold assumptions, selected solution, rejected
   branches, numeric sampled value, expression provenance, and export IDs.
+  Current implementation exposes fold assumptions, selected solution or branch,
+  rejected branch labels, sampled value, expression/source provenance, and
+  object/step export IDs in the origami object inspector.
 - N2.7 Add compact desktop and mobile layouts that keep the SVG, step list,
   inspector, and proof cards readable without overlapping text or controls.
 - N2.8 Update `docs/ORIGAMI_RENDERING.md` with the visual roles, interaction

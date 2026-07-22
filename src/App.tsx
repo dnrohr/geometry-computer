@@ -619,6 +619,15 @@ function OrigamiRoadmap() {
     }
     return "n/a";
   };
+  const selectedObjectExpressionProvenance =
+    selectedObject?.provenance.expression ?? "none";
+  const selectedObjectSourceProvenance =
+    selectedObject && selectedObject.provenance.sourceObjectIds.length
+      ? selectedObject.provenance.sourceObjectIds.join(", ")
+      : "none";
+  const selectedObjectExportIds = selectedObject
+    ? [selectedObject.id, selectedObjectStep?.id].filter(Boolean).join(", ")
+    : "none";
   const moveOrigamiStep = (delta: number) => {
     const index = Math.max(
       0,
@@ -2093,38 +2102,30 @@ function OrigamiRoadmap() {
                 <dd>{selectedObject.kind}</dd>
                 <dt>Role</dt>
                 <dd>{selectedObject.role}</dd>
-                <dt>Expression</dt>
-                <dd>{selectedObject.provenance.expression ?? "none"}</dd>
-                <dt>Assumptions</dt>
+                <dt>Expression provenance</dt>
+                <dd>{selectedObjectExpressionProvenance}</dd>
+                <dt>Fold assumptions</dt>
                 <dd>
                   {selectedObjectProof?.assumptions?.join("; ") ?? "none"}
                 </dd>
-                <dt>Selected</dt>
+                <dt>Selected solution</dt>
                 <dd>
                   {selectedBranch?.label ??
                     selectedObjectStep?.selectedSolutionId ??
                     "deterministic"}
                 </dd>
-                <dt>Rejected</dt>
+                <dt>Rejected branches</dt>
                 <dd>
                   {rejectedBranches.length
                     ? rejectedBranches.map(({ label }) => label).join(", ")
                     : "none"}
                 </dd>
-                <dt>Sample</dt>
+                <dt>Sampled value</dt>
                 <dd>{sampledOrigamiValue()}</dd>
-                <dt>Provenance</dt>
-                <dd>
-                  {selectedObject.provenance.sourceObjectIds.length
-                    ? selectedObject.provenance.sourceObjectIds.join(", ")
-                    : "none"}
-                </dd>
+                <dt>Source provenance</dt>
+                <dd>{selectedObjectSourceProvenance}</dd>
                 <dt>Export IDs</dt>
-                <dd>
-                  {[selectedObject.id, selectedObjectStep?.id]
-                    .filter(Boolean)
-                    .join(", ")}
-                </dd>
+                <dd>{selectedObjectExportIds}</dd>
               </dl>
             ) : (
               <p>Select a crease, point, segment, or label in the diagram.</p>
