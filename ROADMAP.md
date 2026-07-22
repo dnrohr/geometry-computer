@@ -634,6 +634,10 @@ the existing inspectable SVG trace.
   the final sampled result throughout playback.
 - F3.5 Keep static crease-pattern inspection available beside or below the
   animation so users can compare motion with the final trace.
+  Current implementation keeps a static crease-pattern comparison beside the
+  function animation with a link back to the origami trace, and the function SVG
+  renderer exposes a `crease-pattern` snapshot mode for per-phase crease
+  inspection/export.
 - F3.6 Add focus and keyboard support for timeline controls, fold steps, and
   object selection.
 - F3.7 Add browser visual-contract checks that ensure animation frames are
