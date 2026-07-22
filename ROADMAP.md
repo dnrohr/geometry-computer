@@ -470,6 +470,9 @@ computer while animation work is still experimental.
   tested summary of the supported operations.
 - F0.2 Add a flat-origami function input panel under the origami tab only. Do
   not add new controls to the compass-and-straightedge workspace.
+  Current implementation renders the function lab inside `OrigamiRoadmap`,
+  mounted only behind the flat-origami workspace tab, with app regressions
+  proving the `Origami function` input is absent from the compass workspace.
 - F0.3 Keep origami function parsing, validation, planning, animation state,
   paper styling, and export types under origami-specific modules.
 - F0.4 Reuse the shared expression parser only as the syntax boundary; keep
