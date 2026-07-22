@@ -640,6 +640,10 @@ the existing inspectable SVG trace.
   inspection/export.
 - F3.6 Add focus and keyboard support for timeline controls, fold steps, and
   object selection.
+  Current implementation makes the function timeline focusable with
+  ArrowLeft/ArrowRight/Space shortcuts, keeps origami fold steps reachable via
+  step buttons and Alt+Arrow traversal, and gives SVG origami objects
+  button-like Enter/Space activation.
 - F3.7 Add browser visual-contract checks that ensure animation frames are
   nonblank, paper regions stay within the viewport, and controls do not overlap
   at desktop or mobile widths.
