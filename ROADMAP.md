@@ -572,6 +572,10 @@ animation rather than only static crease-pattern explanation.
 - F2.3 Split arithmetic macros into animation-ready phases: place paper, mark
   inputs, align fold, preview candidate crease, fold, transfer/reflection, mark
   intersection, extract result.
+  Current implementation surrounds every function plan with `place-paper`,
+  `mark-input`, and `extract-result` phases and expands arithmetic nodes into
+  stable `align-fold`, `preview-crease`, `fold`, `transfer`, and
+  `mark-intersection` phase sequences.
 - F2.4 Record fold direction, hinge line, moving paper region, stationary paper
   region, side exposure, and selected branch for each animated fold.
 - F2.5 Add deterministic fallback phases for macros that are not yet physically
