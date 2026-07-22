@@ -532,6 +532,10 @@ drive a deterministic fold computation.
   for blocked samples, and leaves the last valid preview plan visible.
 - F1.5 Preserve example gallery presets, but let each preset populate the new
   function input and sample controls.
+  Current implementation keeps the origami example/challenge presets in the
+  separate tab and routes selections through `selectOrigamiFunctionExample`,
+  which updates the function input, resets sample defaults plus preset values,
+  and recompiles the preview plan without exposing compass controls.
 - F1.6 Add copyable normalized-expression and sampled-result readouts so users
   can verify what is being computed.
 
