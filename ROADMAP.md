@@ -349,6 +349,9 @@ proof claim attached to each construction step.
   unclipped controls in `npm run smoke:browser`.
 - N2.8 Update `docs/ORIGAMI_RENDERING.md` with the visual roles, interaction
   states, and reveal rules used by the implementation.
+  Current implementation documents the visual-role map, active-fold overlays,
+  reveal-state behavior, proof/inspector interactions, and responsive layout
+  contracts used by the origami explanation view.
 
 Acceptance checks:
 
