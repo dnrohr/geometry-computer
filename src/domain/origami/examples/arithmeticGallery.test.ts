@@ -185,6 +185,24 @@ describe("advanced origami arithmetic fixtures", () => {
         "NEGATIVE_SQUARE_ROOT",
       ),
     );
+    expect(() =>
+      compileOrigamiExpression(parseExpression("a"), {
+        a: Number.POSITIVE_INFINITY,
+      }),
+    ).toThrow(
+      new OrigamiCompilerError(
+        "Sample a must be a finite real length for the flat-origami trace.",
+        "NO_REAL_SOLUTION",
+      ),
+    );
+    expect(() =>
+      compileOrigamiExpression(parseExpression("a*b"), { a: 6, b: 6 }),
+    ).toThrow(
+      new OrigamiCompilerError(
+        "Expression a * b is too large to display on the current origami paper scale.",
+        "FOLD_OUTSIDE_PAPER",
+      ),
+    );
     expect(() => foldPointToPoint({ x: 0, y: 0 }, { x: 0, y: 0 })).toThrow(
       /coincident/i,
     );

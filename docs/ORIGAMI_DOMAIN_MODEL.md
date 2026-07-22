@@ -284,6 +284,13 @@ missing references, non-finite coordinates, and zero direction vectors. Valid
 degenerate mathematical cases should be represented with `degeneracies` on the
 fold step once the relevant axiom template supports them.
 
+The arithmetic compiler rejects invalid sampled traces before a scene exists
+when no typed step can honestly represent the failure. Non-finite samples or
+intermediate values use `NO_REAL_SOLUTION`; values whose displayed baseline
+would exceed the current paper scale use `FOLD_OUTSIDE_PAPER`. These are
+compiler errors rather than partial scenes, which keeps the renderer and
+inspector from receiving geometry that cannot be drawn readably.
+
 ## Isolation Rule
 
 Compass-and-straightedge compiler, construction macro, SVG renderer, proof card,

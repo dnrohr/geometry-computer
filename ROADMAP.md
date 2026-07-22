@@ -278,9 +278,8 @@ from the folds.
   negative, parallel, coincident, and ambiguous cases.
   Current implementation tests numeric outputs, macro object counts,
   provenance, branch choices, division-by-zero, negative square roots, and
-  axiom-level parallel/coincident/ambiguous cases. A follow-up should broaden
-  compiled-scene readable-error fixtures for any remaining no-solution and
-  fold-outside-paper cases once those branches are surfaced in scenes.
+  compiler-level no-real-solution/fold-outside-paper errors, plus axiom-level
+  parallel/coincident/ambiguous cases.
 - N1.8 Update `docs/ORIGAMI_MATH_BACKGROUND.md` and
   `docs/ORIGAMI_DOMAIN_MODEL.md` with the exact construction contracts and the
   assumptions each macro depends on.

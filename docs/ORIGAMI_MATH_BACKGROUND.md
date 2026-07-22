@@ -122,6 +122,12 @@ solution ID, proof text, degeneracy notes, or tests. Invalid cases should fail
 with origami-specific errors instead of falling through to
 compass-and-straightedge errors.
 
+Compiled arithmetic scenes also reject sampled values or intermediate results
+that are not finite real lengths with `NO_REAL_SOLUTION`. Very large finite
+values can be mathematically valid but too large for the current explanatory
+paper scale; those fail before scene creation with `FOLD_OUTSIDE_PAPER` so the
+UI can report a scale issue instead of rendering a misleading partial trace.
+
 ## Research Spikes
 
 Cubic roots and angle trisection remain research spikes. They require the

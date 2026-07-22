@@ -71,6 +71,16 @@ const metadata = (
 
 const pointAt = (x: number, y: number): OrigamiPoint => ({ x, y });
 
+const MAX_DISPLAY_TRACE_LENGTH = 40;
+
+const assertFiniteTraceValue = (label: string, value: number) => {
+  if (!Number.isFinite(value))
+    throw new OrigamiCompilerError(
+      `${label} must be a finite real length for the flat-origami trace.`,
+      "NO_REAL_SOLUTION",
+    );
+};
+
 const macroProofText: Record<
   OrigamiArithmeticMacroKind,
   Pick<OrigamiFoldProof, "title" | "intuition" | "givens" | "conclusion">
@@ -150,6 +160,7 @@ function evaluateSupported(expr: Expr, values: Record<string, number>): number {
           `Supply a value for ${expr.name}.`,
           "MISSING_VARIABLE",
         );
+      assertFiniteTraceValue(`Sample ${expr.name}`, value);
       return value;
     }
     case "add":
@@ -227,6 +238,13 @@ export function compileOrigamiExpression(
     role: OrigamiObjectMetadata["role"] = "intermediate",
     sourceValues: number[] = [],
   ) => {
+    assertFiniteTraceValue(`Expression ${key}`, value);
+    if (scaledLength(value) > MAX_DISPLAY_TRACE_LENGTH)
+      throw new OrigamiCompilerError(
+        `Expression ${key} is too large to display on the current origami paper scale.`,
+        "FOLD_OUTSIDE_PAPER",
+      );
+
     const y = 1.2 + row++ * 1.35;
     const start = pointAt(1, y);
     const direction = value < 0 ? -1 : 1;
