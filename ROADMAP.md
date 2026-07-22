@@ -559,6 +559,11 @@ animation rather than only static crease-pattern explanation.
 - F2.1 Add an origami function-plan model that records expression nodes,
   intermediate values, dependencies, fold operations, reusable length transfers,
   and result extraction.
+  Current implementation defines the plan contract in
+  `src/domain/origami/function/types.ts` and builds it in
+  `src/domain/origami/function/functionPlan.ts`, recording sampled node values,
+  dependencies, operations, reusable length transfers, phases, diagnostics, and
+  explicit result extraction metadata.
 - F2.2 Topologically order computation steps so animations can play from inputs
   to final output and jump to any dependency.
 - F2.3 Split arithmetic macros into animation-ready phases: place paper, mark
