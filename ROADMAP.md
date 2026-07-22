@@ -481,6 +481,10 @@ computer while animation work is still experimental.
   types.
 - F0.4 Reuse the shared expression parser only as the syntax boundary; keep
   compiler, renderer, animation, and proof models separate.
+  Current implementation routes function parsing through
+  `src/domain/origami/function/parserBoundary.ts`; tests scan production files
+  to keep direct shared-parser imports behind that boundary and keep origami
+  modules away from compass compiler, renderer, proof, and export paths.
 - F0.5 Add regression tests that compile and animate origami functions, switch
   back to compass-and-straightedge, and verify the original construction state
   is unchanged.
