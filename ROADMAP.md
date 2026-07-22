@@ -526,6 +526,10 @@ drive a deterministic fold computation.
   stepper metadata, and preset-populated defaults.
 - F1.4 Validate the sampled domain before compiling, showing denominator and
   radicand issues inline without crashing the scene.
+  Current implementation validates samples through
+  `evaluateOrigamiFunctionInput` and `validateOrigamiAllowableField`, surfaces
+  denominator/radicand details in the function panel, disables compile/preview
+  for blocked samples, and leaves the last valid preview plan visible.
 - F1.5 Preserve example gallery presets, but let each preset populate the new
   function input and sample controls.
 - F1.6 Add copyable normalized-expression and sampled-result readouts so users
