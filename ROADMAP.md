@@ -464,6 +464,10 @@ computer while animation work is still experimental.
   built from variables, rational constants, `+`, `-`, `*`, `/`, powers already
   supported by the parser, square roots, and composition, with domain checks for
   division by zero and negative square-root radicands.
+  Current implementation defines this boundary in
+  `src/domain/origami/function/allowableField.ts`, including finite-value,
+  division-by-zero, negative-radicand, and unsupported-power diagnostics plus a
+  tested summary of the supported operations.
 - F0.2 Add a flat-origami function input panel under the origami tab only. Do
   not add new controls to the compass-and-straightedge workspace.
 - F0.3 Keep origami function parsing, validation, planning, animation state,
