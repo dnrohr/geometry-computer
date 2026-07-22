@@ -326,6 +326,9 @@ proof claim attached to each construction step.
 - N2.4 Add proof-card highlighting so selecting or hovering a proof claim
   highlights the related crease and scene objects, and selecting a scene object
   reveals the matching proof claim.
+  Current implementation links proof-claim hover/click to canvas highlights,
+  moves proof-claim selection back to the owning fold step, and opens the
+  matching proof claim when a scene object is selected.
 - N2.5 Refine reveal-state behavior so source and guide objects appear before
   the fold that uses them, while future objects remain visually quiet until their
   step is reached.

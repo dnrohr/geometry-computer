@@ -224,8 +224,9 @@ so the button label remains focused on the step title and summary.
 
 Proof-card claims are interactive in the origami tab. Selecting or hovering a
 claim adds its `highlightObjectIds` to the canvas highlight set. Selecting a
-scene object searches proof claims for that object, opens the matching proof,
-selects the claim, and activates the step that owns the proof.
+claim also activates the fold step that owns the proof. Selecting a scene object
+searches proof claims for that object, opens the matching proof, selects the
+claim, and activates the step that owns the proof.
 
 The object inspector shows the selected object's ID, kind, semantic role,
 expression provenance, proof assumptions, selected branch or fold solution,

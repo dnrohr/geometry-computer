@@ -559,6 +559,11 @@ function OrigamiRoadmap() {
     if (matchingClaim) setSelectedProofClaimId(matchingClaim.id);
     if (matchingStep) setActiveStepId(matchingStep.id);
   };
+  const selectOrigamiProofClaim = (claimId: string) => {
+    setSelectedProofClaimId(claimId);
+    const matchingStep = scene.steps.find((step) => step.proofId === proofId);
+    if (matchingStep) selectOrigamiStep(matchingStep.id);
+  };
   const origamiStepProofStatus = (proofId?: string) => {
     if (!proofId) return "none";
     return scene.proofs.some(({ id }) => id === proofId) ? "linked" : "missing";
@@ -2154,7 +2159,7 @@ function OrigamiRoadmap() {
                       type="button"
                       className="origami-proof-claim"
                       aria-pressed={claim.id === selectedProofClaimId}
-                      onClick={() => setSelectedProofClaimId(claim.id)}
+                      onClick={() => selectOrigamiProofClaim(claim.id)}
                       onMouseEnter={() => setHoveredProofClaimId(claim.id)}
                       onMouseLeave={() => setHoveredProofClaimId(undefined)}
                     >

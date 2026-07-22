@@ -1422,9 +1422,27 @@ describe("App", () => {
     const claim = screen.getByRole("button", {
       name: /Use an intercept-style fold trace to scale one length by the other.*3 objects/i,
     });
+    fireEvent.keyDown(screen.getByRole("main"), {
+      altKey: true,
+      key: "ArrowUp",
+    });
+    expect(
+      screen
+        .getByRole("button", {
+          name: /Trace a \* b Use an intercept-style fold trace/i,
+        })
+        .closest("li"),
+    ).not.toHaveClass("active");
 
     fireEvent.click(claim);
     expect(claim).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen
+        .getByRole("button", {
+          name: /Trace a \* b Use an intercept-style fold trace/i,
+        })
+        .closest("li"),
+    ).toHaveClass("active");
     expect(
       container.querySelector("#origami-origami-segment-3")?.parentElement,
     ).toHaveClass("is-highlighted");
