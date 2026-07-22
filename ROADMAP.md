@@ -239,27 +239,55 @@ from the folds.
   source segments, unit references, guide lines, fold creases, reflected objects,
   selected intersections, result segments, proof claim IDs, branch selections,
   and degeneracy notes.
+  Current implementation adds `OrigamiArithmeticMacroTrace` on origami fold
+  steps with those object-reference slots, proof claim IDs, selected branch
+  metadata, and degeneracy object references.
 - N1.2 Expand multiplication into a full similar-triangle or intercept-theorem
   construction with visible unit axes, copied input lengths, guide creases,
   projected/scaled points, and a result segment.
+  Current implementation emits an intercept-style multiplication trace with a
+  unit segment, copied factor segments, ratio and parallel guide lines, selected
+  scaled point, projection crease, result segment, and proof branch metadata.
 - N1.3 Expand division into a reciprocal or intercept-theorem construction with
   denominator nonzero validation, visible reciprocal geometry, selected branch
   metadata, and a result segment.
+  Current implementation emits a reciprocal intercept trace with a nonzero
+  denominator check, unit segment, numerator and denominator copies, reciprocal
+  and quotient guides, selected reciprocal and quotient points, projection
+  crease, result segment, and proof branch metadata.
 - N1.4 Implement square as a multiplication specialization that reuses the
   multiplication trace contract while preserving expression provenance for the
   duplicated input.
+  Current implementation routes squaring through the multiplication trace shape,
+  keeps the copied second factor visible, and preserves provenance for the
+  duplicated source length.
 - N1.5 Expand square root into a geometric-mean style construction with the
   unit-plus-input baseline, midpoint, auxiliary circle or fold-equivalent guide,
   perpendicular extraction step, selected intersection, and nonnegative-input
   validation.
+  Current implementation emits a geometric-mean trace with a nonnegative-input
+  check, unit-plus-input baseline, midpoint, fold-equivalent guide, positive
+  selected square-root point, perpendicular extraction crease, result segment,
+  and proof branch metadata.
 - N1.6 Add fixture scenes for multiplication, division, square, and square root
   that expose every intermediate object needed by the renderer and inspector.
+  Current implementation adds advanced arithmetic fixtures for multiplication,
+  division, square, and square root through the origami arithmetic gallery.
 - N1.7 Add deterministic tests for numeric results, intermediate object counts,
   provenance chains, branch choices, and readable degeneracy errors for zero,
   negative, parallel, coincident, and ambiguous cases.
+  Current implementation tests numeric outputs, macro object counts,
+  provenance, branch choices, division-by-zero, negative square roots, and
+  axiom-level parallel/coincident/ambiguous cases. A follow-up should broaden
+  compiled-scene readable-error fixtures for any remaining no-solution and
+  fold-outside-paper cases once those branches are surfaced in scenes.
 - N1.8 Update `docs/ORIGAMI_MATH_BACKGROUND.md` and
   `docs/ORIGAMI_DOMAIN_MODEL.md` with the exact construction contracts and the
   assumptions each macro depends on.
+  Current implementation documents the advanced macro trace slots,
+  multiplication/division/square/square-root construction contracts, branch
+  assumptions, parser boundary, and separation from compass-and-straightedge
+  modules.
 
 Acceptance checks:
 
