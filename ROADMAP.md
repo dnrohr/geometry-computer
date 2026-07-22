@@ -390,6 +390,9 @@ nonblank rendering, console stability, and responsive explanation layouts.
 - N3.4 Add visual-contract checks for desktop and mobile widths that detect
   overlapping panels, clipped button text, blank SVG output, and missing active
   highlights.
+  Current implementation runs the origami visual contract at `1280x900` and
+  `390x844`, failing on overlapping panels, clipped workspace buttons, blank
+  SVGs, missing overlay highlights, or missing active creases.
 - N3.5 Save deterministic screenshots or image snapshots for the origami tab and
   document where generated artifacts live and which files are ignored by git.
 - N3.6 Add export smoke checks for origami JSON and SVG once export controls are
