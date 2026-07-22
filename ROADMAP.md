@@ -508,6 +508,10 @@ drive a deterministic fold computation.
 
 - F1.1 Add an origami function input field with examples such as `f(a,b)=a*b`,
   `f(x)=sqrt(x+1)`, and `f(a,b,c)=(a+b)/(c+1)`.
+  Current implementation renders the `Origami function` input inside the
+  separate origami function lab and backs the three requested examples with
+  `src/domain/origami/function/functionExamples.ts` presets that populate and
+  compile through the preview path.
 - F1.2 Parse optional function signatures, infer variables when no signature is
   supplied, and normalize display names for the result.
 - F1.3 Add variable controls with numeric inputs, steppers, and sliders for
