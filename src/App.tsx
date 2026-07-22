@@ -563,6 +563,41 @@ function OrigamiRoadmap() {
     if (!proofId) return "none";
     return scene.proofs.some(({ id }) => id === proofId) ? "linked" : "missing";
   };
+  const origamiStepMetadata = (step: (typeof scene.steps)[number]) => {
+    const selectedStepBranch = step.macroTrace?.branchSelections.find(
+      ({ selected }) => selected,
+    );
+    const degeneracyMessages =
+      step.degeneracies?.map(({ message }) => message) ?? [];
+    const macroDegeneracyCount =
+      step.macroTrace?.degeneracyObjectIds.length ?? 0;
+    const proofStatus = origamiStepProofStatus(step.proofId);
+
+    return {
+      macroFamily: step.operation
+        ? `Arithmetic: ${step.operation}`
+        : "Fold axiom",
+      axiom: step.axiom ?? "Macro trace",
+      branch:
+        selectedStepBranch?.label ??
+        step.selectedSolutionId ??
+        "Deterministic branch",
+      proof:
+        proofStatus === "linked"
+          ? "Linked proof"
+          : proofStatus === "missing"
+            ? "Missing proof"
+            : "No proof",
+      degeneracy:
+        degeneracyMessages.length > 0
+          ? degeneracyMessages.join("; ")
+          : macroDegeneracyCount > 0
+            ? `${macroDegeneracyCount} degeneracy object${
+                macroDegeneracyCount === 1 ? "" : "s"
+              }`
+            : "No degeneracy notes",
+    };
+  };
   const selectedBranch = selectedObjectStep?.macroTrace?.branchSelections.find(
     ({ selected }) => selected,
   );
@@ -1984,66 +2019,62 @@ function OrigamiRoadmap() {
             <p className="section-label">Generated folds</p>
             <h2 id="folds-title">Origami steps</h2>
             <ol>
-              {scene.steps.map((step) => (
-                <li
-                  key={step.id}
-                  className={step.id === activeStepId ? "active" : ""}
-                >
-                  <button
-                    className="step-button"
-                    type="button"
-                    onClick={() => selectOrigamiStep(step.id)}
+              {scene.steps.map((step) => {
+                const metadata = origamiStepMetadata(step);
+                return (
+                  <li
+                    key={step.id}
+                    className={step.id === activeStepId ? "active" : ""}
                   >
-                    <h3>{step.title}</h3>
-                    <p>{step.summary}</p>
-                  </button>
-                  <dl className="origami-step-metadata">
-                    <div>
-                      <dt>Macro</dt>
-                      <dd>{step.operation ?? "none"}</dd>
-                    </div>
-                    <div>
-                      <dt>Axiom</dt>
-                      <dd>{step.axiom ?? "macro trace"}</dd>
-                    </div>
-                    <div>
-                      <dt>Branch</dt>
-                      <dd>
-                        {step.macroTrace?.branchSelections.find(
-                          ({ selected }) => selected,
-                        )?.label ??
-                          step.selectedSolutionId ??
-                          "deterministic"}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Proof</dt>
-                      <dd>{origamiStepProofStatus(step.proofId)}</dd>
-                    </div>
-                    <div>
-                      <dt>Degeneracy</dt>
-                      <dd>
-                        {(step.degeneracies?.length ?? 0) +
-                          (step.macroTrace?.degeneracyObjectIds.length ?? 0) ||
-                          "none"}
-                      </dd>
-                    </div>
-                  </dl>
-                  {step.proofId && (
                     <button
-                      className="how-button"
+                      className="step-button"
                       type="button"
-                      onClick={() => {
-                        setProofId(step.proofId);
-                        setSelectedProofClaimId(undefined);
-                        setHoveredProofClaimId(undefined);
-                      }}
+                      onClick={() => selectOrigamiStep(step.id)}
                     >
-                      Why?
+                      <h3>{step.title}</h3>
+                      <p>{step.summary}</p>
                     </button>
-                  )}
-                </li>
-              ))}
+                    <dl
+                      className="origami-step-metadata"
+                      aria-label={`${step.title} metadata`}
+                    >
+                      <div>
+                        <dt>Macro</dt>
+                        <dd>{metadata.macroFamily}</dd>
+                      </div>
+                      <div>
+                        <dt>Axiom</dt>
+                        <dd>{metadata.axiom}</dd>
+                      </div>
+                      <div>
+                        <dt>Branch</dt>
+                        <dd>{metadata.branch}</dd>
+                      </div>
+                      <div>
+                        <dt>Proof</dt>
+                        <dd>{metadata.proof}</dd>
+                      </div>
+                      <div>
+                        <dt>Degeneracy</dt>
+                        <dd>{metadata.degeneracy}</dd>
+                      </div>
+                    </dl>
+                    {step.proofId && (
+                      <button
+                        className="how-button"
+                        type="button"
+                        onClick={() => {
+                          setProofId(step.proofId);
+                          setSelectedProofClaimId(undefined);
+                          setHoveredProofClaimId(undefined);
+                        }}
+                      >
+                        Why?
+                      </button>
+                    )}
+                  </li>
+                );
+              })}
             </ol>
           </aside>
           <aside className="origami-inspector" aria-labelledby="origami-object">

@@ -218,9 +218,9 @@ The flat-origami tab provides:
 - JSON and SVG export buttons for the current origami trace.
 
 The step list shows compact metadata for each fold: macro family, fold axiom or
-macro-trace fallback, selected branch, proof-link status, and degeneracy count.
-These fields stay outside the step activation button so the button label remains
-focused on the step title and summary.
+macro-trace fallback, selected branch, proof-link status, and readable
+degeneracy notes or counts. These fields stay outside the step activation button
+so the button label remains focused on the step title and summary.
 
 Proof-card claims are interactive in the origami tab. Selecting or hovering a
 claim adds its `highlightObjectIds` to the canvas highlight set. Selecting a

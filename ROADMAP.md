@@ -321,6 +321,8 @@ proof claim attached to each construction step.
 - N2.3 Upgrade the origami steps panel so each step shows its macro family,
   fold axiom, branch choice, proof status, and any degeneracy note without
   crowding the layout.
+  Current implementation keeps those fields in compact metadata tiles outside
+  the step activation button, with readable proof and degeneracy status text.
 - N2.4 Add proof-card highlighting so selecting or hovering a proof claim
   highlights the related crease and scene objects, and selecting a scene object
   reveals the matching proof claim.

@@ -465,12 +465,14 @@ describe("App", () => {
         name: /Trace a \* b Use an intercept-style fold trace/i,
       }),
     );
-    expect(screen.getByText("mul")).toBeInTheDocument();
+    expect(screen.getByText("Arithmetic: mul")).toBeInTheDocument();
     fireEvent.keyDown(screen.getByRole("main"), {
       altKey: true,
       key: "ArrowUp",
     });
-    expect(screen.getAllByText("place-input").length).toBeGreaterThan(0);
+    expect(
+      screen.getAllByText("Arithmetic: place-input").length,
+    ).toBeGreaterThan(0);
     fireEvent.click(screen.getAllByRole("button", { name: "Why?" }).at(-1)!);
     expect(
       screen.getByRole("heading", { name: "Origami multiplication trace" }),
@@ -1388,17 +1390,24 @@ describe("App", () => {
       .closest("li")!;
 
     expect(within(multiplyStep).getByText("Macro")).toBeInTheDocument();
-    expect(within(multiplyStep).getByText("mul")).toBeInTheDocument();
+    expect(
+      within(multiplyStep).getByText("Arithmetic: mul"),
+    ).toBeInTheDocument();
     expect(within(multiplyStep).getByText("Axiom")).toBeInTheDocument();
-    expect(within(multiplyStep).getByText("macro trace")).toBeInTheDocument();
+    expect(within(multiplyStep).getByText("Macro trace")).toBeInTheDocument();
     expect(within(multiplyStep).getByText("Branch")).toBeInTheDocument();
     expect(
       within(multiplyStep).getByText("Intercept similar-triangle branch"),
     ).toBeInTheDocument();
     expect(within(multiplyStep).getByText("Proof")).toBeInTheDocument();
-    expect(within(multiplyStep).getByText("linked")).toBeInTheDocument();
+    expect(within(multiplyStep).getByText("Linked proof")).toBeInTheDocument();
     expect(within(multiplyStep).getByText("Degeneracy")).toBeInTheDocument();
-    expect(within(multiplyStep).getByText("none")).toBeInTheDocument();
+    expect(
+      within(multiplyStep).getByText("No degeneracy notes"),
+    ).toBeInTheDocument();
+    expect(
+      within(multiplyStep).getByLabelText("Trace a * b metadata"),
+    ).toHaveClass("origami-step-metadata");
   });
 
   it("links origami proof claims with canvas object highlighting", () => {
