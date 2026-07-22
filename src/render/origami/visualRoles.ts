@@ -18,6 +18,63 @@ export type OrigamiVisualRole =
 
 export type OrigamiVisualRoleMap = Record<string, OrigamiVisualRole[]>;
 
+export type OrigamiVisualRoleDefinition = {
+  role: OrigamiVisualRole;
+  label: string;
+  description: string;
+};
+
+export const ORIGAMI_VISUAL_ROLE_DEFINITIONS: OrigamiVisualRoleDefinition[] = [
+  {
+    role: "source-geometry",
+    label: "Source geometry",
+    description: "Input or source objects used by the active fold or macro.",
+  },
+  {
+    role: "guide",
+    label: "Guide",
+    description: "Unit references and guide lines that set up a construction.",
+  },
+  {
+    role: "active-crease",
+    label: "Active crease",
+    description: "Creases belonging to the selected fold step.",
+  },
+  {
+    role: "mountain-valley-candidate",
+    label: "Mountain/valley candidate",
+    description:
+      "Unassigned creases that may later receive a mountain or valley assignment.",
+  },
+  {
+    role: "reflected-geometry",
+    label: "Reflected geometry",
+    description: "Reflected points or reflected objects produced by a fold.",
+  },
+  {
+    role: "selected-intersection",
+    label: "Selected intersection",
+    description:
+      "The chosen point or intersection used by the active construction branch.",
+  },
+  {
+    role: "extracted-result",
+    label: "Extracted result",
+    description: "Result segments produced by a macro or final expression.",
+  },
+  {
+    role: "hidden-future",
+    label: "Hidden future",
+    description:
+      "Objects hidden or quieted by the current reveal state until their step is reached.",
+  },
+  {
+    role: "degeneracy-warning",
+    label: "Degeneracy warning",
+    description: "Objects attached to a degeneracy or rejected branch.",
+  },
+];
+
 const addRole = (
   roles: Map<string, Set<OrigamiVisualRole>>,
   objectId: string,

@@ -3,9 +3,40 @@ import {
   simplePointToPointFoldScene,
 } from "../../domain/origami/examples";
 import { evaluateOrigamiReveal } from "../../domain/origami/reveal/evaluateOrigamiReveal";
-import { buildOrigamiVisualRoleMap } from "./visualRoles";
+import {
+  ORIGAMI_VISUAL_ROLE_DEFINITIONS,
+  buildOrigamiVisualRoleMap,
+  origamiVisualRoleClassName,
+  type OrigamiVisualRole,
+} from "./visualRoles";
 
 describe("origami visual roles", () => {
+  it("defines the complete N2 explanation role vocabulary", () => {
+    const roles = ORIGAMI_VISUAL_ROLE_DEFINITIONS.map(({ role }) => role);
+    const expectedRoles: OrigamiVisualRole[] = [
+      "source-geometry",
+      "guide",
+      "active-crease",
+      "mountain-valley-candidate",
+      "reflected-geometry",
+      "selected-intersection",
+      "extracted-result",
+      "hidden-future",
+      "degeneracy-warning",
+    ];
+
+    expect(roles).toEqual(expectedRoles);
+    expect(new Set(roles).size).toBe(expectedRoles.length);
+    expect(
+      ORIGAMI_VISUAL_ROLE_DEFINITIONS.every(
+        ({ label, description }) => label.length > 0 && description.length > 0,
+      ),
+    ).toBe(true);
+    expect(roles.map(origamiVisualRoleClassName)).toEqual(
+      expectedRoles.map((role) => `origami-visual-${role}`),
+    );
+  });
+
   it("classifies active macro geometry for explanation rendering", () => {
     const { scene } = compiledAdvancedOrigamiArithmeticFixtures().find(
       ({ operation }) => operation === "mul",

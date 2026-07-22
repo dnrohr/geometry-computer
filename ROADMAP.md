@@ -309,6 +309,9 @@ proof claim attached to each construction step.
 - N2.1 Define visual roles for source geometry, guides, active creases,
   mountain/valley candidates, reflected geometry, selected intersections,
   extracted result segments, hidden future objects, and degeneracy warnings.
+  Current implementation exports a typed visual-role definition list and derives
+  stable `origami-visual-*` classes from active steps, macro traces, reveal
+  state, and degeneracy references.
 - N2.2 Add active-fold overlays in `SvgOrigamiCanvas` that highlight the crease,
   input objects, reflected objects, intersections, and result segment for the
   selected step.

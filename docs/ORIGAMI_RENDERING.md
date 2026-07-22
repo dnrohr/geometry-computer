@@ -27,6 +27,8 @@ distinguish authored geometry from the explanation highlight pass.
 `buildOrigamiVisualRoleMap` assigns explanation-facing visual roles without
 changing the origami scene data model. `SvgOrigamiCanvas` renders those roles as
 stable CSS classes prefixed with `origami-visual-`.
+`ORIGAMI_VISUAL_ROLE_DEFINITIONS` is the typed source of truth for labels and
+descriptions used by tests, UI affordances, and future inspector copy.
 
 The current visual roles are:
 
