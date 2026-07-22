@@ -378,6 +378,9 @@ nonblank rendering, console stability, and responsive explanation layouts.
 - N3.2 Add smoke coverage for both tabs: compile a compass-and-straightedge
   expression, switch to the origami tab, switch back, and verify the original
   construction state is still intact.
+  Current implementation compiles `a+b`, switches into the flat-origami tab,
+  exercises origami checks, switches back to compass-and-straightedge, and
+  verifies the constructed heading, export controls, and expression value.
 - N3.3 Add origami gallery smoke coverage that opens every origami example and
   verifies the SVG contains paper geometry, at least one crease, labels, active
   step metadata, and no empty viewport.
