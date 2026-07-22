@@ -629,6 +629,9 @@ the existing inspectable SVG trace.
   motion, presentation reset, and keyboard controls in the origami tab.
 - F3.4 Show the computation value evolving beside the animation, including
   current subexpression, sampled numeric value, and final result.
+  Current implementation renders a function value strip inside the animation SVG
+  showing the active phase expression, sampled node value when available, and
+  the final sampled result throughout playback.
 - F3.5 Keep static crease-pattern inspection available beside or below the
   animation so users can compare motion with the final trace.
 - F3.6 Add focus and keyboard support for timeline controls, fold steps, and
