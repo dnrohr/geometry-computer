@@ -241,6 +241,31 @@ should be extracted until its paired compatibility tests exist.
   A shared expression-control interface needs UI tests that exercise both
   workspaces without removing either system's labels or validation states.
 
+## F8.4 Construction-System Selector Readiness
+
+Status: not-ready.
+
+Common function family under review: `sqrt(a+1)`.
+
+A construction-system selector should wait until both systems can compute,
+render, inspect, prove, and export the same function family with paired parity
+tests.
+
+- compute: Both systems compute sqrt(a+1), but the origami function lab still
+  carries fallback fold-solver phases.
+- render: Both systems render results, but compass construction rendering and
+  origami fold animation explain different intermediate geometry.
+- inspect: Both systems expose inspectable objects, but a shared selector would
+  need paired object-inspector expectations for the same function family.
+- prove: Both systems expose proof evidence, but compass proof cards and origami
+  fold certificates are not yet parity-tested through one shared workflow.
+- export: Both systems export data, but compass scene exports and origami
+  animation/replay exports use intentionally different schemas.
+
+Decision: Keep the existing separate tabs. Do not introduce a
+construction-system selector until all required capabilities have paired parity
+tests.
+
 ## Decision
 
 Do not merge the compiler, renderer, export, or proof paths yet. The only shared

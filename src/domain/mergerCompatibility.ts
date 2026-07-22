@@ -12,6 +12,21 @@ export type CompatibilityGate = {
   requiredCompatibilityTest: string;
 };
 
+export type ConstructionSystemSelectorCapability =
+  | "compute"
+  | "render"
+  | "inspect"
+  | "prove"
+  | "export";
+
+export type ConstructionSystemSelectorReadiness = {
+  status: "ready" | "not-ready";
+  commonFunctionFamily: string;
+  requiredCapabilities: ConstructionSystemSelectorCapability[];
+  missingEvidence: Record<ConstructionSystemSelectorCapability, string>;
+  decision: string;
+};
+
 export const mergerCompatibilityGates: CompatibilityGate[] = [
   {
     candidate: "function-plan",
@@ -59,3 +74,33 @@ export const compatibilityGateFor = (
   candidate: SharedInterfaceCandidate,
 ): CompatibilityGate | undefined =>
   mergerCompatibilityGates.find((gate) => gate.candidate === candidate);
+
+export const constructionSystemSelectorReadiness: ConstructionSystemSelectorReadiness =
+  {
+    status: "not-ready",
+    commonFunctionFamily: "sqrt(a+1)",
+    requiredCapabilities: ["compute", "render", "inspect", "prove", "export"],
+    missingEvidence: {
+      compute:
+        "Both systems compute sqrt(a+1), but the origami function lab still carries fallback fold-solver phases.",
+      render:
+        "Both systems render results, but compass construction rendering and origami fold animation explain different intermediate geometry.",
+      inspect:
+        "Both systems expose inspectable objects, but a shared selector would need paired object-inspector expectations for the same function family.",
+      prove:
+        "Both systems expose proof evidence, but compass proof cards and origami fold certificates are not yet parity-tested through one shared workflow.",
+      export:
+        "Both systems export data, but compass scene exports and origami animation/replay exports use intentionally different schemas.",
+    },
+    decision:
+      "Keep the existing separate tabs. Do not introduce a construction-system selector until all required capabilities have paired parity tests.",
+  };
+
+export const isConstructionSystemSelectorReady = (
+  readiness = constructionSystemSelectorReadiness,
+) =>
+  readiness.status === "not-ready"
+    ? false
+    : readiness.requiredCapabilities.every(
+        (capability) => readiness.missingEvidence[capability] === "",
+      );

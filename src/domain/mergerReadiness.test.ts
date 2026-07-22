@@ -5,7 +5,10 @@ import {
   compileOrigamiFunctionPreview,
   origamiFunctionAnimationExport,
 } from "./origami/function";
-import { mergerCompatibilityGates } from "./mergerCompatibility";
+import {
+  constructionSystemSelectorReadiness,
+  mergerCompatibilityGates,
+} from "./mergerCompatibility";
 import { mergerConcepts } from "./mergerConcepts";
 import { parseExpression } from "./parser/parseExpression";
 import { compileOrigamiExpression } from "./origami/compiler/compileOrigamiExpression";
@@ -140,5 +143,25 @@ describe("origami and compass-straightedge merger readiness", () => {
       expect(normalizedReview).toContain(gate.origamiEvidence);
       expect(normalizedReview).toContain(gate.requiredCompatibilityTest);
     }
+  });
+
+  it("documents the F8.4 construction-system selector readiness decision", () => {
+    const review = readFileSync("docs/ORIGAMI_MERGER_REVIEW.md", "utf8");
+    const normalizedReview = review.replace(/\s+/g, " ");
+
+    expect(review).toContain("F8.4 Construction-System Selector Readiness");
+    expect(review).toContain(constructionSystemSelectorReadiness.status);
+    expect(review).toContain(
+      constructionSystemSelectorReadiness.commonFunctionFamily,
+    );
+    for (const capability of constructionSystemSelectorReadiness.requiredCapabilities) {
+      expect(review).toContain(capability);
+      expect(normalizedReview).toContain(
+        constructionSystemSelectorReadiness.missingEvidence[capability],
+      );
+    }
+    expect(normalizedReview).toContain(
+      constructionSystemSelectorReadiness.decision,
+    );
   });
 });

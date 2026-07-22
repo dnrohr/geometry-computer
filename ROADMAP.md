@@ -654,6 +654,8 @@ share selected concepts with the original geometry computer.
   candidate interfaces and tests that block premature shared-interface modules.
 - F8.4 Consider a construction-system selector only after both systems can
   compute, render, inspect, prove, and export the same function family.
+  Current implementation adds selector-readiness criteria for compute, render,
+  inspect, prove, and export parity and keeps the selector status not-ready.
 - F8.5 Keep the separate tab if merging would make fold animation or paper-side
   styling harder to understand.
 

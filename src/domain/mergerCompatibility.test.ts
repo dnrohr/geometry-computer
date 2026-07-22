@@ -1,6 +1,8 @@
 import { existsSync } from "node:fs";
 import {
   compatibilityGateFor,
+  constructionSystemSelectorReadiness,
+  isConstructionSystemSelectorReady,
   mergerCompatibilityGates,
   type SharedInterfaceCandidate,
 } from "./mergerCompatibility";
@@ -42,5 +44,28 @@ describe("merger compatibility gates", () => {
     ]) {
       expect(existsSync(forbiddenPath)).toBe(false);
     }
+  });
+
+  it("blocks a construction-system selector until full function-family parity exists", () => {
+    expect(constructionSystemSelectorReadiness).toMatchObject({
+      status: "not-ready",
+      commonFunctionFamily: "sqrt(a+1)",
+      requiredCapabilities: ["compute", "render", "inspect", "prove", "export"],
+    });
+    expect(isConstructionSystemSelectorReady()).toBe(false);
+    expect(
+      constructionSystemSelectorReadiness.requiredCapabilities.map(
+        (capability) =>
+          constructionSystemSelectorReadiness.missingEvidence[capability],
+      ),
+    ).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("fallback fold-solver phases"),
+        expect.stringContaining("different intermediate geometry"),
+        expect.stringContaining("object-inspector expectations"),
+        expect.stringContaining("proof cards and origami fold certificates"),
+        expect.stringContaining("different schemas"),
+      ]),
+    );
   });
 });
