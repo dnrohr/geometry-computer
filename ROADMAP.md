@@ -514,6 +514,10 @@ drive a deterministic fold computation.
   compile through the preview path.
 - F1.2 Parse optional function signatures, infer variables when no signature is
   supplied, and normalize display names for the result.
+  Current implementation centralizes this in
+  `src/domain/origami/function/parserBoundary.ts`, which accepts optional
+  signatures, infers variables from unsigned expressions, rejects mismatched
+  signatures, and emits normalized result labels such as `g(a, b) = a * b`.
 - F1.3 Add variable controls with numeric inputs, steppers, and sliders for
   sampled values, including per-variable min, max, and default values.
 - F1.4 Validate the sampled domain before compiling, showing denominator and
