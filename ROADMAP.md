@@ -855,6 +855,11 @@ Goal: make the animation teach the computation, not merely decorate it.
   physical, emits `intercept-product-transfer` certificates, marks product
   result extraction as physical, and keeps division/square-root solver work
   untouched.
+- F5.11 Certify division function phases.
+  Current implementation treats the selected reciprocal-quotient branch as
+  proven physical after sampled nonzero-denominator validation, emits
+  `reciprocal-quotient-transfer` certificates, marks quotient result extraction
+  as physical, and keeps square-root solver work untouched.
 
 Acceptance checks:
 

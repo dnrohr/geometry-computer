@@ -176,6 +176,10 @@ The flat-origami tab provides:
 - F5.12 surfaces multiplication as certified intercept-product work. Active
   multiplication phases show certificate details and imported multiplication
   animations replay as solver-ready rather than fallback work.
+- F5.13 surfaces division as certified reciprocal-quotient work. The scaled
+  reciprocal challenge now shows ready solver status and certificate details for
+  the active quotient phase; square-root animations still show fallback
+  diagnostics.
 - F6.2 starts static SVG snapshot export for function animations. The origami
   tab can download the visible current phase and a hidden final-phase snapshot,
   each serialized from the same SVG renderer and carrying plan, phase, kind, and

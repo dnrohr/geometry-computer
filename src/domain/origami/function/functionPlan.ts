@@ -309,6 +309,7 @@ const arithmeticPhaseIsPhysical = (node: OrigamiFunctionPlanNode) =>
   node.kind === "add" ||
   node.kind === "sub" ||
   node.kind === "mul" ||
+  node.kind === "div" ||
   (node.kind === "pow" && node.powerExponent === 2);
 
 const createPlanDiagnostics = (
@@ -479,6 +480,7 @@ const certificateForPhase = (
         phase.foldMotion?.selectedBranch.id ===
           "directed-subtraction-transfer" ||
         phase.foldMotion?.selectedBranch.id === "intercept-product-branch" ||
+        phase.foldMotion?.selectedBranch.id === "reciprocal-quotient-branch" ||
         phase.foldMotion?.selectedBranch.id ===
           "square-multiplication-specialization"
       ) {
@@ -487,6 +489,8 @@ const certificateForPhase = (
           "directed-subtraction-transfer";
         const isMultiplication =
           phase.foldMotion.selectedBranch.id === "intercept-product-branch";
+        const isDivision =
+          phase.foldMotion.selectedBranch.id === "reciprocal-quotient-branch";
         const isSquare =
           phase.foldMotion.selectedBranch.id ===
           "square-multiplication-specialization";
@@ -497,17 +501,21 @@ const certificateForPhase = (
             ? "square-multiplication-specialization"
             : isMultiplication
               ? "intercept-product-transfer"
-              : isSubtraction
-                ? "directed-subtraction-transfer"
-                : "baseline-addition-transfer",
+              : isDivision
+                ? "reciprocal-quotient-transfer"
+                : isSubtraction
+                  ? "directed-subtraction-transfer"
+                  : "baseline-addition-transfer",
           targetObjectIds: phase.outputObjectIds,
           summary: isSquare
             ? "The square length is certified as a multiplication trace specialized to one repeated source length."
             : isMultiplication
               ? "The product length is certified by the selected intercept-style multiplication trace."
-              : isSubtraction
-                ? "The directed subtraction length is certified as a baseline transfer fold."
-                : "The addition length is certified as a baseline transfer fold.",
+              : isDivision
+                ? "The quotient length is certified by the selected reciprocal intercept trace with a nonzero sampled denominator."
+                : isSubtraction
+                  ? "The directed subtraction length is certified as a baseline transfer fold."
+                  : "The addition length is certified as a baseline transfer fold.",
         };
       }
       return undefined;
@@ -668,6 +676,7 @@ export function createOrigamiFunctionPlan(
     resultNode.kind === "add" ||
     resultNode.kind === "sub" ||
     resultNode.kind === "mul" ||
+    resultNode.kind === "div" ||
     (resultNode.kind === "pow" && resultNode.powerExponent === 2);
   const resultPhaseId = addPhase({
     kind: "extract-result",

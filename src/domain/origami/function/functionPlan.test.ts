@@ -296,6 +296,51 @@ describe("origami function plan", () => {
     });
   });
 
+  it("certifies division as a reciprocal intercept fold sequence", () => {
+    const plan = createOrigamiFunctionPlan(validInput("f(a,b)=a/b"));
+
+    expect(plan.nodes.at(-1)).toMatchObject({
+      kind: "div",
+      expression: "a / b",
+    });
+    expect(plan.phases.map(({ physicalStatus }) => physicalStatus)).toEqual([
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+    ]);
+    expect(
+      plan.phases.slice(3, 8).map(({ foldCertificate }) => foldCertificate),
+    ).toEqual([
+      expect.objectContaining({
+        method: "reciprocal-quotient-transfer",
+        targetObjectIds: ["origami-function-node-output-3-align-fold"],
+      }),
+      expect.objectContaining({ method: "reciprocal-quotient-transfer" }),
+      expect.objectContaining({ method: "reciprocal-quotient-transfer" }),
+      expect.objectContaining({ method: "reciprocal-quotient-transfer" }),
+      expect.objectContaining({
+        method: "reciprocal-quotient-transfer",
+        targetObjectIds: ["origami-function-node-output-3"],
+      }),
+    ]);
+    expect(plan.phases.at(-1)?.foldCertificate).toMatchObject({
+      method: "identity-result",
+      targetObjectIds: ["origami-function-result"],
+    });
+    expect(plan.solverReadiness).toMatchObject({
+      status: "ready",
+      fallbackPhases: 0,
+      certifiedPhases: 9,
+      workItems: [],
+    });
+  });
+
   it("keeps higher integer powers in the solver backlog", () => {
     const plan = createOrigamiFunctionPlan(validInput("f(a)=a^3"));
 

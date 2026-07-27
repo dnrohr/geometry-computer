@@ -88,6 +88,7 @@ export type OrigamiFunctionFoldCertificateMethod =
   | "baseline-addition-transfer"
   | "directed-subtraction-transfer"
   | "intercept-product-transfer"
+  | "reciprocal-quotient-transfer"
   | "square-multiplication-specialization";
 
 export type OrigamiFunctionFoldCertificate = {

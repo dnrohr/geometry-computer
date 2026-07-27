@@ -849,21 +849,21 @@ describe("App", () => {
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: "Jump to function phase origami-function-phase-9",
+        name: "Jump to function phase origami-function-phase-10",
       }),
     );
 
     expect(
       screen.getByRole("button", {
-        name: "Jump to function phase origami-function-phase-9",
+        name: "Jump to function phase origami-function-phase-10",
       }),
     ).toHaveAttribute("aria-current", "step");
-    expect(screen.getByText("9 of 14")).toBeInTheDocument();
+    expect(screen.getByText("10 of 14")).toBeInTheDocument();
     expect(
       screen.getByRole("img", {
         name: "Origami function animation: f(a) = sqrt(a + 1)",
       }),
-    ).toHaveAttribute("data-phase-id", "origami-function-phase-9");
+    ).toHaveAttribute("data-phase-id", "origami-function-phase-10");
   });
 
   it("shows a fold storyboard with operation, assumption, and branch details", () => {
@@ -1475,6 +1475,32 @@ describe("App", () => {
       within(functionPanel).getByRole("textbox", { name: "Origami function" }),
     ).toHaveValue("f(a,b)=a/(b+1)");
     expect(within(functionPanel).getByText("1.000")).toBeInTheDocument();
+    fireEvent.click(
+      within(functionPanel).getByRole("button", {
+        name: "Compile origami function",
+      }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Jump to function phase origami-function-phase-10",
+      }),
+    );
+    fireEvent.click(
+      within(functionPanel).getByRole("button", { name: "Show diagnostics" }),
+    );
+    expect(within(functionPanel).getAllByText("ready").length).toBeGreaterThan(
+      1,
+    );
+    expect(
+      within(functionPanel).getByText(
+        "reciprocal-quotient-transfer origami-function-node-output-5-align-fold",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText(
+        "The quotient length is certified by the selected reciprocal intercept trace with a nonzero sampled denominator.",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("updates origami function paper style controls locally", () => {
