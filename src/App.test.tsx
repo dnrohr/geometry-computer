@@ -766,6 +766,55 @@ describe("App", () => {
     expect(
       screen.getByLabelText("Function presentation status"),
     ).toHaveTextContent("Phase 1 of 14");
+    const presentationControls = screen.getByRole("region", {
+      name: "Function presentation controls",
+    });
+    expect(
+      within(presentationControls).getByRole("button", {
+        name: "Previous function phase",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      within(presentationControls).getByRole("button", {
+        name: "Play function animation",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      within(presentationControls).getByRole("button", {
+        name: "Next function phase",
+      }),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      within(presentationControls).getByRole("button", {
+        name: "Next function phase",
+      }),
+    );
+    expect(
+      screen.getByLabelText("Function presentation status"),
+    ).toHaveTextContent("Phase 2 of 14");
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a) = sqrt(a + 1)",
+      }),
+    ).toHaveAttribute("data-phase-id", "origami-function-phase-2");
+    fireEvent.click(
+      within(presentationControls).getByRole("button", {
+        name: "Previous function phase",
+      }),
+    );
+    expect(
+      screen.getByLabelText("Function presentation status"),
+    ).toHaveTextContent("Phase 1 of 14");
+    fireEvent.click(
+      within(presentationControls).getByRole("button", {
+        name: "Play function animation",
+      }),
+    );
+    expect(
+      within(presentationControls).getByRole("button", {
+        name: "Pause function animation",
+      }),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("img", {
         name: "Origami function animation: f(a) = sqrt(a + 1)",

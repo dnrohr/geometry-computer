@@ -699,6 +699,11 @@ surface area.
   rendered readout rectangle sits below the rendered paper base.
 - F3.8.6 Make Play and presentation mode visibly step through distinct phases,
   with obvious previous/next/play controls available in presentation mode.
+  Current implementation starts presentation mode at the first phase with a
+  visible presentation transport: previous phase, play/pause, and next phase.
+  The transport reuses the same timeline state transitions as the normal
+  controls, and tests plus browser smoke verify phase 1 -> phase 2 -> phase 1
+  navigation and play/pause availability while editing controls remain hidden.
 - F3.8.7 Hide or demote camera modes, onion-skin folds, visual cues, crease snap,
   and branch-selected labels until they create clear visible feedback.
 - F3.8.8 Clarify the relationship between the interactive trace gallery and the

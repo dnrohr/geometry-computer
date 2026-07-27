@@ -743,9 +743,15 @@ select:focus-visible,
   margin-bottom: 0;
 }
 
-.origami-function-presentation-status {
+.origami-function-presentation-controls {
   display: grid;
   grid-column: 1 / -1;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.origami-function-presentation-status {
+  display: grid;
   grid-template-columns: minmax(6rem, auto) minmax(8rem, auto) minmax(0, 1fr);
   gap: 0.55rem;
   align-items: center;
@@ -767,6 +773,17 @@ select:focus-visible,
   min-width: 0;
   color: var(--foreground);
   font-size: 0.86rem;
+}
+
+.origami-function-presentation-transport {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.origami-function-presentation-transport button {
+  min-width: 5.25rem;
 }
 
 .origami-function-comparison {

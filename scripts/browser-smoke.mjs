@@ -719,6 +719,35 @@ const assertOrigamiFunctionPanel = async (page) => {
     .getByLabel("Function presentation status")
     .getByText("Phase 1 of 14")
     .waitFor();
+  const presentationControls = page.getByRole("region", {
+    name: "Function presentation controls",
+  });
+  await presentationControls
+    .getByRole("button", { name: "Previous function phase" })
+    .waitFor();
+  await presentationControls
+    .getByRole("button", { name: "Play function animation" })
+    .waitFor();
+  await presentationControls
+    .getByRole("button", { name: "Next function phase" })
+    .click();
+  await page
+    .getByLabel("Function presentation status")
+    .getByText("Phase 2 of 14")
+    .waitFor();
+  await presentationControls
+    .getByRole("button", { name: "Previous function phase" })
+    .click();
+  await page
+    .getByLabel("Function presentation status")
+    .getByText("Phase 1 of 14")
+    .waitFor();
+  await presentationControls
+    .getByRole("button", { name: "Play function animation" })
+    .click();
+  await presentationControls
+    .getByRole("button", { name: "Pause function animation" })
+    .waitFor();
   if (
     (await page
       .getByRole("textbox", { exact: true, name: "Origami function" })

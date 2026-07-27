@@ -786,6 +786,17 @@ function OrigamiRoadmap() {
   };
   const previewOrigamiFunctionAnimation = () =>
     setFunctionPreview((preview) => advanceOrigamiFunctionPreview(preview));
+  const stepOrigamiFunctionPresentation = (delta: -1 | 1) =>
+    setFunctionPreview((preview) =>
+      stepOrigamiFunctionPreviewPhase(preview, delta),
+    );
+  const toggleOrigamiFunctionPlayback = () =>
+    setFunctionPreview((preview) =>
+      setOrigamiFunctionPreviewPlaying(
+        preview,
+        preview.status !== "compiled" || !preview.animation.playing,
+      ),
+    );
   const startOrigamiFunctionPresentation = () => {
     if (timelineDisabled) return;
     setFunctionPresentationMode(true);
@@ -798,7 +809,7 @@ function OrigamiRoadmap() {
         : preview;
       return setOrigamiFunctionPreviewPlaying(
         setOrigamiFunctionPreviewReducedMotion(resetPreview, false),
-        true,
+        false,
       );
     });
   };
@@ -1398,24 +1409,63 @@ function OrigamiRoadmap() {
           svgRef={functionAnimationSvgRef}
         />
         {functionPresentationMode && (
-          <div
-            className="origami-function-presentation-status"
-            aria-label="Function presentation status"
-            aria-live="polite"
+          <section
+            className="origami-function-presentation-controls"
+            aria-label="Function presentation controls"
           >
-            <span>
-              Phase {Math.max(1, activeFunctionPhaseIndex + 1)} of{" "}
-              {functionPhaseMinimapItems.length}
-            </span>
-            <strong>
-              {activeFunctionPhase
-                ? formatOrigamiPhaseKind(activeFunctionPhase.kind)
-                : "Waiting"}
-            </strong>
-            <span>
-              {activeFunctionPhase?.expression ?? functionDisplayName}
-            </span>
-          </div>
+            <div
+              className="origami-function-presentation-status"
+              aria-label="Function presentation status"
+              aria-live="polite"
+            >
+              <span>
+                Phase {Math.max(1, activeFunctionPhaseIndex + 1)} of{" "}
+                {functionPhaseMinimapItems.length}
+              </span>
+              <strong>
+                {activeFunctionPhase
+                  ? formatOrigamiPhaseKind(activeFunctionPhase.kind)
+                  : "Waiting"}
+              </strong>
+              <span>
+                {activeFunctionPhase?.expression ?? functionDisplayName}
+              </span>
+            </div>
+            <div className="origami-function-presentation-transport">
+              <button
+                type="button"
+                aria-label="Previous function phase"
+                disabled={timelineDisabled}
+                onClick={() => stepOrigamiFunctionPresentation(-1)}
+              >
+                Prev
+              </button>
+              <button
+                type="button"
+                aria-label={
+                  functionPreview.status === "compiled" &&
+                  functionPreview.animation.playing
+                    ? "Pause function animation"
+                    : "Play function animation"
+                }
+                disabled={timelineDisabled}
+                onClick={toggleOrigamiFunctionPlayback}
+              >
+                {functionPreview.status === "compiled" &&
+                functionPreview.animation.playing
+                  ? "Pause"
+                  : "Play"}
+              </button>
+              <button
+                type="button"
+                aria-label="Next function phase"
+                disabled={timelineDisabled}
+                onClick={() => stepOrigamiFunctionPresentation(1)}
+              >
+                Next
+              </button>
+            </div>
+          </section>
         )}
         {!functionPresentationMode && (
           <fieldset
@@ -1863,24 +1913,15 @@ function OrigamiRoadmap() {
             if (timelineDisabled) return;
             if (event.key === "ArrowLeft") {
               event.preventDefault();
-              setFunctionPreview((preview) =>
-                stepOrigamiFunctionPreviewPhase(preview, -1),
-              );
+              stepOrigamiFunctionPresentation(-1);
             }
             if (event.key === "ArrowRight") {
               event.preventDefault();
-              setFunctionPreview((preview) =>
-                stepOrigamiFunctionPreviewPhase(preview, 1),
-              );
+              stepOrigamiFunctionPresentation(1);
             }
             if (event.key === " ") {
               event.preventDefault();
-              setFunctionPreview((preview) =>
-                setOrigamiFunctionPreviewPlaying(
-                  preview,
-                  preview.status !== "compiled" || !preview.animation.playing,
-                ),
-              );
+              toggleOrigamiFunctionPlayback();
             }
           }}
         >
@@ -1888,11 +1929,7 @@ function OrigamiRoadmap() {
             type="button"
             aria-label="Previous function phase"
             disabled={timelineDisabled}
-            onClick={() =>
-              setFunctionPreview((preview) =>
-                stepOrigamiFunctionPreviewPhase(preview, -1),
-              )
-            }
+            onClick={() => stepOrigamiFunctionPresentation(-1)}
           >
             Prev
           </button>
@@ -1905,14 +1942,7 @@ function OrigamiRoadmap() {
                 : "Play function animation"
             }
             disabled={timelineDisabled}
-            onClick={() =>
-              setFunctionPreview((preview) =>
-                setOrigamiFunctionPreviewPlaying(
-                  preview,
-                  preview.status !== "compiled" || !preview.animation.playing,
-                ),
-              )
-            }
+            onClick={toggleOrigamiFunctionPlayback}
           >
             {functionPreview.status === "compiled" &&
             functionPreview.animation.playing
@@ -1923,11 +1953,7 @@ function OrigamiRoadmap() {
             type="button"
             aria-label="Next function phase"
             disabled={timelineDisabled}
-            onClick={() =>
-              setFunctionPreview((preview) =>
-                stepOrigamiFunctionPreviewPhase(preview, 1),
-              )
-            }
+            onClick={() => stepOrigamiFunctionPresentation(1)}
           >
             Next
           </button>
