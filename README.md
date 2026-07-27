@@ -14,10 +14,10 @@ function object inspector local to the origami tab. Function animations can be
 exported as JSON, current/final/crease SVG snapshots, or animated SVG, and saved
 animation JSON can be imported for replay. Fallback phases now expose required
 axioms, acceptance checks, and branch alternatives so the remaining physical
-fold-solver work is explicit; square powers such as `f(a)=a^2` are certified
-through the square multiplication specialization, and products such as
-`f(a,b)=a*b` and quotients such as `f(a,b)=a/b` are certified through
-intercept-style traces.
+fold-solver work is explicit. Square powers such as `f(a)=a^2`, products such
+as `f(a,b)=a*b`, quotients such as `f(a,b)=a/b`, and shifted roots such as
+`f(a)=sqrt(a+1)` are now certified through square-specialization,
+intercept-style, reciprocal-quotient, and positive geometric-mean traces.
 
 Origami computation is intentionally isolated for now so the current
 compass-and-straightedge workspace remains stable while fold-based models,

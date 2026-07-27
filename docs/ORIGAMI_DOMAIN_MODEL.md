@@ -160,12 +160,16 @@ powers in the solver backlog with repeated-product proof obligations.
 F5.12 certifies multiplication function phases using the intercept-style product
 trace. Multiplication phases now emit `intercept-product-transfer` fold
 certificates, result extraction becomes physical when the final result is a
-product, and division/square-root phases remain solver backlog items.
+product.
 F5.13 certifies division function phases using the reciprocal intercept trace.
 Division phases now emit `reciprocal-quotient-transfer` fold certificates after
 sampled nonzero-denominator validation, result extraction becomes physical when
-the final result is a quotient, and square-root phases remain solver backlog
-items.
+the final result is a quotient.
+F5.14 certifies square-root function phases using the selected positive
+geometric-mean trace. Square-root phases now emit
+`geometric-mean-square-root` fold certificates after sampled nonnegative
+radicand validation, result extraction becomes physical when the final result
+is a square root, and higher integer powers remain solver backlog items.
 F6.2 exports function-animation SVG snapshots from the origami renderer itself.
 The current-phase snapshot uses the visible timeline state; the final snapshot
 uses the same compiled plan and paper style at the result-extraction phase. A

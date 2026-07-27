@@ -23,7 +23,10 @@ describe("origamiFunctionAnimatedSvg", () => {
     expect(svg).toContain('data-phase-count="14"');
     expect(svg).toContain('fill="#ffffff" opacity="0.65"');
     expect(svg).toContain('data-frame-phase-id="origami-function-phase-9"');
-    expect(svg).toContain('data-frame-physical-status="explanatory-fallback"');
+    expect(svg).toContain('data-frame-physical-status="proven-physical"');
+    expect(svg).not.toContain(
+      'data-frame-physical-status="explanatory-fallback"',
+    );
     expect(svg).toContain('data-crease-phase-id="origami-function-phase-4"');
     expect(svg).toContain('stroke="#ffcc66"');
     expect(svg).toContain("Final 2.000");

@@ -606,11 +606,7 @@ const assertOrigamiFunctionPanel = async (page) => {
   await input.waitFor();
   await functionStatus.getByText("allowable").waitFor();
   await functionStatus.getByText("2.000").waitFor();
-  if (
-    await functionStatus
-      .getByText("6/14 fallback phases, 8 certified")
-      .isVisible()
-  ) {
+  if (await functionStatus.getByText("Fold solver").isVisible()) {
     throw new Error("Function diagnostics were visible by default.");
   }
   await functionPanel.getByRole("button", { name: "Show diagnostics" }).click();
@@ -620,11 +616,11 @@ const assertOrigamiFunctionPanel = async (page) => {
   const diagnosticStatus = functionDiagnostics.locator(
     ".origami-function-status",
   );
+  await diagnosticStatus.getByText("ready").nth(1).waitFor();
   await diagnosticStatus
-    .getByText("6/14 fallback phases, 8 certified")
-    .waitFor();
-  await diagnosticStatus
-    .getByText("origami-function-phase-9 align-fold arithmetic-macro-fold")
+    .getByText(
+      "All function animation phases are backed by physical fold steps.",
+    )
     .waitFor();
   await diagnosticStatus
     .getByText("paper-placement origami-function-paper")
@@ -632,40 +628,46 @@ const assertOrigamiFunctionPanel = async (page) => {
   await diagnosticStatus
     .getByText("The paper boundary is placed as the fixed computation domain.")
     .waitFor();
-  await page.getByRole("heading", { name: "Solver work backlog" }).waitFor();
+  if (
+    (await page
+      .getByRole("heading", { name: "Solver work backlog" })
+      .count()) !== 0
+  ) {
+    throw new Error("Default square-root function still shows solver backlog.");
+  }
   await page
     .getByRole("button", {
-      name: "Jump to solver work origami-function-phase-9",
+      name: "Jump to function phase origami-function-phase-9",
     })
     .click();
   await diagnosticStatus.getByText("origami-function-phase-9 @ 0.57").waitFor();
   await diagnosticStatus
-    .getByText("sqrt:align-fold positive-geometric-mean-branch")
+    .getByText(
+      "geometric-mean-square-root origami-function-node-output-4-align-fold",
+    )
     .waitFor();
   await diagnosticStatus
     .getByText(
-      "sqrt(a + 1) uses the Positive geometric-mean branch macro, which is not yet backed by a physical fold solver.",
+      "The square-root length is certified by the selected positive geometric-mean trace after nonnegative sampled-radicand validation.",
     )
-    .waitFor();
-  await functionPanel.getByText("origami-function-node-output-3").waitFor();
-  await functionPanel
-    .getByText("origami-function-node-output-4-align-fold")
     .waitFor();
   if (
     await functionPanel
       .getByText("paper-placement origami-function-paper")
       .isVisible()
   ) {
-    throw new Error("Certified phase detail stayed visible on fallback phase.");
+    throw new Error(
+      "Paper-placement certificate detail stayed visible on square-root phase.",
+    );
   }
-  const activeSolverItem = await page
+  const activeMinimapPhase = await page
     .getByRole("button", {
-      name: "Jump to solver work origami-function-phase-9",
+      name: "Jump to function phase origami-function-phase-9",
     })
     .getAttribute("aria-current");
-  if (activeSolverItem !== "step") {
+  if (activeMinimapPhase !== "step") {
     throw new Error(
-      `Active solver work item was not marked current: ${activeSolverItem}`,
+      `Active function phase was not marked current: ${activeMinimapPhase}`,
     );
   }
   const minimap = page.getByLabel("Origami function step minimap");
@@ -734,7 +736,7 @@ const assertOrigamiFunctionPanel = async (page) => {
       `Function inspector provenance missing output IDs: ${inspectedOutputIds}`,
     );
   }
-  await functionObjectInspector.getByText("explanatory-fallback").waitFor();
+  await functionObjectInspector.getByText("proven-physical").waitFor();
   const storyboard = page.getByRole("region", { name: "Fold storyboard" });
   const storyboardCount = await storyboard
     .getByRole("button", { name: /Storyboard phase / })
@@ -802,16 +804,12 @@ const assertOrigamiFunctionPanel = async (page) => {
     "Function animation ambiguity warnings",
   );
   await animationWarnings.getByText("Ambiguity recorded").waitFor();
-  await animationWarnings.getByText("Solver fallback").waitFor();
-  await animationWarnings
-    .getByText(/alternate geometric branches are held/)
-    .waitFor();
   const animationWarningCount = await page
     .getByRole("img", {
       name: "Origami function animation: f(a) = sqrt(a + 1)",
     })
     .getAttribute("data-warning-count");
-  if (animationWarningCount !== "2") {
+  if (animationWarningCount !== "1") {
     throw new Error(
       `Function animation warning count mismatch: ${animationWarningCount}`,
     );
@@ -1015,7 +1013,7 @@ const assertOrigamiFunctionPanel = async (page) => {
     );
   if (
     !visualCues.includes("Crease snap") ||
-    !visualCues.includes("Branch selected")
+    visualCues.includes("Branch selected")
   ) {
     throw new Error(`Function visual cues mismatch: ${visualCues.join(", ")}`);
   }
@@ -1029,7 +1027,7 @@ const assertOrigamiFunctionPanel = async (page) => {
       "Domain assumption: sampled inputs stay inside the real origami function field",
     ) ||
     !shareText.includes("Result: 2.000") ||
-    !shareText.includes("Fold solver: 6/14 fallback phases, 8 certified") ||
+    !shareText.includes("Fold solver: ready") ||
     !shareText.includes("Animation: origami-function-phase-9 @ 0.57")
   ) {
     throw new Error(`Function share block mismatch: ${shareText}`);
@@ -1159,27 +1157,15 @@ const assertOrigamiFunctionPanel = async (page) => {
     animationExport.paperStyle.backPattern !== "high-contrast" ||
     animationExport.paperStyle.patternScale !== 1.75 ||
     animationExport.paperStyle.patternRotation !== 45 ||
-    animationExport.solverReadiness.workItems[0]?.phaseId !==
-      "origami-function-phase-9" ||
-    animationExport.plan.solverReadiness.workItems[0]?.phaseId !==
-      "origami-function-phase-9" ||
-    animationExport.plan.solverReadiness.workItems[0]?.requiredCapability !==
-      "arithmetic-macro-fold" ||
-    animationExport.plan.solverReadiness.workItems[0]?.requiredAxioms[0] !==
-      "fold-through-point-and-line" ||
-    animationExport.plan.solverReadiness.workItems[0]?.acceptanceCheckIds[2] !==
-      "origami-function-phase-9-branch-recorded" ||
-    animationExport.plan.solverReadiness.workItems[0]?.branchAlternatives[1]
-      ?.status !== "pending-rejection-record" ||
-    animationExport.plan.solverReadiness.workItems[0]?.sourceObjectIds[0] !==
-      "origami-function-node-output-3" ||
-    animationExport.plan.solverReadiness.workItems[0]?.outputObjectIds[0] !==
-      "origami-function-node-output-4-align-fold" ||
+    animationExport.solverReadiness.status !== "ready" ||
+    animationExport.solverReadiness.workItems.length !== 0 ||
+    animationExport.plan.solverReadiness.workItems.length !== 0 ||
     animationExport.activePhase.phaseId !== "origami-function-phase-9" ||
     animationExport.activePhase.phaseKind !== "align-fold" ||
-    animationExport.activePhase.solverWorkItem?.sourceObjectIds[0] !==
-      "origami-function-node-output-3" ||
-    animationExport.activePhase.solverWorkItem?.outputObjectIds[0] !==
+    animationExport.activePhase.physicalStatus !== "proven-physical" ||
+    animationExport.activePhase.foldCertificate?.method !==
+      "geometric-mean-square-root" ||
+    animationExport.activePhase.foldCertificate?.targetObjectIds[0] !==
       "origami-function-node-output-4-align-fold" ||
     animationExport.expressionProgress.activeNodeId !==
       "origami-function-node-4" ||
@@ -1191,8 +1177,9 @@ const assertOrigamiFunctionPanel = async (page) => {
       "origami-function-node-output-3" ||
     animationExport.objectInspector.outputObjectIds[0] !==
       "origami-function-node-output-4-align-fold" ||
-    animationExport.objectInspector.solverWorkItemId !==
-      "origami-function-phase-9-solver-work" ||
+    animationExport.objectInspector.foldCertificateId !==
+      "origami-function-phase-9-certificate" ||
+    animationExport.objectInspector.solverWorkItemId !== undefined ||
     animationExport.animation.planId !== animationExport.plan.id
   ) {
     throw new Error(
@@ -1210,7 +1197,7 @@ const assertOrigamiFunctionPanel = async (page) => {
     ) ||
     !currentFunctionSvg.text.includes('data-phase-kind="align-fold"') ||
     !currentFunctionSvg.text.includes(
-      'data-physical-status="explanatory-fallback"',
+      'data-physical-status="proven-physical"',
     ) ||
     !currentFunctionSvg.text.includes("origami-function-paper-front-pattern")
   ) {

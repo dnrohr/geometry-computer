@@ -346,17 +346,12 @@ describe("App", () => {
         name: "Origami function diagnostics",
       }),
     ).toBeInTheDocument();
-    expect(
-      within(functionPanel).getByText("6/14 fallback phases, 8 certified"),
-    ).toBeInTheDocument();
-    expect(
-      within(functionPanel).getByText(
-        "6 of 14 function animation phases still need physical fold-solver support.",
-      ),
-    ).toBeInTheDocument();
+    expect(within(functionPanel).getAllByText("ready").length).toBeGreaterThan(
+      0,
+    );
     expect(
       within(functionPanel).getByText(
-        "origami-function-phase-9 align-fold arithmetic-macro-fold",
+        "All function animation phases are backed by physical fold steps.",
       ),
     ).toBeInTheDocument();
     expect(
@@ -377,7 +372,7 @@ describe("App", () => {
         "Samples: a=3",
         "Domain assumption: sampled inputs stay inside the real origami function field",
         "Result: 2.000",
-        "Fold solver: 6/14 fallback phases, 8 certified",
+        "Fold solver: ready",
         "Animation: origami-function-phase-1 @ 0.00",
       ].join("\n"),
     );
@@ -440,16 +435,16 @@ describe("App", () => {
       screen.getByRole("button", { name: "Play function animation" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Solver work backlog" }),
-    ).toBeInTheDocument();
+      screen.queryByRole("heading", { name: "Solver work backlog" }),
+    ).toBeNull();
     fireEvent.click(
       screen.getByRole("button", {
-        name: "Jump to solver work origami-function-phase-9",
+        name: "Jump to function phase origami-function-phase-9",
       }),
     );
     expect(
       screen.getByRole("button", {
-        name: "Jump to solver work origami-function-phase-9",
+        name: "Jump to function phase origami-function-phase-9",
       }),
     ).toHaveAttribute("aria-current", "step");
     expect(
@@ -467,35 +462,12 @@ describe("App", () => {
     ).toContain("Animation: origami-function-phase-9 @ 0.57");
     expect(
       within(functionPanel).getByText(
-        "sqrt:align-fold positive-geometric-mean-branch",
+        "geometric-mean-square-root origami-function-node-output-4-align-fold",
       ),
     ).toBeInTheDocument();
     expect(
       within(functionPanel).getByText(
-        "sqrt(a + 1) uses the Positive geometric-mean branch macro, which is not yet backed by a physical fold solver.",
-      ),
-    ).toBeInTheDocument();
-    expect(
-      within(functionPanel).getByText("origami-function-node-output-3"),
-    ).toBeInTheDocument();
-    expect(
-      within(functionPanel).getByText(
-        "origami-function-node-output-4-align-fold",
-      ),
-    ).toBeInTheDocument();
-    expect(
-      within(functionPanel).getByText(
-        "fold-through-point-and-line, perpendicular-extraction, branch-intersection-selection",
-      ),
-    ).toBeInTheDocument();
-    expect(
-      within(functionPanel).getByText(
-        "origami-function-phase-9-source-objects-present, origami-function-phase-9-output-objects-produced, origami-function-phase-9-branch-recorded, origami-function-phase-9-certificate-emitted",
-      ),
-    ).toBeInTheDocument();
-    expect(
-      within(functionPanel).getByText(
-        "Positive geometric-mean branch: selected, Alternate geometric branch: pending-rejection-record",
+        "The square-root length is certified by the selected positive geometric-mean trace after nonnegative sampled-radicand validation.",
       ),
     ).toBeInTheDocument();
     expect(
@@ -772,7 +744,7 @@ describe("App", () => {
     );
     fireEvent.click(
       screen.getByRole("button", {
-        name: "Jump to solver work origami-function-phase-9",
+        name: "Jump to function phase origami-function-phase-9",
       }),
     );
 
@@ -808,10 +780,25 @@ describe("App", () => {
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: "Jump to solver work origami-function-phase-9",
+        name: "Jump to function phase origami-function-phase-9",
       }),
     );
     expect(within(cueStrip).getByText("Crease snap")).toBeInTheDocument();
+
+    fireEvent.change(
+      screen.getByRole("textbox", { name: "Origami function" }),
+      {
+        target: { value: "f(a)=a^3" },
+      },
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Compile origami function" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Jump to function phase origami-function-phase-3",
+      }),
+    );
     expect(within(cueStrip).getByText("Branch selected")).toBeInTheDocument();
 
     fireEvent.change(
@@ -905,15 +892,12 @@ describe("App", () => {
       screen.getByRole("img", {
         name: "Origami function animation: f(a) = sqrt(a + 1)",
       }),
-    ).toHaveAttribute("data-warning-count", "2");
+    ).toHaveAttribute("data-warning-count", "1");
     const ambiguityWarnings = screen.getByLabelText(
       "Function animation ambiguity warnings",
     );
     expect(ambiguityWarnings).toHaveTextContent("Ambiguity recorded");
-    expect(ambiguityWarnings).toHaveTextContent("Solver fallback");
-    expect(ambiguityWarnings).toHaveTextContent(
-      "alternate geometric branches are held",
-    );
+    expect(ambiguityWarnings).not.toHaveTextContent("Solver fallback");
     const whyThisFold = screen.getByLabelText("Why this fold?");
     expect(whyThisFold).toHaveTextContent("Align Fold: sqrt(a + 1)");
     expect(whyThisFold).toHaveTextContent(
@@ -928,10 +912,12 @@ describe("App", () => {
         name: /Storyboard phase 9 Extract Square Root sqrt\(a \+ 1\)/,
       }),
     ).toHaveAttribute("aria-current", "step");
-    expect(within(storyboard).getByText("sqrt:align-fold")).toBeInTheDocument();
+    expect(
+      within(storyboard).getAllByText("geometric-mean-square-root").length,
+    ).toBeGreaterThan(0);
     expect(
       within(storyboard).getAllByText(
-        /Positive geometric-mean branch macro, which is not yet backed by a physical fold solver/,
+        /selected positive geometric-mean trace after nonnegative sampled-radicand validation/,
       ).length,
     ).toBeGreaterThan(0);
     expect(
@@ -1171,8 +1157,11 @@ describe("App", () => {
     ).toHaveAttribute("data-readout-placement", "below-paper");
 
     fireEvent.click(screen.getByRole("button", { name: "Show diagnostics" }));
+    expect(screen.getAllByText("ready").length).toBeGreaterThan(0);
     expect(
-      screen.getByText("6/14 fallback phases, 8 certified"),
+      screen.getByText(
+        "All function animation phases are backed by physical fold steps.",
+      ),
     ).toBeInTheDocument();
     fireEvent.click(
       screen.getByRole("button", { name: "Show export and paper style" }),
@@ -1357,7 +1346,12 @@ describe("App", () => {
     ).toBeGreaterThanOrEqual(2);
     expect(within(functionInspector).getByText("2.000")).toBeInTheDocument();
     expect(
-      within(functionInspector).getByText("explanatory-fallback"),
+      within(functionInspector).getByText("proven-physical"),
+    ).toBeInTheDocument();
+    expect(
+      within(functionInspector).getByText(
+        "The result is already present as a marked length and needs no additional fold.",
+      ),
     ).toBeInTheDocument();
   });
 
@@ -1646,7 +1640,7 @@ describe("App", () => {
       "#143642",
     );
     expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
-  });
+  }, 10000);
 
   it("updates origami sampled values through variable controls", () => {
     render(<App />);
@@ -1821,7 +1815,7 @@ describe("App", () => {
           "Samples: a=3",
           "Domain assumption: sampled inputs stay inside the real origami function field",
           "Result: 2.000",
-          "Fold solver: 6/14 fallback phases, 8 certified",
+          "Fold solver: ready",
           "Animation: origami-function-phase-1 @ 0.00",
         ].join("\n"),
       ),

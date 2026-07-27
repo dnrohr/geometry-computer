@@ -178,8 +178,10 @@ The flat-origami tab provides:
   animations replay as solver-ready rather than fallback work.
 - F5.13 surfaces division as certified reciprocal-quotient work. The scaled
   reciprocal challenge now shows ready solver status and certificate details for
-  the active quotient phase; square-root animations still show fallback
-  diagnostics.
+  the active quotient phase.
+- F5.14 surfaces square roots as certified positive geometric-mean work. The
+  shifted-root default now shows ready solver status, certificate details for
+  the active square-root phases, and proven-physical SVG/export metadata.
 - F6.2 starts static SVG snapshot export for function animations. The origami
   tab can download the visible current phase and a hidden final-phase snapshot,
   each serialized from the same SVG renderer and carrying plan, phase, kind, and

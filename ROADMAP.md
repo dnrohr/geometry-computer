@@ -859,7 +859,12 @@ Goal: make the animation teach the computation, not merely decorate it.
   Current implementation treats the selected reciprocal-quotient branch as
   proven physical after sampled nonzero-denominator validation, emits
   `reciprocal-quotient-transfer` certificates, marks quotient result extraction
-  as physical, and keeps square-root solver work untouched.
+  as physical.
+- F5.12 Certify square-root function phases.
+  Current implementation treats the selected positive geometric-mean branch as
+  proven physical after sampled nonnegative-radicand validation, emits
+  `geometric-mean-square-root` certificates, marks square-root result extraction
+  as physical, and keeps higher integer powers in the solver backlog.
 
 Acceptance checks:
 

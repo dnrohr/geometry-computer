@@ -313,7 +313,7 @@ describe("origami function preview plan", () => {
     expect(exported?.objectInspector).not.toHaveProperty("solverWorkItemId");
   });
 
-  it("exports active fallback phase solver work metadata", () => {
+  it("exports square-root phase certificates as proven physical work", () => {
     const preview = compileOrigamiFunctionPreview("sqrt(a+1)");
     if (preview.status !== "compiled") throw new Error("Expected compiled");
     const jumped = setOrigamiFunctionPreviewPhase(
@@ -328,40 +328,17 @@ describe("origami function preview plan", () => {
       phaseId: "origami-function-phase-9",
       phaseKind: "align-fold",
       expression: "sqrt(a + 1)",
-      physicalStatus: "explanatory-fallback",
-      solverWorkItem: {
-        phaseId: "origami-function-phase-9",
-        replacementFor: "sqrt:align-fold",
-        requiredCapability: "arithmetic-macro-fold",
-        requiredAxioms: [
-          "fold-through-point-and-line",
-          "perpendicular-extraction",
-          "branch-intersection-selection",
-        ],
-        acceptanceCheckIds: [
-          "origami-function-phase-9-source-objects-present",
-          "origami-function-phase-9-output-objects-produced",
-          "origami-function-phase-9-branch-recorded",
-          "origami-function-phase-9-certificate-emitted",
-        ],
-        branchAlternatives: [
-          expect.objectContaining({
-            id: "positive-geometric-mean-branch",
-            status: "selected",
-          }),
-          expect.objectContaining({
-            id: "positive-geometric-mean-branch-alternate",
-            status: "pending-rejection-record",
-          }),
-        ],
-        selectedBranchId: "positive-geometric-mean-branch",
-        sourceObjectIds: ["origami-function-node-output-3"],
-        outputObjectIds: ["origami-function-node-output-4-align-fold"],
+      physicalStatus: "proven-physical",
+      foldCertificate: {
+        method: "geometric-mean-square-root",
+        targetObjectIds: ["origami-function-node-output-4-align-fold"],
       },
     });
-    expect(exported?.solverReadiness.workItems[0]).toBe(
-      exported?.activePhase.solverWorkItem,
-    );
+    expect(exported?.solverReadiness).toMatchObject({
+      status: "ready",
+      fallbackPhases: 0,
+      workItems: [],
+    });
     expect(exported?.expressionProgress).toMatchObject({
       activeNodeId: "origami-function-node-4",
       activeNodeOrder: 4,
@@ -390,9 +367,10 @@ describe("origami function preview plan", () => {
       sourceObjectIds: ["origami-function-node-output-3"],
       outputObjectIds: ["origami-function-node-output-4-align-fold"],
       selectedBranchId: "positive-geometric-mean-branch",
-      solverWorkItemId: "origami-function-phase-9-solver-work",
-      physicalStatus: "explanatory-fallback",
+      foldCertificateId: "origami-function-phase-9-certificate",
+      physicalStatus: "proven-physical",
     });
+    expect(exported?.objectInspector).not.toHaveProperty("solverWorkItemId");
   });
 
   it("exports result-phase inspector and expression progress snapshots", () => {
@@ -416,7 +394,37 @@ describe("origami function preview plan", () => {
       outputObjectId: "origami-function-node-output-4",
       sourceObjectIds: ["origami-function-node-output-4"],
       outputObjectIds: ["origami-function-result"],
-      solverWorkItemId: "origami-function-phase-14-solver-work",
+      foldCertificateId: "origami-function-phase-14-certificate",
+    });
+    expect(exported?.objectInspector).not.toHaveProperty("solverWorkItemId");
+  });
+
+  it("exports higher-power fallback solver work metadata", () => {
+    const preview = compileOrigamiFunctionPreview("a^3");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+    const jumped = setOrigamiFunctionPreviewPhase(
+      preview,
+      "origami-function-phase-3",
+    );
+    if (jumped.status !== "compiled") throw new Error("Expected compiled");
+
+    const exported = origamiFunctionAnimationExport(jumped);
+
+    expect(exported?.activePhase).toMatchObject({
+      phaseId: "origami-function-phase-3",
+      phaseKind: "align-fold",
+      expression: "a^3",
+      physicalStatus: "explanatory-fallback",
+      solverWorkItem: {
+        phaseId: "origami-function-phase-3",
+        replacementFor: "pow:align-fold",
+        selectedBranchId: "repeated-power-transfer",
+        requiredAxioms: [
+          "repeated-product-transfer",
+          "integer-exponent-unroll",
+          "scale-normalization-check",
+        ],
+      },
     });
   });
 

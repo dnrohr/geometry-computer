@@ -111,9 +111,9 @@ nonnegative sampled radicand; negative values are rejected before scene creation
 with `NEGATIVE_SQUARE_ROOT`. The trace records the unit-plus-input baseline,
 midpoint, fold-equivalent geometric-mean guide, positive selected square-root
 point, perpendicular extraction creases, and one result segment. The current
-domain has no circle object, so the auxiliary circle is represented by typed
-guide-line and selected-intersection objects until a later fold certificate
-model needs stricter physical detail.
+domain has no standalone circle object; the certificate model represents the
+classical auxiliary circle by a fold-equivalent geometric-mean guide plus the
+positive branch selection and can still certify the square-root length.
 
 ## Branch and Error Policy
 

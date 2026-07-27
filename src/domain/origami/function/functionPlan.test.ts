@@ -341,6 +341,43 @@ describe("origami function plan", () => {
     });
   });
 
+  it("certifies square roots as geometric-mean fold sequences", () => {
+    const plan = createOrigamiFunctionPlan(validInput("f(a)=sqrt(a+1)"));
+
+    expect(plan.nodes.at(-1)).toMatchObject({
+      kind: "sqrt",
+      expression: "sqrt(a + 1)",
+    });
+    expect(plan.phases.map(({ physicalStatus }) => physicalStatus)).toEqual(
+      Array.from({ length: 14 }, () => "proven-physical"),
+    );
+    expect(
+      plan.phases.slice(8, 13).map(({ foldCertificate }) => foldCertificate),
+    ).toEqual([
+      expect.objectContaining({
+        method: "geometric-mean-square-root",
+        targetObjectIds: ["origami-function-node-output-4-align-fold"],
+      }),
+      expect.objectContaining({ method: "geometric-mean-square-root" }),
+      expect.objectContaining({ method: "geometric-mean-square-root" }),
+      expect.objectContaining({ method: "geometric-mean-square-root" }),
+      expect.objectContaining({
+        method: "geometric-mean-square-root",
+        targetObjectIds: ["origami-function-node-output-4"],
+      }),
+    ]);
+    expect(plan.phases.at(-1)?.foldCertificate).toMatchObject({
+      method: "identity-result",
+      targetObjectIds: ["origami-function-result"],
+    });
+    expect(plan.solverReadiness).toMatchObject({
+      status: "ready",
+      fallbackPhases: 0,
+      certifiedPhases: 14,
+      workItems: [],
+    });
+  });
+
   it("keeps higher integer powers in the solver backlog", () => {
     const plan = createOrigamiFunctionPlan(validInput("f(a)=a^3"));
 
