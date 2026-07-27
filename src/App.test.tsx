@@ -815,6 +815,15 @@ describe("App", () => {
         name: "Origami function animation: f(a) = sqrt(a + 1)",
       }),
     ).toHaveAttribute("data-phase-id", "origami-function-phase-9");
+    const whyThisFold = screen.getByLabelText("Why this fold?");
+    expect(whyThisFold).toHaveTextContent("Align Fold: sqrt(a + 1)");
+    expect(whyThisFold).toHaveTextContent(
+      "The valley fold keeps sqrt(a + 1) represented as a paper length",
+    );
+    expect(whyThisFold).toHaveTextContent("Positive geometric-mean branch");
+    expect(whyThisFold).toHaveTextContent(
+      "origami-function-node-output-3 -> origami-function-node-output-4-align-fold",
+    );
     expect(
       within(storyboard).getByRole("button", {
         name: /Storyboard phase 9 Extract Square Root sqrt\(a \+ 1\)/,

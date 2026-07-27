@@ -806,6 +806,11 @@ Goal: make the animation teach the computation, not merely decorate it.
   proof-claim IDs for that phase.
 - F5.3 Add a "why this fold?" overlay that connects the moving paper motion to
   the arithmetic invariant it preserves.
+  Current implementation adds an active-phase overlay on the function animation
+  stage. It explains the fold direction or setup phase, the arithmetic invariant
+  being preserved, the selected branch or no-branch status, certificate or
+  solver-readiness context, and the source-to-output object trace for the
+  current phase.
 - F5.4 Show rejected branches and degeneracy warnings directly on the animation
   when the planner records ambiguity.
 - F5.5 Add optional measurement labels for input lengths, unit references,

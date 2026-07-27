@@ -729,6 +729,18 @@ const assertOrigamiFunctionPanel = async (page) => {
         );
       }
     });
+  const whyThisFold = page.getByLabel("Why this fold?");
+  await whyThisFold.getByText("Align Fold: sqrt(a + 1)").waitFor();
+  await whyThisFold
+    .getByText(
+      "Positive geometric-mean branch: Select the nonnegative square-root intersection guaranteed by sampled validation.",
+    )
+    .waitFor();
+  await whyThisFold
+    .getByText(
+      "origami-function-node-output-3 -> origami-function-node-output-4-align-fold",
+    )
+    .waitFor();
   const activeMinimapItem = await page
     .getByRole("button", {
       name: "Jump to function phase origami-function-phase-9",

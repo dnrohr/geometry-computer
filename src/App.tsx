@@ -868,6 +868,25 @@ function OrigamiRoadmap() {
         proofClaimIds: highlightedFunctionPhase.proofClaimIds,
       }
     : undefined;
+  const activeFunctionBranch = activeFunctionPhase?.foldMotion?.selectedBranch;
+  const activeFunctionFoldExplanation = activeFunctionPhase
+    ? {
+        title: `${formatOrigamiPhaseKind(activeFunctionPhase.kind)}: ${activeFunctionPhase.expression}`,
+        invariant: activeFunctionPhase.foldMotion
+          ? `The ${activeFunctionPhase.foldMotion.direction} fold keeps ${activeFunctionPhase.expression} represented as a paper length while carrying ${activeFunctionPhase.sourceObjectIds.join(", ") || "the fixed paper domain"} into ${activeFunctionPhase.outputObjectIds.join(", ") || "the visible result"}.`
+          : `This phase establishes ${activeFunctionPhase.expression} as a marked paper length before later fold motion depends on it.`,
+        branch: activeFunctionBranch
+          ? `${activeFunctionBranch.label}: ${activeFunctionBranch.reason}`
+          : "No branch choice is needed for this phase.",
+        confidence: activeFoldCertificate
+          ? `Certified: ${activeFoldCertificate.summary}`
+          : activeSolverWorkItem
+            ? `Solver roadmap item: ${activeSolverWorkItem.summary}`
+            : (activeFunctionPhase.fallback?.reason ??
+              "The phase is ready for the current explanatory animation."),
+        trace: `${activeFunctionPhase.sourceObjectIds.join(", ") || "paper"} -> ${activeFunctionPhase.outputObjectIds.join(", ") || "result"}`,
+      }
+    : undefined;
   const functionPhaseMinimapItems =
     functionPreview.status === "compiled"
       ? functionPreview.plan.phases.map((phase, index) => ({
@@ -925,15 +944,14 @@ function OrigamiRoadmap() {
           };
         })
       : [];
-  const functionVisualCueItems = useMemo(() => {
-    if (!functionVisualCues) return [];
-    const cues: Array<{
-      id: string;
-      label: string;
-      tone: "info" | "success" | "warning";
-    }> = [];
+  const functionVisualCueItems: Array<{
+    id: string;
+    label: string;
+    tone: "info" | "success" | "warning";
+  }> = [];
+  if (functionVisualCues) {
     if (functionReport.status !== "valid") {
-      cues.push({
+      functionVisualCueItems.push({
         id: "domain-warning",
         label: "Domain warning",
         tone: "warning",
@@ -945,29 +963,27 @@ function OrigamiRoadmap() {
         activeFunctionPhase.kind,
       )
     ) {
-      cues.push({ id: "crease-snap", label: "Crease snap", tone: "info" });
+      functionVisualCueItems.push({
+        id: "crease-snap",
+        label: "Crease snap",
+        tone: "info",
+      });
     }
     if (activeSolverWorkItem?.selectedBranchId) {
-      cues.push({
+      functionVisualCueItems.push({
         id: "branch-selected",
         label: "Branch selected",
         tone: "info",
       });
     }
     if (activeFunctionPhase?.kind === "extract-result") {
-      cues.push({
+      functionVisualCueItems.push({
         id: "result-extracted",
         label: "Result extracted",
         tone: "success",
       });
     }
-    return cues;
-  }, [
-    activeFunctionPhase,
-    activeSolverWorkItem,
-    functionReport.status,
-    functionVisualCues,
-  ]);
+  }
   const finalFunctionPreview = useMemo(() => {
     if (functionPreview.status !== "compiled") return functionPreview;
     const finalPhase = functionPreview.plan.phases.at(-1);
@@ -1479,14 +1495,40 @@ function OrigamiRoadmap() {
             <a href="#origami-trace">View trace</a>
           </aside>
         )}
-        <SvgOrigamiFunctionAnimation
-          cameraMode={functionCameraMode}
-          highlightedPhaseId={hoveredFunctionPhaseId}
-          onionSkin={functionOnionSkin}
-          onPhaseHover={setHoveredFunctionPhaseId}
-          preview={functionPreview}
-          svgRef={functionAnimationSvgRef}
-        />
+        <div className="origami-function-animation-stage">
+          <SvgOrigamiFunctionAnimation
+            cameraMode={functionCameraMode}
+            highlightedPhaseId={hoveredFunctionPhaseId}
+            onionSkin={functionOnionSkin}
+            onPhaseHover={setHoveredFunctionPhaseId}
+            preview={functionPreview}
+            svgRef={functionAnimationSvgRef}
+          />
+          {activeFunctionFoldExplanation && (
+            <aside
+              className="origami-function-why-overlay"
+              aria-label="Why this fold?"
+              aria-live="polite"
+            >
+              <span>{activeFunctionFoldExplanation.title}</span>
+              <p>{activeFunctionFoldExplanation.invariant}</p>
+              <dl>
+                <div>
+                  <dt>Branch</dt>
+                  <dd>{activeFunctionFoldExplanation.branch}</dd>
+                </div>
+                <div>
+                  <dt>Invariant</dt>
+                  <dd>{activeFunctionFoldExplanation.confidence}</dd>
+                </div>
+                <div>
+                  <dt>Trace</dt>
+                  <dd>{activeFunctionFoldExplanation.trace}</dd>
+                </div>
+              </dl>
+            </aside>
+          )}
+        </div>
         {!functionPresentationMode && (
           <aside
             className="origami-function-dependency-highlight"
