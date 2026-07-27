@@ -1230,6 +1230,54 @@ describe("App", () => {
     expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
   });
 
+  it("shows expression tree progress alongside the origami fold timeline", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+
+    const progress = screen.getByRole("region", {
+      name: "Expression progress",
+    });
+    expect(
+      within(progress).getByLabelText("Function expression tree progress"),
+    ).toBeInTheDocument();
+    expect(within(progress).getByText("0 of 4 nodes")).toBeInTheDocument();
+    expect(
+      within(progress).getByRole("button", {
+        name: "Jump to expression node a",
+      }),
+    ).toHaveAttribute("data-node-status", "pending");
+    expect(
+      within(progress).getByRole("button", {
+        name: "Jump to expression node sqrt(a + 1)",
+      }),
+    ).toHaveAttribute("data-node-status", "pending");
+
+    fireEvent.click(
+      within(progress).getByRole("button", {
+        name: "Jump to expression node sqrt(a + 1)",
+      }),
+    );
+
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a) = sqrt(a + 1)",
+      }),
+    ).toHaveAttribute("data-phase-id", "origami-function-phase-14");
+    expect(
+      within(progress).getByRole("button", {
+        name: "Jump to expression node a",
+      }),
+    ).toHaveAttribute("data-node-status", "complete");
+    expect(
+      within(progress).getByRole("button", {
+        name: "Jump to expression node sqrt(a + 1)",
+      }),
+    ).toHaveAttribute("data-node-status", "active");
+    expect(within(progress).getByText("4 of 4 nodes")).toBeInTheDocument();
+  });
+
   it("supports keyboard control for the origami animation timeline", () => {
     render(<App />);
     fireEvent.click(

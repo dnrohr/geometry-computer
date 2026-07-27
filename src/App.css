@@ -1655,6 +1655,101 @@ select:focus-visible,
   opacity: 0.45;
 }
 
+.origami-function-expression-progress {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 0.55rem;
+  min-width: 0;
+  padding: 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 3%);
+}
+
+.origami-function-expression-progress-header {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.origami-function-expression-progress-header h3 {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+}
+
+.origami-function-expression-progress-header span {
+  color: var(--foreground);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.origami-function-expression-progress ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.75rem, 1fr));
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.origami-function-expression-progress li {
+  min-width: 0;
+}
+
+.origami-function-expression-node {
+  display: grid;
+  gap: 0.2rem;
+  width: 100%;
+  min-width: 0;
+  min-height: 4.6rem;
+  align-content: start;
+  padding: 0.55rem;
+  text-align: left;
+}
+
+.origami-function-expression-node span {
+  color: var(--muted);
+  font-size: 0.58rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.origami-function-expression-node code {
+  overflow: hidden;
+  color: var(--foreground);
+  font-size: 0.74rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.origami-function-expression-node small {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 750;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.origami-function-expression-node-complete {
+  border-color: rgb(148 211 162 / 36%);
+  background: rgb(148 211 162 / 10%);
+}
+
+.origami-function-expression-node-active {
+  border-color: var(--accent);
+  background: rgb(240 184 75 / 15%);
+  box-shadow: inset 0 0 0 1px rgb(240 184 75 / 34%);
+}
+
+.origami-function-expression-node-pending {
+  opacity: 0.78;
+}
+
 .origami-function-solver-work {
   display: grid;
   grid-column: 1 / -1;

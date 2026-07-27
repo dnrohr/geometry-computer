@@ -678,6 +678,45 @@ const assertOrigamiFunctionPanel = async (page) => {
       `Function step minimap expected 14 phases, got ${minimapCount}`,
     );
   }
+  const expressionProgress = page.getByRole("region", {
+    name: "Expression progress",
+  });
+  await page
+    .getByRole("button", {
+      name: "Jump to function phase origami-function-phase-1",
+      exact: true,
+    })
+    .click();
+  await expressionProgress.getByText("0 of 4 nodes").waitFor();
+  const squareRootExpressionNode = expressionProgress.getByRole("button", {
+    name: "Jump to expression node sqrt(a + 1)",
+  });
+  const initialExpressionNodeState =
+    await squareRootExpressionNode.getAttribute("data-node-status");
+  if (initialExpressionNodeState !== "pending") {
+    throw new Error(
+      `Initial expression node state mismatch: ${initialExpressionNodeState}`,
+    );
+  }
+  await squareRootExpressionNode.click();
+  await expressionProgress.getByText("4 of 4 nodes").waitFor();
+  const activeExpressionNodeState =
+    await squareRootExpressionNode.getAttribute("data-node-status");
+  if (activeExpressionNodeState !== "active") {
+    throw new Error(
+      `Active expression node state mismatch: ${activeExpressionNodeState}`,
+    );
+  }
+  const expressionNodePhase = await page
+    .getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    })
+    .getAttribute("data-phase-id");
+  if (expressionNodePhase !== "origami-function-phase-14") {
+    throw new Error(
+      `Expression node jump phase mismatch: ${expressionNodePhase}`,
+    );
+  }
   const storyboard = page.getByRole("region", { name: "Fold storyboard" });
   const storyboardCount = await storyboard
     .getByRole("button", { name: /Storyboard phase / })

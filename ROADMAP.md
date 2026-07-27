@@ -826,6 +826,10 @@ Goal: make the animation teach the computation, not merely decorate it.
   final sampled output while exposing label visibility as animation metadata.
 - F5.6 Add a comparison strip that shows expression tree progress alongside the
   fold timeline.
+  Current implementation adds an expression-progress strip below the function
+  timeline. It renders each compiled expression node with kind, sampled value,
+  dependency count, status, and output object metadata; selecting a node jumps
+  the fold animation to that node's phase while marking earlier nodes complete.
 
 Acceptance checks:
 

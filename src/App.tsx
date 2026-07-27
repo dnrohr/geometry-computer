@@ -937,6 +937,44 @@ function OrigamiRoadmap() {
   const activeFunctionPhaseIndex = functionPhaseMinimapItems.findIndex(
     ({ isActive }) => isActive,
   );
+  const activeFunctionNode =
+    functionPreview.status === "compiled" && activeFunctionPhase
+      ? (functionPreview.plan.nodes.find(
+          ({ expression }) => expression === activeFunctionPhase.expression,
+        ) ??
+        (activeFunctionPhase.id ===
+        functionPreview.plan.resultExtraction.phaseId
+          ? functionPreview.plan.nodes.find(
+              ({ id }) => id === functionPreview.plan.resultExtraction.nodeId,
+            )
+          : undefined))
+      : undefined;
+  const activeFunctionNodeOrder = activeFunctionNode?.order ?? 0;
+  const functionExpressionProgressItems =
+    functionPreview.status === "compiled"
+      ? functionPreview.plan.nodes.map((node) => {
+          const jumpTarget = functionPreview.plan.dependencyJumpTargets.find(
+            ({ nodeId }) => nodeId === node.id,
+          );
+          const status =
+            node.id === activeFunctionNode?.id
+              ? "active"
+              : node.order < activeFunctionNodeOrder
+                ? "complete"
+                : "pending";
+          return {
+            id: node.id,
+            expression: node.expression,
+            kind: node.kind,
+            value: node.value,
+            dependencyDepth: node.dependencyDepth,
+            dependencyCount: node.dependencies.length,
+            phaseId: jumpTarget?.phaseId,
+            outputObjectId: node.outputObjectId,
+            status,
+          };
+        })
+      : [];
   const functionStoryboardItems =
     functionPreview.status === "compiled"
       ? functionPreview.plan.phases.map((phase, index) => {
@@ -2339,6 +2377,53 @@ function OrigamiRoadmap() {
             />
           </label>
         </div>
+        {!functionPresentationMode &&
+          functionExpressionProgressItems.length > 0 && (
+            <section
+              className="origami-function-expression-progress"
+              aria-labelledby="origami-function-expression-progress-title"
+            >
+              <div className="origami-function-expression-progress-header">
+                <h3 id="origami-function-expression-progress-title">
+                  Expression progress
+                </h3>
+                <span>{`${Math.max(0, activeFunctionNodeOrder)} of ${functionExpressionProgressItems.length} nodes`}</span>
+              </div>
+              <ol aria-label="Function expression tree progress">
+                {functionExpressionProgressItems.map((item) => (
+                  <li key={item.id}>
+                    <button
+                      type="button"
+                      aria-label={`Jump to expression node ${item.expression}`}
+                      aria-current={
+                        item.status === "active" ? "step" : undefined
+                      }
+                      className={`origami-function-expression-node origami-function-expression-node-${item.status}`}
+                      data-node-id={item.id}
+                      data-node-kind={item.kind}
+                      data-node-status={item.status}
+                      data-dependency-depth={item.dependencyDepth}
+                      data-output-object-id={item.outputObjectId}
+                      disabled={timelineDisabled || !item.phaseId}
+                      onClick={() =>
+                        item.phaseId &&
+                        setFunctionPreview((preview) =>
+                          setOrigamiFunctionPreviewPhase(
+                            preview,
+                            item.phaseId!,
+                          ),
+                        )
+                      }
+                    >
+                      <span>{item.kind}</span>
+                      <code>{item.expression}</code>
+                      <small>{`value ${item.value.toFixed(3)} · deps ${item.dependencyCount}`}</small>
+                    </button>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
         {!functionPresentationMode &&
           solverReadiness &&
           solverReadiness.workItems.length > 0 && (
