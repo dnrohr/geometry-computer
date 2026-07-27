@@ -504,6 +504,8 @@ function OrigamiRoadmap() {
   ] = useState(false);
   const [showOrigamiFunctionLesson, setShowOrigamiFunctionLesson] =
     useState(false);
+  const [showOrigamiFunctionReusePlan, setShowOrigamiFunctionReusePlan] =
+    useState(false);
   const [progress, setProgress] = useState(1);
   const [activeStepId, setActiveStepId] = useState<string>();
   const [selectedObjectId, setSelectedObjectId] = useState<string>();
@@ -1048,6 +1050,33 @@ function OrigamiRoadmap() {
           };
         })
       : [];
+  const functionReusePlanItems =
+    functionPreview.status === "compiled"
+      ? functionPreview.plan.lengthTransfers.map((transfer) => {
+          const sourceNode = functionPreview.plan.nodes.find(
+            ({ id }) => id === transfer.fromNodeId,
+          );
+          const jumpTarget = functionPreview.plan.dependencyJumpTargets.find(
+            ({ nodeId }) => nodeId === transfer.fromNodeId,
+          );
+          const diagnostic = functionPreview.plan.diagnostics.find(
+            ({ code, expression }) =>
+              code === "REUSED_SUBEXPRESSION" &&
+              expression === transfer.expression,
+          );
+          return {
+            id: transfer.id,
+            expression: transfer.expression,
+            fromNodeId: transfer.fromNodeId,
+            fromNodeKind: sourceNode?.kind ?? "node",
+            outputObjectId: transfer.outputObjectId,
+            phaseId: jumpTarget?.phaseId,
+            message:
+              diagnostic?.message ??
+              "This length is copied instead of recomputed from scratch.",
+          };
+        })
+      : [];
   const activeFunctionInspector =
     functionPreview.status === "compiled" && activeFunctionPhase
       ? {
@@ -1422,6 +1451,19 @@ function OrigamiRoadmap() {
               ? "Hide diagnostics"
               : "Show diagnostics"}
           </button>
+          {functionReusePlanItems.length > 0 && (
+            <button
+              type="button"
+              aria-expanded={showOrigamiFunctionReusePlan}
+              onClick={() =>
+                setShowOrigamiFunctionReusePlan((isShowing) => !isShowing)
+              }
+            >
+              {showOrigamiFunctionReusePlan
+                ? "Hide reuse plan"
+                : "Show reuse plan"}
+            </button>
+          )}
         </div>
         {showOrigamiFunctionDiagnostics && (
           <section
@@ -1535,6 +1577,44 @@ function OrigamiRoadmap() {
                 </>
               )}
             </dl>
+          </section>
+        )}
+        {showOrigamiFunctionReusePlan && functionReusePlanItems.length > 0 && (
+          <section
+            className="origami-function-reuse-plan"
+            aria-label="Origami function reuse plan"
+          >
+            <div className="origami-function-reuse-plan-heading">
+              <h3>Reusable lengths</h3>
+              <span>{functionReusePlanItems.length} transfer planned</span>
+            </div>
+            <ol>
+              {functionReusePlanItems.map((item) => (
+                <li key={item.id}>
+                  <div>
+                    <strong>{item.expression}</strong>
+                    <span>{item.message}</span>
+                  </div>
+                  <dl>
+                    <div>
+                      <dt>Source</dt>
+                      <dd>{`${item.fromNodeId} ${item.fromNodeKind}`}</dd>
+                    </div>
+                    <div>
+                      <dt>Transfer</dt>
+                      <dd>{item.outputObjectId}</dd>
+                    </div>
+                  </dl>
+                  <button
+                    type="button"
+                    disabled={!item.phaseId}
+                    onClick={() => jumpOrigamiFunctionPhase(item.phaseId)}
+                  >
+                    Jump to source
+                  </button>
+                </li>
+              ))}
+            </ol>
           </section>
         )}
         <section

@@ -246,6 +246,10 @@ F7.13 keeps fold lesson mode as a read-only UI summary over the current compiled
 preview. Lesson fields are derived from function source, active phase,
 certificate or solver evidence, and sampled result, while lesson jump buttons
 reuse the local phase setter.
+F7.14 surfaces common-subexpression reuse without changing the compiler. The
+reuse panel reads `lengthTransfers`, matching `REUSED_SUBEXPRESSION`
+diagnostics, dependency jump targets, and source nodes from the compiled plan,
+then jumps by reusing the local phase setter.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

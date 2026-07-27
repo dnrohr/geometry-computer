@@ -259,6 +259,10 @@ The flat-origami tab provides:
   renders function/phase/evidence/result summary fields from existing preview
   state, and offers start, first-proof, and final-result phase jumps without
   changing the compiled plan.
+- F7.14 adds an optional reuse-plan panel for functions with repeated
+  subexpressions. The panel renders each planned length transfer, source node,
+  output object, and diagnostic message, then jumps back to the source phase via
+  the same preview state used by the timeline.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

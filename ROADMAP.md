@@ -998,6 +998,11 @@ worth exploring while staying honest about mathematical limits.
   function animation panel. The lesson summarizes the compiled function, active
   phase, expression, certificate or solver evidence, and sampled result, with
   local jump buttons for start, first proof, and final result.
+- F7.14 Surface common-subexpression length reuse.
+  Current implementation adds a collapsed `Show reuse plan` control when the
+  compiled function has reusable length transfers. The panel lists each reused
+  expression, source node, transfer output, diagnostic message, and a jump back
+  to the source length phase.
 
 Acceptance checks:
 
@@ -3312,7 +3317,7 @@ Do not begin Milestone 3 until Milestone 2 is committed and pushed.
 Only consider these after the MVP is working and documented.
 
 - More sophisticated algebraic simplification.
-- Common-subexpression elimination.
+- Broader common-subexpression optimization beyond visible length reuse.
 - Broader construction scripts beyond origami function replay.
 - Formal construction verification.
 - GeoGebra export.

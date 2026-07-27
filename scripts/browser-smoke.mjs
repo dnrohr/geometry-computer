@@ -1565,6 +1565,24 @@ const assertOrigamiFunctionPanel = async (page) => {
   ) {
     throw new Error("Function preset did not reset the x sample value.");
   }
+  await input.fill("f(a)=a+a");
+  await page.getByRole("button", { name: "Compile origami function" }).click();
+  await page.getByRole("button", { name: "Show reuse plan" }).click();
+  const reusePlan = page.getByRole("region", {
+    name: "Origami function reuse plan",
+  });
+  await reusePlan.getByText("origami-function-transfer-output-1").waitFor();
+  await reusePlan.getByRole("button", { name: "Jump to source" }).click();
+  await page
+    .getByRole("img", { name: "Origami function animation: f(a) = a + a" })
+    .evaluate((element) => {
+      if (
+        element.getAttribute("data-phase-id") !== "origami-function-phase-2"
+      ) {
+        throw new Error("Reuse plan did not jump to the source phase.");
+      }
+    });
+  await page.getByRole("button", { name: "Hide reuse plan" }).click();
   await input.fill("sqrt(a+1)");
   await page.getByRole("button", { name: "Compile origami function" }).click();
   await page.getByText("origami-function-plan-f-a-sqrt-a-1").waitFor();

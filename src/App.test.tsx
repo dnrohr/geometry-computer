@@ -703,6 +703,9 @@ describe("App", () => {
     expect(
       screen.getByRole("button", { name: "Show fold lesson" }),
     ).toHaveAttribute("aria-expanded", "false");
+    expect(
+      screen.queryByRole("button", { name: "Show reuse plan" }),
+    ).toBeNull();
     fireEvent.click(
       screen.getByRole("button", { name: "Show visual options" }),
     );
@@ -1381,6 +1384,52 @@ describe("App", () => {
       screen.getByRole("button", { name: "Play function animation" }),
     ).toBeInTheDocument();
     expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
+  });
+
+  it("surfaces reusable length transfers in the origami function lab", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    const functionPanel = screen.getByRole("region", {
+      name: "Fold-computed function",
+    });
+    fireEvent.change(
+      within(functionPanel).getByRole("textbox", { name: "Origami function" }),
+      { target: { value: "f(a)=a+a" } },
+    );
+    fireEvent.click(
+      within(functionPanel).getByRole("button", {
+        name: "Compile origami function",
+      }),
+    );
+
+    expect(
+      within(functionPanel).getByRole("button", { name: "Show reuse plan" }),
+    ).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(
+      within(functionPanel).getByRole("button", { name: "Show reuse plan" }),
+    );
+    const reusePlan = within(functionPanel).getByRole("region", {
+      name: "Origami function reuse plan",
+    });
+    expect(within(reusePlan).getByText("a")).toBeInTheDocument();
+    expect(
+      within(reusePlan).getByText(
+        "a is reused, so the animation plan includes an explicit length-transfer fallback.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(reusePlan).getByText("origami-function-transfer-output-1"),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      within(reusePlan).getByRole("button", { name: "Jump to source" }),
+    );
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a) = a + a",
+      }),
+    ).toHaveAttribute("data-phase-id", "origami-function-phase-2");
   });
 
   it("shows expression tree progress alongside the origami fold timeline", () => {
