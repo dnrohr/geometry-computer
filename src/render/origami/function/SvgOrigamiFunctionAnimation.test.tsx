@@ -111,6 +111,52 @@ describe("SvgOrigamiFunctionAnimation", () => {
     expect(screen.getByText("Final 6.000")).toBeInTheDocument();
   });
 
+  it("renders optional measurement labels for sampled and computed lengths", () => {
+    const preview = compileOrigamiFunctionPreview("sqrt(a+1)");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+    const active = setOrigamiFunctionPreviewPhase(
+      preview,
+      "origami-function-phase-9",
+    );
+
+    const { container, rerender } = render(
+      <SvgOrigamiFunctionAnimation preview={active} />,
+    );
+    const svg = screen.getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    });
+
+    expect(svg).toHaveAttribute("data-measurement-labels", "hidden");
+    expect(
+      container.querySelector(".origami-function-measurement-labels"),
+    ).not.toBeInTheDocument();
+
+    rerender(
+      <SvgOrigamiFunctionAnimation measurementLabels preview={active} />,
+    );
+
+    expect(svg).toHaveAttribute("data-measurement-labels", "visible");
+    expect(
+      container.querySelector("[data-measurement-kind='unit']"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector("[data-measurement-name='a']"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector("[data-measurement-kind='intermediate']"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector("[data-measurement-kind='active']"),
+    ).toHaveAttribute("data-measurement-node-id", "origami-function-node-4");
+    expect(
+      container.querySelector("[data-measurement-kind='final']"),
+    ).toHaveAttribute("data-measurement-object-id", "origami-function-result");
+    expect(screen.getByText("unit = 1")).toBeInTheDocument();
+    expect(screen.getByText("a=3.00")).toBeInTheDocument();
+    expect(screen.getByText("active=2.000")).toBeInTheDocument();
+    expect(screen.getByText("final=2.000")).toBeInTheDocument();
+  });
+
   it("uses fold-motion metadata for active animated phases", () => {
     const preview = compileOrigamiFunctionPreview("f(a,b)=a*b");
     if (preview.status !== "compiled") throw new Error("Expected compiled");

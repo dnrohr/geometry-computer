@@ -894,6 +894,39 @@ const assertOrigamiFunctionPanel = async (page) => {
     );
   }
   await page.getByRole("button", { exact: true, name: "Whole" }).click();
+  const measurementLabelsBefore = await page
+    .getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    })
+    .getAttribute("data-measurement-labels");
+  if (measurementLabelsBefore !== "hidden") {
+    throw new Error(
+      `Function measurement labels were visible by default: ${measurementLabelsBefore}`,
+    );
+  }
+  await page.getByRole("checkbox", { name: "Show measurement labels" }).check();
+  const measurementLabels = await page
+    .getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    })
+    .evaluate((element) => ({
+      mode: element.getAttribute("data-measurement-labels"),
+      unit: element.querySelector("[data-measurement-kind='unit']")
+        ?.textContent,
+      input: element.querySelector("[data-measurement-name='a']")?.textContent,
+      final: element.querySelector("[data-measurement-kind='final']")
+        ?.textContent,
+    }));
+  if (
+    measurementLabels.mode !== "visible" ||
+    measurementLabels.unit !== "unit = 1" ||
+    measurementLabels.input !== "a=3.00" ||
+    measurementLabels.final !== "final=2.000"
+  ) {
+    throw new Error(
+      `Function measurement labels mismatch: ${JSON.stringify(measurementLabels)}`,
+    );
+  }
   await page.getByRole("checkbox", { name: "Show onion skin folds" }).check();
   const onionSkin = await page
     .getByRole("img", {

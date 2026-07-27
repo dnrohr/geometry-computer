@@ -475,6 +475,8 @@ function OrigamiRoadmap() {
   const [functionImportStatus, setFunctionImportStatus] = useState("");
   const [functionCameraMode, setFunctionCameraMode] =
     useState<OrigamiFunctionCameraMode>("whole");
+  const [functionMeasurementLabels, setFunctionMeasurementLabels] =
+    useState(false);
   const [functionOnionSkin, setFunctionOnionSkin] = useState(false);
   const [functionVisualCues, setFunctionVisualCues] = useState(false);
   const [hoveredFunctionPhaseId, setHoveredFunctionPhaseId] =
@@ -1530,6 +1532,7 @@ function OrigamiRoadmap() {
           <SvgOrigamiFunctionAnimation
             cameraMode={functionCameraMode}
             highlightedPhaseId={hoveredFunctionPhaseId}
+            measurementLabels={functionMeasurementLabels}
             onionSkin={functionOnionSkin}
             onPhaseHover={setHoveredFunctionPhaseId}
             phaseWarnings={activeFunctionAnimationWarnings}
@@ -1733,6 +1736,17 @@ function OrigamiRoadmap() {
                 onChange={(event) => setFunctionOnionSkin(event.target.checked)}
               />
               Onion skin folds
+            </label>
+            <label className="origami-function-measurement-toggle">
+              <input
+                aria-label="Show measurement labels"
+                type="checkbox"
+                checked={functionMeasurementLabels}
+                onChange={(event) =>
+                  setFunctionMeasurementLabels(event.target.checked)
+                }
+              />
+              Measurement labels
             </label>
             <label className="origami-function-cue-toggle">
               <input

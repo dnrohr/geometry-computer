@@ -1184,6 +1184,40 @@ select:focus-visible,
   text-anchor: end;
 }
 
+.origami-function-measurement-label rect {
+  fill: rgb(12 17 21 / 76%);
+  stroke: rgb(245 241 232 / 34%);
+  stroke-width: 1;
+}
+
+.origami-function-measurement-label text {
+  fill: var(--foreground);
+  font-size: 6px;
+  font-weight: 850;
+  stroke: none;
+}
+
+.origami-function-measurement-label-unit rect {
+  fill: rgb(120 176 255 / 20%);
+  stroke: rgb(120 176 255 / 62%);
+}
+
+.origami-function-measurement-label-input rect {
+  fill: rgb(148 211 162 / 20%);
+  stroke: rgb(148 211 162 / 62%);
+}
+
+.origami-function-measurement-label-intermediate rect,
+.origami-function-measurement-label-active rect {
+  fill: rgb(240 184 75 / 20%);
+  stroke: rgb(240 184 75 / 66%);
+}
+
+.origami-function-measurement-label-final rect {
+  fill: rgb(255 139 119 / 22%);
+  stroke: rgb(255 139 119 / 68%);
+}
+
 .origami-function-camera-controls {
   display: flex;
   flex-wrap: wrap;

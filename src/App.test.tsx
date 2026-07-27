@@ -630,6 +630,9 @@ describe("App", () => {
       screen.queryByRole("checkbox", { name: "Show onion skin folds" }),
     ).toBeNull();
     expect(
+      screen.queryByRole("checkbox", { name: "Show measurement labels" }),
+    ).toBeNull();
+    expect(
       screen.queryByRole("checkbox", { name: "Show visual fold cues" }),
     ).toBeNull();
     expect(
@@ -670,6 +673,25 @@ describe("App", () => {
         name: "Origami function animation: f(a) = sqrt(a + 1)",
       }),
     ).toHaveAttribute("data-camera-mode", "whole");
+    expect(
+      screen.getByRole("checkbox", { name: "Show measurement labels" }),
+    ).not.toBeChecked();
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a) = sqrt(a + 1)",
+      }),
+    ).toHaveAttribute("data-measurement-labels", "hidden");
+    fireEvent.click(
+      screen.getByRole("checkbox", { name: "Show measurement labels" }),
+    );
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a) = sqrt(a + 1)",
+      }),
+    ).toHaveAttribute("data-measurement-labels", "visible");
+    expect(screen.getByText("unit = 1")).toBeInTheDocument();
+    expect(screen.getByText("a=3.00")).toBeInTheDocument();
+    expect(screen.getByText("final=2.000")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Show diagnostics" }));
     expect(
       screen.getByText("origami-function-plan-f-a-sqrt-a-1"),

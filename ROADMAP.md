@@ -820,6 +820,10 @@ Goal: make the animation teach the computation, not merely decorate it.
   branches are still awaiting future physical solver rejection records.
 - F5.5 Add optional measurement labels for input lengths, unit references,
   intermediate values, and final output.
+  Current implementation adds a visual-options toggle for measurement labels.
+  When enabled, the function SVG marks the unit reference, sampled input
+  lengths, visible intermediate computed lengths, the active phase value, and
+  final sampled output while exposing label visibility as animation metadata.
 - F5.6 Add a comparison strip that shows expression tree progress alongside the
   fold timeline.
 

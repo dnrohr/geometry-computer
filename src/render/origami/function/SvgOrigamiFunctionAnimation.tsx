@@ -17,6 +17,7 @@ export type OrigamiFunctionAnimationWarning = {
 type SvgOrigamiFunctionAnimationProps = {
   cameraMode?: OrigamiFunctionCameraMode;
   highlightedPhaseId?: string;
+  measurementLabels?: boolean;
   onionSkin?: boolean;
   onPhaseHover?: (phaseId?: string) => void;
   phaseWarnings?: readonly OrigamiFunctionAnimationWarning[];
@@ -47,6 +48,7 @@ const phaseLabel = (
 export function SvgOrigamiFunctionAnimation({
   cameraMode = "whole",
   highlightedPhaseId,
+  measurementLabels = false,
   onionSkin = false,
   onPhaseHover,
   phaseWarnings = [],
@@ -101,6 +103,14 @@ export function SvgOrigamiFunctionAnimation({
   const activeValue =
     activeNode?.value === undefined ? "pending" : activeNode.value.toFixed(3);
   const finalValue = preview.input.validation.value?.toFixed(3) ?? "pending";
+  const sampledInputs = Object.entries(preview.plan.values);
+  const intermediateNodes = preview.plan.nodes.filter(
+    (node) =>
+      node.kind !== "input" &&
+      node.kind !== "constant" &&
+      node.id !== preview.plan.resultExtraction.nodeId,
+  );
+  const visibleIntermediateNodes = intermediateNodes.slice(0, 3);
   const paperPatternTransform = patternTransform(
     preview.paperStyle.patternScale,
     preview.paperStyle.patternRotation,
@@ -134,6 +144,7 @@ export function SvgOrigamiFunctionAnimation({
       data-camera-mode={cameraMode}
       data-paper-shape="square"
       data-highlighted-phase-id={highlightedPhaseId}
+      data-measurement-labels={measurementLabels ? "visible" : "hidden"}
       data-warning-count={phaseWarnings.length}
       data-dependency-highlight={
         activePhaseIsHighlighted ? "active-phase" : undefined
@@ -428,6 +439,70 @@ export function SvgOrigamiFunctionAnimation({
               style={{ stroke: preview.paperStyle.creaseColor }}
             />
           ))}
+        </g>
+      )}
+      {measurementLabels && !isCreasePattern && (
+        <g
+          className="origami-function-measurement-labels"
+          aria-label="Function measurement labels"
+        >
+          <g
+            className="origami-function-measurement-label origami-function-measurement-label-unit"
+            data-measurement-kind="unit"
+            transform="translate(72 188)"
+          >
+            <rect width="74" height="16" rx="4" />
+            <text x="7" y="11">
+              unit = 1
+            </text>
+          </g>
+          {sampledInputs.slice(0, 3).map(([name, value], index) => (
+            <g
+              key={name}
+              className="origami-function-measurement-label origami-function-measurement-label-input"
+              data-measurement-kind="input"
+              data-measurement-name={name}
+              transform={`translate(${74 + index * 58} ${28 + index * 14})`}
+            >
+              <rect width="54" height="16" rx="4" />
+              <text x="7" y="11">{`${name}=${value.toFixed(2)}`}</text>
+            </g>
+          ))}
+          {visibleIntermediateNodes.map((node, index) => (
+            <g
+              key={node.id}
+              className="origami-function-measurement-label origami-function-measurement-label-intermediate"
+              data-measurement-kind="intermediate"
+              data-measurement-node-id={node.id}
+              transform={`translate(${74 + index * 48} ${82 + index * 18})`}
+            >
+              <rect width="68" height="16" rx="4" />
+              <text
+                x="7"
+                y="11"
+              >{`${node.expression}=${node.value.toFixed(2)}`}</text>
+            </g>
+          ))}
+          {activeNode && (
+            <g
+              className="origami-function-measurement-label origami-function-measurement-label-active"
+              data-measurement-kind="active"
+              data-measurement-node-id={activeNode.id}
+              transform="translate(152 122)"
+            >
+              <rect width="84" height="16" rx="4" />
+              <text x="7" y="11">{`active=${activeValue}`}</text>
+            </g>
+          )}
+          <g
+            className="origami-function-measurement-label origami-function-measurement-label-final"
+            data-measurement-kind="final"
+            data-measurement-object-id={preview.plan.resultObjectId}
+            transform="translate(154 176)"
+          >
+            <rect width="82" height="16" rx="4" />
+            <text x="7" y="11">{`final=${finalValue}`}</text>
+          </g>
         </g>
       )}
       <text className="origami-function-animation-phase" x="48" y="202">
