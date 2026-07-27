@@ -482,6 +482,8 @@ function OrigamiRoadmap() {
     useState(false);
   const [showOrigamiDeveloperNotes, setShowOrigamiDeveloperNotes] =
     useState(false);
+  const [showOrigamiFunctionDiagnostics, setShowOrigamiFunctionDiagnostics] =
+    useState(false);
   const [progress, setProgress] = useState(1);
   const [activeStepId, setActiveStepId] = useState<string>();
   const [selectedObjectId, setSelectedObjectId] = useState<string>();
@@ -1046,14 +1048,6 @@ function OrigamiRoadmap() {
         </label>
         <dl className="origami-function-status" aria-live="polite">
           <div>
-            <dt>Sample values</dt>
-            <dd>
-              {Object.entries(functionValues)
-                .map(([name, value]) => `${name}=${value}`)
-                .join(", ")}
-            </dd>
-          </div>
-          <div>
             <dt>Domain</dt>
             <dd>
               {functionReport.status === "valid"
@@ -1086,10 +1080,12 @@ function OrigamiRoadmap() {
               </button>
             </dd>
           </div>
-          <div>
-            <dt>Domain detail</dt>
-            <dd>{functionIssueDetail}</dd>
-          </div>
+          {functionIssueDetail !== "ready" && (
+            <div>
+              <dt>Issue</dt>
+              <dd>{functionIssueDetail}</dd>
+            </div>
+          )}
           <div>
             <dt>Result label</dt>
             <dd className="origami-copy-row">
@@ -1106,78 +1102,6 @@ function OrigamiRoadmap() {
               </button>
             </dd>
           </div>
-          <div>
-            <dt>Plan</dt>
-            <dd>
-              {functionPreview.status === "compiled"
-                ? functionPreview.plan.id
-                : "blocked"}
-            </dd>
-          </div>
-          <div>
-            <dt>Animation</dt>
-            <dd>
-              {functionPreview.status === "compiled"
-                ? `${functionPreview.animation.phaseId} @ ${functionPreview.animation.progress.toFixed(2)}`
-                : "not started"}
-            </dd>
-          </div>
-          <div>
-            <dt>Fold solver</dt>
-            <dd>
-              {solverReadiness
-                ? solverReadiness.status === "ready"
-                  ? "ready"
-                  : `${solverReadiness.fallbackPhases}/${solverReadiness.totalPhases} fallback phases, ${solverReadiness.certifiedPhases} certified`
-                : "not compiled"}
-            </dd>
-          </div>
-          {solverReadiness && (
-            <div>
-              <dt>Solver detail</dt>
-              <dd>{solverReadiness.summary}</dd>
-            </div>
-          )}
-          {nextSolverWorkItem && (
-            <div>
-              <dt>Next solver item</dt>
-              <dd>{`${nextSolverWorkItem.phaseId} ${nextSolverWorkItem.phaseKind} ${nextSolverWorkItem.requiredCapability}`}</dd>
-            </div>
-          )}
-          {activeSolverWorkItem && (
-            <>
-              <div>
-                <dt>Active solver item</dt>
-                <dd>{`${activeSolverWorkItem.replacementFor} ${activeSolverWorkItem.selectedBranchId ?? "no branch"}`}</dd>
-              </div>
-              <div>
-                <dt>Active solver detail</dt>
-                <dd>{activeSolverWorkItem.summary}</dd>
-              </div>
-              <div>
-                <dt>Solver inputs</dt>
-                <dd>
-                  {activeSolverWorkItem.sourceObjectIds.join(", ") || "none"}
-                </dd>
-              </div>
-              <div>
-                <dt>Solver outputs</dt>
-                <dd>{activeSolverWorkItem.outputObjectIds.join(", ")}</dd>
-              </div>
-            </>
-          )}
-          {activeFoldCertificate && (
-            <>
-              <div>
-                <dt>Active certificate</dt>
-                <dd>{`${activeFoldCertificate.method} ${activeFoldCertificate.targetObjectIds.join(", ")}`}</dd>
-              </div>
-              <div>
-                <dt>Certificate detail</dt>
-                <dd>{activeFoldCertificate.summary}</dd>
-              </div>
-            </>
-          )}
           {copiedFunctionReadout && (
             <div>
               <dt>Clipboard</dt>
@@ -1209,7 +1133,114 @@ function OrigamiRoadmap() {
           >
             Preview fold animation
           </button>
+          <button
+            type="button"
+            aria-expanded={showOrigamiFunctionDiagnostics}
+            onClick={() =>
+              setShowOrigamiFunctionDiagnostics(
+                (showDiagnostics) => !showDiagnostics,
+              )
+            }
+          >
+            {showOrigamiFunctionDiagnostics
+              ? "Hide diagnostics"
+              : "Show diagnostics"}
+          </button>
         </div>
+        {showOrigamiFunctionDiagnostics && (
+          <section
+            className="origami-function-diagnostics"
+            aria-label="Origami function diagnostics"
+          >
+            <dl className="origami-function-status" aria-live="polite">
+              <div>
+                <dt>Sample values</dt>
+                <dd>
+                  {Object.entries(functionValues)
+                    .map(([name, value]) => `${name}=${value}`)
+                    .join(", ")}
+                </dd>
+              </div>
+              <div>
+                <dt>Domain detail</dt>
+                <dd>{functionIssueDetail}</dd>
+              </div>
+              <div>
+                <dt>Plan</dt>
+                <dd>
+                  {functionPreview.status === "compiled"
+                    ? functionPreview.plan.id
+                    : "blocked"}
+                </dd>
+              </div>
+              <div>
+                <dt>Animation</dt>
+                <dd>
+                  {functionPreview.status === "compiled"
+                    ? `${functionPreview.animation.phaseId} @ ${functionPreview.animation.progress.toFixed(2)}`
+                    : "not started"}
+                </dd>
+              </div>
+              <div>
+                <dt>Fold solver</dt>
+                <dd>
+                  {solverReadiness
+                    ? solverReadiness.status === "ready"
+                      ? "ready"
+                      : `${solverReadiness.fallbackPhases}/${solverReadiness.totalPhases} fallback phases, ${solverReadiness.certifiedPhases} certified`
+                    : "not compiled"}
+                </dd>
+              </div>
+              {solverReadiness && (
+                <div>
+                  <dt>Solver detail</dt>
+                  <dd>{solverReadiness.summary}</dd>
+                </div>
+              )}
+              {nextSolverWorkItem && (
+                <div>
+                  <dt>Next solver item</dt>
+                  <dd>{`${nextSolverWorkItem.phaseId} ${nextSolverWorkItem.phaseKind} ${nextSolverWorkItem.requiredCapability}`}</dd>
+                </div>
+              )}
+              {activeSolverWorkItem && (
+                <>
+                  <div>
+                    <dt>Active solver item</dt>
+                    <dd>{`${activeSolverWorkItem.replacementFor} ${activeSolverWorkItem.selectedBranchId ?? "no branch"}`}</dd>
+                  </div>
+                  <div>
+                    <dt>Active solver detail</dt>
+                    <dd>{activeSolverWorkItem.summary}</dd>
+                  </div>
+                  <div>
+                    <dt>Solver inputs</dt>
+                    <dd>
+                      {activeSolverWorkItem.sourceObjectIds.join(", ") ||
+                        "none"}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Solver outputs</dt>
+                    <dd>{activeSolverWorkItem.outputObjectIds.join(", ")}</dd>
+                  </div>
+                </>
+              )}
+              {activeFoldCertificate && (
+                <>
+                  <div>
+                    <dt>Active certificate</dt>
+                    <dd>{`${activeFoldCertificate.method} ${activeFoldCertificate.targetObjectIds.join(", ")}`}</dd>
+                  </div>
+                  <div>
+                    <dt>Certificate detail</dt>
+                    <dd>{activeFoldCertificate.summary}</dd>
+                  </div>
+                </>
+              )}
+            </dl>
+          </section>
+        )}
         <section
           className="origami-function-share"
           aria-labelledby="origami-function-share-title"

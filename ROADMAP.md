@@ -674,6 +674,11 @@ surface area.
   input, sample controls, compile/play controls, and result. Move plan IDs,
   solver readiness, certificate details, branch IDs, and similar telemetry into
   collapsed details.
+  Current implementation leaves the default function lab focused on domain,
+  variables, sampled result, result label, compile/preview actions, examples,
+  challenges, and sample controls. Plan IDs, animation phase IDs, solver
+  readiness/work items, and fold-certificate rows now live behind a collapsed
+  `Show diagnostics` affordance.
 - F3.8.3 Collapse export controls and paper-style controls by default, preserving
   their state and tests while keeping the first-view workflow focused.
 - F3.8.4 Replace the placeholder rectangular/book-spread fold preview with a

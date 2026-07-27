@@ -472,6 +472,21 @@ select:focus-visible,
   opacity: 0.45;
 }
 
+.origami-function-diagnostics {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 3%);
+}
+
+.origami-function-diagnostics .origami-function-status {
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+}
+
 .origami-function-share {
   display: grid;
   grid-column: 1 / -1;

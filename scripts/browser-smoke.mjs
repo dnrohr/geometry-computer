@@ -566,14 +566,30 @@ const assertOrigamiFunctionPanel = async (page) => {
   await input.waitFor();
   await functionStatus.getByText("allowable").waitFor();
   await functionStatus.getByText("2.000").waitFor();
-  await functionStatus.getByText("6/14 fallback phases, 8 certified").waitFor();
-  await functionStatus
+  if (
+    await functionStatus
+      .getByText("6/14 fallback phases, 8 certified")
+      .isVisible()
+  ) {
+    throw new Error("Function diagnostics were visible by default.");
+  }
+  await functionPanel.getByRole("button", { name: "Show diagnostics" }).click();
+  const functionDiagnostics = functionPanel.getByLabel(
+    "Origami function diagnostics",
+  );
+  const diagnosticStatus = functionDiagnostics.locator(
+    ".origami-function-status",
+  );
+  await diagnosticStatus
+    .getByText("6/14 fallback phases, 8 certified")
+    .waitFor();
+  await diagnosticStatus
     .getByText("origami-function-phase-9 align-fold arithmetic-macro-fold")
     .waitFor();
-  await functionStatus
+  await diagnosticStatus
     .getByText("paper-placement origami-function-paper")
     .waitFor();
-  await functionStatus
+  await diagnosticStatus
     .getByText("The paper boundary is placed as the fixed computation domain.")
     .waitFor();
   await page.getByRole("heading", { name: "Solver work backlog" }).waitFor();
@@ -582,11 +598,11 @@ const assertOrigamiFunctionPanel = async (page) => {
       name: "Jump to solver work origami-function-phase-9",
     })
     .click();
-  await functionStatus.getByText("origami-function-phase-9 @ 0.57").waitFor();
-  await functionStatus
+  await diagnosticStatus.getByText("origami-function-phase-9 @ 0.57").waitFor();
+  await diagnosticStatus
     .getByText("sqrt:align-fold positive-geometric-mean-branch")
     .waitFor();
-  await functionStatus
+  await diagnosticStatus
     .getByText(
       "sqrt(a + 1) uses the Positive geometric-mean branch macro, which is not yet backed by a physical fold solver.",
     )
@@ -638,7 +654,7 @@ const assertOrigamiFunctionPanel = async (page) => {
     })
     .click();
   await page
-    .locator(".origami-function-status dd", {
+    .locator(".origami-function-diagnostics .origami-function-status dd", {
       hasText: "origami-function-phase-10 @ 0.64",
     })
     .waitFor();
@@ -648,7 +664,7 @@ const assertOrigamiFunctionPanel = async (page) => {
     })
     .click();
   await page
-    .locator(".origami-function-status dd", {
+    .locator(".origami-function-diagnostics .origami-function-status dd", {
       hasText: "origami-function-phase-9 @ 0.57",
     })
     .waitFor();
@@ -689,7 +705,7 @@ const assertOrigamiFunctionPanel = async (page) => {
     })
     .click();
   await page
-    .locator(".origami-function-status dd", {
+    .locator(".origami-function-diagnostics .origami-function-status dd", {
       hasText: "origami-function-phase-9 @ 0.57",
     })
     .waitFor();
@@ -1020,6 +1036,7 @@ const assertOrigamiFunctionPanel = async (page) => {
     .getByText(
       /Denominator b - b: Division by zero is outside the sampled origami function domain\./,
     )
+    .first()
     .waitFor();
   const warningCues = await page
     .getByLabel("Function visual cues")

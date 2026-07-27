@@ -313,6 +313,20 @@ describe("App", () => {
     expect(
       within(functionPanel).getByText("f(a) = sqrt(a + 1)"),
     ).toBeInTheDocument();
+    expect(within(functionPanel).queryByText("Sample values")).toBeNull();
+    expect(within(functionPanel).queryByText("Fold solver")).toBeNull();
+    expect(within(functionPanel).queryByText("Certificate detail")).toBeNull();
+    expect(
+      within(functionPanel).getByRole("button", { name: "Show diagnostics" }),
+    ).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(
+      within(functionPanel).getByRole("button", { name: "Show diagnostics" }),
+    );
+    expect(
+      within(functionPanel).getByRole("region", {
+        name: "Origami function diagnostics",
+      }),
+    ).toBeInTheDocument();
     expect(
       within(functionPanel).getByText("6/14 fallback phases, 8 certified"),
     ).toBeInTheDocument();
@@ -602,6 +616,7 @@ describe("App", () => {
         name: "Origami function animation: f(a) = sqrt(a + 1)",
       }),
     ).toHaveAttribute("data-camera-mode", "whole");
+    fireEvent.click(screen.getByRole("button", { name: "Show diagnostics" }));
     expect(
       screen.getByText("origami-function-plan-f-a-sqrt-a-1"),
     ).toBeInTheDocument();
@@ -699,8 +714,10 @@ describe("App", () => {
     ).toHaveAttribute("aria-current", "step");
     expect(screen.getByText("9 of 14")).toBeInTheDocument();
     expect(
-      screen.getByText("origami-function-phase-9 @ 0.57"),
-    ).toBeInTheDocument();
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a) = sqrt(a + 1)",
+      }),
+    ).toHaveAttribute("data-phase-id", "origami-function-phase-9");
   });
 
   it("plays a clean origami function presentation mode and restores controls", () => {
@@ -794,6 +811,9 @@ describe("App", () => {
         name: "Preview fold animation",
       }),
     ).toBeDisabled();
+    fireEvent.click(
+      within(functionPanel).getByRole("button", { name: "Show diagnostics" }),
+    );
     expect(
       within(functionPanel).getByText("origami-function-plan-f-a-sqrt-a-1"),
     ).toBeInTheDocument();
@@ -844,6 +864,9 @@ describe("App", () => {
         /Radicand a - b: Square roots need a nonnegative sampled radicand/,
       ),
     ).toBeInTheDocument();
+    fireEvent.click(
+      within(functionPanel).getByRole("button", { name: "Show diagnostics" }),
+    );
     expect(
       within(functionPanel).getByText("origami-function-plan-f-a-sqrt-a-1"),
     ).toBeInTheDocument();
@@ -855,6 +878,7 @@ describe("App", () => {
     fireEvent.click(
       screen.getByRole("button", { name: "Flat origami roadmap" }),
     );
+    fireEvent.click(screen.getByRole("button", { name: "Show diagnostics" }));
 
     fireEvent.change(
       screen.getByRole("slider", { name: "Function animation progress" }),
@@ -896,6 +920,7 @@ describe("App", () => {
     fireEvent.click(
       screen.getByRole("button", { name: "Flat origami roadmap" }),
     );
+    fireEvent.click(screen.getByRole("button", { name: "Show diagnostics" }));
     const timeline = screen.getByLabelText("Origami function timeline");
 
     fireEvent.keyDown(timeline, { key: "ArrowRight" });
@@ -944,6 +969,9 @@ describe("App", () => {
       within(functionPanel).getByRole("textbox", { name: "Origami function" }),
     ).toHaveValue("f(a,b)=a*b");
     expect(within(functionPanel).getByText("6.000")).toBeInTheDocument();
+    fireEvent.click(
+      within(functionPanel).getByRole("button", { name: "Show diagnostics" }),
+    );
     expect(
       within(functionPanel).getByText("origami-function-plan-f-a-b-a-b"),
     ).toBeInTheDocument();
@@ -1135,6 +1163,10 @@ describe("App", () => {
     expect(
       within(functionPanel).getByRole("slider", { name: "b sample slider" }),
     ).toHaveValue("1.5");
+    expect(within(functionPanel).getAllByText(/a=4, b=1.5/).length).toBe(1);
+    fireEvent.click(
+      within(functionPanel).getByRole("button", { name: "Show diagnostics" }),
+    );
     expect(within(functionPanel).getAllByText(/a=4, b=1.5/).length).toBe(2);
     expect(screen.queryByRole("textbox", { name: "Expression" })).toBeNull();
   });
@@ -1324,8 +1356,10 @@ describe("App", () => {
       within(functionPanel).getByRole("textbox", { name: "Origami function" }),
     ).toHaveValue("f(a, b) = a * b");
     expect(
-      within(functionPanel).getByText("origami-function-phase-4 @ 0.33"),
-    ).toBeInTheDocument();
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a, b) = a * b",
+      }),
+    ).toHaveAttribute("data-phase-id", "origami-function-phase-4");
     expect(
       (
         within(functionPanel).getByRole("textbox", {
@@ -1364,6 +1398,7 @@ describe("App", () => {
     fireEvent.click(
       screen.getByRole("button", { name: "Compile origami function" }),
     );
+    fireEvent.click(screen.getByRole("button", { name: "Show diagnostics" }));
     expect(
       screen.getByText("origami-function-plan-f-a-b-a-b"),
     ).toBeInTheDocument();
