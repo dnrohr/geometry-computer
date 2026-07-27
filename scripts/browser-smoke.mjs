@@ -279,6 +279,7 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
     };
     const svg = rectFor(".origami-function-animation");
     const paperBase = document.querySelector(".origami-function-paper-base");
+    const valueStrip = document.querySelector(".origami-function-value-strip");
     const paperRegions = [
       rectFor(".origami-function-paper-base"),
       rectFor(".origami-function-paper-stationary"),
@@ -365,6 +366,11 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
         paperBase instanceof SVGElement
           ? paperBase.getAttribute("points")
           : undefined,
+      valueStrip: rectFor(".origami-function-value-strip rect"),
+      readoutPlacement:
+        valueStrip instanceof SVGElement
+          ? valueStrip.getAttribute("data-readout-placement")
+          : undefined,
       readoutContrast: (() => {
         const rect = document.querySelector(
           ".origami-function-value-strip rect",
@@ -412,7 +418,8 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
     contract.creasePreviews < 1 ||
     contract.plannedCreases < 1 ||
     contract.paperShape !== "square" ||
-    contract.paperPoints !== "60,18 240,18 240,198 60,198"
+    contract.paperPoints !== "60,18 240,18 240,198 60,198" ||
+    contract.readoutPlacement !== "below-paper"
   ) {
     throw new Error(
       `Function animation missing layers at ${viewport.width}x${viewport.height}: ${JSON.stringify(
@@ -431,6 +438,7 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
           plannedCreases: contract.plannedCreases,
           paperShape: contract.paperShape,
           paperPoints: contract.paperPoints,
+          readoutPlacement: contract.readoutPlacement,
         },
       )}`,
     );
@@ -463,6 +471,20 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
         )}`,
       );
     }
+  }
+  if (
+    !contract.valueStrip ||
+    !contract.paperRegions[0] ||
+    contract.valueStrip.top < contract.paperRegions[0].bottom - 1
+  ) {
+    throw new Error(
+      `Function readout overlaps square paper at ${viewport.width}x${viewport.height}: ${JSON.stringify(
+        {
+          paper: contract.paperRegions[0],
+          readout: contract.valueStrip,
+        },
+      )}`,
+    );
   }
   for (let i = 0; i < contract.timelineChildren.length; i += 1) {
     for (let j = i + 1; j < contract.timelineChildren.length; j += 1) {

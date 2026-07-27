@@ -48,7 +48,7 @@ export function SvgOrigamiFunctionAnimation({
         className="origami-function-animation"
         role="img"
         aria-label="Origami function animation unavailable"
-        viewBox="0 0 300 216"
+        viewBox="0 0 300 240"
       >
         <title>Origami function animation unavailable</title>
         <rect x="18" y="18" width="264" height="180" rx="4" />
@@ -399,20 +399,21 @@ export function SvgOrigamiFunctionAnimation({
           ))}
         </g>
       )}
-      <text className="origami-function-animation-phase" x="24" y="208">
+      <text className="origami-function-animation-phase" x="48" y="202">
         {`${phase.id} ${phase.kind}`}
       </text>
-      <text className="origami-function-animation-value" x="276" y="208">
+      <text className="origami-function-animation-value" x="252" y="202">
         {finalValue}
       </text>
       <g
         className="origami-function-value-strip"
         aria-label="Function animation value readout"
+        data-readout-placement="below-paper"
       >
-        <rect x="24" y="24" width="252" height="34" rx="4" />
-        <text x="34" y="45">{`Current ${phase.expression}`}</text>
-        <text x="186" y="45">{`Value ${activeValue}`}</text>
-        <text x="266" y="45">{`Final ${finalValue}`}</text>
+        <rect x="48" y="206" width="204" height="28" rx="4" />
+        <text x="58" y="224">{`Current ${phase.expression}`}</text>
+        <text x="176" y="224">{`Value ${activeValue}`}</text>
+        <text x="242" y="224">{`Final ${finalValue}`}</text>
       </g>
     </svg>
   );
@@ -422,11 +423,11 @@ function viewBoxForCamera(
   cameraMode: OrigamiFunctionCameraMode,
   isCreasePattern: boolean,
 ) {
-  if (isCreasePattern) return "0 0 300 216";
+  if (isCreasePattern) return "0 0 300 240";
   if (cameraMode === "paper") return "48 12 204 192";
   if (cameraMode === "active-fold") return "54 36 192 132";
   if (cameraMode === "result") return "146 132 112 78";
-  return "0 0 300 216";
+  return "0 0 300 240";
 }
 
 function nearestMotionPhase(

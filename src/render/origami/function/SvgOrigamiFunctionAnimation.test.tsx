@@ -99,6 +99,12 @@ describe("SvgOrigamiFunctionAnimation", () => {
     expect(
       container.querySelectorAll(".origami-function-planned-crease").length,
     ).toBeGreaterThan(0);
+    expect(
+      container.querySelector(".origami-function-value-strip"),
+    ).toHaveAttribute("data-readout-placement", "below-paper");
+    expect(
+      container.querySelector(".origami-function-value-strip rect"),
+    ).toHaveAttribute("y", "206");
     expect(screen.getByText("Current f(a, b) = a * b")).toBeInTheDocument();
     expect(screen.getByText("Value pending")).toBeInTheDocument();
     expect(screen.getByText("Final 6.000")).toBeInTheDocument();

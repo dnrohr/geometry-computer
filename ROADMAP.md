@@ -629,9 +629,9 @@ the existing inspectable SVG trace.
   motion, presentation reset, and keyboard controls in the origami tab.
 - F3.4 Show the computation value evolving beside the animation, including
   current subexpression, sampled numeric value, and final result.
-  Current implementation renders a function value strip inside the animation SVG
-  showing the active phase expression, sampled node value when available, and
-  the final sampled result throughout playback.
+  Current implementation renders a function value strip below the paper inside
+  the animation SVG, showing the active phase expression, sampled node value
+  when available, and the final sampled result throughout playback.
 - F3.5 Keep static crease-pattern inspection available beside or below the
   animation so users can compare motion with the final trace.
   Current implementation keeps a static crease-pattern comparison beside the
@@ -693,6 +693,10 @@ surface area.
   shows faint planned crease guides in the default animation view.
 - F3.8.5 Move the current-step/value/final readout out of the paper drawing area
   or lay it out so it never overlaps the origami sheet.
+  Current implementation expands the function animation viewBox, moves the phase
+  and value readout below the square paper, marks the strip with
+  `data-readout-placement="below-paper"`, and browser-smoke checks that the
+  rendered readout rectangle sits below the rendered paper base.
 - F3.8.6 Make Play and presentation mode visibly step through distinct phases,
   with obvious previous/next/play controls available in presentation mode.
 - F3.8.7 Hide or demote camera modes, onion-skin folds, visual cues, crease snap,
