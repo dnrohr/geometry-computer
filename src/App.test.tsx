@@ -800,6 +800,9 @@ describe("App", () => {
       }),
     );
     expect(within(cueStrip).getByText("Branch selected")).toBeInTheDocument();
+    const solverBranchExplanation = screen.getByLabelText("Why this fold?");
+    expect(solverBranchExplanation).toHaveTextContent("Solver branch");
+    expect(solverBranchExplanation).toHaveTextContent("arithmetic-macro-fold");
 
     fireEvent.change(
       screen.getByRole("slider", { name: "Function animation progress" }),
@@ -904,6 +907,14 @@ describe("App", () => {
       "The valley fold keeps sqrt(a + 1) represented as a paper length",
     );
     expect(whyThisFold).toHaveTextContent("Positive geometric-mean branch");
+    const branchSequence = within(whyThisFold).getByRole("list", {
+      name: "Function branch choice sequence",
+    });
+    expect(branchSequence).toHaveTextContent("Candidate branches");
+    expect(branchSequence).toHaveTextContent("Selected branch");
+    expect(branchSequence).toHaveTextContent("Certified branch");
+    expect(branchSequence).toHaveTextContent("geometric-mean-square-root");
+    expect(within(branchSequence).getAllByRole("listitem")).toHaveLength(3);
     expect(whyThisFold).toHaveTextContent(
       "origami-function-node-output-3 -> origami-function-node-output-4-align-fold",
     );

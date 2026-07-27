@@ -218,6 +218,10 @@ F7.8 surfaces nested radicals through the curated challenge list. The challenge
 `f(a)=sqrt(sqrt(a+1)+1)` composes two square-root nodes with addition nodes,
 keeps all 24 generated phases proven physical, and reuses the
 `geometric-mean-square-root` certificate for both root traces.
+F7.9 keeps animated branch-choice explanations as a UI projection of existing
+phase metadata. The sequence reads from `foldMotion.selectedBranch`, the active
+fold certificate, and active solver work item; it does not add plan phases,
+change solver readiness, or alter exported function data.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

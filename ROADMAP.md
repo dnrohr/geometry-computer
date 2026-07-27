@@ -960,6 +960,11 @@ worth exploring while staying honest about mathematical limits.
   Current implementation adds `f(a)=sqrt(sqrt(a+1)+1)` with a sampled value
   that produces a 24-phase, solver-ready animation composed from two certified
   positive geometric-mean traces.
+- F7.9 Add animated branch-choice explanations.
+  Current implementation adds a three-step branch sequence to the origami
+  function "why this fold?" overlay. It shows candidate branch context, the
+  selected branch, and the certified or solver-backed status with CSS animation
+  that respects reduced-motion settings.
 
 Acceptance checks:
 
@@ -3282,6 +3287,5 @@ Only consider these after the MVP is working and documented.
 - Timeline scrubber with play/pause.
 - User-authored construction macros.
 - Support for exact symbolic coordinates.
-- Animated branch-choice explanations.
 - Side-by-side algebraic and geometric proof modes.
 - Educational lesson mode.

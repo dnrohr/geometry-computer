@@ -918,6 +918,31 @@ function OrigamiRoadmap() {
             : (activeFunctionPhase.fallback?.reason ??
               "The phase is ready for the current explanatory animation."),
         trace: `${activeFunctionPhase.sourceObjectIds.join(", ") || "paper"} -> ${activeFunctionPhase.outputObjectIds.join(", ") || "result"}`,
+        branchSequence: activeFunctionBranch
+          ? [
+              {
+                label: "Candidate branches",
+                detail: activeSolverWorkItem
+                  ? "Selected and alternate branches are still tracked as solver obligations."
+                  : "The fold trace records the branch family for this arithmetic construction.",
+              },
+              {
+                label: "Selected branch",
+                detail: activeFunctionBranch.label,
+              },
+              {
+                label: activeFoldCertificate
+                  ? "Certified branch"
+                  : activeSolverWorkItem
+                    ? "Solver branch"
+                    : "Recorded branch",
+                detail: activeFoldCertificate
+                  ? activeFoldCertificate.method
+                  : (activeSolverWorkItem?.requiredCapability ??
+                    activeFunctionBranch.reason),
+              },
+            ]
+          : [],
       }
     : undefined;
   const functionPhaseMinimapItems =
@@ -1651,6 +1676,25 @@ function OrigamiRoadmap() {
             >
               <span>{activeFunctionFoldExplanation.title}</span>
               <p>{activeFunctionFoldExplanation.invariant}</p>
+              {activeFunctionFoldExplanation.branchSequence.length > 0 && (
+                <ol
+                  className="origami-function-branch-sequence"
+                  aria-label="Function branch choice sequence"
+                >
+                  {activeFunctionFoldExplanation.branchSequence.map(
+                    (item, index) => (
+                      <li
+                        key={`${item.label}-${index}`}
+                        data-branch-step={index + 1}
+                      >
+                        <span>{String(index + 1)}</span>
+                        <strong>{item.label}</strong>
+                        <em>{item.detail}</em>
+                      </li>
+                    ),
+                  )}
+                </ol>
+              )}
               <dl>
                 <div>
                   <dt>Branch</dt>

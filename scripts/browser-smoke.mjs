@@ -795,6 +795,16 @@ const assertOrigamiFunctionPanel = async (page) => {
       "Positive geometric-mean branch: Select the nonnegative square-root intersection guaranteed by sampled validation.",
     )
     .waitFor();
+  const branchChoiceSequence = whyThisFold.getByRole("list", {
+    name: "Function branch choice sequence",
+  });
+  await branchChoiceSequence.getByText("Candidate branches").waitFor();
+  await branchChoiceSequence.getByText("Selected branch").waitFor();
+  await branchChoiceSequence.getByText("Certified branch").waitFor();
+  await branchChoiceSequence.getByText("geometric-mean-square-root").waitFor();
+  if ((await branchChoiceSequence.getByRole("listitem").count()) !== 3) {
+    throw new Error("Function branch choice sequence did not render 3 steps.");
+  }
   await whyThisFold
     .getByText(
       "origami-function-node-output-3 -> origami-function-node-output-4-align-fold",

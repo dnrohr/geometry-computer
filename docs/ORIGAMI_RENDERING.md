@@ -228,6 +228,11 @@ The flat-origami tab provides:
   `f(a)=sqrt(sqrt(a+1)+1)` loads a 24-phase solver-ready animation, so the
   storyboard, minimap, diagnostics, and export paths demonstrate two certified
   square-root traces composed in one function plan.
+- F7.9 adds an animated branch-choice sequence inside the "why this fold?"
+  overlay. When the active phase has a selected branch, the sequence renders
+  candidate context, selected branch, and certified or solver status as three
+  accessible list steps. The animation is CSS-only and follows the global
+  reduced-motion media query.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.
