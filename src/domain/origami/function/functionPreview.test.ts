@@ -198,7 +198,12 @@ describe("origami function preview plan", () => {
         targetObjectIds: ["origami-function-paper"],
       },
     });
-    expect(JSON.parse(json).paperStyle.patternRotation).toBe(45);
+    expect(JSON.parse(json).paperStyle).toMatchObject({
+      frontColor: "#ffffff",
+      backColor: "#101820",
+      patternScale: 1.75,
+      patternRotation: 45,
+    });
   });
 
   it("exports active fallback phase solver work metadata", () => {

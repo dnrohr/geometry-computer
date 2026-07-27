@@ -769,6 +769,10 @@ is easy to follow.
   style, and applies them to both front and back SVG pattern layers.
 - F4.5 Store paper style in origami-local UI state and include it in origami
   animation exports without affecting compass SVG export.
+  Current implementation keeps paper style on the origami function preview,
+  preserves compiled plan identity when style changes, serializes the selected
+  style into origami animation JSON, restores it on replay import, and browser
+  smoke verifies compass SVG export does not include origami paper-style data.
 - F4.6 Add contrast checks or visual tests for preset combinations so crease,
   label, and result highlights remain readable.
 
