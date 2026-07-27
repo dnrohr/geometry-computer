@@ -1866,6 +1866,26 @@ describe("App", () => {
         }) as HTMLTextAreaElement
       ).value,
     ).toContain("Samples: a=4, b=1.5");
+    expect(
+      (
+        within(functionPanel).getByRole("textbox", {
+          name: "Origami function share block",
+        }) as HTMLTextAreaElement
+      ).value,
+    ).toContain("Fold solver: ready");
+    fireEvent.click(
+      within(functionPanel).getByRole("button", { name: "Show diagnostics" }),
+    );
+    expect(
+      within(functionPanel).getByText(
+        "intercept-product-transfer origami-function-node-output-3-align-fold",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText(
+        "The product length is certified by the selected intercept-style multiplication trace.",
+      ),
+    ).toBeInTheDocument();
     expect(screen.getByLabelText("Function paper front color")).toHaveValue(
       "#ffffff",
     );

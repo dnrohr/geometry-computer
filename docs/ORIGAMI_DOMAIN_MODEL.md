@@ -157,6 +157,10 @@ F5.11 certifies `^2` function phases using the existing square multiplication
 specialization trace. The function plan stores the parsed power exponent, marks
 only exponent-two power phases as proven physical, and leaves higher integer
 powers in the solver backlog with repeated-product proof obligations.
+F5.12 certifies multiplication function phases using the intercept-style product
+trace. Multiplication phases now emit `intercept-product-transfer` fold
+certificates, result extraction becomes physical when the final result is a
+product, and division/square-root phases remain solver backlog items.
 F6.2 exports function-animation SVG snapshots from the origami renderer itself.
 The current-phase snapshot uses the visible timeline state; the final snapshot
 uses the same compiled plan and paper style at the result-extraction phase. A

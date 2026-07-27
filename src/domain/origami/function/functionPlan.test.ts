@@ -113,23 +113,23 @@ describe("origami function plan", () => {
       "proven-physical",
       "proven-physical",
       "proven-physical",
-      "explanatory-fallback",
-      "explanatory-fallback",
-      "explanatory-fallback",
-      "explanatory-fallback",
-      "explanatory-fallback",
-      "explanatory-fallback",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
     ]);
     expect(plan.phases[3]).toMatchObject({
-      fallback: {
-        label: "Explanatory fallback trace",
-        replacementFor: "mul:align-fold",
+      foldCertificate: {
+        method: "intercept-product-transfer",
+        targetObjectIds: ["origami-function-node-output-3-align-fold"],
       },
     });
     expect(plan.phases.at(-1)).toMatchObject({
-      fallback: {
-        label: "Explanatory result extraction",
-        replacementFor: "extract-result",
+      foldCertificate: {
+        method: "identity-result",
+        targetObjectIds: ["origami-function-result"],
       },
     });
     expect(plan.executionOrder).toEqual([
@@ -169,76 +169,15 @@ describe("origami function plan", () => {
     });
     expect(
       plan.phases.filter(({ foldCertificate }) => foldCertificate).length,
-    ).toBe(3);
+    ).toBe(9);
     expect(plan.solverReadiness).toMatchObject({
-      status: "needs-solver",
+      status: "ready",
       totalPhases: plan.phases.length,
-      fallbackPhases: 6,
-      provenPhysicalPhases: 3,
-      certifiedPhases: 3,
+      fallbackPhases: 0,
+      provenPhysicalPhases: 9,
+      certifiedPhases: 9,
     });
-    expect(plan.solverReadiness.workItems).toEqual([
-      expect.objectContaining({
-        phaseId: "origami-function-phase-4",
-        phaseKind: "align-fold",
-        expression: "a * b",
-        sourceObjectIds: [
-          "origami-function-node-output-1",
-          "origami-function-node-output-2",
-        ],
-        outputObjectIds: ["origami-function-node-output-3-align-fold"],
-        replacementFor: "mul:align-fold",
-        requiredCapability: "arithmetic-macro-fold",
-        requiredAxioms: [
-          "similar-triangle-transfer",
-          "parallel-guide-fold",
-          "projection-intersection",
-        ],
-        acceptanceCheckIds: [
-          "origami-function-phase-4-source-objects-present",
-          "origami-function-phase-4-output-objects-produced",
-          "origami-function-phase-4-branch-recorded",
-          "origami-function-phase-4-certificate-emitted",
-        ],
-        branchAlternatives: [
-          expect.objectContaining({
-            id: "intercept-product-branch",
-            status: "selected",
-          }),
-          expect.objectContaining({
-            id: "intercept-product-branch-alternate",
-            status: "pending-rejection-record",
-          }),
-        ],
-        selectedBranchId: "intercept-product-branch",
-      }),
-      expect.objectContaining({
-        phaseId: "origami-function-phase-5",
-        phaseKind: "preview-crease",
-        replacementFor: "mul:preview-crease",
-      }),
-      expect.objectContaining({
-        phaseId: "origami-function-phase-6",
-        phaseKind: "fold",
-        replacementFor: "mul:fold",
-      }),
-      expect.objectContaining({
-        phaseId: "origami-function-phase-7",
-        phaseKind: "transfer",
-        replacementFor: "mul:transfer",
-      }),
-      expect.objectContaining({
-        phaseId: "origami-function-phase-8",
-        phaseKind: "mark-intersection",
-        replacementFor: "mul:mark-intersection",
-      }),
-      expect.objectContaining({
-        phaseId: "origami-function-phase-9",
-        phaseKind: "extract-result",
-        expression: "f(a, b) = a * b",
-        requiredCapability: "result-extraction-fold",
-      }),
-    ]);
+    expect(plan.solverReadiness.workItems).toEqual([]);
     expect(plan.solverReadiness.fallbackPhaseIds).toEqual(
       plan.phases
         .filter(

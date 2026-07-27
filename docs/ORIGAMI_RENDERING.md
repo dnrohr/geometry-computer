@@ -173,6 +173,9 @@ The flat-origami tab provides:
   diagnostics pane. Square phases show fold certificates and disappear from the
   solver backlog, while higher integer powers still show repeated-product
   solver obligations.
+- F5.12 surfaces multiplication as certified intercept-product work. Active
+  multiplication phases show certificate details and imported multiplication
+  animations replay as solver-ready rather than fallback work.
 - F6.2 starts static SVG snapshot export for function animations. The origami
   tab can download the visible current phase and a hidden final-phase snapshot,
   each serialized from the same SVG renderer and carrying plan, phase, kind, and

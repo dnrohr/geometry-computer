@@ -241,6 +241,42 @@ describe("origami function preview plan", () => {
     expect(exported?.objectInspector).not.toHaveProperty("solverWorkItemId");
   });
 
+  it("exports multiplication phase certificates as proven physical work", () => {
+    const preview = compileOrigamiFunctionPreview("f(a,b)=a*b");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+    const jumped = setOrigamiFunctionPreviewPhase(
+      preview,
+      "origami-function-phase-4",
+    );
+    if (jumped.status !== "compiled") throw new Error("Expected compiled");
+
+    const exported = origamiFunctionAnimationExport(jumped);
+
+    expect(exported?.solverReadiness).toMatchObject({
+      status: "ready",
+      fallbackPhases: 0,
+      workItems: [],
+    });
+    expect(exported?.activePhase).toMatchObject({
+      phaseId: "origami-function-phase-4",
+      phaseKind: "align-fold",
+      expression: "a * b",
+      physicalStatus: "proven-physical",
+      foldCertificate: {
+        method: "intercept-product-transfer",
+        targetObjectIds: ["origami-function-node-output-3-align-fold"],
+      },
+    });
+    expect(exported?.objectInspector).toMatchObject({
+      phaseId: "origami-function-phase-4",
+      nodeKind: "mul",
+      selectedBranchId: "intercept-product-branch",
+      foldCertificateId: "origami-function-phase-4-certificate",
+      physicalStatus: "proven-physical",
+    });
+    expect(exported?.objectInspector).not.toHaveProperty("solverWorkItemId");
+  });
+
   it("exports active fallback phase solver work metadata", () => {
     const preview = compileOrigamiFunctionPreview("sqrt(a+1)");
     if (preview.status !== "compiled") throw new Error("Expected compiled");

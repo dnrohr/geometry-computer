@@ -850,6 +850,11 @@ Goal: make the animation teach the computation, not merely decorate it.
   nodes, treats `^2` phases as the square multiplication specialization, emits
   fold certificates for those phases, and keeps higher integer powers in the
   solver backlog.
+- F5.10 Certify multiplication function phases.
+  Current implementation treats the selected intercept-product branch as proven
+  physical, emits `intercept-product-transfer` certificates, marks product
+  result extraction as physical, and keeps division/square-root solver work
+  untouched.
 
 Acceptance checks:
 
