@@ -1287,6 +1287,13 @@ try {
 
   await page.getByRole("button", { name: "Flat origami roadmap" }).click();
   await page.getByRole("heading", { name: "Origami Computer" }).waitFor();
+  const workspaceModes = page.getByRole("region", {
+    name: "Origami workspace modes",
+  });
+  await workspaceModes.getByText("Typed function lab").waitFor();
+  await workspaceModes.getByText("Function-computation animation").waitFor();
+  await workspaceModes.getByText("Trace gallery").waitFor();
+  await workspaceModes.getByText("Arithmetic-fold inspector").waitFor();
   await assertOrigamiFunctionPanel(page);
   const origamiExamples = [
     { button: "Input length", image: /Compiled origami trace: a/i },

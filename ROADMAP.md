@@ -713,6 +713,10 @@ surface area.
 - F3.8.8 Clarify the relationship between the interactive trace gallery and the
   typed function lab: trace gallery is an arithmetic-fold demo/inspector; the
   function lab is the eventual function-computation animation.
+  Current implementation adds a compact `Origami workspace modes` strip that
+  distinguishes the typed function lab as the function-computation animation
+  surface and the trace gallery as the arithmetic-fold inspector; the trace
+  section label now says `Trace gallery`.
 - F3.8.9 Add regression and browser smoke coverage for the consolidated default
   view: no visible roadmap/debug clutter, no overlapping readouts, square paper
   visible, collapsed secondary tools remain expandable, and presentation controls

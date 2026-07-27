@@ -328,6 +328,42 @@ select:focus-visible,
   box-shadow: 0 2rem 5rem rgb(0 0 0 / 18%);
 }
 
+.origami-workspace-mode-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.origami-workspace-mode-strip article {
+  display: grid;
+  gap: 0.18rem;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: #12181d;
+}
+
+.origami-workspace-mode-strip span {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.origami-workspace-mode-strip strong {
+  min-width: 0;
+  color: var(--foreground);
+  font-size: 0.9rem;
+}
+
+.origami-workspace-mode-strip p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
 .origami-workspace-header {
   display: flex;
   flex-wrap: wrap;
@@ -2082,6 +2118,9 @@ text.geometry-result,
   .origami-workspace {
     padding: 1rem;
     border-radius: 0.75rem;
+  }
+  .origami-workspace-mode-strip {
+    grid-template-columns: 1fr;
   }
   .origami-workspace-header {
     align-items: stretch;

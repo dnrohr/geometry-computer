@@ -275,6 +275,22 @@ describe("App", () => {
     expect(
       screen.getByRole("heading", { name: "Origami Computer" }),
     ).toBeInTheDocument();
+    const workspaceModes = screen.getByRole("region", {
+      name: "Origami workspace modes",
+    });
+    expect(
+      within(workspaceModes).getByText("Typed function lab"),
+    ).toBeInTheDocument();
+    expect(
+      within(workspaceModes).getByText("Function-computation animation"),
+    ).toBeInTheDocument();
+    expect(
+      within(workspaceModes).getByText("Trace gallery"),
+    ).toBeInTheDocument();
+    expect(
+      within(workspaceModes).getByText("Arithmetic-fold inspector"),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText("Trace gallery").length).toBeGreaterThan(1);
     expect(
       screen.queryByText("Do not modify the existing construction flow"),
     ).toBeNull();

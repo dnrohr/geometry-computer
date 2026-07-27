@@ -1046,6 +1046,21 @@ function OrigamiRoadmap() {
         </section>
       )}
       <section
+        className="origami-workspace-mode-strip"
+        aria-label="Origami workspace modes"
+      >
+        <article>
+          <span>Typed function lab</span>
+          <strong>Function-computation animation</strong>
+          <p>Enter an allowable-field function and preview its fold program.</p>
+        </article>
+        <article>
+          <span>Trace gallery</span>
+          <strong>Arithmetic-fold inspector</strong>
+          <p>Inspect example fold traces, objects, proofs, and exports.</p>
+        </article>
+      </section>
+      <section
         className={`origami-function-panel${
           functionPresentationMode ? " origami-function-panel-presenting" : ""
         }`}
@@ -2093,7 +2108,7 @@ function OrigamiRoadmap() {
       <section className="origami-workspace" aria-labelledby="origami-trace">
         <div className="origami-workspace-header">
           <div>
-            <p className="section-label">Interactive trace</p>
+            <p className="section-label">Trace gallery</p>
             <h2 id="origami-trace">{examples[exampleIndex].title}</h2>
           </div>
           <label>
