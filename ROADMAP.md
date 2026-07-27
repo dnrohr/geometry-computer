@@ -845,6 +845,11 @@ Goal: make the animation teach the computation, not merely decorate it.
   acceptance-check IDs, and selected versus pending branch alternatives. The
   diagnostics pane shows the active checklist, backlog cards summarize it, and
   JSON export carries the same data for future physical fold-solver fixtures.
+- F5.9 Certify square-power function phases.
+  Current implementation stores the parsed power exponent on function-plan
+  nodes, treats `^2` phases as the square multiplication specialization, emits
+  fold certificates for those phases, and keeps higher integer powers in the
+  solver backlog.
 
 Acceptance checks:
 

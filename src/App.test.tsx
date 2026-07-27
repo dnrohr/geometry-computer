@@ -632,6 +632,55 @@ describe("App", () => {
     ).toBeNull();
   }, 10_000);
 
+  it("shows square powers as certified origami function phases", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    const functionPanel = screen.getByRole("region", {
+      name: "Fold-computed function",
+    });
+    fireEvent.change(
+      within(functionPanel).getByRole("textbox", { name: "Origami function" }),
+      { target: { value: "f(a)=a^2" } },
+    );
+    fireEvent.click(
+      within(functionPanel).getByRole("button", {
+        name: "Compile origami function",
+      }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Jump to function phase origami-function-phase-3",
+      }),
+    );
+    fireEvent.click(
+      within(functionPanel).getByRole("button", { name: "Show diagnostics" }),
+    );
+
+    expect(within(functionPanel).getAllByText("ready").length).toBeGreaterThan(
+      1,
+    );
+    expect(
+      within(functionPanel).getByText(
+        "All function animation phases are backed by physical fold steps.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText(
+        "square-multiplication-specialization origami-function-node-output-2-align-fold",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText(
+        "The square length is certified as a multiplication trace specialized to one repeated source length.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Solver work backlog" }),
+    ).toBeNull();
+  });
+
   it("switches origami function fold camera views without recompiling", () => {
     render(<App />);
     fireEvent.click(

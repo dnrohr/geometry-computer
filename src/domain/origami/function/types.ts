@@ -86,7 +86,8 @@ export type OrigamiFunctionFoldCertificateMethod =
   | "mark-length"
   | "identity-result"
   | "baseline-addition-transfer"
-  | "directed-subtraction-transfer";
+  | "directed-subtraction-transfer"
+  | "square-multiplication-specialization";
 
 export type OrigamiFunctionFoldCertificate = {
   id: string;
@@ -129,6 +130,7 @@ export type OrigamiFunctionPlanNode = {
   dependencies: string[];
   value: number;
   outputObjectId: string;
+  powerExponent?: number;
 };
 
 export type OrigamiFunctionPlanOperationKind =

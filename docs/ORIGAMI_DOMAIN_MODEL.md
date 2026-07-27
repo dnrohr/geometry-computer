@@ -153,6 +153,10 @@ now include required axiom/capability IDs, acceptance-check IDs, and selected
 versus pending branch alternatives. These records are still backlog metadata,
 not physical fold geometry, but they define the contract a future solver must
 satisfy before an explanatory phase can become certified.
+F5.11 certifies `^2` function phases using the existing square multiplication
+specialization trace. The function plan stores the parsed power exponent, marks
+only exponent-two power phases as proven physical, and leaves higher integer
+powers in the solver backlog with repeated-product proof obligations.
 F6.2 exports function-animation SVG snapshots from the origami renderer itself.
 The current-phase snapshot uses the visible timeline state; the final snapshot
 uses the same compiled plan and paper style at the result-extraction phase. A

@@ -152,6 +152,14 @@ const branchForNode = (node: OrigamiFunctionPlanNode) => {
           "Use the nonzero-denominator reciprocal branch selected by sampled validation.",
       };
     case "pow":
+      if (node.powerExponent === 2) {
+        return {
+          id: "square-multiplication-specialization",
+          label: "Square multiplication specialization",
+          reason:
+            "Reuse the same sampled length in both multiplication roles for the supported square trace.",
+        };
+      }
       return {
         id: "repeated-power-transfer",
         label: "Repeated power transfer",
@@ -298,7 +306,9 @@ const branchAlternativesForFallback = (phase: OrigamiFunctionPlanPhase) => {
 };
 
 const arithmeticPhaseIsPhysical = (node: OrigamiFunctionPlanNode) =>
-  node.kind === "add" || node.kind === "sub";
+  node.kind === "add" ||
+  node.kind === "sub" ||
+  (node.kind === "pow" && node.powerExponent === 2);
 
 const createPlanDiagnostics = (
   input: ValidOrigamiFunctionInput,
@@ -465,21 +475,31 @@ const certificateForPhase = (
     case "mark-intersection":
       if (
         phase.foldMotion?.selectedBranch.id === "baseline-addition-transfer" ||
-        phase.foldMotion?.selectedBranch.id === "directed-subtraction-transfer"
+        phase.foldMotion?.selectedBranch.id ===
+          "directed-subtraction-transfer" ||
+        phase.foldMotion?.selectedBranch.id ===
+          "square-multiplication-specialization"
       ) {
         const isSubtraction =
           phase.foldMotion.selectedBranch.id ===
           "directed-subtraction-transfer";
+        const isSquare =
+          phase.foldMotion.selectedBranch.id ===
+          "square-multiplication-specialization";
         return {
           id: `${phaseId}-certificate`,
           phaseId,
-          method: isSubtraction
-            ? "directed-subtraction-transfer"
-            : "baseline-addition-transfer",
+          method: isSquare
+            ? "square-multiplication-specialization"
+            : isSubtraction
+              ? "directed-subtraction-transfer"
+              : "baseline-addition-transfer",
           targetObjectIds: phase.outputObjectIds,
-          summary: isSubtraction
-            ? "The directed subtraction length is certified as a baseline transfer fold."
-            : "The addition length is certified as a baseline transfer fold.",
+          summary: isSquare
+            ? "The square length is certified as a multiplication trace specialized to one repeated source length."
+            : isSubtraction
+              ? "The directed subtraction length is certified as a baseline transfer fold."
+              : "The addition length is certified as a baseline transfer fold.",
         };
       }
       return undefined;
@@ -544,6 +564,7 @@ export function createOrigamiFunctionPlan(
         dependencyNodes.map(({ value }) => value),
       ),
       outputObjectId: `origami-function-node-output-${nodeIndex}`,
+      ...(expr.kind === "pow" ? { powerExponent: expr.exponent } : {}),
     };
     nodes.push(node);
     nodeByExpression.set(expression, node);
@@ -637,7 +658,8 @@ export function createOrigamiFunctionPlan(
     resultNode.kind === "input" ||
     resultNode.kind === "constant" ||
     resultNode.kind === "add" ||
-    resultNode.kind === "sub";
+    resultNode.kind === "sub" ||
+    (resultNode.kind === "pow" && resultNode.powerExponent === 2);
   const resultPhaseId = addPhase({
     kind: "extract-result",
     expression: input.validation.source.source,

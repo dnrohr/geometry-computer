@@ -206,6 +206,41 @@ describe("origami function preview plan", () => {
     });
   });
 
+  it("exports square phase certificates as proven physical work", () => {
+    const preview = compileOrigamiFunctionPreview("f(a)=a^2");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+    const jumped = setOrigamiFunctionPreviewPhase(
+      preview,
+      "origami-function-phase-3",
+    );
+    if (jumped.status !== "compiled") throw new Error("Expected compiled");
+
+    const exported = origamiFunctionAnimationExport(jumped);
+
+    expect(exported?.solverReadiness).toMatchObject({
+      status: "ready",
+      fallbackPhases: 0,
+      workItems: [],
+    });
+    expect(exported?.activePhase).toMatchObject({
+      phaseId: "origami-function-phase-3",
+      phaseKind: "align-fold",
+      expression: "a^2",
+      physicalStatus: "proven-physical",
+      foldCertificate: {
+        method: "square-multiplication-specialization",
+        targetObjectIds: ["origami-function-node-output-2-align-fold"],
+      },
+    });
+    expect(exported?.objectInspector).toMatchObject({
+      phaseId: "origami-function-phase-3",
+      nodeKind: "pow",
+      foldCertificateId: "origami-function-phase-3-certificate",
+      physicalStatus: "proven-physical",
+    });
+    expect(exported?.objectInspector).not.toHaveProperty("solverWorkItemId");
+  });
+
   it("exports active fallback phase solver work metadata", () => {
     const preview = compileOrigamiFunctionPreview("sqrt(a+1)");
     if (preview.status !== "compiled") throw new Error("Expected compiled");

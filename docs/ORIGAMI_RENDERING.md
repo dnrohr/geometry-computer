@@ -169,6 +169,10 @@ The flat-origami tab provides:
   summarizes it on solver backlog cards. The same work items export required
   axioms, acceptance checks, and branch alternatives so browser captures can be
   used as solver-readiness fixtures.
+- F5.11 surfaces `^2` as certified square-specialization work in the same
+  diagnostics pane. Square phases show fold certificates and disappear from the
+  solver backlog, while higher integer powers still show repeated-product
+  solver obligations.
 - F6.2 starts static SVG snapshot export for function animations. The origami
   tab can download the visible current phase and a hidden final-phase snapshot,
   each serialized from the same SVG renderer and carrying plan, phase, kind, and

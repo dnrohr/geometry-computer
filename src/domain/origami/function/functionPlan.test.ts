@@ -310,6 +310,76 @@ describe("origami function plan", () => {
     });
   });
 
+  it("certifies square powers as a physical fold specialization", () => {
+    const plan = createOrigamiFunctionPlan(validInput("f(a)=a^2"));
+
+    expect(plan.nodes.at(-1)).toMatchObject({
+      kind: "pow",
+      expression: "a^2",
+      powerExponent: 2,
+    });
+    expect(plan.phases.map(({ physicalStatus }) => physicalStatus)).toEqual([
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+      "proven-physical",
+    ]);
+    expect(
+      plan.phases.slice(2, 7).map(({ foldCertificate }) => foldCertificate),
+    ).toEqual([
+      expect.objectContaining({
+        method: "square-multiplication-specialization",
+        targetObjectIds: ["origami-function-node-output-2-align-fold"],
+      }),
+      expect.objectContaining({
+        method: "square-multiplication-specialization",
+      }),
+      expect.objectContaining({
+        method: "square-multiplication-specialization",
+      }),
+      expect.objectContaining({
+        method: "square-multiplication-specialization",
+      }),
+      expect.objectContaining({
+        method: "square-multiplication-specialization",
+        targetObjectIds: ["origami-function-node-output-2"],
+      }),
+    ]);
+    expect(plan.solverReadiness).toMatchObject({
+      status: "ready",
+      fallbackPhases: 0,
+      certifiedPhases: 8,
+      workItems: [],
+    });
+  });
+
+  it("keeps higher integer powers in the solver backlog", () => {
+    const plan = createOrigamiFunctionPlan(validInput("f(a)=a^3"));
+
+    expect(plan.nodes.at(-1)).toMatchObject({
+      kind: "pow",
+      expression: "a^3",
+      powerExponent: 3,
+    });
+    expect(plan.solverReadiness).toMatchObject({
+      status: "needs-solver",
+      fallbackPhases: 6,
+    });
+    expect(plan.solverReadiness.workItems[0]).toMatchObject({
+      replacementFor: "pow:align-fold",
+      selectedBranchId: "repeated-power-transfer",
+      requiredAxioms: [
+        "repeated-product-transfer",
+        "integer-exponent-unroll",
+        "scale-normalization-check",
+      ],
+    });
+  });
+
   it("keeps dependencies before dependents in execution order", () => {
     const plan = createOrigamiFunctionPlan(validInput("sqrt((a+b)*(a+b))"));
     const orderByNode = new Map(
