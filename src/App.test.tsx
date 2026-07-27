@@ -1242,6 +1242,29 @@ describe("App", () => {
     expect(screen.getByLabelText("Function paper back color")).toHaveValue(
       "#1b1f3b",
     );
+    const expectedPatternOptions = [
+      "Solid",
+      "Grid",
+      "Dots",
+      "Diagonal stripe",
+      "Washi wave",
+      "Coordinate grid",
+      "High contrast",
+    ];
+    expect(
+      within(
+        screen.getByRole("combobox", { name: "Function paper front pattern" }),
+      )
+        .getAllByRole("option")
+        .map((option) => option.textContent),
+    ).toEqual(expectedPatternOptions);
+    expect(
+      within(
+        screen.getByRole("combobox", { name: "Function paper back pattern" }),
+      )
+        .getAllByRole("option")
+        .map((option) => option.textContent),
+    ).toEqual(expectedPatternOptions);
 
     fireEvent.change(screen.getByLabelText("Function paper front color"), {
       target: { value: "#ffffff" },

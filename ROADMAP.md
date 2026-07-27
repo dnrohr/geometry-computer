@@ -753,6 +753,9 @@ is easy to follow.
   the function animation locally.
 - F4.2 Provide pattern presets such as solid, grid, dots, diagonal stripe,
   washi wave, coordinate grid, and high-contrast accessibility mode.
+  Current implementation offers the same preset list for front and back sides:
+  solid, grid, dots, diagonal stripe, washi wave, coordinate grid, and high
+  contrast. The app regression pins both dropdown option lists.
 - F4.3 Render front and back sides with distinct fills during animation,
   including edge outlines and subtle shadows at fold hinges.
 - F4.4 Add pattern scale and rotation controls so users can tune visibility for
