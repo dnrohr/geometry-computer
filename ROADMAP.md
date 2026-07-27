@@ -681,6 +681,10 @@ surface area.
   `Show diagnostics` affordance.
 - F3.8.3 Collapse export controls and paper-style controls by default, preserving
   their state and tests while keeping the first-view workflow focused.
+  Current implementation moves function export/import and paper-style controls
+  behind a collapsed `Show export and paper style` affordance; exports,
+  replay import, named palettes, random palettes, and custom paper styling remain
+  covered after expansion.
 - F3.8.4 Replace the placeholder rectangular/book-spread fold preview with a
   square-sheet visual model whose default view reads as folded or creased paper.
 - F3.8.5 Move the current-step/value/final readout out of the paper drawing area

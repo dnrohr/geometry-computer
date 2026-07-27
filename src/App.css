@@ -805,6 +805,20 @@ select:focus-visible,
   background: #0c1115;
 }
 
+.origami-function-secondary-tools-toggle {
+  display: flex;
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.origami-function-secondary-tools {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
 .origami-function-export-controls {
   display: flex;
   flex-wrap: wrap;

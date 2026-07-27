@@ -792,6 +792,21 @@ const assertOrigamiFunctionPanel = async (page) => {
   ) {
     throw new Error("Function share block was not copied.");
   }
+  if (
+    (await page
+      .getByRole("combobox", { name: "Function paper palette" })
+      .count()) !== 0
+  ) {
+    throw new Error("Function paper controls were visible by default.");
+  }
+  await page
+    .getByRole("button", { name: "Show export and paper style" })
+    .click();
+  await page
+    .getByRole("region", {
+      name: "Origami function export and paper style",
+    })
+    .waitFor();
   await page
     .getByRole("combobox", { name: "Function paper palette" })
     .selectOption("blueprint-gold");

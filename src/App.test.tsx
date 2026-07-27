@@ -235,6 +235,9 @@ describe("App", () => {
       screen.getByRole("button", { name: "Export origami JSON" }),
     );
     fireEvent.click(
+      screen.getByRole("button", { name: "Show export and paper style" }),
+    );
+    fireEvent.click(
       screen.getByRole("button", { name: "Export function animation JSON" }),
     );
     fireEvent.click(
@@ -378,6 +381,23 @@ describe("App", () => {
     expect(
       screen.getByRole("img", {
         name: "Origami function animation: f(a) = sqrt(a + 1)",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Export function current SVG" }),
+    ).toBeNull();
+    expect(
+      screen.queryByLabelText("Function paper front color"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Show export and paper style" }),
+    ).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(
+      screen.getByRole("button", { name: "Show export and paper style" }),
+    );
+    expect(
+      screen.getByRole("region", {
+        name: "Origami function export and paper style",
       }),
     ).toBeInTheDocument();
     expect(
@@ -1036,6 +1056,9 @@ describe("App", () => {
     fireEvent.click(
       screen.getByRole("button", { name: "Flat origami roadmap" }),
     );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Show export and paper style" }),
+    );
 
     fireEvent.change(
       screen.getByRole("combobox", { name: "Function paper palette" }),
@@ -1332,6 +1355,9 @@ describe("App", () => {
     render(<App />);
     fireEvent.click(
       screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Show export and paper style" }),
     );
     const input = screen.getByLabelText("Import function animation JSON");
     fireEvent.change(input, {

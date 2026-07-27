@@ -484,6 +484,10 @@ function OrigamiRoadmap() {
     useState(false);
   const [showOrigamiFunctionDiagnostics, setShowOrigamiFunctionDiagnostics] =
     useState(false);
+  const [
+    showOrigamiFunctionSecondaryTools,
+    setShowOrigamiFunctionSecondaryTools,
+  ] = useState(false);
   const [progress, setProgress] = useState(1);
   const [activeStepId, setActiveStepId] = useState<string>();
   const [selectedObjectId, setSelectedObjectId] = useState<string>();
@@ -1527,100 +1531,6 @@ function OrigamiRoadmap() {
             </div>
           </section>
         )}
-        <div
-          className="origami-function-export-controls"
-          hidden={functionPresentationMode}
-        >
-          <button
-            type="button"
-            disabled={timelineDisabled}
-            onClick={() => {
-              const json = origamiFunctionAnimationJson(
-                functionPreview,
-                new Date().toISOString(),
-              );
-              if (!json) return;
-              downloadText(
-                "origami-function-animation.json",
-                json,
-                "application/json",
-              );
-            }}
-          >
-            Export function animation JSON
-          </button>
-          <button
-            type="button"
-            disabled={timelineDisabled}
-            onClick={() =>
-              functionAnimationSvgRef.current &&
-              downloadText(
-                "origami-function-current.svg",
-                serializeSvg(functionAnimationSvgRef.current),
-                "image/svg+xml",
-              )
-            }
-          >
-            Export function current SVG
-          </button>
-          <button
-            type="button"
-            disabled={timelineDisabled}
-            onClick={() =>
-              finalFunctionAnimationSvgRef.current &&
-              downloadText(
-                "origami-function-final.svg",
-                serializeSvg(finalFunctionAnimationSvgRef.current),
-                "image/svg+xml",
-              )
-            }
-          >
-            Export function final SVG
-          </button>
-          <button
-            type="button"
-            disabled={timelineDisabled}
-            onClick={() =>
-              functionCreasePatternSvgRef.current &&
-              downloadText(
-                "origami-function-crease-pattern.svg",
-                serializeSvg(functionCreasePatternSvgRef.current),
-                "image/svg+xml",
-              )
-            }
-          >
-            Export function crease SVG
-          </button>
-          <button
-            type="button"
-            disabled={timelineDisabled}
-            onClick={() => {
-              const svg = origamiFunctionAnimatedSvg(functionPreview);
-              if (!svg) return;
-              downloadText(
-                "origami-function-animated.svg",
-                svg,
-                "image/svg+xml",
-              );
-            }}
-          >
-            Export function animated SVG
-          </button>
-          <label className="origami-function-import-control">
-            Import replay JSON
-            <input
-              aria-label="Import function animation JSON"
-              type="file"
-              accept="application/json,.json"
-              onChange={(event) => {
-                void importOrigamiFunctionAnimation(
-                  event.target.files?.[0] ?? undefined,
-                );
-                event.target.value = "";
-              }}
-            />
-          </label>
-        </div>
         <div className="origami-function-export-renderer" aria-hidden="true">
           <SvgOrigamiFunctionAnimation
             preview={finalFunctionPreview}
@@ -1632,201 +1542,317 @@ function OrigamiRoadmap() {
             svgRef={functionCreasePatternSvgRef}
           />
         </div>
-        <fieldset
-          className="origami-paper-style-controls"
-          hidden={functionPresentationMode}
-        >
-          <legend>Paper style</legend>
-          <div className="origami-paper-palette-controls">
-            <label>
-              Palette
-              <select
-                aria-label="Function paper palette"
-                disabled={timelineDisabled}
-                value={functionPaperPaletteId}
-                onChange={(event) =>
-                  event.target.value === "custom"
-                    ? setFunctionPaperPaletteId("custom")
-                    : applyOrigamiPaperPalette(event.target.value)
-                }
-              >
-                <option value="custom">Custom</option>
-                {origamiFunctionPaperPalettes.map((palette) => (
-                  <option key={palette.id} value={palette.id}>
-                    {palette.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+        {!functionPresentationMode && (
+          <div className="origami-function-secondary-tools-toggle">
             <button
               type="button"
-              disabled={timelineDisabled}
-              onClick={randomizeOrigamiPaperPalette}
+              aria-expanded={showOrigamiFunctionSecondaryTools}
+              onClick={() =>
+                setShowOrigamiFunctionSecondaryTools(
+                  (showSecondaryTools) => !showSecondaryTools,
+                )
+              }
             >
-              Random paper palette
+              {showOrigamiFunctionSecondaryTools
+                ? "Hide export and paper style"
+                : "Show export and paper style"}
             </button>
-            <div
-              className="origami-paper-palette-swatches"
-              aria-label="Function paper palette swatches"
-            >
-              <span
-                style={{ backgroundColor: paperStyle?.frontColor }}
-                title="Front paper color"
-              />
-              <span
-                style={{ backgroundColor: paperStyle?.backColor }}
-                title="Back paper color"
-              />
-              <span
-                style={{ backgroundColor: paperStyle?.creaseColor }}
-                title="Crease color"
-              />
-              <span
-                style={{ backgroundColor: paperStyle?.highlightColor }}
-                title="Highlight color"
-              />
-            </div>
           </div>
-          <label>
-            Front
-            <input
-              aria-label="Function paper front color"
-              type="color"
-              disabled={timelineDisabled}
-              value={paperStyle?.frontColor ?? "#f7f0d4"}
-              onChange={(event) =>
-                updateOrigamiPaperStyle({ frontColor: event.target.value })
-              }
-            />
-          </label>
-          <label>
-            Back
-            <input
-              aria-label="Function paper back color"
-              type="color"
-              disabled={timelineDisabled}
-              value={paperStyle?.backColor ?? "#365f91"}
-              onChange={(event) =>
-                updateOrigamiPaperStyle({ backColor: event.target.value })
-              }
-            />
-          </label>
-          <label>
-            Front pattern
-            <select
-              aria-label="Function paper front pattern"
-              disabled={timelineDisabled}
-              value={paperStyle?.frontPattern ?? "grid"}
-              onChange={(event) =>
-                updateOrigamiPaperStyle({
-                  frontPattern: event.target.value as OrigamiPaperPattern,
-                })
-              }
-            >
-              <option value="solid">Solid</option>
-              <option value="grid">Grid</option>
-              <option value="dots">Dots</option>
-              <option value="diagonal-stripe">Diagonal stripe</option>
-              <option value="washi-wave">Washi wave</option>
-              <option value="coordinate-grid">Coordinate grid</option>
-              <option value="high-contrast">High contrast</option>
-            </select>
-          </label>
-          <label>
-            Back pattern
-            <select
-              aria-label="Function paper back pattern"
-              disabled={timelineDisabled}
-              value={paperStyle?.backPattern ?? "diagonal-stripe"}
-              onChange={(event) =>
-                updateOrigamiPaperStyle({
-                  backPattern: event.target.value as OrigamiPaperPattern,
-                })
-              }
-            >
-              <option value="solid">Solid</option>
-              <option value="grid">Grid</option>
-              <option value="dots">Dots</option>
-              <option value="diagonal-stripe">Diagonal stripe</option>
-              <option value="washi-wave">Washi wave</option>
-              <option value="coordinate-grid">Coordinate grid</option>
-              <option value="high-contrast">High contrast</option>
-            </select>
-          </label>
-          <label>
-            Crease
-            <input
-              aria-label="Function crease color"
-              type="color"
-              disabled={timelineDisabled}
-              value={paperStyle?.creaseColor ?? "#e8b65c"}
-              onChange={(event) =>
-                updateOrigamiPaperStyle({ creaseColor: event.target.value })
-              }
-            />
-          </label>
-          <label>
-            Highlight
-            <input
-              aria-label="Function highlight color"
-              type="color"
-              disabled={timelineDisabled}
-              value={paperStyle?.highlightColor ?? "#fff2bb"}
-              onChange={(event) =>
-                updateOrigamiPaperStyle({ highlightColor: event.target.value })
-              }
-            />
-          </label>
-          <label>
-            Opacity
-            <input
-              aria-label="Function paper opacity"
-              type="range"
-              min="0.2"
-              max="1"
-              step="0.05"
-              disabled={timelineDisabled}
-              value={paperStyle?.opacity ?? 1}
-              onChange={(event) =>
-                updateOrigamiPaperStyle({ opacity: Number(event.target.value) })
-              }
-            />
-          </label>
-          <label>
-            Pattern scale
-            <input
-              aria-label="Function paper pattern scale"
-              type="range"
-              min="0.5"
-              max="3"
-              step="0.25"
-              disabled={timelineDisabled}
-              value={paperStyle?.patternScale ?? 1}
-              onChange={(event) =>
-                updateOrigamiPaperStyle({
-                  patternScale: Number(event.target.value),
-                })
-              }
-            />
-          </label>
-          <label>
-            Pattern rotation
-            <input
-              aria-label="Function paper pattern rotation"
-              type="range"
-              min="0"
-              max="360"
-              step="15"
-              disabled={timelineDisabled}
-              value={paperStyle?.patternRotation ?? 0}
-              onChange={(event) =>
-                updateOrigamiPaperStyle({
-                  patternRotation: Number(event.target.value),
-                })
-              }
-            />
-          </label>
-        </fieldset>
+        )}
+        {!functionPresentationMode && showOrigamiFunctionSecondaryTools && (
+          <section
+            className="origami-function-secondary-tools"
+            aria-label="Origami function export and paper style"
+          >
+            <div className="origami-function-export-controls">
+              <button
+                type="button"
+                disabled={timelineDisabled}
+                onClick={() => {
+                  const json = origamiFunctionAnimationJson(
+                    functionPreview,
+                    new Date().toISOString(),
+                  );
+                  if (!json) return;
+                  downloadText(
+                    "origami-function-animation.json",
+                    json,
+                    "application/json",
+                  );
+                }}
+              >
+                Export function animation JSON
+              </button>
+              <button
+                type="button"
+                disabled={timelineDisabled}
+                onClick={() =>
+                  functionAnimationSvgRef.current &&
+                  downloadText(
+                    "origami-function-current.svg",
+                    serializeSvg(functionAnimationSvgRef.current),
+                    "image/svg+xml",
+                  )
+                }
+              >
+                Export function current SVG
+              </button>
+              <button
+                type="button"
+                disabled={timelineDisabled}
+                onClick={() =>
+                  finalFunctionAnimationSvgRef.current &&
+                  downloadText(
+                    "origami-function-final.svg",
+                    serializeSvg(finalFunctionAnimationSvgRef.current),
+                    "image/svg+xml",
+                  )
+                }
+              >
+                Export function final SVG
+              </button>
+              <button
+                type="button"
+                disabled={timelineDisabled}
+                onClick={() =>
+                  functionCreasePatternSvgRef.current &&
+                  downloadText(
+                    "origami-function-crease-pattern.svg",
+                    serializeSvg(functionCreasePatternSvgRef.current),
+                    "image/svg+xml",
+                  )
+                }
+              >
+                Export function crease SVG
+              </button>
+              <button
+                type="button"
+                disabled={timelineDisabled}
+                onClick={() => {
+                  const svg = origamiFunctionAnimatedSvg(functionPreview);
+                  if (!svg) return;
+                  downloadText(
+                    "origami-function-animated.svg",
+                    svg,
+                    "image/svg+xml",
+                  );
+                }}
+              >
+                Export function animated SVG
+              </button>
+              <label className="origami-function-import-control">
+                Import replay JSON
+                <input
+                  aria-label="Import function animation JSON"
+                  type="file"
+                  accept="application/json,.json"
+                  onChange={(event) => {
+                    void importOrigamiFunctionAnimation(
+                      event.target.files?.[0] ?? undefined,
+                    );
+                    event.target.value = "";
+                  }}
+                />
+              </label>
+            </div>
+            <fieldset className="origami-paper-style-controls">
+              <legend>Paper style</legend>
+              <div className="origami-paper-palette-controls">
+                <label>
+                  Palette
+                  <select
+                    aria-label="Function paper palette"
+                    disabled={timelineDisabled}
+                    value={functionPaperPaletteId}
+                    onChange={(event) =>
+                      event.target.value === "custom"
+                        ? setFunctionPaperPaletteId("custom")
+                        : applyOrigamiPaperPalette(event.target.value)
+                    }
+                  >
+                    <option value="custom">Custom</option>
+                    {origamiFunctionPaperPalettes.map((palette) => (
+                      <option key={palette.id} value={palette.id}>
+                        {palette.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <button
+                  type="button"
+                  disabled={timelineDisabled}
+                  onClick={randomizeOrigamiPaperPalette}
+                >
+                  Random paper palette
+                </button>
+                <div
+                  className="origami-paper-palette-swatches"
+                  aria-label="Function paper palette swatches"
+                >
+                  <span
+                    style={{ backgroundColor: paperStyle?.frontColor }}
+                    title="Front paper color"
+                  />
+                  <span
+                    style={{ backgroundColor: paperStyle?.backColor }}
+                    title="Back paper color"
+                  />
+                  <span
+                    style={{ backgroundColor: paperStyle?.creaseColor }}
+                    title="Crease color"
+                  />
+                  <span
+                    style={{ backgroundColor: paperStyle?.highlightColor }}
+                    title="Highlight color"
+                  />
+                </div>
+              </div>
+              <label>
+                Front
+                <input
+                  aria-label="Function paper front color"
+                  type="color"
+                  disabled={timelineDisabled}
+                  value={paperStyle?.frontColor ?? "#f7f0d4"}
+                  onChange={(event) =>
+                    updateOrigamiPaperStyle({ frontColor: event.target.value })
+                  }
+                />
+              </label>
+              <label>
+                Back
+                <input
+                  aria-label="Function paper back color"
+                  type="color"
+                  disabled={timelineDisabled}
+                  value={paperStyle?.backColor ?? "#365f91"}
+                  onChange={(event) =>
+                    updateOrigamiPaperStyle({ backColor: event.target.value })
+                  }
+                />
+              </label>
+              <label>
+                Front pattern
+                <select
+                  aria-label="Function paper front pattern"
+                  disabled={timelineDisabled}
+                  value={paperStyle?.frontPattern ?? "grid"}
+                  onChange={(event) =>
+                    updateOrigamiPaperStyle({
+                      frontPattern: event.target.value as OrigamiPaperPattern,
+                    })
+                  }
+                >
+                  <option value="solid">Solid</option>
+                  <option value="grid">Grid</option>
+                  <option value="dots">Dots</option>
+                  <option value="diagonal-stripe">Diagonal stripe</option>
+                  <option value="washi-wave">Washi wave</option>
+                  <option value="coordinate-grid">Coordinate grid</option>
+                  <option value="high-contrast">High contrast</option>
+                </select>
+              </label>
+              <label>
+                Back pattern
+                <select
+                  aria-label="Function paper back pattern"
+                  disabled={timelineDisabled}
+                  value={paperStyle?.backPattern ?? "diagonal-stripe"}
+                  onChange={(event) =>
+                    updateOrigamiPaperStyle({
+                      backPattern: event.target.value as OrigamiPaperPattern,
+                    })
+                  }
+                >
+                  <option value="solid">Solid</option>
+                  <option value="grid">Grid</option>
+                  <option value="dots">Dots</option>
+                  <option value="diagonal-stripe">Diagonal stripe</option>
+                  <option value="washi-wave">Washi wave</option>
+                  <option value="coordinate-grid">Coordinate grid</option>
+                  <option value="high-contrast">High contrast</option>
+                </select>
+              </label>
+              <label>
+                Crease
+                <input
+                  aria-label="Function crease color"
+                  type="color"
+                  disabled={timelineDisabled}
+                  value={paperStyle?.creaseColor ?? "#e8b65c"}
+                  onChange={(event) =>
+                    updateOrigamiPaperStyle({ creaseColor: event.target.value })
+                  }
+                />
+              </label>
+              <label>
+                Highlight
+                <input
+                  aria-label="Function highlight color"
+                  type="color"
+                  disabled={timelineDisabled}
+                  value={paperStyle?.highlightColor ?? "#fff2bb"}
+                  onChange={(event) =>
+                    updateOrigamiPaperStyle({
+                      highlightColor: event.target.value,
+                    })
+                  }
+                />
+              </label>
+              <label>
+                Opacity
+                <input
+                  aria-label="Function paper opacity"
+                  type="range"
+                  min="0.2"
+                  max="1"
+                  step="0.05"
+                  disabled={timelineDisabled}
+                  value={paperStyle?.opacity ?? 1}
+                  onChange={(event) =>
+                    updateOrigamiPaperStyle({
+                      opacity: Number(event.target.value),
+                    })
+                  }
+                />
+              </label>
+              <label>
+                Pattern scale
+                <input
+                  aria-label="Function paper pattern scale"
+                  type="range"
+                  min="0.5"
+                  max="3"
+                  step="0.25"
+                  disabled={timelineDisabled}
+                  value={paperStyle?.patternScale ?? 1}
+                  onChange={(event) =>
+                    updateOrigamiPaperStyle({
+                      patternScale: Number(event.target.value),
+                    })
+                  }
+                />
+              </label>
+              <label>
+                Pattern rotation
+                <input
+                  aria-label="Function paper pattern rotation"
+                  type="range"
+                  min="0"
+                  max="360"
+                  step="15"
+                  disabled={timelineDisabled}
+                  value={paperStyle?.patternRotation ?? 0}
+                  onChange={(event) =>
+                    updateOrigamiPaperStyle({
+                      patternRotation: Number(event.target.value),
+                    })
+                  }
+                />
+              </label>
+            </fieldset>
+          </section>
+        )}
         <div
           className="origami-function-timeline"
           hidden={functionPresentationMode}
