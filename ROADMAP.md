@@ -659,6 +659,47 @@ Acceptance checks:
 - Reduced-motion mode replaces motion with stepwise state changes while keeping
   all proof and inspector information accessible.
 
+#### F3.8 Origami function UX consolidation
+
+Goal: make the separate origami function tab feel like a usable computation
+tool instead of a visible implementation/debug console before adding more
+surface area.
+
+- F3.8.1 Move product-direction and roadmap prose out of the main app surface
+  or behind a clearly marked developer/details affordance.
+- F3.8.2 Simplify the default function lab to the primary workflow: function
+  input, sample controls, compile/play controls, and result. Move plan IDs,
+  solver readiness, certificate details, branch IDs, and similar telemetry into
+  collapsed details.
+- F3.8.3 Collapse export controls and paper-style controls by default, preserving
+  their state and tests while keeping the first-view workflow focused.
+- F3.8.4 Replace the placeholder rectangular/book-spread fold preview with a
+  square-sheet visual model whose default view reads as folded or creased paper.
+- F3.8.5 Move the current-step/value/final readout out of the paper drawing area
+  or lay it out so it never overlaps the origami sheet.
+- F3.8.6 Make Play and presentation mode visibly step through distinct phases,
+  with obvious previous/next/play controls available in presentation mode.
+- F3.8.7 Hide or demote camera modes, onion-skin folds, visual cues, crease snap,
+  and branch-selected labels until they create clear visible feedback.
+- F3.8.8 Clarify the relationship between the interactive trace gallery and the
+  typed function lab: trace gallery is an arithmetic-fold demo/inspector; the
+  function lab is the eventual function-computation animation.
+- F3.8.9 Add regression and browser smoke coverage for the consolidated default
+  view: no visible roadmap/debug clutter, no overlapping readouts, square paper
+  visible, collapsed secondary tools remain expandable, and presentation controls
+  can advance phases.
+
+Acceptance checks:
+
+- Opening the origami tab presents the function-computation workflow first, not
+  the project roadmap or implementation telemetry.
+- The default fold preview shows a square sheet with visible crease/fold state
+  and no readout overlap.
+- Secondary tools remain available but do not compete with the primary
+  computation flow.
+- Presentation mode supports stepping and playback without exposing edit/export
+  clutter.
+
 #### F4. Two-sided paper style system
 
 Goal: make front/back paper sides unmistakable and customizable so fold motion
