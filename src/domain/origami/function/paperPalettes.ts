@@ -99,6 +99,30 @@ export const origamiPaperPaletteHasContrast = (
     palette.style.backColor,
   ) >= ORIGAMI_PAPER_PALETTE_MIN_CONTRAST;
 
+export const origamiPaperPaletteHasFoldMarkContrast = (
+  palette: OrigamiFunctionPaperPalette,
+) =>
+  Math.max(
+    origamiPaperContrastRatio(
+      palette.style.creaseColor,
+      palette.style.frontColor,
+    ),
+    origamiPaperContrastRatio(
+      palette.style.creaseColor,
+      palette.style.backColor,
+    ),
+  ) >= ORIGAMI_PAPER_PALETTE_MIN_CONTRAST &&
+  Math.max(
+    origamiPaperContrastRatio(
+      palette.style.highlightColor,
+      palette.style.frontColor,
+    ),
+    origamiPaperContrastRatio(
+      palette.style.highlightColor,
+      palette.style.backColor,
+    ),
+  ) >= ORIGAMI_PAPER_PALETTE_MIN_CONTRAST;
+
 export const randomOrigamiPaperPalette = (
   currentPaletteId: string,
   random = Math.random,

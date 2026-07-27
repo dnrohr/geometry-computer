@@ -775,6 +775,9 @@ is easy to follow.
   smoke verifies compass SVG export does not include origami paper-style data.
 - F4.6 Add contrast checks or visual tests for preset combinations so crease,
   label, and result highlights remain readable.
+  Current implementation enforces curated palette front/back contrast and
+  fold-mark contrast for crease/highlight colors in domain tests, while browser
+  smoke checks the function readout text/result contrast at runtime.
 
 Acceptance checks:
 

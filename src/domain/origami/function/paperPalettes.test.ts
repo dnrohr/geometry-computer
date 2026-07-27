@@ -2,6 +2,7 @@ import {
   ORIGAMI_PAPER_PALETTE_MIN_CONTRAST,
   origamiFunctionPaperPalettes,
   origamiPaperPaletteHasContrast,
+  origamiPaperPaletteHasFoldMarkContrast,
   randomOrigamiPaperPalette,
 } from "./paperPalettes";
 
@@ -15,6 +16,11 @@ describe("origami function paper palettes", () => {
     ]);
     expect(
       origamiFunctionPaperPalettes.every(origamiPaperPaletteHasContrast),
+    ).toBe(true);
+    expect(
+      origamiFunctionPaperPalettes.every(
+        origamiPaperPaletteHasFoldMarkContrast,
+      ),
     ).toBe(true);
     expect(ORIGAMI_PAPER_PALETTE_MIN_CONTRAST).toBe(3);
   });
