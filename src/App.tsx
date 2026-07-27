@@ -975,6 +975,30 @@ function OrigamiRoadmap() {
           };
         })
       : [];
+  const activeFunctionInspector =
+    functionPreview.status === "compiled" && activeFunctionPhase
+      ? {
+          phaseId: activeFunctionPhase.id,
+          phaseKind: activeFunctionPhase.kind,
+          expression: activeFunctionPhase.expression,
+          nodeId: activeFunctionNode?.id ?? "none",
+          nodeKind: activeFunctionNode?.kind ?? "phase",
+          sampledValue:
+            activeFunctionNode?.value.toFixed(3) ?? functionValue ?? "pending",
+          dependencyDepth: activeFunctionNode?.dependencyDepth ?? 0,
+          sourceObjectIds: activeFunctionPhase.sourceObjectIds,
+          outputObjectIds: activeFunctionPhase.outputObjectIds,
+          proofClaimIds: activeFunctionPhase.proofClaimIds,
+          outputObjectId:
+            activeFunctionNode?.outputObjectId ??
+            activeFunctionPhase.outputObjectIds[0] ??
+            "none",
+          selectedBranch: activeFunctionBranch?.label ?? "deterministic",
+          solverDetail: activeSolverWorkItem?.summary,
+          certificateDetail: activeFoldCertificate?.summary,
+          physicalStatus: activeFunctionPhase.physicalStatus,
+        }
+      : undefined;
   const functionStoryboardItems =
     functionPreview.status === "compiled"
       ? functionPreview.plan.phases.map((phase, index) => {
@@ -2424,6 +2448,81 @@ function OrigamiRoadmap() {
               </ol>
             </section>
           )}
+        {!functionPresentationMode && activeFunctionInspector && (
+          <aside
+            className="origami-function-object-inspector"
+            aria-label="Function object inspector"
+          >
+            <div className="origami-function-object-inspector-header">
+              <div>
+                <p className="section-label">Object inspector</p>
+                <h3>Function object</h3>
+              </div>
+              <span
+                data-physical-status={activeFunctionInspector.physicalStatus}
+              >
+                {activeFunctionInspector.physicalStatus}
+              </span>
+            </div>
+            <dl>
+              <div>
+                <dt>Phase</dt>
+                <dd>{`${activeFunctionInspector.phaseId} ${activeFunctionInspector.phaseKind}`}</dd>
+              </div>
+              <div>
+                <dt>Expression</dt>
+                <dd>{activeFunctionInspector.expression}</dd>
+              </div>
+              <div>
+                <dt>Node</dt>
+                <dd>{`${activeFunctionInspector.nodeId} ${activeFunctionInspector.nodeKind}`}</dd>
+              </div>
+              <div>
+                <dt>Sampled value</dt>
+                <dd>{activeFunctionInspector.sampledValue}</dd>
+              </div>
+              <div>
+                <dt>Output object</dt>
+                <dd>{activeFunctionInspector.outputObjectId}</dd>
+              </div>
+              <div>
+                <dt>Dependency depth</dt>
+                <dd>{activeFunctionInspector.dependencyDepth}</dd>
+              </div>
+              <div>
+                <dt>Sources</dt>
+                <dd>
+                  {activeFunctionInspector.sourceObjectIds.join(", ") ||
+                    "paper"}
+                </dd>
+              </div>
+              <div>
+                <dt>Outputs</dt>
+                <dd>
+                  {activeFunctionInspector.outputObjectIds.join(", ") || "none"}
+                </dd>
+              </div>
+              <div>
+                <dt>Proof claims</dt>
+                <dd>
+                  {activeFunctionInspector.proofClaimIds.join(", ") || "none"}
+                </dd>
+              </div>
+              <div>
+                <dt>Branch</dt>
+                <dd>{activeFunctionInspector.selectedBranch}</dd>
+              </div>
+              <div>
+                <dt>Certificate</dt>
+                <dd>{activeFunctionInspector.certificateDetail ?? "none"}</dd>
+              </div>
+              <div>
+                <dt>Solver detail</dt>
+                <dd>{activeFunctionInspector.solverDetail ?? "none"}</dd>
+              </div>
+            </dl>
+          </aside>
+        )}
         {!functionPresentationMode &&
           solverReadiness &&
           solverReadiness.workItems.length > 0 && (

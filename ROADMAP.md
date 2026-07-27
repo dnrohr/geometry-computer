@@ -830,6 +830,12 @@ Goal: make the animation teach the computation, not merely decorate it.
   timeline. It renders each compiled expression node with kind, sampled value,
   dependency count, status, and output object metadata; selecting a node jumps
   the fold animation to that node's phase while marking earlier nodes complete.
+- F5.7 Add a scoped function object inspector for the active fold-computed
+  object without merging it with the compass-and-straightedge inspector.
+  Current implementation adds an active function object inspector below the
+  expression-progress strip. It follows the active phase/node and shows phase,
+  expression, node kind, sampled value, output object, sources, outputs, proof
+  claims, branch, certificate, solver detail, and physical/fallback status.
 
 Acceptance checks:
 

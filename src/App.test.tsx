@@ -1276,6 +1276,25 @@ describe("App", () => {
       }),
     ).toHaveAttribute("data-node-status", "active");
     expect(within(progress).getByText("4 of 4 nodes")).toBeInTheDocument();
+    const functionInspector = screen.getByRole("complementary", {
+      name: "Function object inspector",
+    });
+    expect(
+      within(functionInspector).getByText(
+        "origami-function-phase-14 extract-result",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(functionInspector).getByText("origami-function-node-4 sqrt"),
+    ).toBeInTheDocument();
+    expect(
+      within(functionInspector).getAllByText("origami-function-node-output-4")
+        .length,
+    ).toBeGreaterThanOrEqual(2);
+    expect(within(functionInspector).getByText("2.000")).toBeInTheDocument();
+    expect(
+      within(functionInspector).getByText("explanatory-fallback"),
+    ).toBeInTheDocument();
   });
 
   it("supports keyboard control for the origami animation timeline", () => {

@@ -1750,6 +1750,76 @@ select:focus-visible,
   opacity: 0.78;
 }
 
+.origami-function-object-inspector {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 3%);
+}
+
+.origami-function-object-inspector-header {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.origami-function-object-inspector-header h3 {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 0.9rem;
+}
+
+.origami-function-object-inspector-header span {
+  flex: 0 0 auto;
+  padding: 0.25rem 0.45rem;
+  color: var(--foreground);
+  font-size: 0.66rem;
+  font-weight: 850;
+  border: 1px solid rgb(245 241 232 / 20%);
+  border-radius: 0.35rem;
+  background: rgb(255 255 255 / 4%);
+}
+
+.origami-function-object-inspector-header
+  span[data-physical-status="proven-physical"] {
+  border-color: rgb(148 211 162 / 42%);
+  background: rgb(148 211 162 / 12%);
+}
+
+.origami-function-object-inspector-header
+  span[data-physical-status="explanatory-fallback"] {
+  border-color: rgb(240 184 75 / 44%);
+  background: rgb(240 184 75 / 12%);
+}
+
+.origami-function-object-inspector dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.55rem;
+  margin: 0;
+}
+
+.origami-function-object-inspector dt {
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.origami-function-object-inspector dd {
+  margin: 0.12rem 0 0;
+  overflow-wrap: anywhere;
+  color: var(--foreground);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
 .origami-function-solver-work {
   display: grid;
   grid-column: 1 / -1;

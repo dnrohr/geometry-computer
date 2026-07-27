@@ -717,6 +717,24 @@ const assertOrigamiFunctionPanel = async (page) => {
       `Expression node jump phase mismatch: ${expressionNodePhase}`,
     );
   }
+  const functionObjectInspector = page.getByRole("complementary", {
+    name: "Function object inspector",
+  });
+  await functionObjectInspector
+    .getByText("origami-function-phase-14 extract-result")
+    .waitFor();
+  await functionObjectInspector
+    .getByText("origami-function-node-4 sqrt")
+    .waitFor();
+  const inspectedOutputIds = await functionObjectInspector
+    .getByText("origami-function-node-output-4")
+    .count();
+  if (inspectedOutputIds < 2) {
+    throw new Error(
+      `Function inspector provenance missing output IDs: ${inspectedOutputIds}`,
+    );
+  }
+  await functionObjectInspector.getByText("explanatory-fallback").waitFor();
   const storyboard = page.getByRole("region", { name: "Fold storyboard" });
   const storyboardCount = await storyboard
     .getByRole("button", { name: /Storyboard phase / })
