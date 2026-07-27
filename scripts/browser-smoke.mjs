@@ -278,6 +278,7 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
       };
     };
     const svg = rectFor(".origami-function-animation");
+    const paperBase = document.querySelector(".origami-function-paper-base");
     const paperRegions = [
       rectFor(".origami-function-paper-base"),
       rectFor(".origami-function-paper-stationary"),
@@ -353,6 +354,17 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
       creasePreviews: document.querySelectorAll(
         ".origami-function-crease-preview",
       ).length,
+      plannedCreases: document.querySelectorAll(
+        ".origami-function-planned-crease",
+      ).length,
+      paperShape:
+        paperBase instanceof SVGElement
+          ? paperBase.getAttribute("data-paper-shape")
+          : undefined,
+      paperPoints:
+        paperBase instanceof SVGElement
+          ? paperBase.getAttribute("points")
+          : undefined,
       readoutContrast: (() => {
         const rect = document.querySelector(
           ".origami-function-value-strip rect",
@@ -397,7 +409,10 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
     contract.hingeHighlights < 1 ||
     contract.creaseUnderlays < 1 ||
     contract.activeCreaseUnderlays < 1 ||
-    contract.creasePreviews < 1
+    contract.creasePreviews < 1 ||
+    contract.plannedCreases < 1 ||
+    contract.paperShape !== "square" ||
+    contract.paperPoints !== "60,18 240,18 240,198 60,198"
   ) {
     throw new Error(
       `Function animation missing layers at ${viewport.width}x${viewport.height}: ${JSON.stringify(
@@ -413,6 +428,9 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
           creaseUnderlays: contract.creaseUnderlays,
           activeCreaseUnderlays: contract.activeCreaseUnderlays,
           creasePreviews: contract.creasePreviews,
+          plannedCreases: contract.plannedCreases,
+          paperShape: contract.paperShape,
+          paperPoints: contract.paperPoints,
         },
       )}`,
     );
@@ -725,7 +743,7 @@ const assertOrigamiFunctionPanel = async (page) => {
     }));
   if (
     resultCamera.cameraMode !== "result" ||
-    resultCamera.viewBox !== "150 132 132 78"
+    resultCamera.viewBox !== "146 132 112 78"
   ) {
     throw new Error(
       `Function fold camera result view mismatch: ${JSON.stringify(resultCamera)}`,

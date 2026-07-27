@@ -687,6 +687,10 @@ surface area.
   covered after expansion.
 - F3.8.4 Replace the placeholder rectangular/book-spread fold preview with a
   square-sheet visual model whose default view reads as folded or creased paper.
+  Current implementation changes the function animation renderer to a centered
+  square sheet, folds a top flap over the square instead of splitting a wide
+  rectangle into left/right pages, adds explicit square-shape metadata, and
+  shows faint planned crease guides in the default animation view.
 - F3.8.5 Move the current-step/value/final readout out of the paper drawing area
   or lay it out so it never overlaps the origami sheet.
 - F3.8.6 Make Play and presentation mode visibly step through distinct phases,

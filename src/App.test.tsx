@@ -624,7 +624,7 @@ describe("App", () => {
       screen.getByRole("img", {
         name: "Origami function animation: f(a) = sqrt(a + 1)",
       }),
-    ).toHaveAttribute("viewBox", "36 38 228 146");
+    ).toHaveAttribute("viewBox", "54 36 192 132");
 
     fireEvent.click(screen.getByRole("button", { name: "Whole" }));
     expect(screen.getByRole("button", { name: "Whole" })).toHaveAttribute(

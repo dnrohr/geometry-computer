@@ -15,9 +15,9 @@ type SvgOrigamiFunctionAnimationProps = {
   svgRef?: Ref<SVGSVGElement>;
 };
 
-const paperPoints = "18,18 282,18 282,198 18,198";
-const stationaryPoints = "18,18 150,18 150,198 18,198";
-const movingPoints = "150,18 282,18 282,198 150,198";
+const paperPoints = "60,18 240,18 240,198 60,198";
+const stationaryPoints = "60,108 240,108 240,198 60,198";
+const movingPoints = "60,18 240,18 240,108 60,108";
 
 const patternId = (pattern: string) => `origami-function-pattern-${pattern}`;
 const patternFill = (pattern: string) =>
@@ -69,7 +69,7 @@ export function SvgOrigamiFunctionAnimation({
         : 0;
   const directionSign = motion?.direction === "valley" ? -1 : 1;
   const movingTransform = motion
-    ? `rotate(${directionSign * foldProgress * 18}deg) skewY(${directionSign * foldProgress * 5}deg)`
+    ? `translateY(${directionSign * foldProgress * 7}px) rotate(${directionSign * foldProgress * -16}deg) skewX(${directionSign * foldProgress * 5}deg)`
     : "none";
   const movingShadowTransform =
     movingTransform === "none"
@@ -118,6 +118,7 @@ export function SvgOrigamiFunctionAnimation({
       data-physical-status={phase.physicalStatus}
       data-snapshot-mode={snapshotMode}
       data-camera-mode={cameraMode}
+      data-paper-shape="square"
     >
       <title>
         {isCreasePattern
@@ -189,6 +190,7 @@ export function SvgOrigamiFunctionAnimation({
       <polygon
         className="origami-function-paper-base"
         points={paperPoints}
+        data-paper-shape="square"
         style={{
           fill: preview.paperStyle.frontColor,
           opacity: preview.paperStyle.opacity,
@@ -223,7 +225,7 @@ export function SvgOrigamiFunctionAnimation({
               opacity: 0.12 + foldProgress * 0.16,
               transform: movingShadowTransform,
               transformBox: "fill-box",
-              transformOrigin: "left center",
+              transformOrigin: "center bottom",
             }}
           />
           <g
@@ -231,7 +233,7 @@ export function SvgOrigamiFunctionAnimation({
             style={{
               transform: movingTransform,
               transformBox: "fill-box",
-              transformOrigin: "left center",
+              transformOrigin: "center bottom",
             }}
           >
             <polygon
@@ -281,26 +283,45 @@ export function SvgOrigamiFunctionAnimation({
       )}
       <rect
         className="origami-function-hinge-shadow"
-        x="146"
-        y="18"
-        width="8"
-        height="180"
+        x="60"
+        y="104"
+        width="180"
+        height="8"
       />
       <rect
         className="origami-function-hinge-highlight"
-        x="149"
-        y="18"
-        width="2"
-        height="180"
+        x="60"
+        y="107"
+        width="180"
+        height="2"
       />
       <line
         className="origami-function-hinge"
-        x1="150"
-        y1="18"
-        x2="150"
-        y2="198"
+        x1="60"
+        y1="108"
+        x2="240"
+        y2="108"
         style={{ stroke: preview.paperStyle.creaseColor }}
       />
+      {!isCreasePattern && (
+        <g
+          className="origami-function-planned-creases"
+          aria-label="Planned fold creases"
+        >
+          {creasePatternPhases.slice(0, 6).map((creasePhase, index) => (
+            <line
+              key={creasePhase.id}
+              className="origami-function-planned-crease"
+              x1={76 + index * 3}
+              y1={62 + (creasePhase.foldMotion?.hingeLine.point.y ?? 0) * 12}
+              x2={224 - index * 2}
+              y2={62 + (creasePhase.foldMotion?.hingeLine.point.y ?? 0) * 12}
+              data-crease-phase-id={creasePhase.id}
+              style={{ stroke: preview.paperStyle.creaseColor }}
+            />
+          ))}
+        </g>
+      )}
       {showCreasePreview && !isCreasePattern && (
         <>
           <line
@@ -402,9 +423,9 @@ function viewBoxForCamera(
   isCreasePattern: boolean,
 ) {
   if (isCreasePattern) return "0 0 300 216";
-  if (cameraMode === "paper") return "12 12 276 192";
-  if (cameraMode === "active-fold") return "36 38 228 146";
-  if (cameraMode === "result") return "150 132 132 78";
+  if (cameraMode === "paper") return "48 12 204 192";
+  if (cameraMode === "active-fold") return "54 36 192 132";
+  if (cameraMode === "result") return "146 132 112 78";
   return "0 0 300 216";
 }
 

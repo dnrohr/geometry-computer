@@ -38,6 +38,17 @@ describe("SvgOrigamiFunctionAnimation", () => {
       }),
     ).toHaveAttribute("data-physical-status", "proven-physical");
     expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a, b) = a * b",
+      }),
+    ).toHaveAttribute("data-paper-shape", "square");
+    expect(
+      container.querySelector(".origami-function-paper-base"),
+    ).toHaveAttribute("data-paper-shape", "square");
+    expect(
+      container.querySelector(".origami-function-paper-base"),
+    ).toHaveAttribute("points", "60,18 240,18 240,198 60,198");
+    expect(
       container.querySelector(".origami-function-moving-panel"),
     ).toBeInTheDocument();
     expect(
@@ -85,6 +96,9 @@ describe("SvgOrigamiFunctionAnimation", () => {
     expect(
       container.querySelector(".origami-function-hinge-highlight"),
     ).toBeInTheDocument();
+    expect(
+      container.querySelectorAll(".origami-function-planned-crease").length,
+    ).toBeGreaterThan(0);
     expect(screen.getByText("Current f(a, b) = a * b")).toBeInTheDocument();
     expect(screen.getByText("Value pending")).toBeInTheDocument();
     expect(screen.getByText("Final 6.000")).toBeInTheDocument();
@@ -131,7 +145,7 @@ describe("SvgOrigamiFunctionAnimation", () => {
     });
 
     expect(svg).toHaveAttribute("data-camera-mode", "paper");
-    expect(svg).toHaveAttribute("viewBox", "12 12 276 192");
+    expect(svg).toHaveAttribute("viewBox", "48 12 204 192");
 
     rerender(
       <SvgOrigamiFunctionAnimation
@@ -140,7 +154,7 @@ describe("SvgOrigamiFunctionAnimation", () => {
       />,
     );
     expect(svg).toHaveAttribute("data-camera-mode", "active-fold");
-    expect(svg).toHaveAttribute("viewBox", "36 38 228 146");
+    expect(svg).toHaveAttribute("viewBox", "54 36 192 132");
   });
 
   it("renders neighboring onion-skin fold ghosts when enabled", () => {
