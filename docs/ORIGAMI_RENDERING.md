@@ -169,6 +169,10 @@ The flat-origami tab provides:
   summarizes it on solver backlog cards. The same work items export required
   axioms, acceptance checks, and branch alternatives so browser captures can be
   used as solver-readiness fixtures.
+- F7.18 adds a plan-verification row to the collapsed diagnostics pane. The row
+  reports whether generated nodes, operations, phases, length transfers, and
+  result extraction are internally connected before future mathematical
+  fold-validity checks are attempted.
 - F5.11 surfaces `^2` as certified square-specialization work in the same
   diagnostics pane. Square phases show fold certificates and disappear from the
   solver backlog, while higher integer powers still show repeated-product

@@ -339,6 +339,7 @@ describe("App", () => {
     expect(within(functionPanel).queryByText("Sample values")).toBeNull();
     expect(within(functionPanel).queryByText("Fold solver")).toBeNull();
     expect(within(functionPanel).queryByText("Certificate detail")).toBeNull();
+    expect(within(functionPanel).queryByText("Plan verification")).toBeNull();
     expect(
       within(functionPanel).getByRole("button", { name: "Show diagnostics" }),
     ).toHaveAttribute("aria-expanded", "false");
@@ -356,6 +357,14 @@ describe("App", () => {
     expect(
       within(functionPanel).getByText(
         "All function animation phases are backed by physical fold steps.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText("Plan verification"),
+    ).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText(
+        /^Verified \d+ nodes, \d+ operations, \d+ phases, and 0 length transfers\.$/,
       ),
     ).toBeInTheDocument();
     expect(

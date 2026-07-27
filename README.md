@@ -30,6 +30,10 @@ The reuse plan also includes an optimization summary for repeated
 subexpressions, including how many expressions are reused and how many duplicate
 source phases the visible length transfers avoid.
 
+Diagnostics include a function-plan verification summary that checks generated
+node, operation, phase, transfer, and result-extraction wiring before future
+work tackles full mathematical fold-validity verification.
+
 Origami computation is intentionally isolated for now so the current
 compass-and-straightedge workspace remains stable while fold-based models,
 proofs, paper styling, exports, and crease-pattern rendering are explored.

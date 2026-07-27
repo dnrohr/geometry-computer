@@ -33,6 +33,7 @@ import {
   setOrigamiFunctionPreviewReducedMotion,
   setOrigamiFunctionPreviewSpeed,
   stepOrigamiFunctionPreviewPhase,
+  verifyOrigamiFunctionPlan,
   type OrigamiFunctionExample,
   type OrigamiPaperPattern,
 } from "./domain/origami/function";
@@ -1100,6 +1101,10 @@ function OrigamiRoadmap() {
     functionReuseOptimization?.items.map((item) => [item.transferId, item]) ??
       [],
   );
+  const functionPlanVerification =
+    functionPreview.status === "compiled"
+      ? verifyOrigamiFunctionPlan(functionPreview.plan)
+      : undefined;
   const activeFunctionInspector =
     functionPreview.status === "compiled" && activeFunctionPhase
       ? {
@@ -1575,6 +1580,18 @@ function OrigamiRoadmap() {
                   <dt>Solver detail</dt>
                   <dd>{solverReadiness.summary}</dd>
                 </div>
+              )}
+              {functionPlanVerification && (
+                <>
+                  <div>
+                    <dt>Plan verification</dt>
+                    <dd>{functionPlanVerification.status}</dd>
+                  </div>
+                  <div>
+                    <dt>Verification detail</dt>
+                    <dd>{functionPlanVerification.summary}</dd>
+                  </div>
+                </>
               )}
               {nextSolverWorkItem && (
                 <div>

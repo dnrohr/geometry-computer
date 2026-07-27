@@ -31,6 +31,12 @@ export {
   type OrigamiFunctionReuseOptimizationSummary,
 } from "./functionReuseOptimization";
 export {
+  verifyOrigamiFunctionPlan,
+  type OrigamiFunctionPlanVerification,
+  type OrigamiFunctionPlanVerificationIssue,
+  type OrigamiFunctionPlanVerificationIssueCode,
+} from "./functionPlanVerification";
+export {
   DEFAULT_ORIGAMI_PAPER_STYLE,
   advanceOrigamiFunctionPreview,
   compileOrigamiFunctionPreview,

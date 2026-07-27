@@ -116,6 +116,12 @@ subexpressions, repeated variables, negative directed lengths, branch ambiguity,
 and accumulated scale. These diagnostics do not replace sampled-domain
 validation; they explain what the animation planner needs to make visible once a
 function is already allowable.
+F7.18 adds `verifyOrigamiFunctionPlan`, a pure plan-wiring verifier for the
+function lab. It checks duplicate IDs, node dependencies, operation phase
+references, dependency jump targets, reuse-transfer links, and result-extraction
+wiring. This is intentionally narrower than mathematical fold-validity
+verification; it proves that generated plan records are internally connected
+before future solver proofs become richer.
 F5.1 adds a solver-readiness report to each function plan. The report is derived
 from the phase `physicalStatus` fields, counts proven versus fallback phases,
 lists fallback phase IDs, and tells the UI/export layer whether the current

@@ -1018,6 +1018,11 @@ worth exploring while staying honest about mathematical limits.
   plan's `lengthTransfers`, counting reused expressions and duplicate source
   phases avoided. The existing reuse panel shows those counts and per-transfer
   savings while leaving plan generation unchanged.
+- F7.18 Add function-plan verification diagnostics.
+  Current implementation adds an origami-domain verifier for generated function
+  plans. It checks duplicate node/operation/phase IDs, missing node and phase
+  references, reuse-transfer operation links, and result-extraction wiring, then
+  surfaces a compact verified/has-issues summary behind `Show diagnostics`.
 
 Acceptance checks:
 
@@ -3334,7 +3339,7 @@ Only consider these after the MVP is working and documented.
 - Full AST simplification/rewrite previews beyond advisory hints.
 - Actual common-subexpression plan rewrites beyond visible reuse summaries.
 - Broader construction scripts beyond origami function replay.
-- Formal construction verification.
+- Formal mathematical fold-validity verification beyond plan wiring checks.
 - GeoGebra export.
 - Broader timeline authoring tools beyond the function phase scrubber.
 - User-authored construction macros.
