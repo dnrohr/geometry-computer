@@ -240,6 +240,12 @@ describe("SvgOrigamiFunctionAnimation", () => {
     expect(
       container.querySelector(".origami-function-paper-front-pattern"),
     ).toHaveAttribute("data-pattern-rotation", "45");
+    expect(
+      container.querySelector(".origami-function-paper-back-pattern"),
+    ).toHaveAttribute("data-pattern-scale", "1.75");
+    expect(
+      container.querySelector(".origami-function-paper-back-pattern"),
+    ).toHaveAttribute("data-pattern-rotation", "45");
   });
 
   it("renders a final crease-pattern snapshot from planned fold motions", () => {

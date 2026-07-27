@@ -764,6 +764,9 @@ is easy to follow.
   those outline/shadow layers.
 - F4.4 Add pattern scale and rotation controls so users can tune visibility for
   small or large folds.
+  Current implementation includes pattern scale and pattern rotation sliders in
+  the origami paper-style controls, stores the values in origami-local paper
+  style, and applies them to both front and back SVG pattern layers.
 - F4.5 Store paper style in origami-local UI state and include it in origami
   animation exports without affecting compass SVG export.
 - F4.6 Add contrast checks or visual tests for preset combinations so crease,
