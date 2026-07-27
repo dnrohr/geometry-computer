@@ -721,6 +721,12 @@ surface area.
   view: no visible roadmap/debug clutter, no overlapping readouts, square paper
   visible, collapsed secondary tools remain expandable, and presentation controls
   can advance phases.
+  Current implementation adds a dedicated consolidated-default-view app
+  regression that checks hidden roadmap/debug/export/visual clutter, square
+  paper with planned creases, below-paper readout placement, expandable
+  diagnostics/export/visual tools, and presentation phase advancement. Browser
+  smoke also verifies the mode strip, square-paper geometry, readout placement,
+  collapsed visual/export controls, and presentation transport.
 
 Acceptance checks:
 

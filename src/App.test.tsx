@@ -939,6 +939,86 @@ describe("App", () => {
     );
   });
 
+  it("keeps the consolidated origami default view focused and expandable", () => {
+    const { container } = render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+
+    expect(
+      screen.queryByText("Do not modify the existing construction flow"),
+    ).toBeNull();
+    expect(screen.queryByText("Sample values")).toBeNull();
+    expect(screen.queryByText("Fold solver")).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: "Export function animation JSON" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("group", { name: "Function fold camera" }),
+    ).toBeNull();
+    expect(
+      screen.getByRole("button", { name: "Show development notes" }),
+    ).toHaveAttribute("aria-expanded", "false");
+    expect(
+      screen.getByRole("button", { name: "Show diagnostics" }),
+    ).toHaveAttribute("aria-expanded", "false");
+    expect(
+      screen.getByRole("button", { name: "Show export and paper style" }),
+    ).toHaveAttribute("aria-expanded", "false");
+    expect(
+      screen.getByRole("button", { name: "Show visual options" }),
+    ).toHaveAttribute("aria-expanded", "false");
+
+    const animation = screen.getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    });
+    expect(animation).toHaveAttribute("data-paper-shape", "square");
+    expect(
+      container.querySelector(".origami-function-planned-crease"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-function-value-strip"),
+    ).toHaveAttribute("data-readout-placement", "below-paper");
+
+    fireEvent.click(screen.getByRole("button", { name: "Show diagnostics" }));
+    expect(
+      screen.getByText("6/14 fallback phases, 8 certified"),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Show export and paper style" }),
+    );
+    expect(
+      screen.getByRole("button", { name: "Export function animation JSON" }),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Show visual options" }),
+    );
+    expect(
+      screen.getByRole("group", { name: "Function fold camera" }),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Start presentation mode" }),
+    );
+    const presentationControls = screen.getByRole("region", {
+      name: "Function presentation controls",
+    });
+    fireEvent.click(
+      within(presentationControls).getByRole("button", {
+        name: "Next function phase",
+      }),
+    );
+    expect(
+      screen.getByLabelText("Function presentation status"),
+    ).toHaveTextContent("Phase 2 of 14");
+    expect(
+      screen.queryByRole("button", { name: "Export function animation JSON" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("group", { name: "Function fold camera" }),
+    ).toBeNull();
+  });
+
   it("shows radicand issues inline without replacing the last valid function plan", () => {
     render(<App />);
     fireEvent.click(
