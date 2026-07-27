@@ -1028,6 +1028,15 @@ const assertOrigamiFunctionPanel = async (page) => {
       "Function export controls remained visible in presentation mode.",
     );
   }
+  if (
+    (await page
+      .getByRole("button", { name: "Export function script" })
+      .count()) !== 0
+  ) {
+    throw new Error(
+      "Function script export remained visible in presentation mode.",
+    );
+  }
   await page.getByRole("button", { name: "Exit presentation mode" }).click();
   await page
     .getByRole("textbox", { exact: true, name: "Origami function" })
@@ -1311,6 +1320,26 @@ const assertOrigamiFunctionPanel = async (page) => {
   ) {
     throw new Error(
       `Function animation export missing active metadata: ${JSON.stringify(animationExport)}`,
+    );
+  }
+  const functionScript = await downloadText(page, "Export function script");
+  if (
+    functionScript.filename !== "origami-function-script.txt" ||
+    !functionScript.text.includes(
+      "# Geometry Computer origami function script v1",
+    ) ||
+    !functionScript.text.includes("function f(a) = sqrt(a + 1)") ||
+    !functionScript.text.includes("samples a=3") ||
+    !functionScript.text.includes(
+      "active origami-function-phase-9 progress=0.57",
+    ) ||
+    !functionScript.text.includes("method=geometric-mean-square-root") ||
+    !functionScript.text.includes(
+      "paper front=#ffffff back=#101820 frontPattern=washi-wave backPattern=high-contrast",
+    )
+  ) {
+    throw new Error(
+      `Function script export mismatch: ${functionScript.filename}`,
     );
   }
   const currentFunctionSvg = await downloadText(

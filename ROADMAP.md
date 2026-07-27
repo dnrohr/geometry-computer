@@ -907,6 +907,12 @@ replay, or share.
   contain the same scene, phase, paper-style, and result IDs shown in the UI.
   Current browser smoke also checks expression-progress and object-inspector
   metadata inside the downloaded function animation JSON.
+- F6.7 Export a readable origami function script.
+  Current implementation adds `Export function script` inside the collapsed
+  `Show export and paper style` region. The script serializes normalized
+  function source, sample values, sampled result, solver readiness, active phase,
+  paper style, and deterministic per-phase status/method/output lines for
+  inspection. Importing or executing these text scripts remains future work.
 
 Acceptance checks:
 

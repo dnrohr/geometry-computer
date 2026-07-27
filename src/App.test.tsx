@@ -212,7 +212,7 @@ describe("App", () => {
     expect(screen.getByText("label · intermediate")).toBeInTheDocument();
   });
 
-  it("routes all three export buttons through downloads", () => {
+  it("routes export buttons through downloads", () => {
     Object.defineProperty(URL, "createObjectURL", {
       configurable: true,
       value: vi.fn(() => "blob:test"),
@@ -241,6 +241,9 @@ describe("App", () => {
       screen.getByRole("button", { name: "Export function animation JSON" }),
     );
     fireEvent.click(
+      screen.getByRole("button", { name: "Export function script" }),
+    );
+    fireEvent.click(
       screen.getByRole("button", { name: "Export function current SVG" }),
     );
     fireEvent.click(
@@ -253,7 +256,7 @@ describe("App", () => {
       screen.getByRole("button", { name: "Export function animated SVG" }),
     );
     fireEvent.click(screen.getByRole("button", { name: "Export origami SVG" }));
-    expect(click).toHaveBeenCalledTimes(10);
+    expect(click).toHaveBeenCalledTimes(11);
     click.mockRestore();
   });
 
@@ -398,6 +401,9 @@ describe("App", () => {
       screen.queryByRole("button", { name: "Export function current SVG" }),
     ).toBeNull();
     expect(
+      screen.queryByRole("button", { name: "Export function script" }),
+    ).toBeNull();
+    expect(
       screen.queryByLabelText("Function paper front color"),
     ).not.toBeInTheDocument();
     expect(
@@ -413,6 +419,9 @@ describe("App", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Export function current SVG" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Export function script" }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Export function final SVG" }),
@@ -1054,6 +1063,9 @@ describe("App", () => {
       screen.queryByRole("button", { name: "Export function animation JSON" }),
     ).toBeNull();
     expect(
+      screen.queryByRole("button", { name: "Export function script" }),
+    ).toBeNull();
+    expect(
       screen.queryByRole("group", { name: "Function fold camera" }),
     ).toBeNull();
 
@@ -1189,6 +1201,9 @@ describe("App", () => {
     expect(
       screen.getByRole("button", { name: "Export function animation JSON" }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Export function script" }),
+    ).toBeInTheDocument();
     fireEvent.click(
       screen.getByRole("button", { name: "Show visual options" }),
     );
@@ -1212,6 +1227,9 @@ describe("App", () => {
     ).toHaveTextContent("Phase 2 of 14");
     expect(
       screen.queryByRole("button", { name: "Export function animation JSON" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: "Export function script" }),
     ).toBeNull();
     expect(
       screen.queryByRole("group", { name: "Function fold camera" }),

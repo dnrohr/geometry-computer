@@ -17,6 +17,7 @@ export {
   type OrigamiFunctionExample,
 } from "./functionExamples";
 export { createOrigamiFunctionPlan } from "./functionPlan";
+export { origamiFunctionScript } from "./functionScript";
 export {
   DEFAULT_ORIGAMI_PAPER_STYLE,
   advanceOrigamiFunctionPreview,

@@ -19,6 +19,7 @@ import {
   origamiFunctionChallenges,
   origamiFunctionExamples,
   origamiFunctionPaperPalettes,
+  origamiFunctionScript,
   origamiVariableControls,
   randomOrigamiPaperPalette,
   replayOrigamiFunctionAnimationJson,
@@ -2072,6 +2073,21 @@ function OrigamiRoadmap() {
                 }}
               >
                 Export function animation JSON
+              </button>
+              <button
+                type="button"
+                disabled={timelineDisabled}
+                onClick={() => {
+                  const script = origamiFunctionScript(functionPreview);
+                  if (!script) return;
+                  downloadText(
+                    "origami-function-script.txt",
+                    script,
+                    "text/plain",
+                  );
+                }}
+              >
+                Export function script
               </button>
               <button
                 type="button"
