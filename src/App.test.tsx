@@ -780,6 +780,57 @@ describe("App", () => {
     ).toHaveAttribute("data-phase-id", "origami-function-phase-9");
   });
 
+  it("shows a fold storyboard with operation, assumption, and branch details", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+
+    const storyboard = screen.getByRole("region", {
+      name: "Fold storyboard",
+    });
+    expect(
+      within(storyboard).getAllByRole("button", {
+        name: /Storyboard phase /,
+      }),
+    ).toHaveLength(14);
+    expect(within(storyboard).getByText("Phase 1")).toBeInTheDocument();
+    expect(within(storyboard).getByText("Place Input")).toBeInTheDocument();
+    expect(
+      within(storyboard).getAllByText("Fold method")[0],
+    ).toBeInTheDocument();
+    expect(
+      within(storyboard).getByText(
+        "The paper boundary is placed as the fixed computation domain.",
+      ),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      within(storyboard).getByRole("button", {
+        name: /Storyboard phase 9 Extract Square Root sqrt\(a \+ 1\)/,
+      }),
+    );
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a) = sqrt(a + 1)",
+      }),
+    ).toHaveAttribute("data-phase-id", "origami-function-phase-9");
+    expect(
+      within(storyboard).getByRole("button", {
+        name: /Storyboard phase 9 Extract Square Root sqrt\(a \+ 1\)/,
+      }),
+    ).toHaveAttribute("aria-current", "step");
+    expect(within(storyboard).getByText("sqrt:align-fold")).toBeInTheDocument();
+    expect(
+      within(storyboard).getAllByText(
+        /Positive geometric-mean branch macro, which is not yet backed by a physical fold solver/,
+      ).length,
+    ).toBeGreaterThan(0);
+    expect(
+      within(storyboard).getAllByText("Positive geometric-mean branch").length,
+    ).toBeGreaterThan(0);
+  });
+
   it("plays a clean origami function presentation mode and restores controls", () => {
     const { container } = render(<App />);
     fireEvent.click(

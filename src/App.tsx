@@ -867,6 +867,42 @@ function OrigamiRoadmap() {
   const activeFunctionPhaseIndex = functionPhaseMinimapItems.findIndex(
     ({ isActive }) => isActive,
   );
+  const functionStoryboardItems =
+    functionPreview.status === "compiled"
+      ? functionPreview.plan.phases.map((phase, index) => {
+          const operation = functionPreview.plan.operations.find(
+            ({ phaseIds }) => phaseIds.includes(phase.id),
+          );
+          const solverItem =
+            functionPreview.plan.solverReadiness.workItems.find(
+              ({ phaseId }) => phaseId === phase.id,
+            );
+          const branch =
+            phase.foldMotion?.selectedBranch.label ??
+            solverItem?.selectedBranchId ??
+            "Deterministic phase";
+          const assumption =
+            phase.fallback?.reason ??
+            phase.foldCertificate?.summary ??
+            "Sampled inputs stay inside the real origami function field.";
+          return {
+            id: phase.id,
+            index,
+            expression: phase.expression,
+            operation: operation
+              ? formatOrigamiPhaseKind(operation.kind)
+              : formatOrigamiPhaseKind(phase.kind),
+            foldMethod:
+              phase.foldCertificate?.method ??
+              phase.fallback?.replacementFor ??
+              phase.kind,
+            assumption,
+            branch,
+            isActive: phase.id === functionPreview.animation.phaseId,
+            physicalStatus: phase.physicalStatus,
+          };
+        })
+      : [];
   const functionVisualCueItems = useMemo(() => {
     if (!functionVisualCues) return [];
     const cues: Array<{
@@ -1618,6 +1654,53 @@ function OrigamiRoadmap() {
                 </button>
               ))}
             </div>
+          </section>
+        )}
+        {!functionPresentationMode && functionStoryboardItems.length > 0 && (
+          <section
+            className="origami-function-storyboard"
+            aria-labelledby="origami-function-storyboard-title"
+          >
+            <div className="origami-function-storyboard-header">
+              <h3 id="origami-function-storyboard-title">Fold storyboard</h3>
+              <span>{functionStoryboardItems.length} phases</span>
+            </div>
+            <ol aria-label="Origami function fold storyboard">
+              {functionStoryboardItems.map((item) => (
+                <li key={item.id}>
+                  <button
+                    type="button"
+                    aria-label={`Storyboard phase ${item.index + 1} ${item.operation} ${item.expression}`}
+                    aria-current={item.isActive ? "step" : undefined}
+                    className={`origami-function-storyboard-card origami-function-storyboard-card-${item.physicalStatus}`}
+                    disabled={timelineDisabled}
+                    onClick={() =>
+                      setFunctionPreview((preview) =>
+                        setOrigamiFunctionPreviewPhase(preview, item.id),
+                      )
+                    }
+                  >
+                    <span>{`Phase ${item.index + 1}`}</span>
+                    <strong>{item.operation}</strong>
+                    <code>{item.expression}</code>
+                    <dl>
+                      <div>
+                        <dt>Fold method</dt>
+                        <dd>{item.foldMethod}</dd>
+                      </div>
+                      <div>
+                        <dt>Assumption</dt>
+                        <dd>{item.assumption}</dd>
+                      </div>
+                      <div>
+                        <dt>Branch</dt>
+                        <dd>{item.branch}</dd>
+                      </div>
+                    </dl>
+                  </button>
+                </li>
+              ))}
+            </ol>
           </section>
         )}
         <div className="origami-function-export-renderer" aria-hidden="true">

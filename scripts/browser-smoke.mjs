@@ -678,6 +678,35 @@ const assertOrigamiFunctionPanel = async (page) => {
       `Function step minimap expected 14 phases, got ${minimapCount}`,
     );
   }
+  const storyboard = page.getByRole("region", { name: "Fold storyboard" });
+  const storyboardCount = await storyboard
+    .getByRole("button", { name: /Storyboard phase / })
+    .count();
+  if (storyboardCount !== 14) {
+    throw new Error(
+      `Function storyboard expected 14 phases, got ${storyboardCount}`,
+    );
+  }
+  const squareRootStoryboardCard = storyboard.getByRole("button", {
+    name: /Storyboard phase 9 Extract Square Root sqrt\(a \+ 1\)/,
+  });
+  await squareRootStoryboardCard.click();
+  await squareRootStoryboardCard
+    .getByText("Positive geometric-mean branch", { exact: true })
+    .waitFor();
+  await page
+    .getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    })
+    .evaluate((element) => {
+      if (
+        element.getAttribute("data-phase-id") !== "origami-function-phase-9"
+      ) {
+        throw new Error(
+          "Storyboard phase jump did not update animation phase.",
+        );
+      }
+    });
   const activeMinimapItem = await page
     .getByRole("button", {
       name: "Jump to function phase origami-function-phase-9",

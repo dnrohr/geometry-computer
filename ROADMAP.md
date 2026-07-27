@@ -793,6 +793,10 @@ Goal: make the animation teach the computation, not merely decorate it.
 - F5.1 Add a fold-step storyboard with one card per animation phase, including
   the active subexpression, operation, fold axiom or macro, assumptions, and
   branch choice.
+  Current implementation derives a clickable fold storyboard from the compiled
+  function plan. Each phase card shows the phase expression, operation, fold
+  method or macro fallback, assumption/certificate detail, and deterministic or
+  selected branch; selecting a card updates the active animation phase.
 - F5.2 Highlight dependencies when hovering a subexpression, fold step, crease,
   paper region, or proof claim.
 - F5.3 Add a "why this fold?" overlay that connects the moving paper motion to
