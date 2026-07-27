@@ -189,6 +189,27 @@ describe("origami function plan", () => {
         outputObjectIds: ["origami-function-node-output-3-align-fold"],
         replacementFor: "mul:align-fold",
         requiredCapability: "arithmetic-macro-fold",
+        requiredAxioms: [
+          "similar-triangle-transfer",
+          "parallel-guide-fold",
+          "projection-intersection",
+        ],
+        acceptanceCheckIds: [
+          "origami-function-phase-4-source-objects-present",
+          "origami-function-phase-4-output-objects-produced",
+          "origami-function-phase-4-branch-recorded",
+          "origami-function-phase-4-certificate-emitted",
+        ],
+        branchAlternatives: [
+          expect.objectContaining({
+            id: "intercept-product-branch",
+            status: "selected",
+          }),
+          expect.objectContaining({
+            id: "intercept-product-branch-alternate",
+            status: "pending-rejection-record",
+          }),
+        ],
         selectedBranchId: "intercept-product-branch",
       }),
       expect.objectContaining({

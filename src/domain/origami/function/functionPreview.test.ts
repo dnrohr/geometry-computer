@@ -226,6 +226,27 @@ describe("origami function preview plan", () => {
         phaseId: "origami-function-phase-9",
         replacementFor: "sqrt:align-fold",
         requiredCapability: "arithmetic-macro-fold",
+        requiredAxioms: [
+          "fold-through-point-and-line",
+          "perpendicular-extraction",
+          "branch-intersection-selection",
+        ],
+        acceptanceCheckIds: [
+          "origami-function-phase-9-source-objects-present",
+          "origami-function-phase-9-output-objects-produced",
+          "origami-function-phase-9-branch-recorded",
+          "origami-function-phase-9-certificate-emitted",
+        ],
+        branchAlternatives: [
+          expect.objectContaining({
+            id: "positive-geometric-mean-branch",
+            status: "selected",
+          }),
+          expect.objectContaining({
+            id: "positive-geometric-mean-branch-alternate",
+            status: "pending-rejection-record",
+          }),
+        ],
         selectedBranchId: "positive-geometric-mean-branch",
         sourceObjectIds: ["origami-function-node-output-3"],
         outputObjectIds: ["origami-function-node-output-4-align-fold"],

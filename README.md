@@ -12,7 +12,9 @@ square two-sided paper fold sequence, and keeps the fold storyboard, expression
 progress, dependency highlights, measurement labels, ambiguity warnings, and
 function object inspector local to the origami tab. Function animations can be
 exported as JSON, current/final/crease SVG snapshots, or animated SVG, and saved
-animation JSON can be imported for replay.
+animation JSON can be imported for replay. Fallback phases now expose required
+axioms, acceptance checks, and branch alternatives so the remaining physical
+fold-solver work is explicit.
 
 Origami computation is intentionally isolated for now so the current
 compass-and-straightedge workspace remains stable while fold-based models,

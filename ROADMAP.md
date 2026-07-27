@@ -840,6 +840,11 @@ Goal: make the animation teach the computation, not merely decorate it.
   expression-progress strip. It follows the active phase/node and shows phase,
   expression, node kind, sampled value, output object, sources, outputs, proof
   claims, branch, certificate, solver detail, and physical/fallback status.
+- F5.8 Add solver proof obligations to fallback work items.
+  Current implementation gives each fallback item required axiom IDs,
+  acceptance-check IDs, and selected versus pending branch alternatives. The
+  diagnostics pane shows the active checklist, backlog cards summarize it, and
+  JSON export carries the same data for future physical fold-solver fixtures.
 
 Acceptance checks:
 

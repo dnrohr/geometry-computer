@@ -80,6 +80,7 @@ export type {
   OrigamiFunctionResultExtraction,
   OrigamiFunctionSelectedBranch,
   OrigamiFunctionSideExposure,
+  OrigamiFunctionSolverBranchAlternative,
   OrigamiFunctionSolverReadiness,
   OrigamiFunctionSolverReadinessStatus,
   OrigamiFunctionSolverCapability,

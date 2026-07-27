@@ -1862,6 +1862,13 @@ select:focus-visible,
   font-size: 0.76rem;
 }
 
+.origami-function-solver-work button span {
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
 .origami-function-solver-work button span:last-child {
   overflow-wrap: anywhere;
   color: var(--muted);

@@ -148,6 +148,11 @@ F5.9 adds a top-level active-phase snapshot to the function-animation export.
 The snapshot records the current phase kind, expression, physical status, and
 either its fold certificate or matching solver work item so export consumers do
 not need to recompute the active proof/work context from the full plan.
+F5.10 turns each fallback solver work item into a proof checklist. Work items
+now include required axiom/capability IDs, acceptance-check IDs, and selected
+versus pending branch alternatives. These records are still backlog metadata,
+not physical fold geometry, but they define the contract a future solver must
+satisfy before an explanatory phase can become certified.
 F6.2 exports function-animation SVG snapshots from the origami renderer itself.
 The current-phase snapshot uses the visible timeline state; the final snapshot
 uses the same compiled plan and paper style at the result-extraction phase. A

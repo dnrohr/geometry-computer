@@ -199,6 +199,13 @@ export type OrigamiFunctionSolverCapability =
   | "arithmetic-macro-fold"
   | "result-extraction-fold";
 
+export type OrigamiFunctionSolverBranchAlternative = {
+  id: string;
+  label: string;
+  status: "selected" | "pending-rejection-record";
+  reason: string;
+};
+
 export type OrigamiFunctionSolverWorkItem = {
   id: string;
   phaseId: string;
@@ -208,6 +215,9 @@ export type OrigamiFunctionSolverWorkItem = {
   outputObjectIds: string[];
   replacementFor: string;
   requiredCapability: OrigamiFunctionSolverCapability;
+  requiredAxioms: string[];
+  acceptanceCheckIds: string[];
+  branchAlternatives: OrigamiFunctionSolverBranchAlternative[];
   selectedBranchId?: string;
   summary: string;
 };

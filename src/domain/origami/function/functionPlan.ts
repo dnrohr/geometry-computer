@@ -229,6 +229,74 @@ const fallbackForNode = (
   replacementFor: `${node.kind}:${phaseKind}`,
 });
 
+const requiredAxiomsForFallback = (
+  replacementFor: string,
+  phaseKind: OrigamiFunctionPlanPhaseKind,
+) => {
+  if (phaseKind === "extract-result") {
+    return ["result-extraction-fold", "length-readout-certificate"];
+  }
+  if (replacementFor.startsWith("mul:")) {
+    return [
+      "similar-triangle-transfer",
+      "parallel-guide-fold",
+      "projection-intersection",
+    ];
+  }
+  if (replacementFor.startsWith("div:")) {
+    return [
+      "reciprocal-transfer",
+      "parallel-guide-fold",
+      "nonzero-denominator-check",
+    ];
+  }
+  if (replacementFor.startsWith("pow:")) {
+    return [
+      "repeated-product-transfer",
+      "integer-exponent-unroll",
+      "scale-normalization-check",
+    ];
+  }
+  if (replacementFor.startsWith("sqrt:")) {
+    return [
+      "fold-through-point-and-line",
+      "perpendicular-extraction",
+      "branch-intersection-selection",
+    ];
+  }
+  return ["arithmetic-macro-fold"];
+};
+
+const acceptanceChecksForFallback = (
+  phase: OrigamiFunctionPlanPhase,
+  selectedBranchId?: string,
+) => [
+  `${phase.id}-source-objects-present`,
+  `${phase.id}-output-objects-produced`,
+  ...(selectedBranchId ? [`${phase.id}-branch-recorded`] : []),
+  `${phase.id}-certificate-emitted`,
+];
+
+const branchAlternativesForFallback = (phase: OrigamiFunctionPlanPhase) => {
+  const selectedBranch = phase.foldMotion?.selectedBranch;
+  if (!selectedBranch) return [];
+  return [
+    {
+      id: selectedBranch.id,
+      label: selectedBranch.label,
+      status: "selected" as const,
+      reason: selectedBranch.reason,
+    },
+    {
+      id: `${selectedBranch.id}-alternate`,
+      label: "Alternate geometric branch",
+      status: "pending-rejection-record" as const,
+      reason:
+        "Future solver work must compute the alternate branch and record why it is rejected or accepted.",
+    },
+  ];
+};
+
 const arithmeticPhaseIsPhysical = (node: OrigamiFunctionPlanNode) =>
   node.kind === "add" || node.kind === "sub";
 
@@ -312,6 +380,8 @@ const createSolverReadiness = (
         phase.kind === "extract-result"
           ? "result-extraction-fold"
           : "arithmetic-macro-fold";
+      const replacementFor = phase.fallback?.replacementFor ?? phase.kind;
+      const selectedBranchId = phase.foldMotion?.selectedBranch.id;
       return {
         id: `${phase.id}-solver-work`,
         phaseId: phase.id,
@@ -319,9 +389,15 @@ const createSolverReadiness = (
         expression: phase.expression,
         sourceObjectIds: phase.sourceObjectIds,
         outputObjectIds: phase.outputObjectIds,
-        replacementFor: phase.fallback?.replacementFor ?? phase.kind,
+        replacementFor,
         requiredCapability,
-        selectedBranchId: phase.foldMotion?.selectedBranch.id,
+        requiredAxioms: requiredAxiomsForFallback(replacementFor, phase.kind),
+        acceptanceCheckIds: acceptanceChecksForFallback(
+          phase,
+          selectedBranchId,
+        ),
+        branchAlternatives: branchAlternativesForFallback(phase),
+        selectedBranchId,
         summary:
           phase.fallback?.reason ??
           `${phase.expression} needs physical fold-solver support.`,

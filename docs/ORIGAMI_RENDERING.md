@@ -165,6 +165,10 @@ The flat-origami tab provides:
   function animation JSON export. The active phase mirrors the UI readout by
   carrying its certificate when the phase is proven or its solver work item when
   the phase is still explanatory.
+- F5.10 shows the active solver checklist in the diagnostics pane and compactly
+  summarizes it on solver backlog cards. The same work items export required
+  axioms, acceptance checks, and branch alternatives so browser captures can be
+  used as solver-readiness fixtures.
 - F6.2 starts static SVG snapshot export for function animations. The origami
   tab can download the visible current phase and a hidden final-phase snapshot,
   each serialized from the same SVG renderer and carrying plan, phase, kind, and

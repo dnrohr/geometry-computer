@@ -1165,6 +1165,12 @@ const assertOrigamiFunctionPanel = async (page) => {
       "origami-function-phase-9" ||
     animationExport.plan.solverReadiness.workItems[0]?.requiredCapability !==
       "arithmetic-macro-fold" ||
+    animationExport.plan.solverReadiness.workItems[0]?.requiredAxioms[0] !==
+      "fold-through-point-and-line" ||
+    animationExport.plan.solverReadiness.workItems[0]?.acceptanceCheckIds[2] !==
+      "origami-function-phase-9-branch-recorded" ||
+    animationExport.plan.solverReadiness.workItems[0]?.branchAlternatives[1]
+      ?.status !== "pending-rejection-record" ||
     animationExport.plan.solverReadiness.workItems[0]?.sourceObjectIds[0] !==
       "origami-function-node-output-3" ||
     animationExport.plan.solverReadiness.workItems[0]?.outputObjectIds[0] !==

@@ -1427,6 +1427,26 @@ function OrigamiRoadmap() {
                     <dt>Solver outputs</dt>
                     <dd>{activeSolverWorkItem.outputObjectIds.join(", ")}</dd>
                   </div>
+                  <div>
+                    <dt>Required axioms</dt>
+                    <dd>{activeSolverWorkItem.requiredAxioms.join(", ")}</dd>
+                  </div>
+                  <div>
+                    <dt>Acceptance checks</dt>
+                    <dd>
+                      {activeSolverWorkItem.acceptanceCheckIds.join(", ")}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Branch alternatives</dt>
+                    <dd>
+                      {activeSolverWorkItem.branchAlternatives.length > 0
+                        ? activeSolverWorkItem.branchAlternatives
+                            .map(({ label, status }) => `${label}: ${status}`)
+                            .join(", ")
+                        : "none"}
+                    </dd>
+                  </div>
                 </>
               )}
               {activeFoldCertificate && (
@@ -2553,6 +2573,15 @@ function OrigamiRoadmap() {
                       }
                     >
                       <span>{item.phaseId}</span>
+                      <span>{`Axioms: ${item.requiredAxioms.join(", ")}`}</span>
+                      <span>{`Check: ${item.acceptanceCheckIds[0]}`}</span>
+                      <span>
+                        {item.branchAlternatives.length > 0
+                          ? `Branches: ${item.branchAlternatives
+                              .map(({ status }) => status)
+                              .join(", ")}`
+                          : "Branches: none"}
+                      </span>
                       <span>{`${item.phaseKind} · ${item.requiredCapability}`}</span>
                     </button>
                   </li>

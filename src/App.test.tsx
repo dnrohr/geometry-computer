@@ -484,6 +484,21 @@ describe("App", () => {
       ),
     ).toBeInTheDocument();
     expect(
+      within(functionPanel).getByText(
+        "fold-through-point-and-line, perpendicular-extraction, branch-intersection-selection",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText(
+        "origami-function-phase-9-source-objects-present, origami-function-phase-9-output-objects-produced, origami-function-phase-9-branch-recorded, origami-function-phase-9-certificate-emitted",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(functionPanel).getByText(
+        "Positive geometric-mean branch: selected, Alternate geometric branch: pending-rejection-record",
+      ),
+    ).toBeInTheDocument();
+    expect(
       within(functionPanel).queryByText(
         "paper-placement origami-function-paper",
       ),
