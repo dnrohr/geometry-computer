@@ -1583,6 +1583,19 @@ const assertOrigamiFunctionPanel = async (page) => {
       }
     });
   await page.getByRole("button", { name: "Hide reuse plan" }).click();
+  await input.fill("f(a)=1*a+0");
+  await page.getByRole("button", { name: "Compile origami function" }).click();
+  await page.getByRole("button", { name: "Show simplification hints" }).click();
+  const simplificationHints = page.getByRole("region", {
+    name: "Origami function simplification hints",
+  });
+  await simplificationHints
+    .locator('[data-simplification-reason="multiply-one"]')
+    .getByText("=> a", { exact: true })
+    .waitFor();
+  await page
+    .getByRole("img", { name: "Origami function animation: f(a) = 1 * a + 0" })
+    .waitFor();
   await input.fill("sqrt(a+1)");
   await page.getByRole("button", { name: "Compile origami function" }).click();
   await page.getByText("origami-function-plan-f-a-sqrt-a-1").waitFor();

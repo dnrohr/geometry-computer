@@ -263,6 +263,10 @@ The flat-origami tab provides:
   subexpressions. The panel renders each planned length transfer, source node,
   output object, and diagnostic message, then jumps back to the source phase via
   the same preview state used by the timeline.
+- F7.15 adds optional simplification hints for local algebra identities and
+  direct constant folding. The panel displays expression, suggested replacement,
+  and reason while leaving the rendered fold sequence tied to the original
+  compiled plan.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

@@ -22,6 +22,10 @@ export {
   replayOrigamiFunctionScript,
 } from "./functionScript";
 export {
+  origamiFunctionSimplificationHints,
+  type OrigamiFunctionSimplificationHint,
+} from "./functionSimplification";
+export {
   DEFAULT_ORIGAMI_PAPER_STYLE,
   advanceOrigamiFunctionPreview,
   compileOrigamiFunctionPreview,

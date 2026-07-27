@@ -706,6 +706,9 @@ describe("App", () => {
     expect(
       screen.queryByRole("button", { name: "Show reuse plan" }),
     ).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: "Show simplification hints" }),
+    ).toBeNull();
     fireEvent.click(
       screen.getByRole("button", { name: "Show visual options" }),
     );
@@ -1430,6 +1433,48 @@ describe("App", () => {
         name: "Origami function animation: f(a) = a + a",
       }),
     ).toHaveAttribute("data-phase-id", "origami-function-phase-2");
+  });
+
+  it("surfaces local simplification hints without rewriting the origami plan", () => {
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    const functionPanel = screen.getByRole("region", {
+      name: "Fold-computed function",
+    });
+    fireEvent.change(
+      within(functionPanel).getByRole("textbox", { name: "Origami function" }),
+      { target: { value: "f(a)=1*a+0" } },
+    );
+    fireEvent.click(
+      within(functionPanel).getByRole("button", {
+        name: "Compile origami function",
+      }),
+    );
+
+    expect(
+      within(functionPanel).getByRole("button", {
+        name: "Show simplification hints",
+      }),
+    ).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(
+      within(functionPanel).getByRole("button", {
+        name: "Show simplification hints",
+      }),
+    );
+    const hints = within(functionPanel).getByRole("region", {
+      name: "Origami function simplification hints",
+    });
+    expect(within(hints).getByText("1 * a")).toBeInTheDocument();
+    expect(within(hints).getByText("=> a")).toBeInTheDocument();
+    expect(within(hints).getByText("1 * a + 0")).toBeInTheDocument();
+    expect(within(hints).getByText("=> 1 * a")).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a) = 1 * a + 0",
+      }),
+    ).toBeInTheDocument();
   });
 
   it("shows expression tree progress alongside the origami fold timeline", () => {

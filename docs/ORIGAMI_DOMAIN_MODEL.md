@@ -250,6 +250,10 @@ F7.14 surfaces common-subexpression reuse without changing the compiler. The
 reuse panel reads `lengthTransfers`, matching `REUSED_SUBEXPRESSION`
 diagnostics, dependency jump targets, and source nodes from the compiled plan,
 then jumps by reusing the local phase setter.
+F7.15 keeps simplification hints separate from compilation. The hint helper reads
+the parsed AST and reports local identities or direct constant folding
+opportunities, but the origami function plan remains based on the normalized
+source expression.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

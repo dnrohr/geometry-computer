@@ -10,8 +10,8 @@ and a fold-computed function lab. The function lab accepts allowable real-valued
 expressions such as `f(a)=sqrt(a+1)` or
 `f(a)=sqrt(sqrt(a+1)+1)`, validates sampled inputs, animates a
 square two-sided paper fold sequence, and keeps the fold storyboard, expression
-progress, phase scrubber, fold lesson, reuse plan, dependency highlights,
-measurement labels, ambiguity warnings, and function object inspector local to the origami tab. Function animations can be exported
+progress, phase scrubber, fold lesson, reuse plan, simplification hints,
+dependency highlights, measurement labels, ambiguity warnings, and function object inspector local to the origami tab. Function animations can be exported
 as JSON, text script, current/final/crease SVG snapshots, or animated SVG, and saved
 animation JSON can be imported for replay; text scripts can be imported too. Fallback phases now expose required
 axioms, acceptance checks, and branch alternatives so the remaining physical

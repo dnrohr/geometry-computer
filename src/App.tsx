@@ -20,6 +20,7 @@ import {
   origamiFunctionExamples,
   origamiFunctionPaperPalettes,
   origamiFunctionScript,
+  origamiFunctionSimplificationHints,
   origamiVariableControls,
   randomOrigamiPaperPalette,
   replayOrigamiFunctionScript,
@@ -506,6 +507,10 @@ function OrigamiRoadmap() {
     useState(false);
   const [showOrigamiFunctionReusePlan, setShowOrigamiFunctionReusePlan] =
     useState(false);
+  const [
+    showOrigamiFunctionSimplification,
+    setShowOrigamiFunctionSimplification,
+  ] = useState(false);
   const [progress, setProgress] = useState(1);
   const [activeStepId, setActiveStepId] = useState<string>();
   const [selectedObjectId, setSelectedObjectId] = useState<string>();
@@ -695,6 +700,15 @@ function OrigamiRoadmap() {
       functionReport.status === "parse-error"
         ? []
         : functionReport.validation.source.variables,
+    [functionReport],
+  );
+  const functionSimplificationHints = useMemo(
+    () =>
+      functionReport.status === "parse-error"
+        ? []
+        : origamiFunctionSimplificationHints(
+            functionReport.validation.source.ast,
+          ),
     [functionReport],
   );
   const variableControls = useMemo(
@@ -1464,7 +1478,41 @@ function OrigamiRoadmap() {
                 : "Show reuse plan"}
             </button>
           )}
+          {functionSimplificationHints.length > 0 && (
+            <button
+              type="button"
+              aria-expanded={showOrigamiFunctionSimplification}
+              onClick={() =>
+                setShowOrigamiFunctionSimplification((isShowing) => !isShowing)
+              }
+            >
+              {showOrigamiFunctionSimplification
+                ? "Hide simplification hints"
+                : "Show simplification hints"}
+            </button>
+          )}
         </div>
+        {showOrigamiFunctionSimplification &&
+          functionSimplificationHints.length > 0 && (
+            <section
+              className="origami-function-simplification"
+              aria-label="Origami function simplification hints"
+            >
+              <div className="origami-function-simplification-heading">
+                <h3>Simplification hints</h3>
+                <span>{functionSimplificationHints.length} local hint</span>
+              </div>
+              <ol>
+                {functionSimplificationHints.map((hint) => (
+                  <li key={hint.id} data-simplification-reason={hint.reason}>
+                    <code>{hint.expression}</code>
+                    <span>{`=> ${hint.replacement}`}</span>
+                    <p>{hint.summary}</p>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
         {showOrigamiFunctionDiagnostics && (
           <section
             className="origami-function-diagnostics"

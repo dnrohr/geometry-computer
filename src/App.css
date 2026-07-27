@@ -523,6 +523,79 @@ select:focus-visible,
   grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
 }
 
+.origami-function-simplification {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 0.55rem;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid rgb(240 184 75 / 34%);
+  border-radius: 0.5rem;
+  background: rgb(240 184 75 / 8%);
+}
+
+.origami-function-simplification-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.origami-function-simplification h3 {
+  margin: 0;
+  font-size: 0.86rem;
+}
+
+.origami-function-simplification-heading span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.origami-function-simplification ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.origami-function-simplification li {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 0.6rem;
+  border: 1px solid rgb(245 241 232 / 12%);
+  border-radius: 0.45rem;
+  background: rgb(12 17 21 / 35%);
+}
+
+.origami-function-simplification code,
+.origami-function-simplification span,
+.origami-function-simplification p {
+  overflow-wrap: anywhere;
+}
+
+.origami-function-simplification code {
+  color: var(--foreground);
+  font-size: 0.78rem;
+}
+
+.origami-function-simplification li > span {
+  color: var(--accent);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.origami-function-simplification p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
 .origami-function-reuse-plan {
   display: grid;
   grid-column: 1 / -1;
