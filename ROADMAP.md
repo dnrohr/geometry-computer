@@ -189,6 +189,10 @@ not trapped in hidden assumptions.
   shared parser boundary.
 - O5.5 Update `README.md` when the origami tab moves from roadmap-only to
   interactive examples.
+  Current implementation describes the separate flat-origami trace gallery and
+  fold-computed function lab, including allowable function input, two-sided
+  fold animation, storyboard/progress/inspector affordances, export snapshots,
+  animated SVG, and JSON replay.
 
 Acceptance checks:
 

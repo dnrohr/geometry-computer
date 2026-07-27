@@ -4,7 +4,19 @@ Geometry Computer turns arithmetic expressions into interactive compass-and-stra
 
 Scroll through the generated macro and primitive steps while the SVG remains sticky. Each arithmetic macro emits its canonical construction geometry, explicit intersection selection, result extraction, proof links, and reversible object/step provenance.
 
-The app also includes a separate flat-origami tab with roadmap notes and interactive trace examples. Origami computation is intentionally isolated for now so the current compass-and-straightedge workspace remains stable while fold-based models, proofs, and crease-pattern rendering are explored.
+The app also includes a separate flat-origami tab. That workspace now has two
+origami-only surfaces: an arithmetic trace gallery for crease-pattern examples
+and a fold-computed function lab. The function lab accepts allowable real-valued
+expressions such as `f(a)=sqrt(a+1)`, validates sampled inputs, animates a
+square two-sided paper fold sequence, and keeps the fold storyboard, expression
+progress, dependency highlights, measurement labels, ambiguity warnings, and
+function object inspector local to the origami tab. Function animations can be
+exported as JSON, current/final/crease SVG snapshots, or animated SVG, and saved
+animation JSON can be imported for replay.
+
+Origami computation is intentionally isolated for now so the current
+compass-and-straightedge workspace remains stable while fold-based models,
+proofs, paper styling, exports, and crease-pattern rendering are explored.
 
 ## Run locally
 
