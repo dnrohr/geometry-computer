@@ -211,6 +211,10 @@ The flat-origami tab provides:
   recompiles the function through the origami compiler, restores recognized
   paper-style keys and the active phase/progress, pauses playback, and shows the
   replay status in the function lab.
+- F7.19 adds `Export construction script` beside the replay script export. The
+  downloaded text lists the compiled nodes, operations, phases, length
+  transfers, solver summary, and plan-verification summary for inspection; it is
+  hidden with the other secondary export tools by default and is not imported.
 - F7.1 adds a fold camera control for function animations. Whole, paper,
   active-fold, and result views update the visible SVG viewBox without changing
   the compiled plan, timeline phase, or export helpers.

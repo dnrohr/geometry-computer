@@ -245,6 +245,9 @@ describe("App", () => {
       screen.getByRole("button", { name: "Export function script" }),
     );
     fireEvent.click(
+      screen.getByRole("button", { name: "Export construction script" }),
+    );
+    fireEvent.click(
       screen.getByRole("button", { name: "Export function current SVG" }),
     );
     fireEvent.click(
@@ -257,7 +260,7 @@ describe("App", () => {
       screen.getByRole("button", { name: "Export function animated SVG" }),
     );
     fireEvent.click(screen.getByRole("button", { name: "Export origami SVG" }));
-    expect(click).toHaveBeenCalledTimes(11);
+    expect(click).toHaveBeenCalledTimes(12);
     click.mockRestore();
   });
 
@@ -414,6 +417,9 @@ describe("App", () => {
       screen.queryByRole("button", { name: "Export function script" }),
     ).toBeNull();
     expect(
+      screen.queryByRole("button", { name: "Export construction script" }),
+    ).toBeNull();
+    expect(
       screen.queryByLabelText("Function paper front color"),
     ).not.toBeInTheDocument();
     expect(
@@ -432,6 +438,9 @@ describe("App", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Export function script" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Export construction script" }),
     ).toBeInTheDocument();
     expect(screen.getByLabelText("Import function script")).toBeInTheDocument();
     expect(

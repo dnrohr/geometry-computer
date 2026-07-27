@@ -4,6 +4,7 @@ import {
   setOrigamiFunctionPreviewPaperStyle,
 } from "./functionPreview";
 import {
+  origamiFunctionConstructionScript,
   origamiFunctionScript,
   replayOrigamiFunctionScript,
 } from "./functionScript";
@@ -51,6 +52,41 @@ describe("origamiFunctionScript", () => {
   it("does not export blocked previews", () => {
     expect(
       origamiFunctionScript(compileOrigamiFunctionPreview("a/(b-b)")),
+    ).toBeUndefined();
+  });
+
+  it("exports an inspection-oriented construction script", () => {
+    const preview = compileOrigamiFunctionPreview("f(a,b)=(a+b)*(a+b)", {
+      a: 2,
+      b: 3,
+    });
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+
+    const script = origamiFunctionConstructionScript(preview);
+
+    expect(script).toContain(
+      "# Geometry Computer origami construction script v1",
+    );
+    expect(script).toContain("function f(a, b) = (a + b) * (a + b)");
+    expect(script).toContain("samples a=2, b=3");
+    expect(script).toContain("verification verified issues=0");
+    expect(script).toContain("nodes\n1 origami-function-node-1 kind=input");
+    expect(script).toContain("\noperations\n");
+    expect(script).toContain("kind=reuse-length");
+    expect(script).toContain("\nphases\n");
+    expect(script).toContain("method=intercept-product-transfer");
+    expect(script).toContain("\ntransfers\n");
+    expect(script).toContain(
+      'origami-function-transfer-1 expr="a + b" from=origami-function-node-3',
+    );
+    expect(script).toContain("\nverificationIssues\nnone\n");
+  });
+
+  it("does not export construction scripts for blocked previews", () => {
+    expect(
+      origamiFunctionConstructionScript(
+        compileOrigamiFunctionPreview("a/(b-b)"),
+      ),
     ).toBeUndefined();
   });
 

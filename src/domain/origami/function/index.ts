@@ -18,6 +18,7 @@ export {
 } from "./functionExamples";
 export { createOrigamiFunctionPlan } from "./functionPlan";
 export {
+  origamiFunctionConstructionScript,
   origamiFunctionScript,
   replayOrigamiFunctionScript,
 } from "./functionScript";

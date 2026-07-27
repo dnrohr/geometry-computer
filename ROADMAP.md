@@ -1023,6 +1023,11 @@ worth exploring while staying honest about mathematical limits.
   plans. It checks duplicate node/operation/phase IDs, missing node and phase
   references, reuse-transfer operation links, and result-extraction wiring, then
   surfaces a compact verified/has-issues summary behind `Show diagnostics`.
+- F7.19 Export inspection-oriented construction scripts.
+  Current implementation adds `Export construction script` inside the collapsed
+  export/paper-style region. The script is deterministic and lists source,
+  samples, result object/value, solver and verification summaries, plan nodes,
+  operations, phases, length transfers, and verification issues for inspection.
 
 Acceptance checks:
 
@@ -3338,7 +3343,7 @@ Only consider these after the MVP is working and documented.
 
 - Full AST simplification/rewrite previews beyond advisory hints.
 - Actual common-subexpression plan rewrites beyond visible reuse summaries.
-- Broader construction scripts beyond origami function replay.
+- Importable or macro-authorable construction scripts beyond inspection export.
 - Formal mathematical fold-validity verification beyond plan wiring checks.
 - GeoGebra export.
 - Broader timeline authoring tools beyond the function phase scrubber.

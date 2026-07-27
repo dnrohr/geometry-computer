@@ -5,6 +5,7 @@ import {
   type OrigamiFunctionAnimationReplay,
   type OrigamiFunctionPreview,
 } from "./functionPreview";
+import { verifyOrigamiFunctionPlan } from "./functionPlanVerification";
 import type { OrigamiPaperStyle } from "./types";
 
 const formatValues = (values: Record<string, number>) =>
@@ -43,6 +44,65 @@ export function origamiFunctionScript(
       (phase, index) =>
         `${String(index + 1).padStart(2, "0")} ${phase.id} ${phase.kind} status=${phase.physicalStatus} method=${phaseCertificate(phase)} expr="${phase.expression}" outputs=${phase.outputObjectIds.join("|") || "none"}`,
     ),
+    "",
+  ].join("\n");
+}
+
+export function origamiFunctionConstructionScript(
+  preview: OrigamiFunctionPreview,
+): string | undefined {
+  if (preview.status !== "compiled") return undefined;
+  const { plan } = preview;
+  const resultNode = plan.nodes.find(
+    (node) => node.id === plan.resultExtraction.nodeId,
+  );
+  const verification = verifyOrigamiFunctionPlan(plan);
+  const sourceObjects = (ids: string[]) => ids.join("|") || "paper";
+  const outputObjects = (ids: string[]) => ids.join("|") || "none";
+
+  return [
+    "# Geometry Computer origami construction script v1",
+    `function ${plan.source.source}`,
+    `samples ${formatValues(plan.values)}`,
+    `resultObject ${plan.resultExtraction.outputObjectId}`,
+    `resultValue ${(resultNode?.value ?? Number.NaN).toFixed(6)}`,
+    `solver ${plan.solverReadiness.status} certified=${plan.solverReadiness.certifiedPhases}/${plan.solverReadiness.totalPhases}`,
+    `verification ${verification.status} issues=${verification.issueCount}`,
+    `verificationDetail ${verification.summary}`,
+    "",
+    "nodes",
+    ...plan.nodes.map(
+      (node) =>
+        `${node.order} ${node.id} kind=${node.kind} expr="${node.expression}" value=${node.value.toFixed(6)} deps=${node.dependencies.join("|") || "none"} output=${node.outputObjectId}`,
+    ),
+    "",
+    "operations",
+    ...plan.operations.map(
+      (operation) =>
+        `${operation.order} ${operation.id} kind=${operation.kind} node=${operation.nodeId} deps=${operation.dependencyNodeIds.join("|") || "none"} phases=${operation.phaseIds.join("|") || "none"} sources=${sourceObjects(operation.sourceObjectIds)} outputs=${outputObjects(operation.outputObjectIds)}`,
+    ),
+    "",
+    "phases",
+    ...plan.phases.map(
+      (phase, index) =>
+        `${String(index + 1).padStart(2, "0")} ${phase.id} kind=${phase.kind} expr="${phase.expression}" status=${phase.physicalStatus} method=${phaseCertificate(phase)} sources=${sourceObjects(phase.sourceObjectIds)} outputs=${outputObjects(phase.outputObjectIds)} certificate=${phase.foldCertificate?.id ?? "none"}`,
+    ),
+    "",
+    "transfers",
+    ...(plan.lengthTransfers.length > 0
+      ? plan.lengthTransfers.map(
+          (transfer) =>
+            `${transfer.id} expr="${transfer.expression}" from=${transfer.fromNodeId} output=${transfer.outputObjectId} reason=${transfer.reason}`,
+        )
+      : ["none"]),
+    "",
+    "verificationIssues",
+    ...(verification.issues.length > 0
+      ? verification.issues.map(
+          (issue) =>
+            `${issue.severity} ${issue.code} ${issue.referenceId} ${issue.summary}`,
+        )
+      : ["none"]),
     "",
   ].join("\n");
 }

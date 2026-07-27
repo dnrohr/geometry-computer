@@ -199,6 +199,11 @@ validating the version header, recompiling the normalized source and sample
 values through the origami function boundary, and restoring recognized
 paper-style fields plus active phase/progress. The script is not trusted as an
 executable plan.
+F7.19 adds `origamiFunctionConstructionScript` as a separate inspection export.
+It serializes nodes, operations, phases, length transfers, solver readiness, and
+plan-verification status from the compiled preview. Unlike replay scripts, this
+artifact is not imported; it is a reviewable construction-program listing for
+future macro authoring and verifier work.
 F7.1 keeps fold camera state in the origami UI/renderer layer. Camera modes
 change only the visible function-animation SVG viewBox; they do not alter the
 function plan, animation phase, solver readiness, or exported computation data.

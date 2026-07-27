@@ -17,6 +17,7 @@ import {
   origamiFunctionAnimationJson,
   origamiFunctionAnimatedSvg,
   origamiFunctionChallenges,
+  origamiFunctionConstructionScript,
   origamiFunctionExamples,
   origamiFunctionPaperPalettes,
   origamiFunctionReuseOptimizationSummary,
@@ -2409,6 +2410,22 @@ function OrigamiRoadmap() {
                 }}
               >
                 Export function script
+              </button>
+              <button
+                type="button"
+                disabled={timelineDisabled}
+                onClick={() => {
+                  const script =
+                    origamiFunctionConstructionScript(functionPreview);
+                  if (!script) return;
+                  downloadText(
+                    "origami-function-construction-script.txt",
+                    script,
+                    "text/plain",
+                  );
+                }}
+              >
+                Export construction script
               </button>
               <button
                 type="button"
