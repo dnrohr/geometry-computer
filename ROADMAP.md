@@ -965,6 +965,12 @@ worth exploring while staying honest about mathematical limits.
   function "why this fold?" overlay. It shows candidate branch context, the
   selected branch, and the certified or solver-backed status with CSS animation
   that respects reduced-motion settings.
+- F7.10 Add side-by-side algebraic and geometric proof modes.
+  Current implementation adds an origami-local proof-mode selector for the
+  function lab. The default `Both` mode shows expression progress and the
+  function object inspector side-by-side on desktop, while `Algebra` and
+  `Geometry` modes let users focus on either trace without changing the compiled
+  plan, animation phase, or compass-and-straightedge UI.
 
 Acceptance checks:
 
@@ -3287,5 +3293,4 @@ Only consider these after the MVP is working and documented.
 - Timeline scrubber with play/pause.
 - User-authored construction macros.
 - Support for exact symbolic coordinates.
-- Side-by-side algebraic and geometric proof modes.
 - Educational lesson mode.

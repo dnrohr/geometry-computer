@@ -737,6 +737,49 @@ const assertOrigamiFunctionPanel = async (page) => {
     );
   }
   await functionObjectInspector.getByText("proven-physical").waitFor();
+  const proofMode = page.getByRole("region", {
+    name: "Origami function proof mode",
+  });
+  await proofMode.getByRole("button", { name: "Both" }).waitFor();
+  if (
+    (await expressionProgress.getAttribute("data-proof-mode")) !== "both" ||
+    (await functionObjectInspector.getAttribute("data-proof-mode")) !== "both"
+  ) {
+    throw new Error("Function proof mode did not default to side-by-side.");
+  }
+  await proofMode.getByRole("button", { name: "Algebra" }).click();
+  await page.getByRole("region", { name: "Expression progress" }).waitFor();
+  if (
+    (await page
+      .getByRole("complementary", {
+        name: "Function object inspector",
+      })
+      .count()) !== 0
+  ) {
+    throw new Error("Geometry inspector stayed visible in algebra proof mode.");
+  }
+  await proofMode.getByRole("button", { name: "Geometry" }).click();
+  await page
+    .getByRole("complementary", {
+      name: "Function object inspector",
+    })
+    .waitFor();
+  if (
+    (await page
+      .getByRole("region", { name: "Expression progress" })
+      .count()) !== 0
+  ) {
+    throw new Error(
+      "Expression progress stayed visible in geometry proof mode.",
+    );
+  }
+  await proofMode.getByRole("button", { name: "Both" }).click();
+  await page.getByRole("region", { name: "Expression progress" }).waitFor();
+  await page
+    .getByRole("complementary", {
+      name: "Function object inspector",
+    })
+    .waitFor();
   const storyboard = page.getByRole("region", { name: "Fold storyboard" });
   const storyboardCount = await storyboard
     .getByRole("button", { name: /Storyboard phase / })

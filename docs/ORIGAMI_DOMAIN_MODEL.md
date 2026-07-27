@@ -222,6 +222,11 @@ F7.9 keeps animated branch-choice explanations as a UI projection of existing
 phase metadata. The sequence reads from `foldMotion.selectedBranch`, the active
 fold certificate, and active solver work item; it does not add plan phases,
 change solver readiness, or alter exported function data.
+F7.10 keeps side-by-side algebraic/geometric proof modes in UI state. The
+selector only controls whether expression progress, the function object
+inspector, or both panels are rendered. It does not change parser inputs,
+compiled plan nodes, animation phases, paper style, solver readiness, or export
+metadata.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

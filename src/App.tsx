@@ -485,6 +485,9 @@ function OrigamiRoadmap() {
     useState("classic-grid");
   const [functionPresentationMode, setFunctionPresentationMode] =
     useState(false);
+  const [functionProofMode, setFunctionProofMode] = useState<
+    "both" | "algebra" | "geometry"
+  >("both");
   const [showOrigamiDeveloperNotes, setShowOrigamiDeveloperNotes] =
     useState(false);
   const [showOrigamiFunctionDiagnostics, setShowOrigamiFunctionDiagnostics] =
@@ -2466,10 +2469,47 @@ function OrigamiRoadmap() {
           </label>
         </div>
         {!functionPresentationMode &&
-          functionExpressionProgressItems.length > 0 && (
+          functionExpressionProgressItems.length > 0 &&
+          activeFunctionInspector && (
+            <section
+              className="origami-function-proof-mode"
+              aria-label="Origami function proof mode"
+            >
+              <div>
+                <h3>Proof mode</h3>
+                <span>
+                  {functionProofMode === "both"
+                    ? "Algebra and geometry"
+                    : functionProofMode === "algebra"
+                      ? "Algebra trace"
+                      : "Geometry trace"}
+                </span>
+              </div>
+              {(
+                [
+                  ["both", "Both"],
+                  ["algebra", "Algebra"],
+                  ["geometry", "Geometry"],
+                ] satisfies Array<[typeof functionProofMode, string]>
+              ).map(([mode, label]) => (
+                <button
+                  key={mode}
+                  type="button"
+                  aria-pressed={functionProofMode === mode}
+                  onClick={() => setFunctionProofMode(mode)}
+                >
+                  {label}
+                </button>
+              ))}
+            </section>
+          )}
+        {!functionPresentationMode &&
+          functionExpressionProgressItems.length > 0 &&
+          functionProofMode !== "geometry" && (
             <section
               className="origami-function-expression-progress"
               aria-labelledby="origami-function-expression-progress-title"
+              data-proof-mode={functionProofMode}
             >
               <div className="origami-function-expression-progress-header">
                 <h3 id="origami-function-expression-progress-title">
@@ -2512,81 +2552,85 @@ function OrigamiRoadmap() {
               </ol>
             </section>
           )}
-        {!functionPresentationMode && activeFunctionInspector && (
-          <aside
-            className="origami-function-object-inspector"
-            aria-label="Function object inspector"
-          >
-            <div className="origami-function-object-inspector-header">
-              <div>
-                <p className="section-label">Object inspector</p>
-                <h3>Function object</h3>
+        {!functionPresentationMode &&
+          activeFunctionInspector &&
+          functionProofMode !== "algebra" && (
+            <aside
+              className="origami-function-object-inspector"
+              aria-label="Function object inspector"
+              data-proof-mode={functionProofMode}
+            >
+              <div className="origami-function-object-inspector-header">
+                <div>
+                  <p className="section-label">Object inspector</p>
+                  <h3>Function object</h3>
+                </div>
+                <span
+                  data-physical-status={activeFunctionInspector.physicalStatus}
+                >
+                  {activeFunctionInspector.physicalStatus}
+                </span>
               </div>
-              <span
-                data-physical-status={activeFunctionInspector.physicalStatus}
-              >
-                {activeFunctionInspector.physicalStatus}
-              </span>
-            </div>
-            <dl>
-              <div>
-                <dt>Phase</dt>
-                <dd>{`${activeFunctionInspector.phaseId} ${activeFunctionInspector.phaseKind}`}</dd>
-              </div>
-              <div>
-                <dt>Expression</dt>
-                <dd>{activeFunctionInspector.expression}</dd>
-              </div>
-              <div>
-                <dt>Node</dt>
-                <dd>{`${activeFunctionInspector.nodeId} ${activeFunctionInspector.nodeKind}`}</dd>
-              </div>
-              <div>
-                <dt>Sampled value</dt>
-                <dd>{activeFunctionInspector.sampledValue}</dd>
-              </div>
-              <div>
-                <dt>Output object</dt>
-                <dd>{activeFunctionInspector.outputObjectId}</dd>
-              </div>
-              <div>
-                <dt>Dependency depth</dt>
-                <dd>{activeFunctionInspector.dependencyDepth}</dd>
-              </div>
-              <div>
-                <dt>Sources</dt>
-                <dd>
-                  {activeFunctionInspector.sourceObjectIds.join(", ") ||
-                    "paper"}
-                </dd>
-              </div>
-              <div>
-                <dt>Outputs</dt>
-                <dd>
-                  {activeFunctionInspector.outputObjectIds.join(", ") || "none"}
-                </dd>
-              </div>
-              <div>
-                <dt>Proof claims</dt>
-                <dd>
-                  {activeFunctionInspector.proofClaimIds.join(", ") || "none"}
-                </dd>
-              </div>
-              <div>
-                <dt>Branch</dt>
-                <dd>{activeFunctionInspector.selectedBranch}</dd>
-              </div>
-              <div>
-                <dt>Certificate</dt>
-                <dd>{activeFunctionInspector.certificateDetail ?? "none"}</dd>
-              </div>
-              <div>
-                <dt>Solver detail</dt>
-                <dd>{activeFunctionInspector.solverDetail ?? "none"}</dd>
-              </div>
-            </dl>
-          </aside>
-        )}
+              <dl>
+                <div>
+                  <dt>Phase</dt>
+                  <dd>{`${activeFunctionInspector.phaseId} ${activeFunctionInspector.phaseKind}`}</dd>
+                </div>
+                <div>
+                  <dt>Expression</dt>
+                  <dd>{activeFunctionInspector.expression}</dd>
+                </div>
+                <div>
+                  <dt>Node</dt>
+                  <dd>{`${activeFunctionInspector.nodeId} ${activeFunctionInspector.nodeKind}`}</dd>
+                </div>
+                <div>
+                  <dt>Sampled value</dt>
+                  <dd>{activeFunctionInspector.sampledValue}</dd>
+                </div>
+                <div>
+                  <dt>Output object</dt>
+                  <dd>{activeFunctionInspector.outputObjectId}</dd>
+                </div>
+                <div>
+                  <dt>Dependency depth</dt>
+                  <dd>{activeFunctionInspector.dependencyDepth}</dd>
+                </div>
+                <div>
+                  <dt>Sources</dt>
+                  <dd>
+                    {activeFunctionInspector.sourceObjectIds.join(", ") ||
+                      "paper"}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Outputs</dt>
+                  <dd>
+                    {activeFunctionInspector.outputObjectIds.join(", ") ||
+                      "none"}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Proof claims</dt>
+                  <dd>
+                    {activeFunctionInspector.proofClaimIds.join(", ") || "none"}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Branch</dt>
+                  <dd>{activeFunctionInspector.selectedBranch}</dd>
+                </div>
+                <div>
+                  <dt>Certificate</dt>
+                  <dd>{activeFunctionInspector.certificateDetail ?? "none"}</dd>
+                </div>
+                <div>
+                  <dt>Solver detail</dt>
+                  <dd>{activeFunctionInspector.solverDetail ?? "none"}</dd>
+                </div>
+              </dl>
+            </aside>
+          )}
         {!functionPresentationMode &&
           solverReadiness &&
           solverReadiness.workItems.length > 0 && (

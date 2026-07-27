@@ -233,6 +233,11 @@ The flat-origami tab provides:
   candidate context, selected branch, and certified or solver status as three
   accessible list steps. The animation is CSS-only and follows the global
   reduced-motion media query.
+- F7.10 adds side-by-side algebraic and geometric proof modes to the function
+  lab. `Both` mode renders expression progress and the function object inspector
+  in adjacent desktop columns, while `Algebra` and `Geometry` modes focus on one
+  panel. The selector is local UI state and does not alter function plans,
+  exports, or compass-and-straightedge proof cards.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

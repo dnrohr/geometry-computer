@@ -1364,6 +1364,53 @@ describe("App", () => {
         "The result is already present as a marked length and needs no additional fold.",
       ),
     ).toBeInTheDocument();
+
+    const proofMode = screen.getByRole("region", {
+      name: "Origami function proof mode",
+    });
+    expect(
+      within(proofMode).getByRole("button", { name: "Both" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(progress).toHaveAttribute("data-proof-mode", "both");
+    expect(functionInspector).toHaveAttribute("data-proof-mode", "both");
+
+    fireEvent.click(within(proofMode).getByRole("button", { name: "Algebra" }));
+    expect(
+      within(proofMode).getByRole("button", { name: "Algebra" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.getByRole("region", { name: "Expression progress" }),
+    ).toHaveAttribute("data-proof-mode", "algebra");
+    expect(
+      screen.queryByRole("complementary", {
+        name: "Function object inspector",
+      }),
+    ).toBeNull();
+
+    fireEvent.click(
+      within(proofMode).getByRole("button", { name: "Geometry" }),
+    );
+    expect(
+      within(proofMode).getByRole("button", { name: "Geometry" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen.queryByRole("region", { name: "Expression progress" }),
+    ).toBeNull();
+    expect(
+      screen.getByRole("complementary", {
+        name: "Function object inspector",
+      }),
+    ).toHaveAttribute("data-proof-mode", "geometry");
+
+    fireEvent.click(within(proofMode).getByRole("button", { name: "Both" }));
+    expect(
+      screen.getByRole("region", { name: "Expression progress" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("complementary", {
+        name: "Function object inspector",
+      }),
+    ).toBeInTheDocument();
   });
 
   it("supports keyboard control for the origami animation timeline", () => {
