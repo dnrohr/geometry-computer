@@ -1037,6 +1037,13 @@ const assertOrigamiFunctionPanel = async (page) => {
       "Function script export remained visible in presentation mode.",
     );
   }
+  if (
+    (await page.getByRole("button", { name: "Show fold lesson" }).count()) !== 0
+  ) {
+    throw new Error(
+      "Function fold lesson remained visible in presentation mode.",
+    );
+  }
   await page.getByRole("button", { name: "Exit presentation mode" }).click();
   await page
     .getByRole("textbox", { exact: true, name: "Origami function" })
@@ -1601,6 +1608,18 @@ const assertOrigamiFunctionPanel = async (page) => {
     .getByLabel("Function animation phase readout")
     .getByText("Phase 14 of 14")
     .waitFor();
+  await page
+    .getByRole("combobox", { name: "Function animation phase" })
+    .selectOption("origami-function-phase-9");
+  await functionStatus.getByText("origami-function-phase-9 @ 0.57").waitFor();
+  await page.getByRole("button", { name: "Show fold lesson" }).click();
+  const lesson = page.getByRole("region", { name: "Origami function lesson" });
+  await lesson.getByText("geometric-mean-square-root").waitFor();
+  await lesson.getByRole("button", { name: "Final result" }).click();
+  await functionStatus.getByText("origami-function-phase-14 @ 1.00").waitFor();
+  await lesson.getByRole("button", { name: "Start" }).click();
+  await functionStatus.getByText("origami-function-phase-1 @ 0.00").waitFor();
+  await page.getByRole("button", { name: "Hide fold lesson" }).click();
   await page
     .getByRole("combobox", { name: "Function animation phase" })
     .selectOption("origami-function-phase-9");

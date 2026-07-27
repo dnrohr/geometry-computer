@@ -686,6 +686,9 @@ describe("App", () => {
       screen.queryByRole("group", { name: "Function fold camera" }),
     ).toBeNull();
     expect(
+      screen.queryByRole("region", { name: "Origami function lesson" }),
+    ).toBeNull();
+    expect(
       screen.queryByRole("checkbox", { name: "Show onion skin folds" }),
     ).toBeNull();
     expect(
@@ -696,6 +699,9 @@ describe("App", () => {
     ).toBeNull();
     expect(
       screen.getByRole("button", { name: "Show visual options" }),
+    ).toHaveAttribute("aria-expanded", "false");
+    expect(
+      screen.getByRole("button", { name: "Show fold lesson" }),
     ).toHaveAttribute("aria-expanded", "false");
     fireEvent.click(
       screen.getByRole("button", { name: "Show visual options" }),
@@ -1205,6 +1211,28 @@ describe("App", () => {
       screen.getByRole("region", { name: "Origami function proof mode" }),
     ).toBeInTheDocument();
 
+    fireEvent.click(screen.getByRole("button", { name: "Show fold lesson" }));
+    let lesson = screen.getByRole("region", {
+      name: "Origami function lesson",
+    });
+    expect(lesson).toBeInTheDocument();
+    expect(within(lesson).getByText("paper-placement")).toBeInTheDocument();
+    fireEvent.click(
+      within(lesson).getByRole("button", { name: "First proof" }),
+    );
+    lesson = screen.getByRole("region", {
+      name: "Origami function lesson",
+    });
+    expect(within(lesson).getByText("mark-length")).toBeInTheDocument();
+    fireEvent.click(
+      within(lesson).getByRole("button", { name: "Final result" }),
+    );
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a) = sqrt(a + 1)",
+      }),
+    ).toHaveAttribute("data-phase-id", "origami-function-phase-14");
+
     fireEvent.click(screen.getByRole("button", { name: "Show diagnostics" }));
     expect(screen.getAllByText("ready").length).toBeGreaterThan(0);
     expect(
@@ -1250,6 +1278,9 @@ describe("App", () => {
     ).toBeNull();
     expect(
       screen.queryByRole("group", { name: "Function fold camera" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("region", { name: "Origami function lesson" }),
     ).toBeNull();
   });
 

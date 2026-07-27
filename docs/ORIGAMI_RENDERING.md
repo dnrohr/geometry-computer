@@ -255,6 +255,10 @@ The flat-origami tab provides:
   lists compiled phase labels and expressions, updates the same preview phase as
   the minimap/storyboard/keyboard controls, and pairs with a compact phase
   readout while staying hidden in presentation mode.
+- F7.13 adds an optional fold lesson panel. It stays collapsed by default,
+  renders function/phase/evidence/result summary fields from existing preview
+  state, and offers start, first-proof, and final-result phase jumps without
+  changing the compiled plan.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

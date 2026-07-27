@@ -766,6 +766,14 @@ select:focus-visible,
   min-width: 0;
 }
 
+.origami-function-animation-heading-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
 .origami-function-animation-heading button {
   flex: 0 0 auto;
 }
@@ -861,6 +869,59 @@ select:focus-visible,
   color: var(--accent);
   font-size: 0.76rem;
   font-weight: 750;
+}
+
+.origami-function-lesson {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(8rem, 0.8fr) minmax(0, 2fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid rgb(129 199 212 / 34%);
+  border-radius: 0.5rem;
+  background: rgb(129 199 212 / 8%);
+}
+
+.origami-function-lesson h3 {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: 0.9rem;
+}
+
+.origami-function-lesson dl {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin: 0;
+}
+
+.origami-function-lesson dt {
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.origami-function-lesson dd {
+  margin: 0.12rem 0 0;
+  overflow-wrap: anywhere;
+  color: var(--foreground);
+  font-size: 0.74rem;
+  font-weight: 750;
+}
+
+.origami-function-lesson-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  justify-content: flex-end;
+}
+
+.origami-function-lesson-actions button {
+  min-height: 2rem;
+  padding: 0.42rem 0.58rem;
 }
 
 .origami-function-animation {
@@ -2784,6 +2845,24 @@ text.geometry-result,
   }
   .origami-function-animation-panel {
     grid-template-columns: 1fr;
+  }
+  .origami-function-animation-heading {
+    align-items: flex-start;
+  }
+  .origami-function-animation-heading-actions {
+    width: 100%;
+  }
+  .origami-function-lesson {
+    grid-template-columns: 1fr;
+  }
+  .origami-function-lesson dl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .origami-function-lesson-actions {
+    justify-content: stretch;
+  }
+  .origami-function-lesson-actions button {
+    flex: 1 1 7rem;
   }
   .origami-function-timeline {
     grid-template-columns: repeat(3, minmax(0, 1fr));

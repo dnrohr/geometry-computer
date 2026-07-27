@@ -242,6 +242,10 @@ F7.12 keeps the phase scrubber as a UI projection of compiled phase IDs. The
 selector calls the same local phase setter as minimap, storyboard, and keyboard
 timeline controls; it does not add timeline model state or shared construction
 interfaces.
+F7.13 keeps fold lesson mode as a read-only UI summary over the current compiled
+preview. Lesson fields are derived from function source, active phase,
+certificate or solver evidence, and sampled result, while lesson jump buttons
+reuse the local phase setter.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

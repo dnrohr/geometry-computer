@@ -502,6 +502,8 @@ function OrigamiRoadmap() {
     showOrigamiFunctionVisualOptions,
     setShowOrigamiFunctionVisualOptions,
   ] = useState(false);
+  const [showOrigamiFunctionLesson, setShowOrigamiFunctionLesson] =
+    useState(false);
   const [progress, setProgress] = useState(1);
   const [activeStepId, setActiveStepId] = useState<string>();
   const [selectedObjectId, setSelectedObjectId] = useState<string>();
@@ -987,6 +989,27 @@ function OrigamiRoadmap() {
   const activeFunctionPhaseIndex = functionPhaseMinimapItems.findIndex(
     ({ isActive }) => isActive,
   );
+  const firstFunctionEvidencePhaseId =
+    functionPreview.status === "compiled"
+      ? functionPreview.plan.phases.find(
+          (phase) =>
+            phase.kind !== "place-paper" &&
+            (phase.foldCertificate ||
+              functionPreview.plan.solverReadiness.workItems.some(
+                ({ phaseId }) => phaseId === phase.id,
+              )),
+        )?.id
+      : undefined;
+  const finalFunctionPhaseId =
+    functionPreview.status === "compiled"
+      ? functionPreview.plan.resultExtraction.phaseId
+      : undefined;
+  const jumpOrigamiFunctionPhase = (phaseId?: string) => {
+    if (!phaseId) return;
+    setFunctionPreview((preview) =>
+      setOrigamiFunctionPreviewPhase(preview, phaseId),
+    );
+  };
   const activeFunctionNode =
     functionPreview.status === "compiled" && activeFunctionPhase
       ? (functionPreview.plan.nodes.find(
@@ -1635,21 +1658,110 @@ function OrigamiRoadmap() {
             <p className="section-label">Fold animation</p>
             <h2 id="origami-function-animation-title">Function fold preview</h2>
           </div>
-          <button
-            type="button"
-            aria-pressed={functionPresentationMode}
-            disabled={timelineDisabled && !functionPresentationMode}
-            onClick={
-              functionPresentationMode
-                ? exitOrigamiFunctionPresentation
-                : startOrigamiFunctionPresentation
-            }
-          >
-            {functionPresentationMode
-              ? "Exit presentation mode"
-              : "Start presentation mode"}
-          </button>
+          <div className="origami-function-animation-heading-actions">
+            {!functionPresentationMode && (
+              <button
+                type="button"
+                aria-expanded={showOrigamiFunctionLesson}
+                disabled={timelineDisabled}
+                onClick={() =>
+                  setShowOrigamiFunctionLesson((isShowing) => !isShowing)
+                }
+              >
+                {showOrigamiFunctionLesson
+                  ? "Hide fold lesson"
+                  : "Show fold lesson"}
+              </button>
+            )}
+            <button
+              type="button"
+              aria-pressed={functionPresentationMode}
+              disabled={timelineDisabled && !functionPresentationMode}
+              onClick={
+                functionPresentationMode
+                  ? exitOrigamiFunctionPresentation
+                  : startOrigamiFunctionPresentation
+              }
+            >
+              {functionPresentationMode
+                ? "Exit presentation mode"
+                : "Start presentation mode"}
+            </button>
+          </div>
         </div>
+        {!functionPresentationMode &&
+          showOrigamiFunctionLesson &&
+          functionPreview.status === "compiled" && (
+            <section
+              className="origami-function-lesson"
+              aria-label="Origami function lesson"
+            >
+              <div>
+                <p className="section-label">Fold lesson</p>
+                <h3>{functionDisplayName}</h3>
+              </div>
+              <dl>
+                <div>
+                  <dt>Domain</dt>
+                  <dd>{functionReport.status}</dd>
+                </div>
+                <div>
+                  <dt>Phase</dt>
+                  <dd>{`${Math.max(1, activeFunctionPhaseIndex + 1)} of ${functionPhaseMinimapItems.length}: ${
+                    activeFunctionPhase
+                      ? formatOrigamiPhaseKind(activeFunctionPhase.kind)
+                      : "waiting"
+                  }`}</dd>
+                </div>
+                <div>
+                  <dt>Expression</dt>
+                  <dd>
+                    {activeFunctionPhase?.expression ?? functionDisplayName}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Evidence</dt>
+                  <dd>
+                    {activeFoldCertificate
+                      ? activeFoldCertificate.method
+                      : activeSolverWorkItem
+                        ? activeSolverWorkItem.requiredCapability
+                        : solverReadiness?.status}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Result</dt>
+                  <dd>{functionValue}</dd>
+                </div>
+              </dl>
+              <div className="origami-function-lesson-actions">
+                <button
+                  type="button"
+                  onClick={() =>
+                    jumpOrigamiFunctionPhase(functionPreview.plan.phases[0]?.id)
+                  }
+                >
+                  Start
+                </button>
+                <button
+                  type="button"
+                  disabled={!firstFunctionEvidencePhaseId}
+                  onClick={() =>
+                    jumpOrigamiFunctionPhase(firstFunctionEvidencePhaseId)
+                  }
+                >
+                  First proof
+                </button>
+                <button
+                  type="button"
+                  disabled={!finalFunctionPhaseId}
+                  onClick={() => jumpOrigamiFunctionPhase(finalFunctionPhaseId)}
+                >
+                  Final result
+                </button>
+              </div>
+            </section>
+          )}
         {!functionPresentationMode && (
           <aside
             className="origami-function-comparison"

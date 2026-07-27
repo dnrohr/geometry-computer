@@ -993,6 +993,11 @@ worth exploring while staying honest about mathematical limits.
   readout beside the existing previous/play/next, progress, speed, and reduced
   motion controls. Selecting a phase jumps through local preview state, remains
   hidden in presentation mode, and is covered by app tests plus browser smoke.
+- F7.13 Add an optional fold lesson mode.
+  Current implementation adds a collapsed `Show fold lesson` control to the
+  function animation panel. The lesson summarizes the compiled function, active
+  phase, expression, certificate or solver evidence, and sampled result, with
+  local jump buttons for start, first proof, and final result.
 
 Acceptance checks:
 
@@ -3314,4 +3319,4 @@ Only consider these after the MVP is working and documented.
 - Broader timeline authoring tools beyond the function phase scrubber.
 - User-authored construction macros.
 - Support for exact symbolic coordinates.
-- Educational lesson mode.
+- Broader guided curricula beyond the local fold lesson panel.
