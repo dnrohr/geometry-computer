@@ -7,10 +7,14 @@ export type OrigamiFunctionSimplificationHint = {
   replacement: string;
   reason:
     | "add-zero"
+    | "combine-add-constants"
+    | "combine-multiply-constants"
     | "subtract-zero"
+    | "subtract-self"
     | "multiply-one"
     | "multiply-zero"
     | "divide-one"
+    | "power-one"
     | "constant-fold";
   summary: string;
 };
@@ -21,23 +25,113 @@ const isConst = (expr: Expr, value: number) =>
 const constantValue = (expr: Expr): number | undefined =>
   expr.kind === "const" ? expr.value : undefined;
 
+const exprKey = (expr: Expr) => formatExpression(expr);
+
+const formatReplacement = (replacement: Expr | number | string) =>
+  typeof replacement === "string"
+    ? replacement
+    : typeof replacement === "number"
+      ? String(replacement)
+      : formatExpression(replacement);
+
+const combineWithOperator = (
+  expr: Expr,
+  operator: "+" | "*",
+  value: number,
+) => {
+  if (operator === "+" && value === 0) return formatExpression(expr);
+  if (operator === "+" && value < 0) {
+    return `${formatExpression(expr)} - ${Math.abs(value)}`;
+  }
+  if (operator === "*" && value === 1) return formatExpression(expr);
+  return `${formatExpression(expr)} ${operator} ${value}`;
+};
+
 const hint = (
   hints: OrigamiFunctionSimplificationHint[],
   reason: OrigamiFunctionSimplificationHint["reason"],
   expr: Expr,
-  replacement: Expr | number,
+  replacement: Expr | number | string,
   summary: string,
 ) => {
   hints.push({
     id: `origami-function-simplification-${hints.length + 1}`,
     expression: formatExpression(expr),
-    replacement:
-      typeof replacement === "number"
-        ? String(replacement)
-        : formatExpression(replacement),
+    replacement: formatReplacement(replacement),
     reason,
     summary,
   });
+};
+
+const maybeHintCombinedAdditionConstants = (
+  expr: Extract<Expr, { kind: "add" }>,
+  hints: OrigamiFunctionSimplificationHint[],
+) => {
+  const right = constantValue(expr.right);
+  if (right === undefined) return;
+  if (expr.left.kind === "add") {
+    const nestedRight = constantValue(expr.left.right);
+    if (nestedRight !== undefined) {
+      hint(
+        hints,
+        "combine-add-constants",
+        expr,
+        combineWithOperator(expr.left.left, "+", nestedRight + right),
+        "Adjacent constant offsets can be combined before planning folds.",
+      );
+      return;
+    }
+    const nestedLeft = constantValue(expr.left.left);
+    if (nestedLeft !== undefined) {
+      hint(
+        hints,
+        "combine-add-constants",
+        expr,
+        combineWithOperator(expr.left.right, "+", nestedLeft + right),
+        "Adjacent constant offsets can be combined before planning folds.",
+      );
+    }
+  } else if (expr.left.kind === "sub") {
+    const nestedRight = constantValue(expr.left.right);
+    if (nestedRight !== undefined) {
+      hint(
+        hints,
+        "combine-add-constants",
+        expr,
+        combineWithOperator(expr.left.left, "+", right - nestedRight),
+        "Constant offsets across nearby addition and subtraction can be combined.",
+      );
+    }
+  }
+};
+
+const maybeHintCombinedMultiplicationConstants = (
+  expr: Extract<Expr, { kind: "mul" }>,
+  hints: OrigamiFunctionSimplificationHint[],
+) => {
+  const right = constantValue(expr.right);
+  if (right === undefined || expr.left.kind !== "mul") return;
+  const nestedRight = constantValue(expr.left.right);
+  if (nestedRight !== undefined) {
+    hint(
+      hints,
+      "combine-multiply-constants",
+      expr,
+      combineWithOperator(expr.left.left, "*", nestedRight * right),
+      "Adjacent constant scale factors can be combined before planning folds.",
+    );
+    return;
+  }
+  const nestedLeft = constantValue(expr.left.left);
+  if (nestedLeft !== undefined) {
+    hint(
+      hints,
+      "combine-multiply-constants",
+      expr,
+      combineWithOperator(expr.left.right, "*", nestedLeft * right),
+      "Adjacent constant scale factors can be combined before planning folds.",
+    );
+  }
 };
 
 const visit = (expr: Expr, hints: OrigamiFunctionSimplificationHint[]) => {
@@ -55,6 +149,8 @@ const visit = (expr: Expr, hints: OrigamiFunctionSimplificationHint[]) => {
         );
       } else if (isConst(expr.right, 0)) {
         hint(hints, "add-zero", expr, expr.left, "Adding zero can be skipped.");
+      } else {
+        maybeHintCombinedAdditionConstants(expr, hints);
       }
       break;
     case "sub":
@@ -67,6 +163,14 @@ const visit = (expr: Expr, hints: OrigamiFunctionSimplificationHint[]) => {
           expr,
           expr.left,
           "Subtracting zero can be skipped.",
+        );
+      } else if (exprKey(expr.left) === exprKey(expr.right)) {
+        hint(
+          hints,
+          "subtract-self",
+          expr,
+          0,
+          "Subtracting a length from itself collapses to zero.",
         );
       }
       break;
@@ -97,6 +201,8 @@ const visit = (expr: Expr, hints: OrigamiFunctionSimplificationHint[]) => {
           expr.left,
           "Multiplication by one can reuse the same length.",
         );
+      } else {
+        maybeHintCombinedMultiplicationConstants(expr, hints);
       }
       break;
     case "div":
@@ -114,6 +220,15 @@ const visit = (expr: Expr, hints: OrigamiFunctionSimplificationHint[]) => {
       break;
     case "pow":
       visit(expr.base, hints);
+      if (expr.exponent === 1) {
+        hint(
+          hints,
+          "power-one",
+          expr,
+          expr.base,
+          "A first power can reuse the base length.",
+        );
+      }
       break;
     case "sqrt":
       visit(expr.value, hints);

@@ -43,4 +43,41 @@ describe("origamiFunctionSimplificationHints", () => {
   it("returns no hints for already direct expressions", () => {
     expect(hintsFor("f(a)=sqrt(a+1)")).toEqual([]);
   });
+
+  it("suggests combining adjacent constant offsets without rewriting the function", () => {
+    expect(hintsFor("f(a)=a+2+3")).toEqual([
+      expect.objectContaining({
+        expression: "a + 2 + 3",
+        reason: "combine-add-constants",
+        replacement: "a + 5",
+      }),
+    ]);
+    expect(hintsFor("f(a)=a-2+3")).toEqual([
+      expect.objectContaining({
+        expression: "a - 2 + 3",
+        reason: "combine-add-constants",
+        replacement: "a + 1",
+      }),
+    ]);
+  });
+
+  it("suggests simple algebraic collapse and scale-factor hints", () => {
+    expect(hintsFor("f(a)=(2*a)*3 + (a-a) + a^1")).toEqual([
+      expect.objectContaining({
+        expression: "2 * a * 3",
+        reason: "combine-multiply-constants",
+        replacement: "a * 6",
+      }),
+      expect.objectContaining({
+        expression: "a - a",
+        reason: "subtract-self",
+        replacement: "0",
+      }),
+      expect.objectContaining({
+        expression: "a^1",
+        reason: "power-one",
+        replacement: "a",
+      }),
+    ]);
+  });
 });

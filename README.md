@@ -21,6 +21,11 @@ as `f(a,b)=a*b`, quotients such as `f(a,b)=a/b`, shifted roots such as
 square-specialization, intercept-style, reciprocal-quotient, and positive
 geometric-mean traces.
 
+Simplification hints now cover local identities, constant folding, nearby
+constant-offset/scale-factor combinations, self-subtraction, and first-power
+reuse. They are shown as advice only; the fold animation continues to compile
+the entered normalized function.
+
 Origami computation is intentionally isolated for now so the current
 compass-and-straightedge workspace remains stable while fold-based models,
 proofs, paper styling, exports, and crease-pattern rendering are explored.

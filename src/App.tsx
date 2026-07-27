@@ -1500,7 +1500,11 @@ function OrigamiRoadmap() {
             >
               <div className="origami-function-simplification-heading">
                 <h3>Simplification hints</h3>
-                <span>{functionSimplificationHints.length} local hint</span>
+                <span>
+                  {`${functionSimplificationHints.length} simplification ${
+                    functionSimplificationHints.length === 1 ? "hint" : "hints"
+                  }`}
+                </span>
               </div>
               <ol>
                 {functionSimplificationHints.map((hint) => (

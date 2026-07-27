@@ -1435,7 +1435,7 @@ describe("App", () => {
     ).toHaveAttribute("data-phase-id", "origami-function-phase-2");
   });
 
-  it("surfaces local simplification hints without rewriting the origami plan", () => {
+  it("surfaces simplification hints without rewriting the origami plan", () => {
     render(<App />);
     fireEvent.click(
       screen.getByRole("button", { name: "Flat origami roadmap" }),
@@ -1445,7 +1445,7 @@ describe("App", () => {
     });
     fireEvent.change(
       within(functionPanel).getByRole("textbox", { name: "Origami function" }),
-      { target: { value: "f(a)=1*a+0" } },
+      { target: { value: "f(a)=1*a+2+3" } },
     );
     fireEvent.click(
       within(functionPanel).getByRole("button", {
@@ -1466,13 +1466,21 @@ describe("App", () => {
     const hints = within(functionPanel).getByRole("region", {
       name: "Origami function simplification hints",
     });
+    expect(
+      within(hints).getByText("2 simplification hints"),
+    ).toBeInTheDocument();
     expect(within(hints).getByText("1 * a")).toBeInTheDocument();
     expect(within(hints).getByText("=> a")).toBeInTheDocument();
-    expect(within(hints).getByText("1 * a + 0")).toBeInTheDocument();
-    expect(within(hints).getByText("=> 1 * a")).toBeInTheDocument();
+    expect(within(hints).getByText("1 * a + 2 + 3")).toBeInTheDocument();
+    expect(within(hints).getByText("=> 1 * a + 5")).toBeInTheDocument();
+    expect(
+      within(hints).getByText(
+        "Adjacent constant offsets can be combined before planning folds.",
+      ),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("img", {
-        name: "Origami function animation: f(a) = 1 * a + 0",
+        name: "Origami function animation: f(a) = 1 * a + 2 + 3",
       }),
     ).toBeInTheDocument();
   });

@@ -1008,6 +1008,11 @@ worth exploring while staying honest about mathematical limits.
   when the parsed function contains simple identity or constant-folding
   opportunities. Hints explain possible rewrites such as `1 * a => a` without
   changing the compiled origami plan.
+- F7.16 Broaden algebraic simplification hints beyond one-step identities.
+  Current implementation also reports adjacent constant-offset combinations,
+  adjacent constant scale-factor combinations, self-subtraction collapse, and
+  first-power reuse. These remain advisory only: the fold animation still
+  compiles the original normalized function.
 
 Acceptance checks:
 
@@ -3321,7 +3326,7 @@ Do not begin Milestone 3 until Milestone 2 is committed and pushed.
 
 Only consider these after the MVP is working and documented.
 
-- Broader algebraic simplification beyond local identity hints.
+- Full AST simplification/rewrite previews beyond advisory hints.
 - Broader common-subexpression optimization beyond visible length reuse.
 - Broader construction scripts beyond origami function replay.
 - Formal construction verification.
