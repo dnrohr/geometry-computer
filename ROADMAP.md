@@ -813,6 +813,11 @@ Goal: make the animation teach the computation, not merely decorate it.
   current phase.
 - F5.4 Show rejected branches and degeneracy warnings directly on the animation
   when the planner records ambiguity.
+  Current implementation renders active-phase ambiguity/fallback warning chips
+  inside the function SVG, exposes a warning count on the animation metadata,
+  and shows a compact animation-stage strip that names branch ambiguity,
+  fallback solver status, and the selected branch whose alternate geometric
+  branches are still awaiting future physical solver rejection records.
 - F5.5 Add optional measurement labels for input lengths, unit references,
   intermediate values, and final output.
 - F5.6 Add a comparison strip that shows expression tree progress alongside the

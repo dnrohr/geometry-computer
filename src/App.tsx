@@ -41,6 +41,7 @@ import { SvgConstructionCanvas } from "./render/svg/SvgConstructionCanvas";
 import { SvgOrigamiCanvas } from "./render/origami/svg/SvgOrigamiCanvas";
 import {
   SvgOrigamiFunctionAnimation,
+  type OrigamiFunctionAnimationWarning,
   type OrigamiFunctionCameraMode,
 } from "./render/origami/function/SvgOrigamiFunctionAnimation";
 import { buildOrigamiVisualRoleMap } from "./render/origami/visualRoles";
@@ -869,6 +870,36 @@ function OrigamiRoadmap() {
       }
     : undefined;
   const activeFunctionBranch = activeFunctionPhase?.foldMotion?.selectedBranch;
+  const activeFunctionAmbiguityDiagnostics =
+    functionPreview.status === "compiled" && activeFunctionPhase
+      ? functionPreview.plan.diagnostics.filter(
+          ({ code, expression }) =>
+            code === "BRANCH_AMBIGUITY" &&
+            expression === activeFunctionPhase.expression,
+        )
+      : [];
+  const activeFunctionAnimationWarnings: OrigamiFunctionAnimationWarning[] = [
+    ...activeFunctionAmbiguityDiagnostics.map((diagnostic) => ({
+      id: `diagnostic-${diagnostic.code}-${diagnostic.expression}`,
+      label: "Ambiguity recorded",
+      detail: diagnostic.message,
+      tone: "info" as const,
+    })),
+    ...(activeSolverWorkItem
+      ? [
+          {
+            id: `solver-${activeSolverWorkItem.id}`,
+            label: "Solver fallback",
+            detail: activeSolverWorkItem.summary,
+            tone: "warning" as const,
+          },
+        ]
+      : []),
+  ];
+  const activeRejectedBranchDetail =
+    activeFunctionBranch && activeSolverWorkItem
+      ? `Selected ${activeFunctionBranch.label}; alternate geometric branches are held for future physical solver rejection records.`
+      : undefined;
   const activeFunctionFoldExplanation = activeFunctionPhase
     ? {
         title: `${formatOrigamiPhaseKind(activeFunctionPhase.kind)}: ${activeFunctionPhase.expression}`,
@@ -1501,9 +1532,32 @@ function OrigamiRoadmap() {
             highlightedPhaseId={hoveredFunctionPhaseId}
             onionSkin={functionOnionSkin}
             onPhaseHover={setHoveredFunctionPhaseId}
+            phaseWarnings={activeFunctionAnimationWarnings}
             preview={functionPreview}
             svgRef={functionAnimationSvgRef}
           />
+          {activeFunctionAnimationWarnings.length > 0 && (
+            <aside
+              className="origami-function-ambiguity-strip"
+              aria-label="Function animation ambiguity warnings"
+              aria-live="polite"
+            >
+              {activeFunctionAnimationWarnings.map((warning) => (
+                <span
+                  key={warning.id}
+                  data-warning-tone={warning.tone}
+                  title={warning.detail}
+                >
+                  {warning.label}
+                </span>
+              ))}
+              {activeRejectedBranchDetail && (
+                <span data-warning-tone="warning">
+                  {activeRejectedBranchDetail}
+                </span>
+              )}
+            </aside>
+          )}
           {activeFunctionFoldExplanation && (
             <aside
               className="origami-function-why-overlay"

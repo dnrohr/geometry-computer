@@ -741,6 +741,24 @@ const assertOrigamiFunctionPanel = async (page) => {
       "origami-function-node-output-3 -> origami-function-node-output-4-align-fold",
     )
     .waitFor();
+  const animationWarnings = page.getByLabel(
+    "Function animation ambiguity warnings",
+  );
+  await animationWarnings.getByText("Ambiguity recorded").waitFor();
+  await animationWarnings.getByText("Solver fallback").waitFor();
+  await animationWarnings
+    .getByText(/alternate geometric branches are held/)
+    .waitFor();
+  const animationWarningCount = await page
+    .getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    })
+    .getAttribute("data-warning-count");
+  if (animationWarningCount !== "2") {
+    throw new Error(
+      `Function animation warning count mismatch: ${animationWarningCount}`,
+    );
+  }
   const activeMinimapItem = await page
     .getByRole("button", {
       name: "Jump to function phase origami-function-phase-9",

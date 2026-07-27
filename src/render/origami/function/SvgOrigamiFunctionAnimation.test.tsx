@@ -220,6 +220,48 @@ describe("SvgOrigamiFunctionAnimation", () => {
     expect(onPhaseHover).toHaveBeenCalledWith(undefined);
   });
 
+  it("draws active phase ambiguity warnings inside the animation", () => {
+    const preview = compileOrigamiFunctionPreview("sqrt(a+1)");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+    const active = setOrigamiFunctionPreviewPhase(
+      preview,
+      "origami-function-phase-9",
+    );
+
+    const { container } = render(
+      <SvgOrigamiFunctionAnimation
+        phaseWarnings={[
+          {
+            id: "branch-ambiguity",
+            label: "Ambiguity recorded",
+            detail: "The sampled plan selected one square-root branch.",
+            tone: "info",
+          },
+          {
+            id: "solver-fallback",
+            label: "Solver fallback",
+            detail: "Physical fold-solver support is still pending.",
+            tone: "warning",
+          },
+        ]}
+        preview={active}
+      />,
+    );
+    const svg = screen.getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    });
+
+    expect(svg).toHaveAttribute("data-warning-count", "2");
+    expect(
+      container.querySelector("[data-warning-id='branch-ambiguity']"),
+    ).toHaveAttribute("data-warning-tone", "info");
+    expect(
+      container.querySelector("[data-warning-id='solver-fallback']"),
+    ).toHaveAttribute("data-warning-tone", "warning");
+    expect(screen.getByText("Ambiguity recorded")).toBeInTheDocument();
+    expect(screen.getByText("Solver fallback")).toBeInTheDocument();
+  });
+
   it("exposes the back side and keeps side fills distinct during fold phases", () => {
     const preview = compileOrigamiFunctionPreview("f(a,b)=a*b");
     if (preview.status !== "compiled") throw new Error("Expected compiled");

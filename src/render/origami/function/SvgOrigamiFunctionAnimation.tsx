@@ -7,11 +7,19 @@ export type OrigamiFunctionCameraMode =
   | "active-fold"
   | "result";
 
+export type OrigamiFunctionAnimationWarning = {
+  id: string;
+  label: string;
+  detail: string;
+  tone: "info" | "warning";
+};
+
 type SvgOrigamiFunctionAnimationProps = {
   cameraMode?: OrigamiFunctionCameraMode;
   highlightedPhaseId?: string;
   onionSkin?: boolean;
   onPhaseHover?: (phaseId?: string) => void;
+  phaseWarnings?: readonly OrigamiFunctionAnimationWarning[];
   preview: OrigamiFunctionPreview;
   snapshotMode?: "animation" | "crease-pattern";
   svgRef?: Ref<SVGSVGElement>;
@@ -41,6 +49,7 @@ export function SvgOrigamiFunctionAnimation({
   highlightedPhaseId,
   onionSkin = false,
   onPhaseHover,
+  phaseWarnings = [],
   preview,
   snapshotMode = "animation",
   svgRef,
@@ -125,6 +134,7 @@ export function SvgOrigamiFunctionAnimation({
       data-camera-mode={cameraMode}
       data-paper-shape="square"
       data-highlighted-phase-id={highlightedPhaseId}
+      data-warning-count={phaseWarnings.length}
       data-dependency-highlight={
         activePhaseIsHighlighted ? "active-phase" : undefined
       }
@@ -426,6 +436,28 @@ export function SvgOrigamiFunctionAnimation({
       <text className="origami-function-animation-value" x="252" y="202">
         {finalValue}
       </text>
+      {phaseWarnings.length > 0 && !isCreasePattern && (
+        <g
+          className="origami-function-animation-warnings"
+          aria-label="Function animation warnings"
+        >
+          {phaseWarnings.slice(0, 3).map((warning, index) => (
+            <g
+              key={warning.id}
+              className={`origami-function-animation-warning origami-function-animation-warning-${warning.tone}`}
+              data-warning-id={warning.id}
+              data-warning-tone={warning.tone}
+              transform={`translate(58 ${24 + index * 22})`}
+            >
+              <title>{`${warning.label}: ${warning.detail}`}</title>
+              <rect width="118" height="16" rx="4" />
+              <text x="7" y="11">
+                {warning.label}
+              </text>
+            </g>
+          ))}
+        </g>
+      )}
       <g
         className="origami-function-value-strip"
         aria-label="Function animation value readout"

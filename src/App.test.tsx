@@ -815,6 +815,19 @@ describe("App", () => {
         name: "Origami function animation: f(a) = sqrt(a + 1)",
       }),
     ).toHaveAttribute("data-phase-id", "origami-function-phase-9");
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a) = sqrt(a + 1)",
+      }),
+    ).toHaveAttribute("data-warning-count", "2");
+    const ambiguityWarnings = screen.getByLabelText(
+      "Function animation ambiguity warnings",
+    );
+    expect(ambiguityWarnings).toHaveTextContent("Ambiguity recorded");
+    expect(ambiguityWarnings).toHaveTextContent("Solver fallback");
+    expect(ambiguityWarnings).toHaveTextContent(
+      "alternate geometric branches are held",
+    );
     const whyThisFold = screen.getByLabelText("Why this fold?");
     expect(whyThisFold).toHaveTextContent("Align Fold: sqrt(a + 1)");
     expect(whyThisFold).toHaveTextContent(
