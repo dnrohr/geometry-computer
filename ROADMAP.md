@@ -853,7 +853,9 @@ replay, or share.
   animation phases, paper style, proof links, diagnostics, and result metadata.
   Current export progress includes top-level solver readiness and active-phase
   metadata so a saved animation identifies the visible certified fold or solver
-  work item without re-deriving it from the full plan.
+  work item without re-deriving it from the full plan. Current exports also
+  include expression-progress and function-object-inspector snapshots so saved
+  animation JSON preserves the visible trace/inspection state.
 - F6.2 Export static SVG snapshots for current phase, final crease pattern, and
   final result view.
   Current implementation exports the visible function-animation phase and a
@@ -874,6 +876,8 @@ replay, or share.
   replay errors inside the origami function lab.
 - F6.6 Extend browser smoke tests to verify function-plan JSON and SVG exports
   contain the same scene, phase, paper-style, and result IDs shown in the UI.
+  Current browser smoke also checks expression-progress and object-inspector
+  metadata inside the downloaded function animation JSON.
 
 Acceptance checks:
 

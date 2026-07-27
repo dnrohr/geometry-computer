@@ -7,6 +7,7 @@ import type {
   OrigamiFoldAnimationState,
   OrigamiFunctionAnimationActivePhase,
   OrigamiFunctionAnimationExport,
+  OrigamiFunctionExpressionProgressStatus,
   OrigamiFunctionPanelState,
   OrigamiFunctionPlan,
   OrigamiPaperStyle,
@@ -245,23 +246,50 @@ export function origamiFunctionAnimationExport(
 ): OrigamiFunctionAnimationExport | undefined {
   if (preview.status !== "compiled") return undefined;
   const activePhase = activePhaseForExport(preview);
+  const expressionProgress = expressionProgressForExport(preview);
+  const objectInspector = objectInspectorForExport(preview);
   return {
     version: 1,
     plan: preview.plan,
     animation: preview.animation,
     activePhase,
+    expressionProgress,
+    objectInspector,
     solverReadiness: preview.plan.solverReadiness,
     paperStyle: preview.paperStyle,
     ...(exportedAt ? { exportedAt } : {}),
   };
 }
 
+function activePhaseObject(
+  preview: Extract<OrigamiFunctionPreview, { status: "compiled" }>,
+) {
+  return (
+    preview.plan.phases.find(({ id }) => id === preview.animation.phaseId) ??
+    preview.plan.phases[0]
+  );
+}
+
+function activeNodeForExport(
+  preview: Extract<OrigamiFunctionPreview, { status: "compiled" }>,
+) {
+  const phase = activePhaseObject(preview);
+  return (
+    preview.plan.nodes.find(
+      ({ expression }) => expression === phase.expression,
+    ) ??
+    (phase.id === preview.plan.resultExtraction.phaseId
+      ? preview.plan.nodes.find(
+          ({ id }) => id === preview.plan.resultExtraction.nodeId,
+        )
+      : undefined)
+  );
+}
+
 function activePhaseForExport(
   preview: Extract<OrigamiFunctionPreview, { status: "compiled" }>,
 ): OrigamiFunctionAnimationActivePhase {
-  const phase =
-    preview.plan.phases.find(({ id }) => id === preview.animation.phaseId) ??
-    preview.plan.phases[0];
+  const phase = activePhaseObject(preview);
   const solverWorkItem = preview.plan.solverReadiness.workItems.find(
     ({ phaseId }) => phaseId === phase.id,
   );
@@ -274,6 +302,76 @@ function activePhaseForExport(
       ? { foldCertificate: phase.foldCertificate }
       : {}),
     ...(solverWorkItem ? { solverWorkItem } : {}),
+  };
+}
+
+function expressionProgressForExport(
+  preview: Extract<OrigamiFunctionPreview, { status: "compiled" }>,
+): OrigamiFunctionAnimationExport["expressionProgress"] {
+  const activeNode = activeNodeForExport(preview);
+  const activeNodeOrder = activeNode?.order ?? 0;
+  const items = preview.plan.nodes.map((node) => {
+    const jumpTarget = preview.plan.dependencyJumpTargets.find(
+      ({ nodeId }) => nodeId === node.id,
+    );
+    const status: OrigamiFunctionExpressionProgressStatus =
+      node.id === activeNode?.id
+        ? "active"
+        : node.order < activeNodeOrder
+          ? "complete"
+          : "pending";
+    return {
+      nodeId: node.id,
+      expression: node.expression,
+      kind: node.kind,
+      value: node.value,
+      dependencyDepth: node.dependencyDepth,
+      dependencyCount: node.dependencies.length,
+      outputObjectId: node.outputObjectId,
+      ...(jumpTarget?.phaseId ? { phaseId: jumpTarget.phaseId } : {}),
+      status,
+    };
+  });
+  return {
+    ...(activeNode ? { activeNodeId: activeNode.id } : {}),
+    activeNodeOrder,
+    totalNodes: preview.plan.nodes.length,
+    items,
+  };
+}
+
+function objectInspectorForExport(
+  preview: Extract<OrigamiFunctionPreview, { status: "compiled" }>,
+): OrigamiFunctionAnimationExport["objectInspector"] {
+  const phase = activePhaseObject(preview);
+  const activeNode = activeNodeForExport(preview);
+  const solverWorkItem = preview.plan.solverReadiness.workItems.find(
+    ({ phaseId }) => phaseId === phase.id,
+  );
+  return {
+    phaseId: phase.id,
+    phaseKind: phase.kind,
+    expression: phase.expression,
+    ...(activeNode
+      ? {
+          nodeId: activeNode.id,
+          nodeKind: activeNode.kind,
+          sampledValue: activeNode.value,
+          outputObjectId: activeNode.outputObjectId,
+        }
+      : {}),
+    dependencyDepth: activeNode?.dependencyDepth ?? 0,
+    sourceObjectIds: phase.sourceObjectIds,
+    outputObjectIds: phase.outputObjectIds,
+    proofClaimIds: phase.proofClaimIds,
+    ...(phase.foldMotion?.selectedBranch.id
+      ? { selectedBranchId: phase.foldMotion.selectedBranch.id }
+      : {}),
+    ...(phase.foldCertificate
+      ? { foldCertificateId: phase.foldCertificate.id }
+      : {}),
+    ...(solverWorkItem ? { solverWorkItemId: solverWorkItem.id } : {}),
+    physicalStatus: phase.physicalStatus,
   };
 }
 

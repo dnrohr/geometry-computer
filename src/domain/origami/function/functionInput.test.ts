@@ -185,12 +185,47 @@ describe("origami function input boundary", () => {
         physicalStatus: "proven-physical",
         foldCertificate: plan.phases[0].foldCertificate,
       },
+      expressionProgress: {
+        activeNodeId: plan.nodes[0].id,
+        activeNodeOrder: plan.nodes[0].order,
+        totalNodes: plan.nodes.length,
+        items: [
+          {
+            nodeId: plan.nodes[0].id,
+            expression: plan.nodes[0].expression,
+            kind: plan.nodes[0].kind,
+            value: plan.nodes[0].value,
+            dependencyDepth: plan.nodes[0].dependencyDepth,
+            dependencyCount: plan.nodes[0].dependencies.length,
+            outputObjectId: plan.nodes[0].outputObjectId,
+            phaseId: plan.phases[0].id,
+            status: "active",
+          },
+        ],
+      },
+      objectInspector: {
+        phaseId: "origami-phase-1",
+        phaseKind: "mark-input",
+        expression: "a",
+        nodeId: plan.nodes[0].id,
+        nodeKind: plan.nodes[0].kind,
+        sampledValue: plan.nodes[0].value,
+        dependencyDepth: plan.nodes[0].dependencyDepth,
+        outputObjectId: plan.nodes[0].outputObjectId,
+        sourceObjectIds: [],
+        outputObjectIds: [plan.nodes[0].outputObjectId],
+        proofClaimIds: [],
+        foldCertificateId: plan.phases[0].foldCertificate?.id,
+        physicalStatus: "proven-physical",
+      },
       solverReadiness: plan.solverReadiness,
       paperStyle,
     };
 
     expect(exported.plan.phases[0].kind).toBe("mark-input");
     expect(exported.activePhase.foldCertificate?.method).toBe("mark-length");
+    expect(exported.expressionProgress.items[0].status).toBe("active");
+    expect(exported.objectInspector.nodeId).toBe(plan.nodes[0].id);
     expect(exported.solverReadiness.status).toBe("ready");
     expect(exported.paperStyle.backPattern).toBe("diagonal-stripe");
   });

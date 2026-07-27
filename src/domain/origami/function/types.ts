@@ -274,6 +274,8 @@ export type OrigamiFunctionAnimationExport = {
   plan: OrigamiFunctionPlan;
   animation: OrigamiFoldAnimationState;
   activePhase: OrigamiFunctionAnimationActivePhase;
+  expressionProgress: OrigamiFunctionExpressionProgressSnapshot;
+  objectInspector: OrigamiFunctionObjectInspectorSnapshot;
   solverReadiness: OrigamiFunctionSolverReadiness;
   paperStyle: OrigamiPaperStyle;
   exportedAt?: string;
@@ -286,4 +288,46 @@ export type OrigamiFunctionAnimationActivePhase = {
   physicalStatus: OrigamiFunctionPhasePhysicalStatus;
   foldCertificate?: OrigamiFunctionFoldCertificate;
   solverWorkItem?: OrigamiFunctionSolverWorkItem;
+};
+
+export type OrigamiFunctionExpressionProgressStatus =
+  | "pending"
+  | "active"
+  | "complete";
+
+export type OrigamiFunctionExpressionProgressItem = {
+  nodeId: string;
+  expression: string;
+  kind: OrigamiFunctionPlanNodeKind;
+  value: number;
+  dependencyDepth: number;
+  dependencyCount: number;
+  outputObjectId: string;
+  phaseId?: string;
+  status: OrigamiFunctionExpressionProgressStatus;
+};
+
+export type OrigamiFunctionExpressionProgressSnapshot = {
+  activeNodeId?: string;
+  activeNodeOrder: number;
+  totalNodes: number;
+  items: OrigamiFunctionExpressionProgressItem[];
+};
+
+export type OrigamiFunctionObjectInspectorSnapshot = {
+  phaseId: string;
+  phaseKind: OrigamiFunctionPlanPhaseKind;
+  expression: string;
+  nodeId?: string;
+  nodeKind?: OrigamiFunctionPlanNodeKind;
+  sampledValue?: number;
+  dependencyDepth: number;
+  outputObjectId?: string;
+  sourceObjectIds: string[];
+  outputObjectIds: string[];
+  proofClaimIds: string[];
+  selectedBranchId?: string;
+  foldCertificateId?: string;
+  solverWorkItemId?: string;
+  physicalStatus: OrigamiFunctionPhasePhysicalStatus;
 };

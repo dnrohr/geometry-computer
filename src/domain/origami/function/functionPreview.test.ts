@@ -234,6 +234,62 @@ describe("origami function preview plan", () => {
     expect(exported?.solverReadiness.workItems[0]).toBe(
       exported?.activePhase.solverWorkItem,
     );
+    expect(exported?.expressionProgress).toMatchObject({
+      activeNodeId: "origami-function-node-4",
+      activeNodeOrder: 4,
+      totalNodes: 4,
+      items: expect.arrayContaining([
+        expect.objectContaining({
+          nodeId: "origami-function-node-3",
+          status: "complete",
+          outputObjectId: "origami-function-node-output-3",
+        }),
+        expect.objectContaining({
+          nodeId: "origami-function-node-4",
+          expression: "sqrt(a + 1)",
+          phaseId: "origami-function-phase-14",
+          status: "active",
+        }),
+      ]),
+    });
+    expect(exported?.objectInspector).toMatchObject({
+      phaseId: "origami-function-phase-9",
+      phaseKind: "align-fold",
+      nodeId: "origami-function-node-4",
+      nodeKind: "sqrt",
+      sampledValue: 2,
+      outputObjectId: "origami-function-node-output-4",
+      sourceObjectIds: ["origami-function-node-output-3"],
+      outputObjectIds: ["origami-function-node-output-4-align-fold"],
+      selectedBranchId: "positive-geometric-mean-branch",
+      solverWorkItemId: "origami-function-phase-9-solver-work",
+      physicalStatus: "explanatory-fallback",
+    });
+  });
+
+  it("exports result-phase inspector and expression progress snapshots", () => {
+    const preview = compileOrigamiFunctionPreview("sqrt(a+1)");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+    const jumped = setOrigamiFunctionPreviewPhase(
+      preview,
+      "origami-function-phase-14",
+    );
+    if (jumped.status !== "compiled") throw new Error("Expected compiled");
+
+    const exported = origamiFunctionAnimationExport(jumped);
+
+    expect(
+      exported?.expressionProgress.items.map(({ status }) => status),
+    ).toEqual(["complete", "complete", "complete", "active"]);
+    expect(exported?.objectInspector).toMatchObject({
+      phaseId: "origami-function-phase-14",
+      phaseKind: "extract-result",
+      nodeId: "origami-function-node-4",
+      outputObjectId: "origami-function-node-output-4",
+      sourceObjectIds: ["origami-function-node-output-4"],
+      outputObjectIds: ["origami-function-result"],
+      solverWorkItemId: "origami-function-phase-14-solver-work",
+    });
   });
 
   it("replays a saved animation export from source and sample values", () => {

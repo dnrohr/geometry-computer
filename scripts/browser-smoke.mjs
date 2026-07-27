@@ -1175,6 +1175,18 @@ const assertOrigamiFunctionPanel = async (page) => {
       "origami-function-node-output-3" ||
     animationExport.activePhase.solverWorkItem?.outputObjectIds[0] !==
       "origami-function-node-output-4-align-fold" ||
+    animationExport.expressionProgress.activeNodeId !==
+      "origami-function-node-4" ||
+    animationExport.expressionProgress.items.at(-1)?.status !== "active" ||
+    animationExport.expressionProgress.items[2]?.status !== "complete" ||
+    animationExport.objectInspector.phaseId !== "origami-function-phase-9" ||
+    animationExport.objectInspector.nodeId !== "origami-function-node-4" ||
+    animationExport.objectInspector.sourceObjectIds[0] !==
+      "origami-function-node-output-3" ||
+    animationExport.objectInspector.outputObjectIds[0] !==
+      "origami-function-node-output-4-align-fold" ||
+    animationExport.objectInspector.solverWorkItemId !==
+      "origami-function-phase-9-solver-work" ||
     animationExport.animation.planId !== animationExport.plan.id
   ) {
     throw new Error(
