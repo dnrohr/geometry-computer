@@ -608,6 +608,24 @@ describe("App", () => {
     );
 
     expect(
+      screen.queryByRole("group", { name: "Function fold camera" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("checkbox", { name: "Show onion skin folds" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("checkbox", { name: "Show visual fold cues" }),
+    ).toBeNull();
+    expect(
+      screen.getByRole("button", { name: "Show visual options" }),
+    ).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(
+      screen.getByRole("button", { name: "Show visual options" }),
+    );
+    expect(
+      screen.getByRole("region", { name: "Origami function visual options" }),
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole("group", { name: "Function fold camera" }),
     ).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Active fold" }));
@@ -648,6 +666,9 @@ describe("App", () => {
       screen.getByRole("button", { name: "Flat origami roadmap" }),
     );
     fireEvent.click(
+      screen.getByRole("button", { name: "Show visual options" }),
+    );
+    fireEvent.click(
       screen.getByRole("button", {
         name: "Jump to solver work origami-function-phase-9",
       }),
@@ -672,6 +693,9 @@ describe("App", () => {
     render(<App />);
     fireEvent.click(
       screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Show visual options" }),
     );
     fireEvent.click(
       screen.getByRole("checkbox", { name: "Show visual fold cues" }),

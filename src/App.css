@@ -743,6 +743,20 @@ select:focus-visible,
   margin-bottom: 0;
 }
 
+.origami-function-visual-options-toggle {
+  display: flex;
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.origami-function-visual-options {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
 .origami-function-presentation-controls {
   display: grid;
   grid-column: 1 / -1;

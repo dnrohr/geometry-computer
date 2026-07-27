@@ -706,6 +706,10 @@ surface area.
   navigation and play/pause availability while editing controls remain hidden.
 - F3.8.7 Hide or demote camera modes, onion-skin folds, visual cues, crease snap,
   and branch-selected labels until they create clear visible feedback.
+  Current implementation hides fold camera, onion-skin, and visual-cue controls
+  behind a collapsed `Show visual options` affordance. Crease snap and branch
+  selected labels only appear after visual cues are explicitly enabled inside
+  that expanded secondary region.
 - F3.8.8 Clarify the relationship between the interactive trace gallery and the
   typed function lab: trace gallery is an arithmetic-fold demo/inspector; the
   function lab is the eventual function-computation animation.

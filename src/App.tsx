@@ -488,6 +488,10 @@ function OrigamiRoadmap() {
     showOrigamiFunctionSecondaryTools,
     setShowOrigamiFunctionSecondaryTools,
   ] = useState(false);
+  const [
+    showOrigamiFunctionVisualOptions,
+    setShowOrigamiFunctionVisualOptions,
+  ] = useState(false);
   const [progress, setProgress] = useState(1);
   const [activeStepId, setActiveStepId] = useState<string>();
   const [selectedObjectId, setSelectedObjectId] = useState<string>();
@@ -1468,77 +1472,97 @@ function OrigamiRoadmap() {
           </section>
         )}
         {!functionPresentationMode && (
-          <fieldset
-            className="origami-function-camera-controls"
-            aria-label="Function fold camera"
-          >
-            <legend>Fold camera</legend>
-            {(
-              [
-                ["whole", "Whole"],
-                ["paper", "Paper"],
-                ["active-fold", "Active fold"],
-                ["result", "Result"],
-              ] satisfies Array<[OrigamiFunctionCameraMode, string]>
-            ).map(([mode, label]) => (
-              <button
-                key={mode}
-                type="button"
-                aria-pressed={functionCameraMode === mode}
-                onClick={() => setFunctionCameraMode(mode)}
-              >
-                {label}
-              </button>
-            ))}
-          </fieldset>
-        )}
-        {!functionPresentationMode && (
-          <label className="origami-function-onion-toggle">
-            <input
-              aria-label="Show onion skin folds"
-              type="checkbox"
-              checked={functionOnionSkin}
-              onChange={(event) => setFunctionOnionSkin(event.target.checked)}
-            />
-            Onion skin folds
-          </label>
-        )}
-        {!functionPresentationMode && (
-          <label className="origami-function-cue-toggle">
-            <input
-              aria-label="Show visual fold cues"
-              type="checkbox"
-              checked={functionVisualCues}
-              onChange={(event) => setFunctionVisualCues(event.target.checked)}
-            />
-            Visual fold cues
-          </label>
-        )}
-        {!functionPresentationMode && functionVisualCues && (
-          <div
-            className="origami-function-cue-strip"
-            aria-label="Function visual cues"
-            aria-live="polite"
-          >
-            {functionVisualCueItems.length > 0 ? (
-              functionVisualCueItems.map((cue) => (
-                <span
-                  key={cue.id}
-                  className={`origami-function-cue origami-function-cue-${cue.tone}`}
-                  data-cue={cue.id}
-                >
-                  {cue.label}
-                </span>
-              ))
-            ) : (
-              <span
-                className="origami-function-cue origami-function-cue-info"
-                data-cue="idle"
-              >
-                Ready
-              </span>
-            )}
+          <div className="origami-function-visual-options-toggle">
+            <button
+              type="button"
+              aria-expanded={showOrigamiFunctionVisualOptions}
+              onClick={() =>
+                setShowOrigamiFunctionVisualOptions(
+                  (showVisualOptions) => !showVisualOptions,
+                )
+              }
+            >
+              {showOrigamiFunctionVisualOptions
+                ? "Hide visual options"
+                : "Show visual options"}
+            </button>
           </div>
+        )}
+        {!functionPresentationMode && showOrigamiFunctionVisualOptions && (
+          <section
+            className="origami-function-visual-options"
+            aria-label="Origami function visual options"
+          >
+            <fieldset
+              className="origami-function-camera-controls"
+              aria-label="Function fold camera"
+            >
+              <legend>Fold camera</legend>
+              {(
+                [
+                  ["whole", "Whole"],
+                  ["paper", "Paper"],
+                  ["active-fold", "Active fold"],
+                  ["result", "Result"],
+                ] satisfies Array<[OrigamiFunctionCameraMode, string]>
+              ).map(([mode, label]) => (
+                <button
+                  key={mode}
+                  type="button"
+                  aria-pressed={functionCameraMode === mode}
+                  onClick={() => setFunctionCameraMode(mode)}
+                >
+                  {label}
+                </button>
+              ))}
+            </fieldset>
+            <label className="origami-function-onion-toggle">
+              <input
+                aria-label="Show onion skin folds"
+                type="checkbox"
+                checked={functionOnionSkin}
+                onChange={(event) => setFunctionOnionSkin(event.target.checked)}
+              />
+              Onion skin folds
+            </label>
+            <label className="origami-function-cue-toggle">
+              <input
+                aria-label="Show visual fold cues"
+                type="checkbox"
+                checked={functionVisualCues}
+                onChange={(event) =>
+                  setFunctionVisualCues(event.target.checked)
+                }
+              />
+              Visual fold cues
+            </label>
+            {functionVisualCues && (
+              <div
+                className="origami-function-cue-strip"
+                aria-label="Function visual cues"
+                aria-live="polite"
+              >
+                {functionVisualCueItems.length > 0 ? (
+                  functionVisualCueItems.map((cue) => (
+                    <span
+                      key={cue.id}
+                      className={`origami-function-cue origami-function-cue-${cue.tone}`}
+                      data-cue={cue.id}
+                    >
+                      {cue.label}
+                    </span>
+                  ))
+                ) : (
+                  <span
+                    className="origami-function-cue origami-function-cue-info"
+                    data-cue="idle"
+                  >
+                    Ready
+                  </span>
+                )}
+              </div>
+            )}
+          </section>
         )}
         {!functionPresentationMode && functionPhaseMinimapItems.length > 0 && (
           <section

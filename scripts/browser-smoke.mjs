@@ -783,6 +783,17 @@ const assertOrigamiFunctionPanel = async (page) => {
       name: "Origami function animation: f(a) = sqrt(a + 1)",
     })
     .waitFor();
+  if (
+    (await page
+      .getByRole("group", { name: "Function fold camera" })
+      .count()) !== 0
+  ) {
+    throw new Error("Function visual options were visible by default.");
+  }
+  await page.getByRole("button", { name: "Show visual options" }).click();
+  await page
+    .getByRole("region", { name: "Origami function visual options" })
+    .waitFor();
   await page.getByRole("button", { exact: true, name: "Result" }).click();
   const resultCamera = await page
     .getByRole("img", {
