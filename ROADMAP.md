@@ -667,6 +667,9 @@ surface area.
 
 - F3.8.1 Move product-direction and roadmap prose out of the main app surface
   or behind a clearly marked developer/details affordance.
+  Current implementation removes the always-visible priority/roadmap sections
+  from the default origami tab and exposes them only through a collapsed
+  `Show development notes` affordance.
 - F3.8.2 Simplify the default function lab to the primary workflow: function
   input, sample controls, compile/play controls, and result. Move plan IDs,
   solver readiness, certificate details, branch IDs, and similar telemetry into

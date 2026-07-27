@@ -480,6 +480,8 @@ function OrigamiRoadmap() {
     useState("classic-grid");
   const [functionPresentationMode, setFunctionPresentationMode] =
     useState(false);
+  const [showOrigamiDeveloperNotes, setShowOrigamiDeveloperNotes] =
+    useState(false);
   const [progress, setProgress] = useState(1);
   const [activeStepId, setActiveStepId] = useState<string>();
   const [selectedObjectId, setSelectedObjectId] = useState<string>();
@@ -925,7 +927,7 @@ function OrigamiRoadmap() {
     >
       <header className="masthead">
         <div>
-          <p className="eyebrow">Flat Origami · Computation · Roadmap</p>
+          <p className="eyebrow">Flat Origami · Computation</p>
           <h1>Origami Computer</h1>
         </div>
         <p className="lede">
@@ -933,66 +935,95 @@ function OrigamiRoadmap() {
           the current compass-and-straightedge implementation unchanged.
         </p>
       </header>
-      <section className="roadmap-priority" aria-labelledby="origami-priority">
-        <p className="section-label">Top priority</p>
-        <h2 id="origami-priority">
-          Do not modify the existing construction flow
-        </h2>
-        <p>
-          Treat flat origami as a parallel research track for now. New models,
-          renderers, proof cards, and examples should live behind this tab until
-          the fold system has enough stability to justify a deliberate merger.
-        </p>
-      </section>
-      <section className="roadmap-layout" aria-labelledby="origami-roadmap">
-        <div>
-          <p className="section-label">Roadmap</p>
-          <h2 id="origami-roadmap">Fold-first computation plan</h2>
-          <div className="roadmap-list">
-            {origamiRoadmap.map((item) => (
-              <article key={item.phase} className="roadmap-card">
-                <div className="roadmap-card-header">
-                  <span aria-label={`Phase ${item.phase}`}>{item.phase}</span>
-                  <small>{item.priority}</small>
-                </div>
-                <h3>{item.title}</h3>
-                <p>{item.summary}</p>
-                <ul>
-                  {item.work.map((task) => (
-                    <li key={task}>{task}</li>
-                  ))}
-                </ul>
-              </article>
-            ))}
-          </div>
-        </div>
-        <aside className="roadmap-merge-notes" aria-labelledby="merge-notes">
-          <p className="section-label">Merger watchlist</p>
-          <h2 id="merge-notes">Design for eventual convergence</h2>
-          <p>
-            Keep names, operation IDs, provenance, proof references, and export
-            metadata compatible where it is cheap. Avoid shared abstractions
-            until both systems reveal the same pressure points.
-          </p>
-          <dl>
-            <dt>Shared later</dt>
-            <dd>
-              Expression parsing, operation trace shape, proof cards, export
-              metadata.
-            </dd>
-            <dt>Separate now</dt>
-            <dd>
-              Fold solver, crease-pattern rendering, axiom proofs, origami
-              examples.
-            </dd>
-            <dt>Merge trigger</dt>
-            <dd>
-              At least one arithmetic family implemented and tested in both
-              systems.
-            </dd>
-          </dl>
-        </aside>
-      </section>
+      <div className="origami-developer-notes-toggle">
+        <button
+          type="button"
+          aria-expanded={showOrigamiDeveloperNotes}
+          onClick={() =>
+            setShowOrigamiDeveloperNotes((isShowing) => !isShowing)
+          }
+        >
+          {showOrigamiDeveloperNotes
+            ? "Hide development notes"
+            : "Show development notes"}
+        </button>
+      </div>
+      {showOrigamiDeveloperNotes && (
+        <section
+          className="origami-development-notes"
+          aria-label="Origami development notes"
+        >
+          <section
+            className="roadmap-priority"
+            aria-labelledby="origami-priority"
+          >
+            <p className="section-label">Top priority</p>
+            <h2 id="origami-priority">
+              Do not modify the existing construction flow
+            </h2>
+            <p>
+              Treat flat origami as a parallel research track for now. New
+              models, renderers, proof cards, and examples should live behind
+              this tab until the fold system has enough stability to justify a
+              deliberate merger.
+            </p>
+          </section>
+          <section className="roadmap-layout" aria-labelledby="origami-roadmap">
+            <div>
+              <p className="section-label">Roadmap</p>
+              <h2 id="origami-roadmap">Fold-first computation plan</h2>
+              <div className="roadmap-list">
+                {origamiRoadmap.map((item) => (
+                  <article key={item.phase} className="roadmap-card">
+                    <div className="roadmap-card-header">
+                      <span aria-label={`Phase ${item.phase}`}>
+                        {item.phase}
+                      </span>
+                      <small>{item.priority}</small>
+                    </div>
+                    <h3>{item.title}</h3>
+                    <p>{item.summary}</p>
+                    <ul>
+                      {item.work.map((task) => (
+                        <li key={task}>{task}</li>
+                      ))}
+                    </ul>
+                  </article>
+                ))}
+              </div>
+            </div>
+            <aside
+              className="roadmap-merge-notes"
+              aria-labelledby="merge-notes"
+            >
+              <p className="section-label">Merger watchlist</p>
+              <h2 id="merge-notes">Design for eventual convergence</h2>
+              <p>
+                Keep names, operation IDs, provenance, proof references, and
+                export metadata compatible where it is cheap. Avoid shared
+                abstractions until both systems reveal the same pressure points.
+              </p>
+              <dl>
+                <dt>Shared later</dt>
+                <dd>
+                  Expression parsing, operation trace shape, proof cards, export
+                  metadata.
+                </dd>
+                <dt>Separate now</dt>
+                <dd>
+                  Fold solver, crease-pattern rendering, axiom proofs, origami
+                  examples.
+                </dd>
+                <dt>Merge trigger</dt>
+                <dd>
+                  At least one arithmetic family implemented and tested in both
+                  systems.
+                </dd>
+              </dl>
+            </aside>
+          </section>
+        </section>
+      )}
       <section
         className={`origami-function-panel${
           functionPresentationMode ? " origami-function-panel-presenting" : ""

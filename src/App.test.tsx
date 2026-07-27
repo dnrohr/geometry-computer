@@ -273,6 +273,22 @@ describe("App", () => {
       screen.getByRole("heading", { name: "Origami Computer" }),
     ).toBeInTheDocument();
     expect(
+      screen.queryByText("Do not modify the existing construction flow"),
+    ).toBeNull();
+    expect(
+      screen.queryByText("Build an origami-only arithmetic trace"),
+    ).toBeNull();
+    expect(screen.queryByText(/Add isolated origami domain types/i)).toBeNull();
+    expect(
+      screen.getByRole("button", { name: "Show development notes" }),
+    ).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(
+      screen.getByRole("button", { name: "Show development notes" }),
+    );
+    expect(
+      screen.getByRole("region", { name: "Origami development notes" }),
+    ).toBeInTheDocument();
+    expect(
       screen.getByText("Do not modify the existing construction flow"),
     ).toBeInTheDocument();
     expect(
