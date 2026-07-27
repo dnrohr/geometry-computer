@@ -988,6 +988,11 @@ worth exploring while staying honest about mathematical limits.
   horizontal snap-scrolling rails on narrow screens, keeps the proof-mode
   selector sticky inside the function animation panel, and verifies the mobile
   contract in browser smoke without changing desktop or compass layouts.
+- F7.12 Add a clear phase scrubber to the function timeline.
+  Current implementation adds a `Function animation phase` selector and phase
+  readout beside the existing previous/play/next, progress, speed, and reduced
+  motion controls. Selecting a phase jumps through local preview state, remains
+  hidden in presentation mode, and is covered by app tests plus browser smoke.
 
 Acceptance checks:
 
@@ -3306,7 +3311,7 @@ Only consider these after the MVP is working and documented.
 - Broader construction scripts beyond origami function replay.
 - Formal construction verification.
 - GeoGebra export.
-- Timeline scrubber with play/pause.
+- Broader timeline authoring tools beyond the function phase scrubber.
 - User-authored construction macros.
 - Support for exact symbolic coordinates.
 - Educational lesson mode.

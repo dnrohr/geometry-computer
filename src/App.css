@@ -1684,8 +1684,8 @@ select:focus-visible,
   display: grid;
   grid-column: 1 / -1;
   grid-template-columns:
-    repeat(3, auto) minmax(10rem, 1fr) minmax(6rem, auto)
-    auto;
+    repeat(3, auto) minmax(13rem, 1.2fr) auto minmax(10rem, 1fr)
+    minmax(6rem, auto) auto;
   gap: 0.6rem;
   align-items: center;
 }
@@ -1707,6 +1707,24 @@ select:focus-visible,
   color: var(--muted);
   font-size: 0.76rem;
   font-weight: 750;
+}
+
+.origami-function-phase-jump select {
+  width: 100%;
+}
+
+.origami-function-phase-readout {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.55rem;
+  color: var(--foreground);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  border: 1px solid rgb(245 241 232 / 14%);
+  border-radius: 0.4rem;
+  background: rgb(245 241 232 / 5%);
 }
 
 .origami-function-timeline input[type="range"] {
@@ -2772,6 +2790,10 @@ text.geometry-result,
   }
   .origami-function-timeline label {
     grid-column: 1 / -1;
+  }
+  .origami-function-phase-readout {
+    grid-column: 1 / -1;
+    justify-content: center;
   }
   .origami-function-minimap-track {
     display: flex;

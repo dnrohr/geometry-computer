@@ -251,6 +251,10 @@ The flat-origami tab provides:
   long plans do not create a dense vertical wall of controls. The proof-mode
   selector becomes sticky within the function animation panel, keeping the
   algebra/geometry focus control close to the proof panels.
+- F7.12 adds a visible function phase scrubber to the timeline. The selector
+  lists compiled phase labels and expressions, updates the same preview phase as
+  the minimap/storyboard/keyboard controls, and pairs with a compact phase
+  readout while staying hidden in presentation mode.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

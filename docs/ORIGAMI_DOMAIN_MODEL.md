@@ -238,6 +238,10 @@ F7.11 keeps mobile layout improvements in CSS and smoke coverage. Horizontal
 minimap/storyboard rails and the sticky proof-mode selector do not change
 function preview state, phase IDs, fold certificates, solver work, replay data,
 or compass-and-straightedge modules.
+F7.12 keeps the phase scrubber as a UI projection of compiled phase IDs. The
+selector calls the same local phase setter as minimap, storyboard, and keyboard
+timeline controls; it does not add timeline model state or shared construction
+interfaces.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

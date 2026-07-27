@@ -2448,6 +2448,34 @@ function OrigamiRoadmap() {
           >
             Next
           </button>
+          <label className="origami-function-phase-jump">
+            Phase
+            <select
+              aria-label="Function animation phase"
+              disabled={timelineDisabled}
+              value={activeFunctionPhase?.id ?? ""}
+              onChange={(event) =>
+                setFunctionPreview((preview) =>
+                  setOrigamiFunctionPreviewPhase(preview, event.target.value),
+                )
+              }
+            >
+              {functionPhaseMinimapItems.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {`${item.index + 1}. ${item.label} - ${item.expression}`}
+                </option>
+              ))}
+            </select>
+          </label>
+          <span
+            className="origami-function-phase-readout"
+            aria-label="Function animation phase readout"
+          >
+            {functionPreview.status === "compiled" &&
+            activeFunctionPhaseIndex >= 0
+              ? `Phase ${activeFunctionPhaseIndex + 1} of ${functionPhaseMinimapItems.length}`
+              : "No phase"}
+          </span>
           <label>
             Scrub
             <input

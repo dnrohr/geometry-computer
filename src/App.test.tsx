@@ -443,6 +443,12 @@ describe("App", () => {
       screen.getByRole("slider", { name: "Function animation progress" }),
     ).toHaveValue("0");
     expect(
+      screen.getByRole("combobox", { name: "Function animation phase" }),
+    ).toHaveValue("origami-function-phase-1");
+    expect(
+      screen.getByLabelText("Function animation phase readout"),
+    ).toHaveTextContent("Phase 1 of 14");
+    expect(
       screen.getByRole("button", { name: "Play function animation" }),
     ).toBeInTheDocument();
     expect(
@@ -461,6 +467,12 @@ describe("App", () => {
     expect(
       screen.getByRole("slider", { name: "Function animation progress" }),
     ).toHaveValue(String(8 / 14));
+    expect(
+      screen.getByRole("combobox", { name: "Function animation phase" }),
+    ).toHaveValue("origami-function-phase-9");
+    expect(
+      screen.getByLabelText("Function animation phase readout"),
+    ).toHaveTextContent("Phase 9 of 14");
     expect(
       within(functionPanel).getByText("origami-function-phase-9 @ 0.57"),
     ).toBeInTheDocument();
@@ -1068,6 +1080,9 @@ describe("App", () => {
       screen.queryByRole("button", { name: "Export function script" }),
     ).toBeNull();
     expect(
+      screen.queryByRole("combobox", { name: "Function animation phase" }),
+    ).toBeNull();
+    expect(
       screen.queryByRole("group", { name: "Function fold camera" }),
     ).toBeNull();
 
@@ -1302,6 +1317,20 @@ describe("App", () => {
     expect(
       screen.getByText("origami-function-phase-9 @ 0.57"),
     ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("Function animation phase readout"),
+    ).toHaveTextContent("Phase 9 of 14");
+
+    fireEvent.change(
+      screen.getByRole("combobox", { name: "Function animation phase" }),
+      { target: { value: "origami-function-phase-14" } },
+    );
+    expect(
+      screen.getByText("origami-function-phase-14 @ 1.00"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("Function animation phase readout"),
+    ).toHaveTextContent("Phase 14 of 14");
 
     fireEvent.change(
       screen.getByRole("combobox", { name: "Function animation speed" }),
