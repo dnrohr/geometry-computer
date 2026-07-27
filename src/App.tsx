@@ -476,6 +476,8 @@ function OrigamiRoadmap() {
     useState<OrigamiFunctionCameraMode>("whole");
   const [functionOnionSkin, setFunctionOnionSkin] = useState(false);
   const [functionVisualCues, setFunctionVisualCues] = useState(false);
+  const [hoveredFunctionPhaseId, setHoveredFunctionPhaseId] =
+    useState<string>();
   const [functionPaperPaletteId, setFunctionPaperPaletteId] =
     useState("classic-grid");
   const [functionPresentationMode, setFunctionPresentationMode] =
@@ -803,6 +805,7 @@ function OrigamiRoadmap() {
     );
   const startOrigamiFunctionPresentation = () => {
     if (timelineDisabled) return;
+    setHoveredFunctionPhaseId(undefined);
     setFunctionPresentationMode(true);
     setFunctionCameraMode("whole");
     setFunctionPreview((preview) => {
@@ -818,6 +821,7 @@ function OrigamiRoadmap() {
     });
   };
   const exitOrigamiFunctionPresentation = () => {
+    setHoveredFunctionPhaseId(undefined);
     setFunctionPresentationMode(false);
     setFunctionPreview((preview) =>
       setOrigamiFunctionPreviewPlaying(preview, false),
@@ -851,6 +855,19 @@ function OrigamiRoadmap() {
           ({ id }) => id === functionPreview.animation.phaseId,
         )
       : undefined;
+  const highlightedFunctionPhase =
+    functionPreview.status === "compiled" && hoveredFunctionPhaseId
+      ? functionPreview.plan.phases.find(
+          ({ id }) => id === hoveredFunctionPhaseId,
+        )
+      : undefined;
+  const highlightedFunctionDependencyIds = highlightedFunctionPhase
+    ? {
+        sourceObjectIds: highlightedFunctionPhase.sourceObjectIds,
+        outputObjectIds: highlightedFunctionPhase.outputObjectIds,
+        proofClaimIds: highlightedFunctionPhase.proofClaimIds,
+      }
+    : undefined;
   const functionPhaseMinimapItems =
     functionPreview.status === "compiled"
       ? functionPreview.plan.phases.map((phase, index) => ({
@@ -862,6 +879,7 @@ function OrigamiRoadmap() {
           physicalStatus: phase.physicalStatus,
           fallbackLabel: phase.fallback?.label,
           isActive: phase.id === functionPreview.animation.phaseId,
+          isHighlighted: phase.id === hoveredFunctionPhaseId,
         }))
       : [];
   const activeFunctionPhaseIndex = functionPhaseMinimapItems.findIndex(
@@ -899,7 +917,11 @@ function OrigamiRoadmap() {
             assumption,
             branch,
             isActive: phase.id === functionPreview.animation.phaseId,
+            isHighlighted: phase.id === hoveredFunctionPhaseId,
             physicalStatus: phase.physicalStatus,
+            sourceObjectIds: phase.sourceObjectIds,
+            outputObjectIds: phase.outputObjectIds,
+            proofClaimIds: phase.proofClaimIds,
           };
         })
       : [];
@@ -1459,10 +1481,50 @@ function OrigamiRoadmap() {
         )}
         <SvgOrigamiFunctionAnimation
           cameraMode={functionCameraMode}
+          highlightedPhaseId={hoveredFunctionPhaseId}
           onionSkin={functionOnionSkin}
+          onPhaseHover={setHoveredFunctionPhaseId}
           preview={functionPreview}
           svgRef={functionAnimationSvgRef}
         />
+        {!functionPresentationMode && (
+          <aside
+            className="origami-function-dependency-highlight"
+            data-active={highlightedFunctionPhase ? "true" : "false"}
+            aria-label="Function dependency highlight"
+            aria-hidden={highlightedFunctionPhase ? undefined : true}
+            aria-live="polite"
+          >
+            <span>
+              {highlightedFunctionPhase?.expression ?? "No phase focus"}
+            </span>
+            <dl>
+              <div>
+                <dt>Sources</dt>
+                <dd>
+                  {highlightedFunctionDependencyIds?.sourceObjectIds.join(
+                    ", ",
+                  ) || "none"}
+                </dd>
+              </div>
+              <div>
+                <dt>Outputs</dt>
+                <dd>
+                  {highlightedFunctionDependencyIds?.outputObjectIds.join(
+                    ", ",
+                  ) || "none"}
+                </dd>
+              </div>
+              <div>
+                <dt>Proof claims</dt>
+                <dd>
+                  {highlightedFunctionDependencyIds?.proofClaimIds.join(", ") ||
+                    "none"}
+                </dd>
+              </div>
+            </dl>
+          </aside>
+        )}
         {functionPresentationMode && (
           <section
             className="origami-function-presentation-controls"
@@ -1640,8 +1702,15 @@ function OrigamiRoadmap() {
                   className={`origami-function-minimap-step origami-function-minimap-step-${item.physicalStatus}`}
                   data-phase-id={item.id}
                   data-phase-kind={item.kind}
+                  data-dependency-highlight={
+                    item.isHighlighted ? "phase" : undefined
+                  }
                   disabled={timelineDisabled}
                   title={`${item.label}: ${item.expression}`}
+                  onMouseEnter={() => setHoveredFunctionPhaseId(item.id)}
+                  onMouseLeave={() => setHoveredFunctionPhaseId(undefined)}
+                  onFocus={() => setHoveredFunctionPhaseId(item.id)}
+                  onBlur={() => setHoveredFunctionPhaseId(undefined)}
                   onClick={() =>
                     setFunctionPreview((preview) =>
                       setOrigamiFunctionPreviewPhase(preview, item.id),
@@ -1673,7 +1742,17 @@ function OrigamiRoadmap() {
                     aria-label={`Storyboard phase ${item.index + 1} ${item.operation} ${item.expression}`}
                     aria-current={item.isActive ? "step" : undefined}
                     className={`origami-function-storyboard-card origami-function-storyboard-card-${item.physicalStatus}`}
+                    data-source-object-ids={item.sourceObjectIds.join(" ")}
+                    data-output-object-ids={item.outputObjectIds.join(" ")}
+                    data-proof-claim-ids={item.proofClaimIds.join(" ")}
+                    data-dependency-highlight={
+                      item.isHighlighted ? "phase" : undefined
+                    }
                     disabled={timelineDisabled}
+                    onMouseEnter={() => setHoveredFunctionPhaseId(item.id)}
+                    onMouseLeave={() => setHoveredFunctionPhaseId(undefined)}
+                    onFocus={() => setHoveredFunctionPhaseId(item.id)}
+                    onBlur={() => setHoveredFunctionPhaseId(undefined)}
                     onClick={() =>
                       setFunctionPreview((preview) =>
                         setOrigamiFunctionPreviewPhase(preview, item.id),

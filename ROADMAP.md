@@ -799,6 +799,11 @@ Goal: make the animation teach the computation, not merely decorate it.
   selected branch; selecting a card updates the active animation phase.
 - F5.2 Highlight dependencies when hovering a subexpression, fold step, crease,
   paper region, or proof claim.
+  Current implementation adds an origami-function dependency focus state:
+  hovering or focusing storyboard cards, minimap phases, or the visible
+  animation marks the matching phase, mirrors the highlight across storyboard,
+  minimap, and SVG metadata, and shows source object IDs, output object IDs, and
+  proof-claim IDs for that phase.
 - F5.3 Add a "why this fold?" overlay that connects the moving paper motion to
   the arithmetic invariant it preserves.
 - F5.4 Show rejected branches and degeneracy warnings directly on the animation

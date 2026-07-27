@@ -694,6 +694,28 @@ const assertOrigamiFunctionPanel = async (page) => {
   await squareRootStoryboardCard
     .getByText("Positive geometric-mean branch", { exact: true })
     .waitFor();
+  await squareRootStoryboardCard.hover();
+  const dependencyHighlight = page.getByLabel("Function dependency highlight");
+  await dependencyHighlight
+    .getByText("origami-function-node-output-3")
+    .waitFor();
+  const highlightedStoryboardPhase =
+    await squareRootStoryboardCard.getAttribute("data-dependency-highlight");
+  if (highlightedStoryboardPhase !== "phase") {
+    throw new Error(
+      `Storyboard dependency highlight did not activate: ${highlightedStoryboardPhase}`,
+    );
+  }
+  const highlightedMinimapPhase = await page
+    .getByRole("button", {
+      name: "Jump to function phase origami-function-phase-9",
+    })
+    .getAttribute("data-dependency-highlight");
+  if (highlightedMinimapPhase !== "phase") {
+    throw new Error(
+      `Minimap dependency highlight did not mirror storyboard hover: ${highlightedMinimapPhase}`,
+    );
+  }
   await page
     .getByRole("img", {
       name: "Origami function animation: f(a) = sqrt(a + 1)",
@@ -717,6 +739,7 @@ const assertOrigamiFunctionPanel = async (page) => {
       `Active function minimap item was not marked current: ${activeMinimapItem}`,
     );
   }
+  await squareRootStoryboardCard.dispatchEvent("mouseleave");
   await page
     .getByRole("button", {
       name: "Jump to function phase origami-function-phase-10",
@@ -802,16 +825,16 @@ const assertOrigamiFunctionPanel = async (page) => {
       name: "Jump to function phase origami-function-phase-9",
     })
     .click();
-  await page
-    .locator(".origami-function-diagnostics .origami-function-status dd", {
-      hasText: "origami-function-phase-9 @ 0.57",
-    })
-    .waitFor();
-  await page
+  const postPresentationPhase = await page
     .getByRole("img", {
       name: "Origami function animation: f(a) = sqrt(a + 1)",
     })
-    .waitFor();
+    .evaluate((element) => element.getAttribute("data-phase-id"));
+  if (postPresentationPhase !== "origami-function-phase-9") {
+    throw new Error(
+      `Function phase did not update after exiting presentation mode: ${postPresentationPhase}`,
+    );
+  }
   if (
     (await page
       .getByRole("group", { name: "Function fold camera" })

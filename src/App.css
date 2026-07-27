@@ -1281,6 +1281,59 @@ select:focus-visible,
   box-shadow: inset 0 0 0 1px rgb(240 184 75 / 32%);
 }
 
+.origami-function-minimap-step[data-dependency-highlight="phase"],
+.origami-function-storyboard-card[data-dependency-highlight="phase"] {
+  border-color: #94d3a2;
+  box-shadow:
+    inset 0 0 0 1px rgb(148 211 162 / 46%),
+    0 0 0 2px rgb(148 211 162 / 12%);
+}
+
+.origami-function-dependency-highlight {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 0.45rem;
+  min-width: 0;
+  min-height: 6rem;
+  padding: 0.7rem;
+  border: 1px solid rgb(148 211 162 / 38%);
+  border-radius: 0.5rem;
+  background: rgb(148 211 162 / 8%);
+}
+
+.origami-function-dependency-highlight[data-active="false"] {
+  visibility: hidden;
+}
+
+.origami-function-dependency-highlight > span {
+  overflow-wrap: anywhere;
+  color: var(--foreground);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.origami-function-dependency-highlight dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.origami-function-dependency-highlight dt {
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.origami-function-dependency-highlight dd {
+  margin: 0.1rem 0 0;
+  overflow-wrap: anywhere;
+  color: var(--foreground);
+  font-size: 0.7rem;
+}
+
 .origami-function-storyboard {
   display: grid;
   grid-column: 1 / -1;
@@ -1381,6 +1434,17 @@ select:focus-visible,
   border-color: var(--accent);
   background: rgb(240 184 75 / 14%);
   box-shadow: inset 0 0 0 1px rgb(240 184 75 / 32%);
+}
+
+.origami-function-animation[data-dependency-highlight="active-phase"] {
+  border-color: #94d3a2;
+  box-shadow: 0 0 0 2px rgb(148 211 162 / 18%);
+}
+
+.origami-function-planned-crease[data-dependency-highlight="crease"],
+.origami-function-active-crease[data-dependency-highlight="active-crease"] {
+  opacity: 1;
+  stroke-width: 4;
 }
 
 .origami-function-timeline {
@@ -2248,6 +2312,9 @@ text.geometry-result,
   }
   .origami-function-timeline label {
     grid-column: 1 / -1;
+  }
+  .origami-function-dependency-highlight dl {
+    grid-template-columns: 1fr;
   }
   .origami-paper-style-controls {
     grid-template-columns: repeat(2, minmax(0, 1fr));

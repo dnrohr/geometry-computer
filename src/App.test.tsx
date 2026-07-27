@@ -829,6 +829,37 @@ describe("App", () => {
     expect(
       within(storyboard).getAllByText("Positive geometric-mean branch").length,
     ).toBeGreaterThan(0);
+
+    const phaseNineCard = within(storyboard).getByRole("button", {
+      name: /Storyboard phase 9 Extract Square Root sqrt\(a \+ 1\)/,
+    });
+    fireEvent.mouseEnter(phaseNineCard);
+    expect(phaseNineCard).toHaveAttribute("data-dependency-highlight", "phase");
+    expect(phaseNineCard).toHaveAttribute(
+      "data-source-object-ids",
+      "origami-function-node-output-3",
+    );
+    expect(phaseNineCard).toHaveAttribute(
+      "data-output-object-ids",
+      "origami-function-node-output-4-align-fold",
+    );
+    expect(
+      screen.getByLabelText("Function dependency highlight"),
+    ).toHaveTextContent("origami-function-node-output-3");
+    expect(
+      screen.getByRole("button", {
+        name: "Jump to function phase origami-function-phase-9",
+      }),
+    ).toHaveAttribute("data-dependency-highlight", "phase");
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a) = sqrt(a + 1)",
+      }),
+    ).toHaveAttribute("data-highlighted-phase-id", "origami-function-phase-9");
+    fireEvent.mouseLeave(phaseNineCard);
+    expect(
+      screen.getByLabelText("Function dependency highlight"),
+    ).toHaveAttribute("data-active", "false");
   });
 
   it("plays a clean origami function presentation mode and restores controls", () => {

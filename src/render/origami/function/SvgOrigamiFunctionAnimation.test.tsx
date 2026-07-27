@@ -1,4 +1,5 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { vi } from "vitest";
 import {
   advanceOrigamiFunctionPreview,
   compileOrigamiFunctionPreview,
@@ -182,6 +183,41 @@ describe("SvgOrigamiFunctionAnimation", () => {
       "data-onion-phase-id",
       "origami-function-phase-10",
     );
+  });
+
+  it("reports and marks highlighted animation phases", () => {
+    const preview = compileOrigamiFunctionPreview("sqrt(a+1)");
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+    const active = setOrigamiFunctionPreviewPhase(
+      preview,
+      "origami-function-phase-9",
+    );
+    const onPhaseHover = vi.fn();
+
+    const { container } = render(
+      <SvgOrigamiFunctionAnimation
+        highlightedPhaseId="origami-function-phase-9"
+        onPhaseHover={onPhaseHover}
+        preview={active}
+      />,
+    );
+    const svg = screen.getByRole("img", {
+      name: "Origami function animation: f(a) = sqrt(a + 1)",
+    });
+
+    expect(svg).toHaveAttribute(
+      "data-highlighted-phase-id",
+      "origami-function-phase-9",
+    );
+    expect(svg).toHaveAttribute("data-dependency-highlight", "active-phase");
+    expect(
+      container.querySelector(".origami-function-active-crease"),
+    ).toHaveAttribute("data-dependency-highlight", "active-crease");
+
+    fireEvent.mouseEnter(svg);
+    expect(onPhaseHover).toHaveBeenCalledWith("origami-function-phase-9");
+    fireEvent.mouseLeave(svg);
+    expect(onPhaseHover).toHaveBeenCalledWith(undefined);
   });
 
   it("exposes the back side and keeps side fills distinct during fold phases", () => {

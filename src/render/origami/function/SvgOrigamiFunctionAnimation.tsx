@@ -9,7 +9,9 @@ export type OrigamiFunctionCameraMode =
 
 type SvgOrigamiFunctionAnimationProps = {
   cameraMode?: OrigamiFunctionCameraMode;
+  highlightedPhaseId?: string;
   onionSkin?: boolean;
+  onPhaseHover?: (phaseId?: string) => void;
   preview: OrigamiFunctionPreview;
   snapshotMode?: "animation" | "crease-pattern";
   svgRef?: Ref<SVGSVGElement>;
@@ -36,7 +38,9 @@ const phaseLabel = (
 
 export function SvgOrigamiFunctionAnimation({
   cameraMode = "whole",
+  highlightedPhaseId,
   onionSkin = false,
+  onPhaseHover,
   preview,
   snapshotMode = "animation",
   svgRef,
@@ -104,6 +108,7 @@ export function SvgOrigamiFunctionAnimation({
       ].filter((item): item is NonNullable<typeof item> => Boolean(item))
     : [];
   const viewBox = viewBoxForCamera(cameraMode, isCreasePattern);
+  const activePhaseIsHighlighted = highlightedPhaseId === phase.id;
 
   return (
     <svg
@@ -119,6 +124,14 @@ export function SvgOrigamiFunctionAnimation({
       data-snapshot-mode={snapshotMode}
       data-camera-mode={cameraMode}
       data-paper-shape="square"
+      data-highlighted-phase-id={highlightedPhaseId}
+      data-dependency-highlight={
+        activePhaseIsHighlighted ? "active-phase" : undefined
+      }
+      onMouseEnter={() => onPhaseHover?.(phase.id)}
+      onMouseLeave={() => onPhaseHover?.(undefined)}
+      onFocus={() => onPhaseHover?.(phase.id)}
+      onBlur={() => onPhaseHover?.(undefined)}
     >
       <title>
         {isCreasePattern
@@ -317,6 +330,11 @@ export function SvgOrigamiFunctionAnimation({
               x2={224 - index * 2}
               y2={62 + (creasePhase.foldMotion?.hingeLine.point.y ?? 0) * 12}
               data-crease-phase-id={creasePhase.id}
+              data-dependency-highlight={
+                highlightedPhaseId === creasePhase.id ? "crease" : undefined
+              }
+              onMouseEnter={() => onPhaseHover?.(creasePhase.id)}
+              onMouseLeave={() => onPhaseHover?.(undefined)}
               style={{ stroke: preview.paperStyle.creaseColor }}
             />
           ))}
@@ -357,6 +375,9 @@ export function SvgOrigamiFunctionAnimation({
             x2="258"
             y2={54 + motion.hingeLine.point.y * 12}
             style={{ stroke: preview.paperStyle.highlightColor }}
+            data-dependency-highlight={
+              activePhaseIsHighlighted ? "active-crease" : undefined
+            }
           />
         </>
       )}
