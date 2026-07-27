@@ -747,6 +747,10 @@ is easy to follow.
 - F4.1 Add a paper-style panel under the origami tab with front color, back
   color, front pattern, back pattern, crease color, highlight color, and opacity
   controls.
+  Current implementation exposes these controls inside the origami-only
+  `Show export and paper style` region. The app regression verifies front/back
+  colors, front/back patterns, crease color, highlight color, and opacity update
+  the function animation locally.
 - F4.2 Provide pattern presets such as solid, grid, dots, diagonal stripe,
   washi wave, coordinate grid, and high-contrast accessibility mode.
 - F4.3 Render front and back sides with distinct fills during animation,

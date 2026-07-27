@@ -1260,6 +1260,12 @@ describe("App", () => {
     fireEvent.change(screen.getByLabelText("Function paper opacity"), {
       target: { value: "0.65" },
     });
+    fireEvent.change(screen.getByLabelText("Function crease color"), {
+      target: { value: "#ff00aa" },
+    });
+    fireEvent.change(screen.getByLabelText("Function highlight color"), {
+      target: { value: "#00ffaa" },
+    });
     fireEvent.change(screen.getByLabelText("Function paper pattern scale"), {
       target: { value: "1.75" },
     });
@@ -1282,12 +1288,30 @@ describe("App", () => {
     expect(
       screen.getByRole("combobox", { name: "Function paper back pattern" }),
     ).toHaveValue("high-contrast");
+    expect(screen.getByLabelText("Function crease color")).toHaveValue(
+      "#ff00aa",
+    );
+    expect(screen.getByLabelText("Function highlight color")).toHaveValue(
+      "#00ffaa",
+    );
     expect(container.querySelector(".origami-function-paper-base")).toHaveStyle(
       {
         fill: "#ffffff",
         opacity: "0.65",
       },
     );
+    expect(container.querySelector(".origami-function-hinge")).toHaveStyle({
+      stroke: "#ff00aa",
+    });
+    fireEvent.change(
+      screen.getByRole("slider", { name: "Function animation progress" }),
+      { target: { value: "0.25" } },
+    );
+    expect(
+      container.querySelector(".origami-function-active-crease"),
+    ).toHaveStyle({
+      stroke: "#00ffaa",
+    });
     expect(screen.getByLabelText("Function paper pattern scale")).toHaveValue(
       "1.75",
     );
