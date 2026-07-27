@@ -202,7 +202,11 @@ The flat-origami tab provides:
 - F6.7 adds `Export function script` to the collapsed export/paper-style section.
   The downloaded text is a deterministic inspection artifact with the normalized
   function, samples, result, active phase, paper style, and per-phase fold method
-  lines. It is not an importable replay script yet.
+  lines.
+- F6.8 adds `Import function script` beside the JSON replay input. Script replay
+  recompiles the function through the origami compiler, restores recognized
+  paper-style keys and the active phase/progress, pauses playback, and shows the
+  replay status in the function lab.
 - F7.1 adds a fold camera control for function animations. Whole, paper,
   active-fold, and result views update the visible SVG viewBox without changing
   the compiled plan, timeline phase, or export helpers.

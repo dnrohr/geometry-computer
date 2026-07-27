@@ -912,7 +912,13 @@ replay, or share.
   `Show export and paper style` region. The script serializes normalized
   function source, sample values, sampled result, solver readiness, active phase,
   paper style, and deterministic per-phase status/method/output lines for
-  inspection. Importing or executing these text scripts remains future work.
+  inspection.
+- F6.8 Import readable origami function scripts for replay.
+  Current implementation adds `Import function script` beside the JSON replay
+  import. Script replay validates the version header, recompiles the normalized
+  source and sample values through the origami function compiler, restores
+  recognized paper-style keys and the active phase/progress, and reports stale or
+  malformed scripts in the function lab without touching compass state.
 
 Acceptance checks:
 
@@ -3297,7 +3303,7 @@ Only consider these after the MVP is working and documented.
 
 - More sophisticated algebraic simplification.
 - Common-subexpression elimination.
-- Import/export construction scripts.
+- Broader construction scripts beyond origami function replay.
 - Formal construction verification.
 - GeoGebra export.
 - Timeline scrubber with play/pause.

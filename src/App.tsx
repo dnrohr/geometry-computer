@@ -22,6 +22,7 @@ import {
   origamiFunctionScript,
   origamiVariableControls,
   randomOrigamiPaperPalette,
+  replayOrigamiFunctionScript,
   replayOrigamiFunctionAnimationJson,
   setOrigamiFunctionPreviewPlaying,
   setOrigamiFunctionPreviewPaperStyle,
@@ -795,6 +796,26 @@ function OrigamiRoadmap() {
       setFunctionImportStatus(`Imported ${replay.preview.animation.phaseId}`);
     } catch {
       setFunctionImportStatus("Import could not be read.");
+    }
+  };
+  const importOrigamiFunctionScript = async (file?: File) => {
+    if (!file) return;
+    try {
+      const replay = replayOrigamiFunctionScript(await file.text());
+      if (replay.status === "error") {
+        setFunctionImportStatus(replay.error);
+        return;
+      }
+      setFunctionSource(replay.source);
+      setFunctionValues(replay.values);
+      setFunctionPreview(replay.preview);
+      setCopiedFunctionReadout("");
+      setFunctionPaperPaletteId("custom");
+      setFunctionImportStatus(
+        `Imported script ${replay.preview.animation.phaseId}`,
+      );
+    } catch {
+      setFunctionImportStatus("Import script could not be read.");
     }
   };
   const previewOrigamiFunctionAnimation = () =>
@@ -2154,6 +2175,20 @@ function OrigamiRoadmap() {
                   accept="application/json,.json"
                   onChange={(event) => {
                     void importOrigamiFunctionAnimation(
+                      event.target.files?.[0] ?? undefined,
+                    );
+                    event.target.value = "";
+                  }}
+                />
+              </label>
+              <label className="origami-function-import-control">
+                Import function script
+                <input
+                  aria-label="Import function script"
+                  type="file"
+                  accept="text/plain,.txt"
+                  onChange={(event) => {
+                    void importOrigamiFunctionScript(
                       event.target.files?.[0] ?? undefined,
                     );
                     event.target.value = "";

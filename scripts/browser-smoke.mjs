@@ -1430,6 +1430,21 @@ const assertOrigamiFunctionPanel = async (page) => {
   ) {
     throw new Error("Imported function replay did not restore paper style.");
   }
+  const scriptReplayPath = `${artifactDir}/origami-function-script.txt`;
+  await writeFile(scriptReplayPath, functionScript.text, "utf8");
+  await page
+    .getByLabel("Import function script")
+    .setInputFiles(scriptReplayPath);
+  await functionStatus
+    .getByText("Imported script origami-function-phase-9")
+    .waitFor();
+  await functionStatus.getByText("origami-function-phase-9 @ 0.57").waitFor();
+  if (
+    (await page.getByLabel("Function paper back color").inputValue()) !==
+    "#101820"
+  ) {
+    throw new Error("Imported function script did not restore paper style.");
+  }
   const traceLink = page.getByRole("link", { name: "View trace" });
   await traceLink.waitFor();
   if ((await traceLink.getAttribute("href")) !== "#origami-trace") {

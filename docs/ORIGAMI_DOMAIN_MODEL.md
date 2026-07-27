@@ -186,9 +186,13 @@ F6.5 imports saved function-animation JSON by recompiling the exported function
 source and sample values through the origami function boundary, then restoring
 paper style and the saved phase. The imported plan object is treated as replay
 metadata, not as trusted executable state.
-F6.7 keeps function script export as derived read-only text. It is generated
-from the existing preview plan, animation state, and paper style, and does not
-add executable import semantics or affect compass-and-straightedge exports.
+F6.7 keeps function script export as derived text. It is generated from the
+existing preview plan, animation state, and paper style, and does not affect
+compass-and-straightedge exports. F6.8 imports those scripts as replay hints by
+validating the version header, recompiling the normalized source and sample
+values through the origami function boundary, and restoring recognized
+paper-style fields plus active phase/progress. The script is not trusted as an
+executable plan.
 F7.1 keeps fold camera state in the origami UI/renderer layer. Camera modes
 change only the visible function-animation SVG viewBox; they do not alter the
 function plan, animation phase, solver readiness, or exported computation data.

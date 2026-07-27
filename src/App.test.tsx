@@ -10,6 +10,7 @@ import App from "./App";
 import {
   compileOrigamiFunctionPreview,
   origamiFunctionAnimationJson,
+  origamiFunctionScript,
   setOrigamiFunctionPreviewPaperStyle,
   setOrigamiFunctionPreviewPhase,
 } from "./domain/origami/function";
@@ -423,6 +424,7 @@ describe("App", () => {
     expect(
       screen.getByRole("button", { name: "Export function script" }),
     ).toBeInTheDocument();
+    expect(screen.getByLabelText("Import function script")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Export function final SVG" }),
     ).toBeInTheDocument();
@@ -2025,6 +2027,75 @@ describe("App", () => {
         name: "Origami function animation: f(a, b) = a * b",
       }),
     ).toHaveAttribute("data-phase-id", "origami-function-phase-4");
+  });
+
+  it("imports and replays readable origami function scripts", async () => {
+    const preview = compileOrigamiFunctionPreview("f(a,b)=a*b", {
+      a: 4,
+      b: 1.5,
+    });
+    if (preview.status !== "compiled") throw new Error("Expected compiled");
+    const styled = setOrigamiFunctionPreviewPaperStyle(preview, {
+      frontColor: "#ffffff",
+      backColor: "#101820",
+      frontPattern: "washi-wave",
+      backPattern: "high-contrast",
+      patternScale: 1.75,
+      patternRotation: 45,
+    });
+    const replayPhase = setOrigamiFunctionPreviewPhase(
+      styled,
+      "origami-function-phase-4",
+    );
+    const script = origamiFunctionScript(replayPhase);
+    if (!script) throw new Error("Expected script");
+
+    render(<App />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Flat origami roadmap" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Show export and paper style" }),
+    );
+    const input = screen.getByLabelText("Import function script");
+    fireEvent.change(input, {
+      target: {
+        files: [
+          new File([script], "origami-function-script.txt", {
+            type: "text/plain",
+          }),
+        ],
+      },
+    });
+
+    const functionPanel = screen.getByRole("region", {
+      name: "Fold-computed function",
+    });
+    await waitFor(() =>
+      expect(
+        within(functionPanel).getByText(
+          "Imported script origami-function-phase-4",
+        ),
+      ).toBeInTheDocument(),
+    );
+    expect(
+      within(functionPanel).getByRole("textbox", { name: "Origami function" }),
+    ).toHaveValue("f(a, b) = a * b");
+    expect(
+      screen.getByRole("img", {
+        name: "Origami function animation: f(a, b) = a * b",
+      }),
+    ).toHaveAttribute("data-phase-id", "origami-function-phase-4");
+    expect(screen.getByLabelText("Function paper front color")).toHaveValue(
+      "#ffffff",
+    );
+    expect(
+      (
+        within(functionPanel).getByRole("textbox", {
+          name: "Origami function share block",
+        }) as HTMLTextAreaElement
+      ).value,
+    ).toContain("Samples: a=4, b=1.5");
   });
 
   it("preserves compiled origami function animation state across workspace switches", () => {
