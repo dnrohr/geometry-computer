@@ -202,6 +202,18 @@ describe("SvgOrigamiFunctionAnimation", () => {
 
     expect(front).toHaveStyle({ fill: "#f7f0d4", opacity: "0.24" });
     expect(back).toHaveStyle({ fill: "#365f91", opacity: "1" });
+    expect(
+      container.querySelector(".origami-function-paper-front-edge"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-function-paper-back-edge"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-function-hinge-shadow"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-function-hinge-highlight"),
+    ).toBeInTheDocument();
     expect(shadow).toBeInTheDocument();
     expect(Number((shadow as SVGElement).style.opacity)).toBeCloseTo(0.232);
   });

@@ -758,6 +758,10 @@ is easy to follow.
   contrast. The app regression pins both dropdown option lists.
 - F4.3 Render front and back sides with distinct fills during animation,
   including edge outlines and subtle shadows at fold hinges.
+  Current implementation renders separate front/back moving-panel layers,
+  front/back edge outlines, hinge shadow/highlight, and moving-panel shadow
+  during active folds. The renderer regression verifies distinct side fills and
+  those outline/shadow layers.
 - F4.4 Add pattern scale and rotation controls so users can tune visibility for
   small or large folds.
 - F4.5 Store paper style in origami-local UI state and include it in origami
