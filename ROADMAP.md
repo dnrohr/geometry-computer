@@ -1013,6 +1013,11 @@ worth exploring while staying honest about mathematical limits.
   adjacent constant scale-factor combinations, self-subtraction collapse, and
   first-power reuse. These remain advisory only: the fold animation still
   compiles the original normalized function.
+- F7.17 Add common-subexpression optimization summaries.
+  Current implementation derives a reuse optimization summary from the compiled
+  plan's `lengthTransfers`, counting reused expressions and duplicate source
+  phases avoided. The existing reuse panel shows those counts and per-transfer
+  savings while leaving plan generation unchanged.
 
 Acceptance checks:
 
@@ -3327,7 +3332,7 @@ Do not begin Milestone 3 until Milestone 2 is committed and pushed.
 Only consider these after the MVP is working and documented.
 
 - Full AST simplification/rewrite previews beyond advisory hints.
-- Broader common-subexpression optimization beyond visible length reuse.
+- Actual common-subexpression plan rewrites beyond visible reuse summaries.
 - Broader construction scripts beyond origami function replay.
 - Formal construction verification.
 - GeoGebra export.

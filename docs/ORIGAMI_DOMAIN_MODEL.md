@@ -250,6 +250,10 @@ F7.14 surfaces common-subexpression reuse without changing the compiler. The
 reuse panel reads `lengthTransfers`, matching `REUSED_SUBEXPRESSION`
 diagnostics, dependency jump targets, and source nodes from the compiled plan,
 then jumps by reusing the local phase setter.
+F7.17 adds a reuse optimization summary derived from the same compiled plan. It
+counts transfer records, distinct reused expressions, and duplicate source
+phases avoided by each transfer, but it does not rewrite the expression tree or
+change plan generation.
 F7.15 and F7.16 keep simplification hints separate from compilation. The hint
 helper reads the parsed AST and reports identities, direct constant folding,
 nearby constant-offset or scale-factor combinations, self-subtraction collapse,

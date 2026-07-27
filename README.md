@@ -26,6 +26,10 @@ constant-offset/scale-factor combinations, self-subtraction, and first-power
 reuse. They are shown as advice only; the fold animation continues to compile
 the entered normalized function.
 
+The reuse plan also includes an optimization summary for repeated
+subexpressions, including how many expressions are reused and how many duplicate
+source phases the visible length transfers avoid.
+
 Origami computation is intentionally isolated for now so the current
 compass-and-straightedge workspace remains stable while fold-based models,
 proofs, paper styling, exports, and crease-pattern rendering are explored.

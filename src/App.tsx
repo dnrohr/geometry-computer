@@ -19,6 +19,7 @@ import {
   origamiFunctionChallenges,
   origamiFunctionExamples,
   origamiFunctionPaperPalettes,
+  origamiFunctionReuseOptimizationSummary,
   origamiFunctionScript,
   origamiFunctionSimplificationHints,
   origamiVariableControls,
@@ -1091,6 +1092,14 @@ function OrigamiRoadmap() {
           };
         })
       : [];
+  const functionReuseOptimization =
+    functionPreview.status === "compiled"
+      ? origamiFunctionReuseOptimizationSummary(functionPreview.plan)
+      : undefined;
+  const functionReuseOptimizationItemsByTransferId = new Map(
+    functionReuseOptimization?.items.map((item) => [item.transferId, item]) ??
+      [],
+  );
   const activeFunctionInspector =
     functionPreview.status === "compiled" && activeFunctionPhase
       ? {
@@ -1640,12 +1649,42 @@ function OrigamiRoadmap() {
               <h3>Reusable lengths</h3>
               <span>{functionReusePlanItems.length} transfer planned</span>
             </div>
+            {functionReuseOptimization && (
+              <div
+                className="origami-function-reuse-summary"
+                role="region"
+                aria-label="Origami function reuse optimization summary"
+              >
+                <p>{functionReuseOptimization.summary}</p>
+                <dl>
+                  <div>
+                    <dt>Expressions reused</dt>
+                    <dd>{functionReuseOptimization.reusedExpressionCount}</dd>
+                  </div>
+                  <div>
+                    <dt>Duplicate phases avoided</dt>
+                    <dd>{functionReuseOptimization.avoidedPhaseCount}</dd>
+                  </div>
+                </dl>
+              </div>
+            )}
             <ol>
               {functionReusePlanItems.map((item) => (
                 <li key={item.id}>
                   <div>
                     <strong>{item.expression}</strong>
                     <span>{item.message}</span>
+                    {functionReuseOptimizationItemsByTransferId.has(
+                      item.id,
+                    ) && (
+                      <span>
+                        {
+                          functionReuseOptimizationItemsByTransferId.get(
+                            item.id,
+                          )?.summary
+                        }
+                      </span>
+                    )}
                   </div>
                   <dl>
                     <div>

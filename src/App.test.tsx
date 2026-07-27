@@ -1416,11 +1416,27 @@ describe("App", () => {
     const reusePlan = within(functionPanel).getByRole("region", {
       name: "Origami function reuse plan",
     });
+    expect(
+      within(reusePlan).getByRole("region", {
+        name: "Origami function reuse optimization summary",
+      }),
+    ).toHaveTextContent(
+      "1 transfer reuse 1 expression and avoid 1 duplicate source phase.",
+    );
+    expect(
+      within(reusePlan).getByText("Expressions reused"),
+    ).toBeInTheDocument();
+    expect(
+      within(reusePlan).getByText("Duplicate phases avoided"),
+    ).toBeInTheDocument();
     expect(within(reusePlan).getByText("a")).toBeInTheDocument();
     expect(
       within(reusePlan).getByText(
         "a is reused, so the animation plan includes an explicit length-transfer fallback.",
       ),
+    ).toBeInTheDocument();
+    expect(
+      within(reusePlan).getByText("Reusing a avoids replaying 1 source phase."),
     ).toBeInTheDocument();
     expect(
       within(reusePlan).getByText("origami-function-transfer-output-1"),

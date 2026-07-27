@@ -626,6 +626,45 @@ select:focus-visible,
   font-weight: 800;
 }
 
+.origami-function-reuse-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(12rem, 1fr);
+  gap: 0.55rem;
+  align-items: center;
+  min-width: 0;
+  padding: 0.6rem;
+  border: 1px solid rgb(148 211 162 / 22%);
+  border-radius: 0.45rem;
+  background: rgb(148 211 162 / 8%);
+}
+
+.origami-function-reuse-summary p {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 0.78rem;
+}
+
+.origami-function-reuse-summary dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+  margin: 0;
+}
+
+.origami-function-reuse-summary dt {
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.origami-function-reuse-summary dd {
+  margin: 0.1rem 0 0;
+  color: var(--foreground);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
 .origami-function-reuse-plan ol {
   display: grid;
   gap: 0.5rem;
@@ -3031,6 +3070,10 @@ text.geometry-result,
     flex: 1 1 7rem;
   }
   .origami-function-reuse-plan li {
+    grid-template-columns: 1fr;
+  }
+  .origami-function-reuse-summary,
+  .origami-function-reuse-summary dl {
     grid-template-columns: 1fr;
   }
   .origami-function-reuse-plan button {

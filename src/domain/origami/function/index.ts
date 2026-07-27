@@ -26,6 +26,11 @@ export {
   type OrigamiFunctionSimplificationHint,
 } from "./functionSimplification";
 export {
+  origamiFunctionReuseOptimizationSummary,
+  type OrigamiFunctionReuseOptimizationItem,
+  type OrigamiFunctionReuseOptimizationSummary,
+} from "./functionReuseOptimization";
+export {
   DEFAULT_ORIGAMI_PAPER_STYLE,
   advanceOrigamiFunctionPreview,
   compileOrigamiFunctionPreview,

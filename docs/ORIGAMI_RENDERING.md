@@ -262,7 +262,10 @@ The flat-origami tab provides:
 - F7.14 adds an optional reuse-plan panel for functions with repeated
   subexpressions. The panel renders each planned length transfer, source node,
   output object, and diagnostic message, then jumps back to the source phase via
-  the same preview state used by the timeline.
+  the same preview state used by the timeline. F7.17 adds a compact optimization
+  summary to the same panel, showing distinct reused expressions, duplicate
+  source phases avoided, and per-transfer savings without changing the compiled
+  fold sequence.
 - F7.15 and F7.16 add optional simplification hints for local algebra
   identities, direct constant folding, nearby constant-offset/scale-factor
   combinations, self-subtraction, and first-power reuse. The panel displays
