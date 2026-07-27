@@ -378,6 +378,35 @@ describe("origami function plan", () => {
     });
   });
 
+  it("certifies nested radicals as composed geometric-mean fold sequences", () => {
+    const plan = createOrigamiFunctionPlan(
+      validInput("f(a)=sqrt(sqrt(a+1)+1)", { a: 8 }),
+    );
+
+    expect(plan.nodes.at(-1)).toMatchObject({
+      kind: "sqrt",
+      expression: "sqrt(sqrt(a + 1) + 1)",
+      value: 2,
+      dependencyDepth: 4,
+    });
+    expect(plan.phases).toHaveLength(24);
+    expect(plan.phases.map(({ physicalStatus }) => physicalStatus)).toEqual(
+      Array.from({ length: 24 }, () => "proven-physical"),
+    );
+    expect(
+      plan.phases.filter(
+        ({ foldCertificate }) =>
+          foldCertificate?.method === "geometric-mean-square-root",
+      ),
+    ).toHaveLength(10);
+    expect(plan.solverReadiness).toMatchObject({
+      status: "ready",
+      fallbackPhases: 0,
+      certifiedPhases: 24,
+      workItems: [],
+    });
+  });
+
   it("keeps higher integer powers in the solver backlog", () => {
     const plan = createOrigamiFunctionPlan(validInput("f(a)=a^3"));
 

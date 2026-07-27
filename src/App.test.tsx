@@ -1449,6 +1449,9 @@ describe("App", () => {
     expect(
       within(challenges).getByText("14 expected folds"),
     ).toBeInTheDocument();
+    expect(
+      within(challenges).getByText("24 expected folds"),
+    ).toBeInTheDocument();
 
     fireEvent.click(
       within(challenges).getByRole("button", {
@@ -1495,6 +1498,29 @@ describe("App", () => {
         "The quotient length is certified by the selected reciprocal intercept trace with a nonzero sampled denominator.",
       ),
     ).toBeInTheDocument();
+
+    fireEvent.click(
+      within(challenges).getByRole("button", {
+        name: /Nest two radicals challenge f\(a\)=sqrt\(sqrt\(a\+1\)\+1\)/i,
+      }),
+    );
+    expect(
+      within(functionPanel).getByRole("textbox", { name: "Origami function" }),
+    ).toHaveValue("f(a)=sqrt(sqrt(a+1)+1)");
+    expect(within(functionPanel).getByText("2.000")).toBeInTheDocument();
+    fireEvent.click(
+      within(functionPanel).getByRole("button", {
+        name: "Compile origami function",
+      }),
+    );
+    expect(
+      screen.getByRole("button", {
+        name: "Jump to function phase origami-function-phase-24",
+      }),
+    ).toBeInTheDocument();
+    expect(within(functionPanel).getAllByText("ready").length).toBeGreaterThan(
+      1,
+    );
   });
 
   it("updates origami function paper style controls locally", () => {

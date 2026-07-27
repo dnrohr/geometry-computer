@@ -51,6 +51,11 @@ describe("origami function examples", () => {
         displaySource: "f(a)=sqrt(a+1)",
         expectedFoldCount: 14,
       },
+      {
+        title: "Nest two radicals",
+        displaySource: "f(a)=sqrt(sqrt(a+1)+1)",
+        expectedFoldCount: 24,
+      },
     ]);
 
     const previews = origamiFunctionChallenges.map((challenge) =>
@@ -69,5 +74,12 @@ describe("origami function examples", () => {
         ({ expectedFoldCount }) => expectedFoldCount,
       ),
     );
+    expect(
+      previews.map((preview) =>
+        preview.status === "compiled"
+          ? preview.plan.solverReadiness.status
+          : "needs-solver",
+      ),
+    ).toEqual(["ready", "ready", "ready", "ready"]);
   });
 });

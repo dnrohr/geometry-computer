@@ -214,6 +214,10 @@ an `OrigamiPaperStyle` with a tested minimum contrast ratio between the front
 and back paper colors. The UI can apply a named palette or choose a different
 palette through the randomizer without changing plan generation or exports
 beyond the existing paper-style metadata.
+F7.8 surfaces nested radicals through the curated challenge list. The challenge
+`f(a)=sqrt(sqrt(a+1)+1)` composes two square-root nodes with addition nodes,
+keeps all 24 generated phases proven physical, and reuses the
+`geometric-mean-square-root` certificate for both root traces.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

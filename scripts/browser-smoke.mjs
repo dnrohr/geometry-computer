@@ -1341,6 +1341,7 @@ const assertOrigamiFunctionPanel = async (page) => {
     throw new Error("Function challenge 15-fold labels changed.");
   }
   await challengeRegion.getByText("14 expected folds").waitFor();
+  await challengeRegion.getByText("24 expected folds").waitFor();
   await challengeRegion
     .getByRole("button", {
       name: "Make 2a + b challenge f(a,b)=2*a+b",
@@ -1353,6 +1354,18 @@ const assertOrigamiFunctionPanel = async (page) => {
     })
     .click();
   await functionStatus.getByText("1.000").waitFor();
+  await challengeRegion
+    .getByRole("button", {
+      name: "Nest two radicals challenge f(a)=sqrt(sqrt(a+1)+1)",
+    })
+    .click();
+  await functionStatus.getByText("2.000").waitFor();
+  await page.getByRole("button", { name: "Compile origami function" }).click();
+  await page
+    .getByRole("button", {
+      name: "Jump to function phase origami-function-phase-24",
+    })
+    .waitFor();
 
   await input.fill("sqrt(a+1)");
   await functionStatus.getByText("allowable").waitFor();

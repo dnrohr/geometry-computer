@@ -224,6 +224,10 @@ The flat-origami tab provides:
   to the function paper-style controls. Palette definitions live in the origami
   function domain and are tested for front/back contrast before the renderer
   receives them as ordinary `OrigamiPaperStyle` values.
+- F7.8 adds a nested-radical function challenge. Selecting
+  `f(a)=sqrt(sqrt(a+1)+1)` loads a 24-phase solver-ready animation, so the
+  storyboard, minimap, diagnostics, and export paths demonstrate two certified
+  square-root traces composed in one function plan.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.

@@ -56,4 +56,12 @@ export const origamiFunctionChallenges: OrigamiFunctionChallenge[] = [
     values: { a: 3 },
     expectedFoldCount: 14,
   },
+  {
+    title: "Nest two radicals",
+    prompt: "Compute a square root whose radicand contains another root.",
+    displaySource: "f(a)=sqrt(sqrt(a+1)+1)",
+    expression: "sqrt(sqrt(a+1)+1)",
+    values: { a: 8 },
+    expectedFoldCount: 24,
+  },
 ];

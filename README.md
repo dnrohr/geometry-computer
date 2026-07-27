@@ -7,17 +7,19 @@ Scroll through the generated macro and primitive steps while the SVG remains sti
 The app also includes a separate flat-origami tab. That workspace now has two
 origami-only surfaces: an arithmetic trace gallery for crease-pattern examples
 and a fold-computed function lab. The function lab accepts allowable real-valued
-expressions such as `f(a)=sqrt(a+1)`, validates sampled inputs, animates a
+expressions such as `f(a)=sqrt(a+1)` or
+`f(a)=sqrt(sqrt(a+1)+1)`, validates sampled inputs, animates a
 square two-sided paper fold sequence, and keeps the fold storyboard, expression
 progress, dependency highlights, measurement labels, ambiguity warnings, and
-function object inspector local to the origami tab. Function animations can be
-exported as JSON, current/final/crease SVG snapshots, or animated SVG, and saved
+function object inspector local to the origami tab. Function animations can be exported
+as JSON, current/final/crease SVG snapshots, or animated SVG, and saved
 animation JSON can be imported for replay. Fallback phases now expose required
 axioms, acceptance checks, and branch alternatives so the remaining physical
 fold-solver work is explicit. Square powers such as `f(a)=a^2`, products such
-as `f(a,b)=a*b`, quotients such as `f(a,b)=a/b`, and shifted roots such as
-`f(a)=sqrt(a+1)` are now certified through square-specialization,
-intercept-style, reciprocal-quotient, and positive geometric-mean traces.
+as `f(a,b)=a*b`, quotients such as `f(a,b)=a/b`, shifted roots such as
+`f(a)=sqrt(a+1)`, and nested radicals are now certified through
+square-specialization, intercept-style, reciprocal-quotient, and positive
+geometric-mean traces.
 
 Origami computation is intentionally isolated for now so the current
 compass-and-straightedge workspace remains stable while fold-based models,

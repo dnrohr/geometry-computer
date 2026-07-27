@@ -941,8 +941,9 @@ worth exploring while staying honest about mathematical limits.
   operation markers, active-phase state, fallback/proven styling, and direct
   phase jump controls.
 - F7.5 Add curated function challenges such as "make 2a+b", "compute a scaled
-  reciprocal", and "extract sqrt(a+1)" with expected fold counts.
-  Current implementation adds compiler-backed challenge cards for those three
+  reciprocal", "extract sqrt(a+1)", and "nest two radicals" with expected fold
+  counts.
+  Current implementation adds compiler-backed challenge cards for those four
   tasks, each with sample values and expected phase counts verified against the
   generated function plan.
 - F7.6 Add a presentation mode that hides editing controls and plays the fold
@@ -955,6 +956,10 @@ worth exploring while staying honest about mathematical limits.
   Current implementation adds named paper palettes, a random palette button,
   swatches, and tests that enforce front/back contrast for every curated
   palette.
+- F7.8 Surface nested-radical support as a curated origami function challenge.
+  Current implementation adds `f(a)=sqrt(sqrt(a+1)+1)` with a sampled value
+  that produces a 24-phase, solver-ready animation composed from two certified
+  positive geometric-mean traces.
 
 Acceptance checks:
 
@@ -3276,7 +3281,6 @@ Only consider these after the MVP is working and documented.
 - Better mobile layout.
 - Timeline scrubber with play/pause.
 - User-authored construction macros.
-- Support for nested radicals.
 - Support for exact symbolic coordinates.
 - Animated branch-choice explanations.
 - Side-by-side algebraic and geometric proof modes.
