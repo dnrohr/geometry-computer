@@ -227,6 +227,10 @@ selector only controls whether expression progress, the function object
 inspector, or both panels are rendered. It does not change parser inputs,
 compiled plan nodes, animation phases, paper style, solver readiness, or export
 metadata.
+F7.11 keeps mobile layout improvements in CSS and smoke coverage. Horizontal
+minimap/storyboard rails and the sticky proof-mode selector do not change
+function preview state, phase IDs, fold certificates, solver work, replay data,
+or compass-and-straightedge modules.
 
 `src/domain/origami/function/functionExamples.ts` owns the first F1 function
 presets. Each preset has a signature-style display source, an expression body,

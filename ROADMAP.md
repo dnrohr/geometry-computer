@@ -971,6 +971,11 @@ worth exploring while staying honest about mathematical limits.
   function object inspector side-by-side on desktop, while `Algebra` and
   `Geometry` modes let users focus on either trace without changing the compiled
   plan, animation phase, or compass-and-straightedge UI.
+- F7.11 Improve the mobile function-lab layout.
+  Current implementation turns the function minimap and storyboard into
+  horizontal snap-scrolling rails on narrow screens, keeps the proof-mode
+  selector sticky inside the function animation panel, and verifies the mobile
+  contract in browser smoke without changing desktop or compass layouts.
 
 Acceptance checks:
 
@@ -3289,7 +3294,6 @@ Only consider these after the MVP is working and documented.
 - Import/export construction scripts.
 - Formal construction verification.
 - GeoGebra export.
-- Better mobile layout.
 - Timeline scrubber with play/pause.
 - User-authored construction macros.
 - Support for exact symbolic coordinates.

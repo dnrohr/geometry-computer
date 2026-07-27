@@ -1166,6 +1166,15 @@ describe("App", () => {
     expect(
       container.querySelector(".origami-function-value-strip"),
     ).toHaveAttribute("data-readout-placement", "below-paper");
+    expect(
+      container.querySelector(".origami-function-minimap-track"),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector(".origami-function-storyboard ol"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("region", { name: "Origami function proof mode" }),
+    ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Show diagnostics" }));
     expect(screen.getAllByText("ready").length).toBeGreaterThan(0);

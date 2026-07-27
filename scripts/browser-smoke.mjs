@@ -280,6 +280,19 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
     const svg = rectFor(".origami-function-animation");
     const paperBase = document.querySelector(".origami-function-paper-base");
     const valueStrip = document.querySelector(".origami-function-value-strip");
+    const minimapTrack = document.querySelector(
+      ".origami-function-minimap-track",
+    );
+    const minimapStep = document.querySelector(
+      ".origami-function-minimap-step",
+    );
+    const storyboardList = document.querySelector(
+      ".origami-function-storyboard ol",
+    );
+    const storyboardItem = document.querySelector(
+      ".origami-function-storyboard li",
+    );
+    const proofMode = document.querySelector(".origami-function-proof-mode");
     const paperRegions = [
       rectFor(".origami-function-paper-base"),
       rectFor(".origami-function-paper-stationary"),
@@ -394,6 +407,47 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
           result: contrast(getComputedStyle(resultText).fill, rectFill),
         };
       })(),
+      mobileLayout:
+        window.innerWidth <= 760
+          ? {
+              minimapDisplay:
+                minimapTrack instanceof HTMLElement
+                  ? getComputedStyle(minimapTrack).display
+                  : undefined,
+              minimapOverflow:
+                minimapTrack instanceof HTMLElement
+                  ? getComputedStyle(minimapTrack).overflowX
+                  : undefined,
+              minimapSnap:
+                minimapTrack instanceof HTMLElement
+                  ? getComputedStyle(minimapTrack).scrollSnapType
+                  : undefined,
+              minimapStepFlex:
+                minimapStep instanceof HTMLElement
+                  ? getComputedStyle(minimapStep).flexBasis
+                  : undefined,
+              storyboardDisplay:
+                storyboardList instanceof HTMLElement
+                  ? getComputedStyle(storyboardList).display
+                  : undefined,
+              storyboardOverflow:
+                storyboardList instanceof HTMLElement
+                  ? getComputedStyle(storyboardList).overflowX
+                  : undefined,
+              storyboardSnap:
+                storyboardList instanceof HTMLElement
+                  ? getComputedStyle(storyboardList).scrollSnapType
+                  : undefined,
+              storyboardItemFlex:
+                storyboardItem instanceof HTMLElement
+                  ? getComputedStyle(storyboardItem).flexBasis
+                  : undefined,
+              proofModePosition:
+                proofMode instanceof HTMLElement
+                  ? getComputedStyle(proofMode).position
+                  : undefined,
+            }
+          : undefined,
     };
   });
 
@@ -505,6 +559,26 @@ const assertOrigamiFunctionAnimationVisualContract = async (page, viewport) => {
         " | ",
       )}`,
     );
+  }
+  if (viewport.width <= 760) {
+    const mobile = contract.mobileLayout ?? {};
+    if (
+      mobile.minimapDisplay !== "flex" ||
+      !["auto", "scroll"].includes(mobile.minimapOverflow) ||
+      !mobile.minimapSnap?.includes("x") ||
+      mobile.minimapStepFlex === "auto" ||
+      mobile.storyboardDisplay !== "flex" ||
+      !["auto", "scroll"].includes(mobile.storyboardOverflow) ||
+      !mobile.storyboardSnap?.includes("x") ||
+      mobile.storyboardItemFlex === "auto" ||
+      mobile.proofModePosition !== "sticky"
+    ) {
+      throw new Error(
+        `Function mobile layout contract mismatch at ${viewport.width}x${viewport.height}: ${JSON.stringify(
+          mobile,
+        )}`,
+      );
+    }
   }
   await mkdir(artifactDir, { recursive: true });
   await page.locator(".origami-function-animation-panel").screenshot({

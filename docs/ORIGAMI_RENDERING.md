@@ -238,6 +238,11 @@ The flat-origami tab provides:
   in adjacent desktop columns, while `Algebra` and `Geometry` modes focus on one
   panel. The selector is local UI state and does not alter function plans,
   exports, or compass-and-straightedge proof cards.
+- F7.11 improves the narrow-screen function layout. Under the mobile breakpoint,
+  the step minimap and fold storyboard become horizontal snap-scrolling rails so
+  long plans do not create a dense vertical wall of controls. The proof-mode
+  selector becomes sticky within the function animation panel, keeping the
+  algebra/geometry focus control close to the proof panels.
 - An origami example selector with one example for each supported arithmetic
   family.
 - A reveal slider for fold traces.
