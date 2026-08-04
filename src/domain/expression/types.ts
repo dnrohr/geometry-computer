@@ -6,7 +6,13 @@ export type Expr =
   | { kind: "mul"; left: Expr; right: Expr }
   | { kind: "div"; left: Expr; right: Expr }
   | { kind: "pow"; base: Expr; exponent: number }
-  | { kind: "sqrt"; value: Expr };
+  | { kind: "sqrt"; value: Expr }
+  | { kind: "cbrt"; value: Expr }
+  | {
+      kind: "cubicRoot";
+      coefficients: [Expr, Expr, Expr, Expr];
+      rootIndex: number;
+    };
 
 export const constant = (value: number): Expr => ({ kind: "const", value });
 export const variable = (name: string): Expr => ({ kind: "var", name });
@@ -36,3 +42,8 @@ export const pow = (base: Expr, exponent: number): Expr => ({
   exponent,
 });
 export const sqrt = (value: Expr): Expr => ({ kind: "sqrt", value });
+export const cbrt = (value: Expr): Expr => ({ kind: "cbrt", value });
+export const cubicRoot = (
+  coefficients: [Expr, Expr, Expr, Expr],
+  rootIndex: number,
+): Expr => ({ kind: "cubicRoot", coefficients, rootIndex });

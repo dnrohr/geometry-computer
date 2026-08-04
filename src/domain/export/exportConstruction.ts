@@ -1,28 +1,46 @@
 import type { CompiledScene } from "../compiler/compileExpression";
-export type ConstructionExport = Pick<
-  CompiledScene,
-  | "expression"
-  | "simplifiedExpression"
-  | "values"
-  | "objects"
-  | "steps"
-  | "revealActions"
-  | "proofs"
-  | "viewBox"
-> & { version: 1 };
+import type { RenderDocumentV2 } from "../render/types";
+import type { RevealAction } from "../construction/types";
+import type { GeomObject } from "../geometry/types";
+import { parseViewBox } from "../render/validateRenderDocument";
+export type ConstructionExport = Omit<
+  RenderDocumentV2,
+  "objects" | "revealActions"
+> & {
+  objects: GeomObject[];
+  revealActions: RevealAction[];
+};
 export const constructionExport = (
   scene: CompiledScene,
-): ConstructionExport => ({
-  version: 1,
-  expression: scene.expression,
-  simplifiedExpression: scene.simplifiedExpression,
-  values: scene.values,
-  objects: scene.objects,
-  steps: scene.steps,
-  revealActions: scene.revealActions,
-  proofs: scene.proofs,
-  viewBox: scene.viewBox,
-});
+): ConstructionExport => {
+  const [, , width, height] = parseViewBox(scene.viewBox);
+  const exportedObjectIds = new Set(scene.objects.map(({ id }) => id));
+  return {
+    version: 2,
+    metadata: {
+      schema: "geometry-computer/render-document",
+      generator: { name: "geometry-computer", version: "0.1.0" },
+      title: scene.title,
+      narration: `${scene.expression} = ${scene.value}`,
+      aspectRatio: { width, height },
+      theme: "geometry-computer-dark",
+      duration: Math.max(0, ...scene.revealActions.map(({ end }) => end)),
+    },
+    expression: scene.expression,
+    simplifiedExpression: scene.simplifiedExpression,
+    values: scene.values,
+    objects: scene.objects.map((object) => ({
+      ...object,
+      dependsOnObjectIds: object.dependsOnObjectIds.filter((id) =>
+        exportedObjectIds.has(id),
+      ),
+    })),
+    steps: scene.steps,
+    revealActions: scene.revealActions,
+    proofs: scene.proofs,
+    viewBox: scene.viewBox,
+  };
+};
 export const constructionJson = (scene: CompiledScene) =>
   JSON.stringify(constructionExport(scene), null, 2);
 export function downloadText(filename: string, content: string, type: string) {

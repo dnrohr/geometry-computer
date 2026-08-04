@@ -11,11 +11,23 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test:manim-renderer": "python -m unittest discover tools/manim_renderer -p \"test_*.py\"",
+    "construction:export": "tsx src/cli/exportConstruction.ts",
+    "construction:render": "powershell -ExecutionPolicy Bypass -File tools/manim_renderer/render-construction.ps1",
+    "origami:export": "tsx src/cli/exportOrigami.ts",
+    "origami:examples": "tsx src/cli/exportOrigamiExamples.ts",
+    "origami:render:hinge": "powershell -ExecutionPolicy Bypass -File tools/manim_renderer/render-origami-examples.ps1 -FoldMode hinge",
+    "manim:preflight": ".venv-manim\\Scripts\\python.exe tools/manim_renderer/preflight.py",
+    "manim:smoke": "powershell -ExecutionPolicy Bypass -File tools/manim_renderer/run-smoke.ps1",
+    "manim:service": ".venv-manim\\Scripts\\python.exe tools/manim_renderer/service.py",
+    "manim:quality": ".venv-manim\\Scripts\\python.exe tools/manim_renderer/quality_suite.py"
   },
   "dependencies": {
+    "@types/three": "^0.185.3",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "three": "^0.185.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -31,6 +43,7 @@
     "globals": "^17.6.0",
     "jsdom": "^29.1.1",
     "prettier": "^3.8.4",
+    "tsx": "^4.23.5",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.1",
     "vite": "^8.0.16",

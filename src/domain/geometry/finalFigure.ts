@@ -23,6 +23,10 @@ const figureLabel = (expr: Expr): string => {
       const value = figureLabel(expr.value);
       return `√${expr.value.kind === "var" || expr.value.kind === "const" ? value : `(${value})`}`;
     }
+    case "cbrt":
+      return `âˆ›${figureLabel(expr.value)}`;
+    case "cubicRoot":
+      return formatExpression(expr);
     case "mul":
       return `${figureLabel(expr.left)} · ${figureLabel(expr.right)}`;
     case "add":
@@ -56,6 +60,10 @@ const evaluate = (expr: Expr, values: Record<string, number>): number => {
       return evaluate(expr.base, values) ** expr.exponent;
     case "sqrt":
       return Math.sqrt(evaluate(expr.value, values));
+    case "cbrt":
+      return Math.cbrt(evaluate(expr.value, values));
+    case "cubicRoot":
+      throw new Error("Cubic roots are rendered by the origami planner.");
   }
 };
 

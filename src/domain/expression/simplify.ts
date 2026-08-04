@@ -10,6 +10,12 @@ export function simplify(expr: Expr): Expr {
       ? { kind: "const", value: Math.sqrt(value.value) }
       : { ...expr, value };
   }
+  if (expr.kind === "cbrt") return { ...expr, value: simplify(expr.value) };
+  if (expr.kind === "cubicRoot")
+    return {
+      ...expr,
+      coefficients: expr.coefficients.map(simplify) as [Expr, Expr, Expr, Expr],
+    };
   if (expr.kind === "pow") {
     const base = simplify(expr.base);
     return base.kind === "const"

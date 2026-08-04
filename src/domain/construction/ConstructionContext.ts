@@ -89,7 +89,9 @@ export class ConstructionContext {
     if (!this.proofs.some(({ id }) => id === proof.id)) this.proofs.push(proof);
   }
   trace(): ConstructionTrace {
-    const stepIndex = new Map(this.steps.map((step, index) => [step.id, index]));
+    const stepIndex = new Map(
+      this.steps.map((step, index) => [step.id, index]),
+    );
     const stepCount = Math.max(1, this.steps.length);
     const actionsByStep = new Map<string, RevealAction[]>();
     this.revealActions.forEach((action) => {

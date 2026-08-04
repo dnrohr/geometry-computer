@@ -54,14 +54,607 @@ h3 {
 }
 
 .expression-summary,
+.origami-intro,
+.origami-preview,
 .construction-layout,
 .expression-input,
 .gallery,
+.video-export,
 .details-grid > * {
   border: 1px solid var(--line);
   border-radius: 1.25rem;
   background: var(--panel);
   box-shadow: 0 2rem 5rem rgb(0 0 0 / 18%);
+}
+
+.workspace-switcher {
+  display: flex;
+  gap: 0.6rem;
+  margin: 1rem 0 1.4rem;
+}
+.workspace-switcher button {
+  flex: 1;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  background: transparent;
+  color: inherit;
+  font-weight: 700;
+}
+.workspace-switcher button.active {
+  background: var(--accent);
+  color: #15202a;
+  border-color: var(--accent);
+}
+.origami-examples {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.7rem;
+}
+.origami-compute {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: var(--panel);
+}
+.origami-compute-heading,
+.origami-compute-result {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 1rem;
+}
+.origami-compute-inputs {
+  display: grid;
+  gap: 0.6rem;
+}
+.origami-compute-inputs label {
+  display: grid;
+  gap: 0.25rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.origami-compute-inputs label span {
+  font-size: 0.68rem;
+}
+.origami-compute-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.8rem;
+}
+.origami-compute-examples button {
+  display: grid;
+  gap: 0.15rem;
+  text-align: left;
+}
+.origami-compute-examples code {
+  font-size: 0.72rem;
+  color: var(--accent);
+}
+.origami-compute-result {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+.origami-compute-result h3 {
+  overflow-wrap: anywhere;
+}
+.origami-compute-result dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem 0.7rem;
+  font-size: 0.78rem;
+}
+.origami-compute-result dt {
+  color: var(--muted);
+}
+.origami-compute-result dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.origami-compute-result ol {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.origami-compute-result li button {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.45rem;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+}
+.origami-compute-result li.active button {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.origami-compute-result li.origami-only button {
+  border-left: 3px solid #ed765e;
+}
+.origami-algebra-inspector {
+  grid-column: 1 / -1;
+  padding: 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+}
+.origami-algebra-inspector dl {
+  margin-bottom: 0.6rem;
+}
+.origami-algebra-inspector p {
+  margin: 0.35rem 0;
+  font-size: 0.8rem;
+}
+.origami-algebra-inspector ol {
+  display: grid;
+  gap: 0.4rem;
+  padding-left: 1.2rem;
+}
+.origami-algebra-inspector li strong,
+.origami-algebra-inspector li span {
+  display: block;
+}
+.origami-algebra-inspector li span {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.origami-examples button {
+  text-align: left;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  background: transparent;
+  color: inherit;
+}
+.origami-examples button.active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.origami-examples strong,
+.origami-examples span {
+  display: block;
+}
+.origami-examples span {
+  margin-top: 0.35rem;
+  opacity: 0.75;
+  font-size: 0.85rem;
+}
+.origami-preview {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.75fr) minmax(20rem, 1.25fr);
+  gap: 1.5rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+.origami-preview svg {
+  width: 100%;
+  max-height: 30rem;
+  border-radius: 0.8rem;
+  background: #202a33;
+}
+.origami-object {
+  cursor: pointer;
+  outline: none;
+}
+.origami-object polygon,
+.origami-object line,
+.origami-object circle {
+  transition:
+    filter 0.15s ease,
+    stroke-width 0.15s ease;
+}
+.origami-object.moving polygon {
+  filter: drop-shadow(0 0 0.08rem #63c5da);
+}
+.origami-object.hovered polygon,
+.origami-object.hovered line,
+.origami-object.hovered circle,
+.origami-object:focus polygon,
+.origami-object:focus line,
+.origami-object:focus circle {
+  filter: drop-shadow(0 0 0.13rem #fff);
+}
+.origami-object.selected polygon,
+.origami-object.selected line,
+.origami-object.selected circle {
+  stroke: #fff;
+  stroke-width: 0.13;
+  filter: drop-shadow(0 0 0.16rem #f0b45d);
+}
+.origami-object.trace-highlighted polygon,
+.origami-object.trace-highlighted line,
+.origami-object.trace-highlighted circle {
+  filter: drop-shadow(0 0 0.15rem #f0b45d);
+}
+.origami-object.folding polygon {
+  filter: drop-shadow(0 0 0.2rem #63c5da);
+}
+.origami-selection {
+  margin: 0.55rem 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.origami-selection code {
+  color: var(--accent);
+}
+.origami-provenance {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem 0.7rem;
+  margin: 1rem 0;
+  font-size: 0.78rem;
+}
+.origami-provenance dt {
+  color: var(--muted);
+}
+.origami-provenance dd {
+  margin: 0;
+}
+.origami-author {
+  display: grid;
+  grid-template-columns: 0.75fr 1.25fr;
+  gap: 1rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: var(--panel);
+}
+.origami-author-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(8rem, 1fr));
+  gap: 0.65rem;
+}
+.origami-author-fields label {
+  display: grid;
+  gap: 0.25rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.origami-author-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.origami-author-error {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--danger, #ff8b7b);
+}
+.origami-session {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: var(--panel);
+}
+.origami-session-actions,
+.origami-session-playback {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+.origami-session ol {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0;
+  list-style: none;
+}
+.origami-session li button {
+  display: grid;
+  grid-template-columns: 1.5rem 1fr auto;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.55rem;
+  text-align: left;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+}
+.origami-session li.active button {
+  border-color: var(--accent);
+}
+.origami-session time {
+  color: var(--accent);
+}
+.origami-session-playback label {
+  display: grid;
+  flex: 1;
+  min-width: 12rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.origami-session details {
+  margin-top: 0.8rem;
+}
+.origami-session textarea {
+  display: block;
+  width: 100%;
+  min-height: 6rem;
+  margin: 0.5rem 0;
+}
+.origami-crease-pattern {
+  display: grid;
+  grid-template-columns: 0.7fr 1.3fr;
+  gap: 0.7rem;
+  align-items: center;
+  margin-top: 0.8rem;
+}
+.origami-crease-pattern small {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--muted);
+}
+.origami-crease-pattern svg {
+  width: 100%;
+  max-height: 10rem;
+  background: #202a33;
+}
+.origami-crease-pattern rect {
+  fill: #f3ead3;
+  stroke: #587080;
+  stroke-width: 0.06;
+}
+.origami-crease-pattern line {
+  stroke: #ed765e;
+  stroke-width: 0.08;
+  stroke-dasharray: 0.18 0.12;
+}
+.origami-details {
+  display: grid;
+  grid-template-columns: 1.35fr 0.65fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.origami-trace,
+.origami-inspector {
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: var(--panel);
+}
+.origami-trace ol {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.origami-trace li button {
+  display: grid;
+  grid-template-columns: 1.5rem 1fr auto;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.65rem;
+  text-align: left;
+  background: transparent;
+  color: inherit;
+  border: 1px solid transparent;
+  border-radius: 0.55rem;
+}
+.origami-trace li.active button {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.origami-trace li button > span {
+  display: grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: var(--line);
+}
+.origami-trace strong,
+.origami-trace small {
+  display: block;
+}
+.origami-trace p {
+  margin: 0.2rem 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.origami-trace small {
+  color: var(--muted);
+  line-height: 1.35;
+}
+.origami-trace time {
+  color: var(--accent);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.72rem;
+}
+.origami-inspector {
+  position: relative;
+}
+.origami-inspector.empty {
+  color: var(--muted);
+}
+.origami-inspector-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+}
+.origami-inspector dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 0.8rem;
+}
+.origami-inspector dt {
+  color: var(--muted);
+}
+.origami-inspector dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.origami-inspector code {
+  color: var(--accent);
+}
+.origami-instruction {
+  padding: 0.8rem;
+  border-left: 3px solid var(--accent);
+}
+.origami-canvas-stack {
+  min-width: 0;
+}
+.origami-view-switch {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+.origami-view-switch button.active {
+  background: var(--accent);
+  color: #15202a;
+}
+.origami-3d-viewport {
+  width: 100%;
+  min-height: 28rem;
+  overflow: hidden;
+  border-radius: 0.8rem;
+  background: #202a33;
+}
+.origami-3d-viewport canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.origami-camera-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+.origami-camera-controls span {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.origami-3d-fallback {
+  min-height: 15rem;
+  display: grid;
+  place-content: center;
+  padding: 2rem;
+  text-align: center;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  background: #202a33;
+}
+.origami-playback {
+  display: grid;
+  grid-template-columns: auto minmax(9rem, 1fr) auto auto;
+  gap: 0.7rem;
+  align-items: end;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+}
+.origami-playback-buttons {
+  display: flex;
+  gap: 0.35rem;
+}
+.origami-playback label {
+  display: grid;
+  gap: 0.25rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.origami-playback input {
+  width: 100%;
+}
+.origami-time {
+  white-space: nowrap;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.78rem;
+}
+@media (max-width: 760px) {
+  .origami-examples,
+  .origami-author-fields {
+    grid-template-columns: 1fr 1fr;
+  }
+  .origami-preview,
+  .origami-details,
+  .origami-author,
+  .origami-compute-heading,
+  .origami-compute-result {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 920px) {
+  .origami-playback {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+  .origami-playback-buttons {
+    flex-wrap: wrap;
+  }
+}
+
+.video-export {
+  display: grid;
+  grid-template-columns: minmax(14rem, 1fr) minmax(20rem, 1.5fr);
+  gap: 1rem 2rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 1rem 1.25rem;
+}
+.video-export h2,
+.video-export p {
+  margin-bottom: 0.35rem;
+}
+.video-export > div > p:not(.section-label) {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.video-export-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: end;
+}
+.video-export-controls label {
+  display: grid;
+  gap: 0.3rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.video-export-status,
+.video-export-result,
+.video-export-error {
+  grid-column: 1 / -1;
+}
+.video-export-status {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.video-export-status progress {
+  flex: 1;
+  accent-color: var(--accent);
+}
+.video-export-error {
+  color: var(--error-text) !important;
+}
+.video-export-result a {
+  display: inline-block;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--accent);
+  border-radius: 0.5rem;
+  color: var(--foreground);
+  text-decoration: none;
+}
+.video-export-result code {
+  overflow-wrap: anywhere;
 }
 
 .expression-input {
@@ -521,6 +1114,7 @@ text.geometry-result,
   .masthead,
   .construction-layout,
   .expression-input,
+  .video-export,
   .details-grid {
     grid-template-columns: 1fr;
   }
@@ -561,5 +1155,17 @@ text.geometry-result,
     scroll-behavior: auto !important;
     transition: none !important;
     animation: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .origami-object polygon,
+  .origami-object line,
+  .origami-object circle {
+    forced-color-adjust: auto;
+  }
+  .origami-view-switch button.active,
+  .workspace-switcher button.active {
+    outline: 3px solid CanvasText;
   }
 }

@@ -7,6 +7,7 @@ import { parseExpression } from "./domain/parser/parseExpression";
 import { gallery, type GalleryExample } from "./domain/examples/gallery";
 import { evaluateReveal } from "./domain/reveal/evaluateReveal";
 import {
+  constructionExport,
   constructionJson,
   downloadText,
   serializeSvg,
@@ -26,6 +27,8 @@ import {
   type InteractionState,
 } from "./ui/interaction/interactionState";
 import "./App.css";
+import { ManimExportPanel } from "./render/manim/ManimExportPanel";
+import { OrigamiWorkspace } from "./ui/origami/OrigamiWorkspace";
 
 const defaultValues = { a: 3, b: 2, x: 3, y: 2 };
 const build = (
@@ -36,6 +39,14 @@ const build = (
 ) => compileExpression(parseExpression(source), values, original, simplified);
 
 function App() {
+  const [workspace, setWorkspace] = useState<"euclidean" | "origami">(
+    "euclidean",
+  );
+  const [origamiVisited, setOrigamiVisited] = useState(false);
+  const selectWorkspace = (next: "euclidean" | "origami") => {
+    if (next === "origami") setOrigamiVisited(true);
+    setWorkspace(next);
+  };
   const [expression, setExpression] = useState("sqrt(3*a - b*b)");
   const [values, setValues] = useState<Record<string, number>>(defaultValues);
   const [scene, setScene] = useState<CompiledScene>(() =>
@@ -153,216 +164,277 @@ function App() {
           compass-and-straightedge constructions.
         </p>
       </header>
-      <ExpressionInput
-        expression={expression}
-        values={values}
-        error={error}
-        onExpression={setExpression}
-        onValues={setValues}
-        onCompile={() => compile()}
-      />
-      <ExampleGallery examples={gallery} onSelect={selectExample} />
-      <section className="expression-summary" aria-labelledby="example-title">
-        <p className="section-label">Current construction</p>
-        <h2 id="example-title">{scene.title}</h2>
-        <div className="expression-equivalence">
-          <span>{scene.expression}</span>
-          <span aria-hidden="true">=</span>
-          <strong>{scene.simplifiedExpression}</strong>
-          <span className="numeric-result">
-            → {Number(scene.value.toFixed(5))}
-          </span>
+      <nav
+        className="workspace-switcher"
+        aria-label="Geometry workspace"
+        role="tablist"
+        onKeyDown={(event) => {
+          if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key))
+            return;
+          event.preventDefault();
+          const next =
+            event.key === "ArrowLeft" || event.key === "Home"
+              ? "euclidean"
+              : "origami";
+          selectWorkspace(next);
+          event.currentTarget
+            .querySelector<HTMLButtonElement>(
+              `[aria-controls="${next}-workspace"]`,
+            )
+            ?.focus();
+        }}
+      >
+        <button
+          type="button"
+          role="tab"
+          tabIndex={workspace === "euclidean" ? 0 : -1}
+          aria-selected={workspace === "euclidean"}
+          aria-controls="euclidean-workspace"
+          className={workspace === "euclidean" ? "active" : ""}
+          onClick={() => selectWorkspace("euclidean")}
+        >
+          Euclidean construction
+        </button>
+        <button
+          type="button"
+          role="tab"
+          tabIndex={workspace === "origami" ? 0 : -1}
+          aria-selected={workspace === "origami"}
+          aria-controls="origami-workspace"
+          className={workspace === "origami" ? "active" : ""}
+          onClick={() => selectWorkspace("origami")}
+        >
+          Origami folding
+        </button>
+      </nav>
+      {origamiVisited && (
+        <div
+          id="origami-workspace"
+          role="tabpanel"
+          className="workspace-pane"
+          hidden={workspace !== "origami"}
+        >
+          <OrigamiWorkspace />
         </div>
-      </section>
-      <div className="toolbar" aria-label="Construction controls">
-        <label>
-          Reveal{" "}
-          <input
-            aria-label="Reveal progress"
-            type="range"
-            min="0"
-            max="1"
-            step=".01"
-            value={progress}
-            onChange={(event) => setProgress(Number(event.target.value))}
-          />
-        </label>
-        <label>
-          Scaffolding{" "}
-          <select
-            value={scaffoldMode}
-            onChange={(event) =>
-              setScaffoldMode(event.target.value as typeof scaffoldMode)
+      )}
+      <div
+        id="euclidean-workspace"
+        role="tabpanel"
+        className="workspace-pane"
+        hidden={workspace !== "euclidean"}
+      >
+        <ExpressionInput
+          expression={expression}
+          values={values}
+          error={error}
+          onExpression={setExpression}
+          onValues={setValues}
+          onCompile={() => compile()}
+        />
+        <ExampleGallery examples={gallery} onSelect={selectExample} />
+        <section className="expression-summary" aria-labelledby="example-title">
+          <p className="section-label">Current construction</p>
+          <h2 id="example-title">{scene.title}</h2>
+          <div className="expression-equivalence">
+            <span>{scene.expression}</span>
+            <span aria-hidden="true">=</span>
+            <strong>{scene.simplifiedExpression}</strong>
+            <span className="numeric-result">
+              → {Number(scene.value.toFixed(5))}
+            </span>
+          </div>
+        </section>
+        <div className="toolbar" aria-label="Construction controls">
+          <label>
+            Reveal{" "}
+            <input
+              aria-label="Reveal progress"
+              type="range"
+              min="0"
+              max="1"
+              step=".01"
+              value={progress}
+              onChange={(event) => setProgress(Number(event.target.value))}
+            />
+          </label>
+          <label>
+            Scaffolding{" "}
+            <select
+              value={scaffoldMode}
+              onChange={(event) =>
+                setScaffoldMode(event.target.value as typeof scaffoldMode)
+              }
+            >
+              <option value="all">Show all</option>
+              <option value="current">Current step</option>
+              <option value="hide-retired">Hide retired</option>
+            </select>
+          </label>
+          <button
+            type="button"
+            onClick={() =>
+              downloadText(
+                "construction.json",
+                constructionJson(scene),
+                "application/json",
+              )
             }
           >
-            <option value="all">Show all</option>
-            <option value="current">Current step</option>
-            <option value="hide-retired">Hide retired</option>
-          </select>
-        </label>
-        <button
-          type="button"
-          onClick={() =>
-            downloadText(
-              "construction.json",
-              constructionJson(scene),
-              "application/json",
-            )
-          }
-        >
-          Export JSON
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            svgRef.current &&
-            downloadText(
-              "construction.svg",
-              serializeSvg(svgRef.current),
-              "image/svg+xml",
-            )
-          }
-        >
-          Export current SVG
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            svgRef.current &&
-            downloadText(
-              "construction-final.svg",
-              serializeSvg(svgRef.current, true),
-              "image/svg+xml",
-            )
-          }
-        >
-          Export clean SVG
-        </button>
-      </div>
-      <section
-        ref={setScrollElement}
-        className="construction-layout"
-        aria-label="Interactive geometric construction"
-      >
-        <div className="canvas-panel">
-          <SvgConstructionCanvas
-            svgRef={svgRef}
-            objects={scene.objects}
-            viewBox={scene.viewBox}
-            title={scene.title}
-            description={`Construct ${scene.simplifiedExpression} from the supplied lengths and a unit.`}
-            expressionSummary={`${scene.expression} = ${scene.simplifiedExpression}`}
-            renderStates={renderStates}
-            highlightedIds={objectHighlights}
-            scaffoldMode={scaffoldMode}
-            activeStepId={interaction.activeStepId}
-            onSelectObject={(id) =>
-              setInteraction((state) => ({ ...state, selectedObjectId: id }))
+            Export JSON
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              svgRef.current &&
+              downloadText(
+                "construction.svg",
+                serializeSvg(svgRef.current),
+                "image/svg+xml",
+              )
             }
-            onHoverObject={(id) =>
-              setInteraction((state) => ({ ...state, hoveredObjectId: id }))
+          >
+            Export current SVG
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              svgRef.current &&
+              downloadText(
+                "construction-final.svg",
+                serializeSvg(svgRef.current, true),
+                "image/svg+xml",
+              )
             }
-          />
+          >
+            Export clean SVG
+          </button>
         </div>
-        <aside className="steps-panel" aria-labelledby="steps-title">
-          <p className="section-label">Generated trace</p>
-          <h2 id="steps-title">Construction steps</h2>
-          <p className="keyboard-hint">Alt + ↑/↓ moves between steps.</p>
-          <ol>
-            {scene.steps.map((step) => (
-              <li
-                key={step.id}
-                id={step.id}
-                data-output-ids={step.outputObjectIds.join(" ")}
-                className={
-                  interaction.activeStepId === step.id ||
-                  stepHighlights.has(step.id)
-                    ? "active"
-                    : ""
-                }
-                onMouseEnter={() =>
-                  setInteraction((state) => ({
-                    ...state,
-                    hoveredStepId: step.id,
-                  }))
-                }
-                onMouseLeave={() =>
-                  setInteraction((state) => ({
-                    ...state,
-                    hoveredStepId: undefined,
-                  }))
-                }
-              >
-                <button
-                  className="step-button"
-                  type="button"
-                  onClick={() => selectStep(step.id)}
+        <ManimExportPanel document={constructionExport(scene)} />
+        <section
+          ref={setScrollElement}
+          className="construction-layout"
+          aria-label="Interactive geometric construction"
+        >
+          <div className="canvas-panel">
+            <SvgConstructionCanvas
+              svgRef={svgRef}
+              objects={scene.objects}
+              viewBox={scene.viewBox}
+              title={scene.title}
+              description={`Construct ${scene.simplifiedExpression} from the supplied lengths and a unit.`}
+              expressionSummary={`${scene.expression} = ${scene.simplifiedExpression}`}
+              renderStates={renderStates}
+              highlightedIds={objectHighlights}
+              scaffoldMode={scaffoldMode}
+              activeStepId={interaction.activeStepId}
+              onSelectObject={(id) =>
+                setInteraction((state) => ({ ...state, selectedObjectId: id }))
+              }
+              onHoverObject={(id) =>
+                setInteraction((state) => ({ ...state, hoveredObjectId: id }))
+              }
+            />
+          </div>
+          <aside className="steps-panel" aria-labelledby="steps-title">
+            <p className="section-label">Generated trace</p>
+            <h2 id="steps-title">Construction steps</h2>
+            <p className="keyboard-hint">Alt + ↑/↓ moves between steps.</p>
+            <ol>
+              {scene.steps.map((step) => (
+                <li
+                  key={step.id}
+                  id={step.id}
+                  data-output-ids={step.outputObjectIds.join(" ")}
+                  className={
+                    interaction.activeStepId === step.id ||
+                    stepHighlights.has(step.id)
+                      ? "active"
+                      : ""
+                  }
+                  onMouseEnter={() =>
+                    setInteraction((state) => ({
+                      ...state,
+                      hoveredStepId: step.id,
+                    }))
+                  }
+                  onMouseLeave={() =>
+                    setInteraction((state) => ({
+                      ...state,
+                      hoveredStepId: undefined,
+                    }))
+                  }
                 >
-                  <h3>{step.title}</h3>
-                  <p>{step.summary}</p>
-                </button>
-                <OperationBadge
-                  step={step}
-                  onProof={() => setProofId(step.proofId)}
-                />
-                <button
-                  className="how-button"
-                  type="button"
-                  onClick={() => setInstructionStepId(step.id)}
-                  aria-label={`How to: ${step.title}`}
-                >
-                  How?
-                </button>
-              </li>
-            ))}
-          </ol>
-        </aside>
-      </section>
-      <section className="details-grid">
-        <ExpressionTree
-          expression={scene.ast}
-          originalExpression={scene.expression}
-          simplifiedExpression={scene.simplifiedExpression}
-          activeExpression={(activeStep?.parentStepId
-            ? scene.steps.find(({ id }) => id === activeStep.parentStepId)
-                ?.title
-            : activeStep?.title
-          )?.replace(/^Construct |^Place /, "")}
-          onSelect={(represented) => {
-            const objectIds = scene.objects
-              .filter((item) => item.represents === represented)
-              .map(({ id }) => id);
-            if (objectIds.length)
+                  <button
+                    className="step-button"
+                    type="button"
+                    onClick={() => selectStep(step.id)}
+                  >
+                    <h3>{step.title}</h3>
+                    <p>{step.summary}</p>
+                  </button>
+                  <OperationBadge
+                    step={step}
+                    onProof={() => setProofId(step.proofId)}
+                  />
+                  <button
+                    className="how-button"
+                    type="button"
+                    onClick={() => setInstructionStepId(step.id)}
+                    aria-label={`How to: ${step.title}`}
+                  >
+                    How?
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </aside>
+        </section>
+        <section className="details-grid">
+          <ExpressionTree
+            expression={scene.ast}
+            originalExpression={scene.expression}
+            simplifiedExpression={scene.simplifiedExpression}
+            activeExpression={(activeStep?.parentStepId
+              ? scene.steps.find(({ id }) => id === activeStep.parentStepId)
+                  ?.title
+              : activeStep?.title
+            )?.replace(/^Construct |^Place /, "")}
+            onSelect={(represented) => {
+              const objectIds = scene.objects
+                .filter((item) => item.represents === represented)
+                .map(({ id }) => id);
+              if (objectIds.length)
+                setInteraction((state) => ({
+                  ...state,
+                  selectedObjectId: objectIds[0],
+                  expressionObjectIds: objectIds,
+                }));
+            }}
+          />
+          <ObjectInspector
+            object={selected}
+            onClose={() =>
               setInteraction((state) => ({
                 ...state,
-                selectedObjectId: objectIds[0],
-                expressionObjectIds: objectIds,
-              }));
-          }}
-        />
-        <ObjectInspector
-          object={selected}
-          onClose={() =>
-            setInteraction((state) => ({
-              ...state,
-              selectedObjectId: undefined,
-            }))
-          }
-        />
-        {proofId && (
-          <ProofCard
-            proof={scene.proofs.find(({ id }) => id === proofId)!}
-            onHighlight={setProofHighlights}
-            onClose={() => setProofId(undefined)}
+                selectedObjectId: undefined,
+              }))
+            }
           />
-        )}
-        {instructionStepId && (
-          <InstructionsCard
-            step={scene.steps.find(({ id }) => id === instructionStepId)!}
-            onClose={() => setInstructionStepId(undefined)}
-          />
-        )}
-      </section>
+          {proofId && (
+            <ProofCard
+              proof={scene.proofs.find(({ id }) => id === proofId)!}
+              onHighlight={setProofHighlights}
+              onClose={() => setProofId(undefined)}
+            />
+          )}
+          {instructionStepId && (
+            <InstructionsCard
+              step={scene.steps.find(({ id }) => id === instructionStepId)!}
+              onClose={() => setInstructionStepId(undefined)}
+            />
+          )}
+        </section>
+      </div>
     </main>
   );
 }

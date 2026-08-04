@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "expression": "1",
+  "simplifiedExpression": "1",
+  "values": {},
+  "viewBox": "0 0 200 100",
+  "objects": [
+    {
+      "id": "segment-1",
+      "kind": "segment",
+      "role": "result",
+      "createdByStepId": "step-1",
+      "usedByStepIds": [],
+      "dependsOnObjectIds": [],
+      "data": {
+        "kind": "segment",
+        "start": { "x": 20, "y": 50 },
+        "end": { "x": 180, "y": 50 }
+      }
+    }
+  ],
+  "steps": [],
+  "revealActions": [
+    {
+      "id": "reveal-1",
+      "stepId": "step-1",
+      "objectId": "segment-1",
+      "start": 0,
+      "end": 1,
+      "animation": "draw"
+    }
+  ],
+  "proofs": []
+}

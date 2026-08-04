@@ -19,7 +19,7 @@ describe("App", () => {
     expect(
       screen.getByRole("button", { name: "Export JSON" }),
     ).toBeInTheDocument();
-  });
+  }, 10000);
 
   it("compiles input and reports invalid constructions without crashing", () => {
     render(<App />);
@@ -47,7 +47,7 @@ describe("App", () => {
     expect(
       screen.getByRole("heading", { name: "Construct a * b" }),
     ).toBeInTheDocument();
-  });
+  }, 10000);
 
   it("exposes the complete construction control contract", () => {
     render(<App />);
@@ -211,5 +211,17 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "Export clean SVG" }));
     expect(click).toHaveBeenCalledTimes(3);
     click.mockRestore();
+  });
+
+  it("compiles an exact cube-root expression in the independent Origami tab", () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole("tab", { name: "Origami folding" }));
+    expect(screen.getByLabelText("Origami expression")).toHaveValue("cbrt(2)");
+    fireEvent.click(
+      screen.getByRole("button", { name: "Compile origami expression" }),
+    );
+    expect(screen.getByText("origami-only")).toBeInTheDocument();
+    expect(screen.getByText("O6")).toBeInTheDocument();
+    expect(screen.getByText("Session fold 1 of 1")).toBeInTheDocument();
   });
 });

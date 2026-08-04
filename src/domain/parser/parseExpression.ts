@@ -4,7 +4,7 @@ export class ParseError extends Error {}
 
 export function parseExpression(source: string): Expr {
   const tokens =
-    source.match(/sqrt|[A-Za-z]+|(?:\d+\.?\d*|\.\d+)|[()+\-*/^]/g) ?? [];
+    source.match(/[A-Za-z]+|(?:\d+\.?\d*|\.\d+)|[(),+\-*/^]/g) ?? [];
   if (tokens.join("").toLowerCase() !== source.replace(/\s/g, "").toLowerCase())
     throw new ParseError("Expression contains an unsupported character.");
   let at = 0;
@@ -23,12 +23,30 @@ export function parseExpression(source: string): Expr {
       take(")");
       return value;
     }
-    if (token?.toLowerCase() === "sqrt") {
-      take();
+    if (token && ["sqrt", "cbrt"].includes(token.toLowerCase())) {
+      const kind = take().toLowerCase() as "sqrt" | "cbrt";
       take("(");
       const value = sum();
       take(")");
-      return { kind: "sqrt", value };
+      return { kind, value };
+    }
+    if (token?.toLowerCase() === "cubic") {
+      take();
+      take("(");
+      const coefficients: Expr[] = [];
+      for (let index = 0; index < 4; index += 1) {
+        coefficients.push(sum());
+        take(",");
+      }
+      const rootIndex = Number(take());
+      if (!Number.isInteger(rootIndex) || rootIndex < 0)
+        throw new ParseError("Cubic root index must be a nonnegative integer.");
+      take(")");
+      return {
+        kind: "cubicRoot",
+        coefficients: coefficients as [Expr, Expr, Expr, Expr],
+        rootIndex,
+      };
     }
     if (token === "-") {
       take();
@@ -50,7 +68,8 @@ export function parseExpression(source: string): Expr {
     let value = primary();
     if (peek() === "^") {
       take();
-      const exponent = Number(take());
+      const sign = peek() === "-" || peek() === "+" ? take() : "";
+      const exponent = Number(`${sign}${take()}`);
       if (!Number.isInteger(exponent))
         throw new ParseError("Exponent must be an integer.");
       value = { kind: "pow", base: value, exponent };

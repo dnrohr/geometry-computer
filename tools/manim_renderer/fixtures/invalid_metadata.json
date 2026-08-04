@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "metadata": {
+    "schema": "wrong",
+    "generator": { "name": "geometry-computer", "version": "" },
+    "title": "",
+    "aspectRatio": { "width": 0, "height": 1 },
+    "theme": "dark",
+    "duration": -1
+  },
+  "expression": "1",
+  "simplifiedExpression": "1",
+  "values": {},
+  "viewBox": "0 0 1 1",
+  "objects": [],
+  "steps": [],
+  "revealActions": [],
+  "proofs": []
+}
