@@ -38,11 +38,15 @@ describe("analyzeOrigamiExpression", () => {
   });
 
   it("reuses common subexpressions in its normalized DAG", () => {
-    const result = analyzeOrigamiExpression(parseExpression("cbrt(a)+cbrt(a)"), {
-      a: 8,
-    });
-    expect(result.nodes.filter(({ expression }) => expression === "cbrt(a)"))
-      .toHaveLength(1);
+    const result = analyzeOrigamiExpression(
+      parseExpression("cbrt(a)+cbrt(a)"),
+      {
+        a: 8,
+      },
+    );
+    expect(
+      result.nodes.filter(({ expression }) => expression === "cbrt(a)"),
+    ).toHaveLength(1);
   });
 
   it.each([

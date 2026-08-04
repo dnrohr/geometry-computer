@@ -1,5 +1,9 @@
 import { addR, divR, mulR, rational, textR } from "./rational";
-import { canonicalIntegerPolynomial, fromIntegerPolynomial, gcdPolynomial } from "./polynomial";
+import {
+  canonicalIntegerPolynomial,
+  fromIntegerPolynomial,
+  gcdPolynomial,
+} from "./polynomial";
 
 describe("exact rational and polynomial arithmetic", () => {
   it("normalizes signs and common factors", () => {
@@ -10,7 +14,20 @@ describe("exact rational and polynomial arithmetic", () => {
   });
 
   it("canonicalizes integer polynomials and computes exact gcds", () => {
-    expect(canonicalIntegerPolynomial([rational(-1, 2), rational(0), rational(1, 2)])).toEqual([-1n, 0n, 1n]);
-    expect(canonicalIntegerPolynomial(gcdPolynomial(fromIntegerPolynomial([-2n, 0n, 1n]), fromIntegerPolynomial([4n, 0n, -4n, 0n, 1n])))).toEqual([-2n, 0n, 1n]);
+    expect(
+      canonicalIntegerPolynomial([
+        rational(-1, 2),
+        rational(0),
+        rational(1, 2),
+      ]),
+    ).toEqual([-1n, 0n, 1n]);
+    expect(
+      canonicalIntegerPolynomial(
+        gcdPolynomial(
+          fromIntegerPolynomial([-2n, 0n, 1n]),
+          fromIntegerPolynomial([4n, 0n, -4n, 0n, 1n]),
+        ),
+      ),
+    ).toEqual([-2n, 0n, 1n]);
   });
 });

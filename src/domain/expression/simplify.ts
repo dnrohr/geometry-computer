@@ -10,8 +10,7 @@ export function simplify(expr: Expr): Expr {
       ? { kind: "const", value: Math.sqrt(value.value) }
       : { ...expr, value };
   }
-  if (expr.kind === "cbrt")
-    return { ...expr, value: simplify(expr.value) };
+  if (expr.kind === "cbrt") return { ...expr, value: simplify(expr.value) };
   if (expr.kind === "cubicRoot")
     return {
       ...expr,

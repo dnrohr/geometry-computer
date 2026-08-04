@@ -217,7 +217,9 @@ describe("App", () => {
     render(<App />);
     fireEvent.click(screen.getByRole("tab", { name: "Origami folding" }));
     expect(screen.getByLabelText("Origami expression")).toHaveValue("cbrt(2)");
-    fireEvent.click(screen.getByRole("button", { name: "Compile origami expression" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Compile origami expression" }),
+    );
     expect(screen.getByText("origami-only")).toBeInTheDocument();
     expect(screen.getByText("O6")).toBeInTheDocument();
     expect(screen.getByText("Session fold 1 of 1")).toBeInTheDocument();

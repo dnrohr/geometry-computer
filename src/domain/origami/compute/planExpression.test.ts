@@ -19,8 +19,12 @@ describe("planOrigamiExpression", () => {
   });
 
   it("reuses common subexpressions", () => {
-    const plan = planOrigamiExpression(parseExpression("cbrt(a)+cbrt(a)"), { a: 8 });
-    expect(plan.templates.filter(({ operation }) => operation === "cube-root")).toHaveLength(1);
+    const plan = planOrigamiExpression(parseExpression("cbrt(a)+cbrt(a)"), {
+      a: 8,
+    });
+    expect(
+      plan.templates.filter(({ operation }) => operation === "cube-root"),
+    ).toHaveLength(1);
     expect(plan.session.steps).toHaveLength(2);
   });
 
@@ -28,23 +32,27 @@ describe("planOrigamiExpression", () => {
     const ast = parseExpression("cubic(1,-6,11,-6,2)");
     const first = planOrigamiExpression(ast);
     const second = planOrigamiExpression(ast);
-    const stringify = (value: unknown) => JSON.stringify(value, (_, item) =>
-      typeof item === "bigint" ? item.toString() : item,
-    );
+    const stringify = (value: unknown) =>
+      JSON.stringify(value, (_, item) =>
+        typeof item === "bigint" ? item.toString() : item,
+      );
     expect(stringify(first)).toBe(stringify(second));
-    expect(first.templates.find(({ operation }) => operation === "cubic-root")!.folds[0].rejectedCandidates).toHaveLength(2);
+    expect(
+      first.templates.find(({ operation }) => operation === "cubic-root")!
+        .folds[0].rejectedCandidates,
+    ).toHaveLength(2);
   });
 
   it("fails before creating a session for an invalid expression", () => {
-    expect(() => planOrigamiExpression(parseExpression("1/a"), { a: 0 })).toThrow(
-      OrigamiPlanningError,
-    );
+    expect(() =>
+      planOrigamiExpression(parseExpression("1/a"), { a: 0 }),
+    ).toThrow(OrigamiPlanningError);
   });
 
   it("reports the current planner power limit", () => {
-    expect(() => planOrigamiExpression(parseExpression("a^3"), { a: 2 })).toThrow(
-      /powers 0 and 2/i,
-    );
+    expect(() =>
+      planOrigamiExpression(parseExpression("a^3"), { a: 2 }),
+    ).toThrow(/powers 0 and 2/i);
   });
 
   it("retains exact proof and branch provenance in exported sessions", () => {

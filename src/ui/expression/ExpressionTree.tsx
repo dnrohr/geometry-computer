@@ -7,9 +7,9 @@ const children = (expr: Expr): Expr[] =>
       ? [expr.base]
       : expr.kind === "cubicRoot"
         ? expr.coefficients
-      : "left" in expr
-        ? [expr.left, expr.right]
-        : [];
+        : "left" in expr
+          ? [expr.left, expr.right]
+          : [];
 export function ExpressionTree({
   expression,
   activeExpression,
@@ -30,7 +30,13 @@ export function ExpressionTree({
         <button type="button" onClick={() => onSelect?.(label)}>
           {label}
         </button>
-        {children(expr).length > 0 && <ul>{children(expr).map((child, index) => render(child, `${path}-${index}`))}</ul>}
+        {children(expr).length > 0 && (
+          <ul>
+            {children(expr).map((child, index) =>
+              render(child, `${path}-${index}`),
+            )}
+          </ul>
+        )}
       </li>
     );
   };

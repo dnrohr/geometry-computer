@@ -11,7 +11,12 @@ import {
   subtractOrigami,
   type OrigamiNumber,
 } from "../algebra/origamiNumber";
-import { solveAxiom, type AxiomCandidate, type AxiomId, type AxiomRequest } from "../axioms";
+import {
+  solveAxiom,
+  type AxiomCandidate,
+  type AxiomId,
+  type AxiomRequest,
+} from "../axioms";
 import { lineThrough } from "../geometry";
 
 export type TemplateOperation =
@@ -63,9 +68,20 @@ export type ConstructionTemplate = {
 
 export type TemplateRequest =
   | { operation: "unit" }
-  | { operation: "add" | "subtract" | "multiply" | "divide"; left: OrigamiNumber; right: OrigamiNumber }
-  | { operation: "reciprocal" | "square-root" | "cube-root"; value: OrigamiNumber }
-  | { operation: "cubic-root"; coefficients: [bigint, bigint, bigint, bigint]; rootIndex: number };
+  | {
+      operation: "add" | "subtract" | "multiply" | "divide";
+      left: OrigamiNumber;
+      right: OrigamiNumber;
+    }
+  | {
+      operation: "reciprocal" | "square-root" | "cube-root";
+      value: OrigamiNumber;
+    }
+  | {
+      operation: "cubic-root";
+      coefficients: [bigint, bigint, bigint, bigint];
+      rootIndex: number;
+    };
 
 const BASE_FRAME = {
   origin: { x: 4, y: 3 },
@@ -76,18 +92,26 @@ type CoordinateFrame = typeof BASE_FRAME;
 
 const frameFor = (value: number): CoordinateFrame => ({
   ...BASE_FRAME,
-  unit: Math.max(0.05, Math.min(BASE_FRAME.unit, 3.5 / Math.max(1, Math.abs(value)))),
+  unit: Math.max(
+    0.05,
+    Math.min(BASE_FRAME.unit, 3.5 / Math.max(1, Math.abs(value))),
+  ),
 });
 
 const templateFold = (
   id: string,
   title: string,
   request: AxiomRequest,
-  choose: (candidate: AxiomCandidate, index: number) => number = (_, index) => index,
+  choose: (candidate: AxiomCandidate, index: number) => number = (_, index) =>
+    index,
 ): TemplateFold => {
   const solution = solveAxiom(request);
   const ranked = solution.candidates
-    .map((candidate, index) => ({ candidate, index, score: choose(candidate, index) }))
+    .map((candidate, index) => ({
+      candidate,
+      index,
+      score: choose(candidate, index),
+    }))
     .sort((a, b) => a.score - b.score || a.index - b.index);
   const selected = ranked[0];
   return {
@@ -104,7 +128,11 @@ const templateFold = (
   };
 };
 
-const referenceFold = (value: number, id: string, frame: CoordinateFrame): TemplateFold => {
+const referenceFold = (
+  value: number,
+  id: string,
+  frame: CoordinateFrame,
+): TemplateFold => {
   const x = frame.origin.x + value * frame.unit;
   return templateFold(id, "Mark the directed result on the reference axis", {
     axiom: "O1",
@@ -123,7 +151,12 @@ const cubicFold = (
   target: OrigamiNumber,
   frame: CoordinateFrame,
 ): TemplateFold => {
-  const [d, c, b, a] = coefficients.map(Number) as [number, number, number, number];
+  const [d, c, b, a] = coefficients.map(Number) as [
+    number,
+    number,
+    number,
+    number,
+  ];
   if (!a) throw new Error("The cubic leading coefficient must be nonzero.");
   const B = b / a;
   const C = c / a;
@@ -143,41 +176,64 @@ const cubicFold = (
     "fold-o6-cubic",
     "Resolve the cubic branch with a simultaneous point-to-line fold",
     request,
-    (candidate) => Math.abs((candidate.rootParameter ?? Infinity) - target.approximation),
+    (candidate) =>
+      Math.abs((candidate.rootParameter ?? Infinity) - target.approximation),
   );
 };
 
 const outputFor = (request: TemplateRequest): OrigamiNumber => {
   switch (request.operation) {
-    case "unit": return rationalNumber(1);
-    case "add": return addOrigami(request.left, request.right);
-    case "subtract": return subtractOrigami(request.left, request.right);
-    case "multiply": return multiplyOrigami(request.left, request.right);
-    case "divide": return divideOrigami(request.left, request.right);
-    case "reciprocal": return reciprocalOrigami(request.value);
-    case "square-root": return sqrtOrigami(request.value);
-    case "cube-root": return cbrtOrigami(request.value);
-    case "cubic-root": return algebraicRoot(request.coefficients, request.rootIndex);
+    case "unit":
+      return rationalNumber(1);
+    case "add":
+      return addOrigami(request.left, request.right);
+    case "subtract":
+      return subtractOrigami(request.left, request.right);
+    case "multiply":
+      return multiplyOrigami(request.left, request.right);
+    case "divide":
+      return divideOrigami(request.left, request.right);
+    case "reciprocal":
+      return reciprocalOrigami(request.value);
+    case "square-root":
+      return sqrtOrigami(request.value);
+    case "cube-root":
+      return cbrtOrigami(request.value);
+    case "cubic-root":
+      return algebraicRoot(request.coefficients, request.rootIndex);
   }
 };
 
 const inputsFor = (request: TemplateRequest): OrigamiNumber[] =>
-  "left" in request ? [request.left, request.right]
-    : "value" in request ? [request.value]
+  "left" in request
+    ? [request.left, request.right]
+    : "value" in request
+      ? [request.value]
       : [];
 
-export function instantiateConstructionTemplate(request: TemplateRequest): ConstructionTemplate {
+export function instantiateConstructionTemplate(
+  request: TemplateRequest,
+): ConstructionTemplate {
   const output = outputFor(request);
   const frame = frameFor(output.approximation);
   const x = frame.origin.x + output.approximation * frame.unit;
-  if (!Number.isFinite(x) || x < frame.paper.safeMargin || x > frame.paper.width - frame.paper.safeMargin)
-    throw new Error("The result does not fit the template paper bounds; rescale or subdivide the construction.");
-  const isCubic = request.operation === "cube-root" || request.operation === "cubic-root";
+  if (
+    !Number.isFinite(x) ||
+    x < frame.paper.safeMargin ||
+    x > frame.paper.width - frame.paper.safeMargin
+  )
+    throw new Error(
+      "The result does not fit the template paper bounds; rescale or subdivide the construction.",
+    );
+  const isCubic =
+    request.operation === "cube-root" || request.operation === "cubic-root";
   let cubicCoefficients: [bigint, bigint, bigint, bigint] | undefined;
   if (request.operation === "cube-root") {
     const input = request.value;
     if (input.polynomial.length !== 2)
-      throw new Error("The cube-root fold template currently requires a rational radicand.");
+      throw new Error(
+        "The cube-root fold template currently requires a rational radicand.",
+      );
     cubicCoefficients = [input.polynomial[0], 0n, 0n, input.polynomial[1]];
   } else if (request.operation === "cubic-root") {
     cubicCoefficients = request.coefficients;
@@ -185,7 +241,9 @@ export function instantiateConstructionTemplate(request: TemplateRequest): Const
   const folds = isCubic
     ? [cubicFold(cubicCoefficients!, output, frame)]
     : [referenceFold(output.approximation, `fold-${request.operation}`, frame)];
-  const inputText = inputsFor(request).map(({ approximation }) => approximation).join(", ");
+  const inputText = inputsFor(request)
+    .map(({ approximation }) => approximation)
+    .join(", ");
   return {
     id: `template-${request.operation}`,
     operation: request.operation,
@@ -204,7 +262,8 @@ export function instantiateConstructionTemplate(request: TemplateRequest): Const
       {
         id: `claim-${request.operation}-identity`,
         statement: `The target directed length is the exact ${request.operation} result${inputText ? ` for ${inputText}` : ""}.`,
-        justification: "The exact algebra kernel supplies the defining polynomial and certified real-root interval.",
+        justification:
+          "The exact algebra kernel supplies the defining polynomial and certified real-root interval.",
       },
       {
         id: `claim-${request.operation}-crease`,
@@ -221,10 +280,17 @@ export function instantiateConstructionTemplate(request: TemplateRequest): Const
   };
 }
 
-export function verifyTemplate(template: ConstructionTemplate, tolerance = 1e-7) {
-  const represented = (template.outputMark.x - template.coordinateFrame.origin.x) / template.coordinateFrame.unit;
+export function verifyTemplate(
+  template: ConstructionTemplate,
+  tolerance = 1e-7,
+) {
+  const represented =
+    (template.outputMark.x - template.coordinateFrame.origin.x) /
+    template.coordinateFrame.unit;
   const valueResidual = Math.abs(represented - template.output.approximation);
-  const creaseResidual = Math.max(...template.folds.map(({ candidate }) => candidate.maxResidual));
+  const creaseResidual = Math.max(
+    ...template.folds.map(({ candidate }) => candidate.maxResidual),
+  );
   return {
     valid: valueResidual <= tolerance && creaseResidual <= tolerance,
     valueResidual,

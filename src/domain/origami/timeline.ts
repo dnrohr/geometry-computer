@@ -15,7 +15,9 @@ export const clampTime = (time: number, duration: number) =>
   Math.max(0, Math.min(duration, Number.isFinite(time) ? time : 0));
 
 const progressAt = (time: number, start: number, end: number) =>
-  end === start ? Number(time >= end) : Math.max(0, Math.min(1, (time - start) / (end - start)));
+  end === start
+    ? Number(time >= end)
+    : Math.max(0, Math.min(1, (time - start) / (end - start)));
 
 const interpolatePoints = (from: Point2[], to: Point2[], progress: number) =>
   from.map((point, index) => ({
@@ -24,16 +26,32 @@ const interpolatePoints = (from: Point2[], to: Point2[], progress: number) =>
   }));
 
 export function timelineBoundaries(document: RenderDocumentV2): number[] {
-  return [...new Set([0, document.metadata.duration, ...document.revealActions.flatMap(({ start, end }) => [start, end])])]
+  return [
+    ...new Set([
+      0,
+      document.metadata.duration,
+      ...document.revealActions.flatMap(({ start, end }) => [start, end]),
+    ]),
+  ]
     .filter((time) => time >= 0 && time <= document.metadata.duration)
     .sort((a, b) => a - b);
 }
 
-export function adjacentBoundary(document: RenderDocumentV2, time: number, direction: -1 | 1): number {
+export function adjacentBoundary(
+  document: RenderDocumentV2,
+  time: number,
+  direction: -1 | 1,
+): number {
   const boundaries = timelineBoundaries(document);
   const epsilon = 1e-6;
-  if (direction > 0) return boundaries.find((boundary) => boundary > time + epsilon) ?? document.metadata.duration;
-  return [...boundaries].reverse().find((boundary) => boundary < time - epsilon) ?? 0;
+  if (direction > 0)
+    return (
+      boundaries.find((boundary) => boundary > time + epsilon) ??
+      document.metadata.duration
+    );
+  return (
+    [...boundaries].reverse().find((boundary) => boundary < time - epsilon) ?? 0
+  );
 }
 
 export function evaluateOrigamiTimeline(
@@ -58,7 +76,10 @@ export function evaluateOrigamiTimeline(
   for (const object of document.objects) {
     const state = result[object.id];
     const presentationActions = document.revealActions.filter(
-      (action) => action.objectId === object.id && action.animation !== "fold" && action.animation !== "unfold",
+      (action) =>
+        action.objectId === object.id &&
+        action.animation !== "fold" &&
+        action.animation !== "unfold",
     );
     if (presentationActions.length === 0) {
       state.visible = true;
@@ -73,13 +94,19 @@ export function evaluateOrigamiTimeline(
       } else {
         state.visible ||= time >= action.start;
         state.opacity = Math.max(state.opacity, local);
-        state.drawProgress = Math.max(state.drawProgress, action.animation === "draw" ? local : Number(time >= action.start));
+        state.drawProgress = Math.max(
+          state.drawProgress,
+          action.animation === "draw" ? local : Number(time >= action.start),
+        );
       }
     }
   }
 
   const folds = document.revealActions
-    .filter((action): action is FoldRenderAction => action.animation === "fold" || action.animation === "unfold")
+    .filter(
+      (action): action is FoldRenderAction =>
+        action.animation === "fold" || action.animation === "unfold",
+    )
     .sort((a, b) => a.start - b.start);
   for (const action of folds) {
     if (time < action.start) continue;

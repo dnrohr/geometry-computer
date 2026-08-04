@@ -43,12 +43,16 @@ export const startRender = (
 
 export const startSessionRender = (
   session: OrigamiSession,
-  settings: { quality: "draft" | "standard" | "high"; foldMode: "flat" | "hinge" },
-) => request("/jobs", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ session, settings }),
-});
+  settings: {
+    quality: "draft" | "standard" | "high";
+    foldMode: "flat" | "hinge";
+  },
+) =>
+  request("/jobs", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ session, settings }),
+  });
 
 export const readRender = (id: string) => request(`/jobs/${id}`);
 export const cancelRender = (id: string) =>

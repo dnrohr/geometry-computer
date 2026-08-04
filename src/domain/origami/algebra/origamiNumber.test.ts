@@ -1,4 +1,20 @@
-import { addOrigami, algebraicRoot, cbrtOrigami, compareOrigami, decimalText, divideOrigami, equalOrigami, exactText, multiplyOrigami, parseOrigamiNumber, rationalNumber, serializeOrigamiNumber, sqrtOrigami, subtractOrigami, symbolicText } from "./origamiNumber";
+import {
+  addOrigami,
+  algebraicRoot,
+  cbrtOrigami,
+  compareOrigami,
+  decimalText,
+  divideOrigami,
+  equalOrigami,
+  exactText,
+  multiplyOrigami,
+  parseOrigamiNumber,
+  rationalNumber,
+  serializeOrigamiNumber,
+  sqrtOrigami,
+  subtractOrigami,
+  symbolicText,
+} from "./origamiNumber";
 
 describe("OrigamiNumber", () => {
   const two = rationalNumber(2);
@@ -15,8 +31,24 @@ describe("OrigamiNumber", () => {
 
   it("performs exact field operations without decimal equality", () => {
     expect(equalOrigami(multiplyOrigami(sqrtTwo, sqrtTwo), two)).toBe(true);
-    expect(equalOrigami(subtractOrigami(addOrigami(sqrtTwo, rationalNumber(3)), rationalNumber(3)), sqrtTwo)).toBe(true);
-    expect(equalOrigami(divideOrigami(multiplyOrigami(cubeRootTwo, rationalNumber(5)), rationalNumber(5)), cubeRootTwo)).toBe(true);
+    expect(
+      equalOrigami(
+        subtractOrigami(
+          addOrigami(sqrtTwo, rationalNumber(3)),
+          rationalNumber(3),
+        ),
+        sqrtTwo,
+      ),
+    ).toBe(true);
+    expect(
+      equalOrigami(
+        divideOrigami(
+          multiplyOrigami(cubeRootTwo, rationalNumber(5)),
+          rationalNumber(5),
+        ),
+        cubeRootTwo,
+      ),
+    ).toBe(true);
     expect(compareOrigami(sqrtTwo, two)).toBe(-1);
   });
 
@@ -27,7 +59,9 @@ describe("OrigamiNumber", () => {
     expect(mixed.provenance.operation).toBe("add");
     expect(exactText(mixed)).toContain("root of");
     expect(symbolicText(mixed)).toBe("(sqrt(2) + cbrt(2))");
-    expect(decimalText(mixed)).toBe(Number((Math.sqrt(2) + Math.cbrt(2)).toPrecision(10)).toString());
+    expect(decimalText(mixed)).toBe(
+      Number((Math.sqrt(2) + Math.cbrt(2)).toPrecision(10)).toString(),
+    );
   });
 
   it("recognizes a common exact root of different defining polynomials", () => {
@@ -39,13 +73,17 @@ describe("OrigamiNumber", () => {
     const restored = parseOrigamiNumber(serializeOrigamiNumber(cubeRootTwo));
     expect(restored.polynomial).toEqual(cubeRootTwo.polynomial);
     expect(equalOrigami(restored, cubeRootTwo)).toBe(true);
-    expect(parseOrigamiNumber(serializeOrigamiNumber(two)).polynomial).toEqual(two.polynomial);
+    expect(parseOrigamiNumber(serializeOrigamiNumber(two)).polynomial).toEqual(
+      two.polynomial,
+    );
   });
 
   it("rejects non-real roots, zero division, and configured complexity excess", () => {
     expect(() => sqrtOrigami(rationalNumber(-1))).toThrow(/nonnegative/i);
     expect(() => divideOrigami(two, rationalNumber(0))).toThrow(/zero/i);
-    expect(() => cbrtOrigami(addOrigami(sqrtTwo, cubeRootTwo))).toThrow(/degree/i);
+    expect(() => cbrtOrigami(addOrigami(sqrtTwo, cubeRootTwo))).toThrow(
+      /degree/i,
+    );
     expect(() => algebraicRoot([1n << 300n, 1n], 0)).toThrow(/bit limit/i);
   });
 });

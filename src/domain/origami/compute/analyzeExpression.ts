@@ -12,7 +12,11 @@ import {
   subtractOrigami,
   type OrigamiNumber,
 } from "../algebra/origamiNumber";
-import { rational, rationalFromDecimal, type Rational } from "../algebra/rational";
+import {
+  rational,
+  rationalFromDecimal,
+  type Rational,
+} from "../algebra/rational";
 
 export type ConstructibilityClass =
   | "euclidean"
@@ -86,7 +90,8 @@ const rationalValue = (value: OrigamiNumber): Rational | undefined => {
 };
 
 const power = (base: OrigamiNumber, exponent: number): OrigamiNumber => {
-  if (!Number.isInteger(exponent)) throw new Error("Exponent must be an integer.");
+  if (!Number.isInteger(exponent))
+    throw new Error("Exponent must be an integer.");
   if (exponent < 0) return reciprocalOrigami(power(base, -exponent));
   let result = rationalNumber(1);
   let factor = base;
@@ -131,7 +136,12 @@ export function analyzeOrigamiExpression(
     });
     const id = `expr-${nodes.length + 1}`;
     nodeIds.set(key, id);
-    const node: AlgebraDagNode = { id, expression: key, kind: expr.kind, dependencyIds };
+    const node: AlgebraDagNode = {
+      id,
+      expression: key,
+      kind: expr.kind,
+      dependencyIds,
+    };
     nodes.push(node);
     let value: OrigamiNumber;
     try {
@@ -249,7 +259,9 @@ export function analyzeOrigamiExpression(
         "unsupported",
         "COMPLEXITY_LIMIT",
         expr,
-        error instanceof Error ? error.message : "Expression evaluation failed.",
+        error instanceof Error
+          ? error.message
+          : "Expression evaluation failed.",
       );
     }
     values.set(key, value);

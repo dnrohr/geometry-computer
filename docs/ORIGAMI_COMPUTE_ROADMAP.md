@@ -258,15 +258,15 @@ The initial release suite should include:
 
 ## Major risks and decisions
 
-| Decision or risk | Starting position |
-| --- | --- |
+| Decision or risk                           | Starting position                                                                                                                         |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | Exact algebra library versus custom kernel | Begin with a narrow internal rational-polynomial and certified-real-root kernel; evaluate a library before expanding beyond degree three. |
-| General cubic syntax | Use explicit polynomial and root-index syntax rather than guessing a root from a decimal approximation. |
-| Candidate mapping | Select candidates using exact algebraic identity plus certified geometric residuals, never list position alone. |
-| Paper layout | Use deterministic templates and bounded coordinate frames before attempting automatic layout optimization. |
-| Degree explosion | Enforce explicit algebraic-degree, coefficient-size, and planner-complexity limits. |
-| Physical realism | Preserve mathematical flat-fold correctness; treat collision and paper thickness as presentation limitations. |
-| Shared Euclidean compiler | Share parser and algebra DAG where helpful, but keep construction planners and UI state independent. |
+| General cubic syntax                       | Use explicit polynomial and root-index syntax rather than guessing a root from a decimal approximation.                                   |
+| Candidate mapping                          | Select candidates using exact algebraic identity plus certified geometric residuals, never list position alone.                           |
+| Paper layout                               | Use deterministic templates and bounded coordinate frames before attempting automatic layout optimization.                                |
+| Degree explosion                           | Enforce explicit algebraic-degree, coefficient-size, and planner-complexity limits.                                                       |
+| Physical realism                           | Preserve mathematical flat-fold correctness; treat collision and paper thickness as presentation limitations.                             |
+| Shared Euclidean compiler                  | Share parser and algebra DAG where helpful, but keep construction planners and UI state independent.                                      |
 
 ## Recommended implementation order
 

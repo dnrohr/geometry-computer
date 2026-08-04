@@ -31,7 +31,13 @@ const phaseProgress: Record<string, number> = {
   complete: 100,
 };
 
-export function ManimExportPanel({ document, session }: { document: RenderDocumentV2; session?: OrigamiSession }) {
+export function ManimExportPanel({
+  document,
+  session,
+}: {
+  document: RenderDocumentV2;
+  session?: OrigamiSession;
+}) {
   const [quality, setQuality] = useState<"draft" | "standard" | "high">(
     "standard",
   );
@@ -70,7 +76,11 @@ export function ManimExportPanel({ document, session }: { document: RenderDocume
     setError(undefined);
     setJob(undefined);
     try {
-      setJob(await (session ? startSessionRender(session, { quality, foldMode }) : startRender(document, { quality, foldMode })));
+      setJob(
+        await (session
+          ? startSessionRender(session, { quality, foldMode })
+          : startRender(document, { quality, foldMode })),
+      );
     } catch {
       setError(
         "The local video renderer is not available. Your construction is unchanged, and JSON or SVG export still works.",

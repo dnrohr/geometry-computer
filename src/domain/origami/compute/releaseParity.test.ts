@@ -15,17 +15,28 @@ const references = [
 ] as const;
 
 describe("origami compute release parity", () => {
-  it.each(references)("keeps exact branch geometry in every render document for %s", (source, values) => {
-    const plan = planOrigamiExpression(parseExpression(source), values);
-    for (const template of plan.templates) {
-      for (const fold of template.folds) {
-        const sessionStep = plan.session.steps.find(({ provenance }) => provenance?.templateId === template.id)!;
-        expect(sessionStep.example.crease).toEqual(fold.candidate.crease);
-        expect(sessionStep.document.revealActions.some(({ animation }) => animation === "fold")).toBe(true);
-        expect(sessionStep.provenance?.candidates[fold.selectedCandidate].selected).toBe(true);
+  it.each(references)(
+    "keeps exact branch geometry in every render document for %s",
+    (source, values) => {
+      const plan = planOrigamiExpression(parseExpression(source), values);
+      for (const template of plan.templates) {
+        for (const fold of template.folds) {
+          const sessionStep = plan.session.steps.find(
+            ({ provenance }) => provenance?.templateId === template.id,
+          )!;
+          expect(sessionStep.example.crease).toEqual(fold.candidate.crease);
+          expect(
+            sessionStep.document.revealActions.some(
+              ({ animation }) => animation === "fold",
+            ),
+          ).toBe(true);
+          expect(
+            sessionStep.provenance?.candidates[fold.selectedCandidate].selected,
+          ).toBe(true);
+        }
       }
-    }
-  });
+    },
+  );
 
   it("compiles the complete reference suite inside the interactive budget", () => {
     const started = performance.now();
@@ -36,14 +47,16 @@ describe("origami compute release parity", () => {
   });
 
   it("has stable golden exact identities for radical and cubic cases", () => {
-    const signatures = ["sqrt(2)", "cbrt(2)", "cubic(1,-6,11,-6,1)"].map((source) => {
-      const plan = planOrigamiExpression(parseExpression(source));
-      return {
-        expression: source,
-        polynomial: plan.analysis.value!.polynomial.map(String),
-        selectedRoot: plan.templates.at(-1)!.folds[0].candidate.rootParameter,
-      };
-    });
+    const signatures = ["sqrt(2)", "cbrt(2)", "cubic(1,-6,11,-6,1)"].map(
+      (source) => {
+        const plan = planOrigamiExpression(parseExpression(source));
+        return {
+          expression: source,
+          polynomial: plan.analysis.value!.polynomial.map(String),
+          selectedRoot: plan.templates.at(-1)!.folds[0].candidate.rootParameter,
+        };
+      },
+    );
     expect(signatures[0].polynomial).toEqual(["-2", "0", "1"]);
     expect(signatures[1].polynomial).toEqual(["-2", "0", "0", "1"]);
     expect(signatures[2].selectedRoot).toBeCloseTo(2);

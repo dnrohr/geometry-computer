@@ -4,15 +4,15 @@ The TypeScript origami domain exposes formal, renderer-independent solvers for O
 
 ## Supported constraints
 
-| Axiom | Computed crease constraint |
-| --- | --- |
-| O1 | Pass through two distinct points. |
-| O2 | Reflect one point onto another point. |
-| O3 | Reflect one line onto another line; return every distinct real angle-bisector branch. |
-| O4 | Pass through a point perpendicular to a line. |
-| O5 | Reflect a point onto a line while passing through another point. |
-| O6 | Reflect two points onto two respective lines simultaneously. |
-| O7 | Reflect a point onto a line while remaining perpendicular to another line. |
+| Axiom | Computed crease constraint                                                            |
+| ----- | ------------------------------------------------------------------------------------- |
+| O1    | Pass through two distinct points.                                                     |
+| O2    | Reflect one point onto another point.                                                 |
+| O3    | Reflect one line onto another line; return every distinct real angle-bisector branch. |
+| O4    | Pass through a point perpendicular to a line.                                         |
+| O5    | Reflect a point onto a line while passing through another point.                      |
+| O6    | Reflect two points onto two respective lines simultaneously.                          |
+| O7    | Reflect a point onto a line while remaining perpendicular to another line.            |
 
 Each solver returns an `AxiomSolution` containing its axiom ID, description, assumptions, degeneracy notes, and deterministically ordered `AxiomCandidate` values. A candidate includes its canonical crease, constraint residuals, maximum residual, optional O3 branch, and optional O6 cubic parameter.
 

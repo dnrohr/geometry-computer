@@ -3,31 +3,19 @@
   "cases": {
     "euclidean": {
       "dhash": "0000000000000000000000000104600860000004000000000000000000000000",
-      "meanRgb": [
-        29.48,
-        34.3,
-        40.08
-      ],
+      "meanRgb": [29.48, 34.3, 40.08],
       "maxHashDistance": 32,
       "maxMeanRgbDistance": 10
     },
     "origami-flat": {
       "dhash": "000005803a403a403a403a403a403a403a403a403a403a403a403a4005800000",
-      "meanRgb": [
-        57.07,
-        59.93,
-        61.91
-      ],
+      "meanRgb": [57.07, 59.93, 61.91],
       "maxHashDistance": 32,
       "maxMeanRgbDistance": 10
     },
     "origami-hinge": {
       "dhash": "0000000000000000010006801e401c400e20062004c001000000000000000000",
-      "meanRgb": [
-        35.61,
-        40.09,
-        45.25
-      ],
+      "meanRgb": [35.61, 40.09, 45.25],
       "maxHashDistance": 32,
       "maxMeanRgbDistance": 10
     }
