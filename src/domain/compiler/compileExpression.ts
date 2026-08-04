@@ -85,6 +85,12 @@ function evaluate(expr: Expr, values: Record<string, number>): number {
         );
       return Math.sqrt(value);
     }
+    case "cbrt":
+    case "cubicRoot":
+      throw new ConstructionError(
+        "This operation requires origami. Compile it in the Origami tab.",
+        "ORIGAMI_ONLY_OPERATION",
+      );
   }
 }
 
@@ -99,6 +105,11 @@ export function compileExpression(
   let row = 0;
 
   const compile = (expr: Expr): ConstructedValue => {
+    if (expr.kind === "cbrt" || expr.kind === "cubicRoot")
+      throw new ConstructionError(
+        "This operation requires origami. Compile it in the Origami tab.",
+        "ORIGAMI_ONLY_OPERATION",
+      );
     const key = formatExpression(expr);
     const cached = cache.get(key);
     if (cached) return cached;

@@ -1,4 +1,9 @@
 node_modules
+.venv-manim/
+media/
+__pycache__/
+*.pyc
+.codex-vite*.log
 dist
 coverage
 *.local

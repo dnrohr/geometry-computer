@@ -7,6 +7,7 @@ import { parseExpression } from "./domain/parser/parseExpression";
 import { gallery, type GalleryExample } from "./domain/examples/gallery";
 import { evaluateReveal } from "./domain/reveal/evaluateReveal";
 import {
+  constructionExport,
   constructionJson,
   downloadText,
   serializeSvg,
@@ -26,6 +27,8 @@ import {
   type InteractionState,
 } from "./ui/interaction/interactionState";
 import "./App.css";
+import { ManimExportPanel } from "./render/manim/ManimExportPanel";
+import { OrigamiWorkspace } from "./ui/origami/OrigamiWorkspace";
 
 const defaultValues = { a: 3, b: 2, x: 3, y: 2 };
 const build = (
@@ -36,6 +39,9 @@ const build = (
 ) => compileExpression(parseExpression(source), values, original, simplified);
 
 function App() {
+  const [workspace, setWorkspace] = useState<"euclidean" | "origami">("euclidean");
+  const [origamiVisited, setOrigamiVisited] = useState(false);
+  const selectWorkspace = (next: "euclidean" | "origami") => { if (next === "origami") setOrigamiVisited(true); setWorkspace(next); };
   const [expression, setExpression] = useState("sqrt(3*a - b*b)");
   const [values, setValues] = useState<Record<string, number>>(defaultValues);
   const [scene, setScene] = useState<CompiledScene>(() =>
@@ -153,6 +159,14 @@ function App() {
           compass-and-straightedge constructions.
         </p>
       </header>
+      <nav className="workspace-switcher" aria-label="Geometry workspace" role="tablist" onKeyDown={(event) => { if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return; event.preventDefault(); const next = event.key === "ArrowLeft" || event.key === "Home" ? "euclidean" : "origami"; selectWorkspace(next); event.currentTarget.querySelector<HTMLButtonElement>(`[aria-controls="${next}-workspace"]`)?.focus(); }}>
+        <button type="button" role="tab" tabIndex={workspace === "euclidean" ? 0 : -1} aria-selected={workspace === "euclidean"} aria-controls="euclidean-workspace" className={workspace === "euclidean" ? "active" : ""} onClick={() => selectWorkspace("euclidean")}>Euclidean construction</button>
+        <button type="button" role="tab" tabIndex={workspace === "origami" ? 0 : -1} aria-selected={workspace === "origami"} aria-controls="origami-workspace" className={workspace === "origami" ? "active" : ""} onClick={() => selectWorkspace("origami")}>Origami folding</button>
+      </nav>
+      {origamiVisited && <div id="origami-workspace" role="tabpanel" className="workspace-pane" hidden={workspace !== "origami"}>
+        <OrigamiWorkspace />
+      </div>}
+      <div id="euclidean-workspace" role="tabpanel" className="workspace-pane" hidden={workspace !== "euclidean"}>
       <ExpressionInput
         expression={expression}
         values={values}
@@ -239,6 +253,7 @@ function App() {
           Export clean SVG
         </button>
       </div>
+      <ManimExportPanel document={constructionExport(scene)} />
       <section
         ref={setScrollElement}
         className="construction-layout"
@@ -363,6 +378,7 @@ function App() {
           />
         )}
       </section>
+      </div>
     </main>
   );
 }

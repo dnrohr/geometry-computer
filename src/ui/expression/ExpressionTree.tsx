@@ -1,10 +1,12 @@
 import type { Expr } from "../../domain/expression/types";
 import { formatExpression } from "../../domain/expression/format";
 const children = (expr: Expr): Expr[] =>
-  expr.kind === "sqrt"
+  expr.kind === "sqrt" || expr.kind === "cbrt"
     ? [expr.value]
     : expr.kind === "pow"
       ? [expr.base]
+      : expr.kind === "cubicRoot"
+        ? expr.coefficients
       : "left" in expr
         ? [expr.left, expr.right]
         : [];
@@ -21,14 +23,14 @@ export function ExpressionTree({
   originalExpression?: string;
   simplifiedExpression?: string;
 }) {
-  const render = (expr: Expr): React.ReactNode => {
+  const render = (expr: Expr, path = "root"): React.ReactNode => {
     const label = formatExpression(expr);
     return (
-      <li key={label} className={label === activeExpression ? "active" : ""}>
+      <li key={path} className={label === activeExpression ? "active" : ""}>
         <button type="button" onClick={() => onSelect?.(label)}>
           {label}
         </button>
-        {children(expr).length > 0 && <ul>{children(expr).map(render)}</ul>}
+        {children(expr).length > 0 && <ul>{children(expr).map((child, index) => render(child, `${path}-${index}`))}</ul>}
       </li>
     );
   };

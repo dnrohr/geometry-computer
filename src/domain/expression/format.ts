@@ -7,6 +7,8 @@ const precedence: Record<Expr["kind"], number> = {
   div: 2,
   pow: 3,
   sqrt: 4,
+  cbrt: 4,
+  cubicRoot: 4,
   const: 4,
   var: 4,
 };
@@ -48,6 +50,18 @@ function format(expr: Expr, latex: boolean, parentPrecedence = 0): string {
         ? `\\sqrt{${format(expr.value, latex)}}`
         : `sqrt(${format(expr.value, latex)})`;
       break;
+    case "cbrt":
+      result = latex
+        ? `\\sqrt[3]{${format(expr.value, latex)}}`
+        : `cbrt(${format(expr.value, latex)})`;
+      break;
+    case "cubicRoot": {
+      const args = expr.coefficients.map((value) => format(value, latex));
+      result = latex
+        ? `\\operatorname{cubic}\\left(${args.join(", ")}; ${expr.rootIndex}\\right)`
+        : `cubic(${args.join(", ")}, ${expr.rootIndex})`;
+      break;
+    }
   }
 
   if (ownPrecedence < parentPrecedence) {

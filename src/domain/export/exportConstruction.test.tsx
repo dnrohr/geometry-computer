@@ -23,7 +23,8 @@ describe("construction export", () => {
         title="Restored construction"
       />,
     );
-    expect(restored.version).toBe(1);
+    expect(restored.version).toBe(2);
+    expect(restored.metadata.schema).toBe("geometry-computer/render-document");
     expect(container.querySelectorAll("[data-object-id]")).toHaveLength(
       scene.objects.length,
     );

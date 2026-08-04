@@ -19,3 +19,7 @@ When a square occurs inside a larger annotated length, its similar-triangle scaf
 `examplePolynomialScene.ts` is the Milestone 3 static example. It contains the given lengths `a`, `b`, and `1`; intermediate segments `x = 3a + b` and `y = a + b`; and a similar-triangle schematic for the result placeholder `r = xy`. The side panel uses the same object and step IDs as the scene.
 
 For a development screenshot, run `npm run dev`, open the URL printed by Vite, and capture the complete construction panel at a desktop viewport of at least 1200 pixels wide.
+
+## ManimGL video output
+
+The optional ManimGL adapter consumes the versioned JSON export instead of construction internals. This keeps SVG and video rendering aligned and lets the same timeline represent Euclidean drawing and flat origami folds. See [ManimGL renderer](MANIM_RENDERER.md) and the separate [ManimGL integration roadmap](MANIM_INTEGRATION_ROADMAP.md).

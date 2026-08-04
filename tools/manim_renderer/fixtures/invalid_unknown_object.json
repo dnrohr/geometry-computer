@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "metadata": {
+    "schema": "geometry-computer/render-document",
+    "generator": { "name": "geometry-computer", "version": "0.1.0" },
+    "title": "Invalid",
+    "aspectRatio": { "width": 1, "height": 1 },
+    "theme": "dark",
+    "duration": 1
+  },
+  "expression": "1",
+  "simplifiedExpression": "1",
+  "values": {},
+  "viewBox": "0 0 1 1",
+  "objects": [],
+  "steps": [],
+  "revealActions": [
+    {
+      "id": "bad",
+      "stepId": "step-1",
+      "objectId": "missing",
+      "start": 0,
+      "end": 1,
+      "animation": "draw"
+    }
+  ],
+  "proofs": []
+}

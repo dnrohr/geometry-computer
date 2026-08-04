@@ -1,0 +1,97 @@
+{
+  "version": 2,
+  "metadata": {
+    "schema": "geometry-computer/render-document",
+    "generator": { "name": "geometry-computer", "version": "0.1.0" },
+    "title": "Paper bisection",
+    "narration": "Fold the left edge onto the right edge.",
+    "aspectRatio": { "width": 20, "height": 13 },
+    "theme": "geometry-computer-paper",
+    "duration": 3.6
+  },
+  "expression": "Fold the left edge onto the right edge",
+  "simplifiedExpression": "vertical bisection",
+  "values": {},
+  "viewBox": "0 0 400 260",
+  "objects": [
+    {
+      "id": "paper",
+      "kind": "polygon",
+      "role": "paper",
+      "createdByStepId": "fold-1",
+      "usedByStepIds": ["fold-1"],
+      "dependsOnObjectIds": [],
+      "data": {
+        "kind": "polygon",
+        "points": [
+          { "x": 60, "y": 30 },
+          { "x": 340, "y": 30 },
+          { "x": 340, "y": 230 },
+          { "x": 60, "y": 230 }
+        ],
+        "layer": 0,
+        "side": "front"
+      }
+    },
+    {
+      "id": "crease",
+      "kind": "crease",
+      "role": "crease",
+      "createdByStepId": "fold-1",
+      "usedByStepIds": [],
+      "dependsOnObjectIds": ["paper"],
+      "data": {
+        "kind": "crease",
+        "start": { "x": 200, "y": 30 },
+        "end": { "x": 200, "y": 230 }
+      }
+    }
+  ],
+  "steps": [
+    {
+      "id": "fold-1",
+      "level": "macro",
+      "title": "Bisect the paper",
+      "summary": "Bring the left edge to the right edge.",
+      "inputObjectIds": ["paper"],
+      "outputObjectIds": ["crease"],
+      "createdObjectIds": ["crease"]
+    }
+  ],
+  "revealActions": [
+    {
+      "id": "show-paper",
+      "stepId": "fold-1",
+      "objectId": "paper",
+      "start": 0,
+      "end": 0.8,
+      "animation": "fade-in"
+    },
+    {
+      "id": "fold-paper",
+      "stepId": "fold-1",
+      "objectId": "paper",
+      "start": 0.8,
+      "end": 2.8,
+      "animation": "fold",
+      "creaseObjectId": "crease",
+      "movingSide": "left",
+      "targetLayer": 1,
+      "targetPoints": [
+        { "x": 340, "y": 30 },
+        { "x": 200, "y": 30 },
+        { "x": 200, "y": 230 },
+        { "x": 340, "y": 230 }
+      ]
+    },
+    {
+      "id": "show-crease",
+      "stepId": "fold-1",
+      "objectId": "crease",
+      "start": 2.8,
+      "end": 3.6,
+      "animation": "draw"
+    }
+  ],
+  "proofs": []
+}
